@@ -2237,6 +2237,40 @@
             background: linear-gradient(135deg, rgba(255, 255, 255, .92), var(--chart-bar-peak-top));
         }
 
+        /* ===== CHART: "SKANER" ANIMATSIYASI =====
+           Grafik ustidan ingichka yorug' chiziq chapdan o'ngga o'tadi
+           va ustunlar chiziq yetib kelgan zahoti pastdan silliq o'sib chiqadi. */
+        .chart-plot { position: relative; }
+
+        .chart-plot.scanning::after {
+            content: '';
+            position: absolute;
+            top: -8px;
+            bottom: 0;
+            left: 0;
+            width: 2px;
+            border-radius: 2px;
+            background: linear-gradient(to bottom, transparent, var(--chart-bar-top) 28%, var(--chart-bar-bottom) 72%, transparent);
+            box-shadow: 0 0 14px 1px var(--chart-bar-top);
+            opacity: 0;
+            pointer-events: none;
+            animation: chart-scan 1.15s linear .22s both;
+        }
+
+        @keyframes chart-scan {
+            0%   { transform: translateX(0); opacity: 0; }
+            10%  { opacity: .85; }
+            90%  { opacity: .85; }
+            100% { transform: translateX(var(--scan-w, 0px)); opacity: 0; }
+        }
+
+        .chart-enter .chart-y-axis span { animation: motion-fade-left .5s ease both; }
+        .chart-enter .chart-labels span { animation: motion-rise-sm .5s ease both; animation-delay: calc(.25s + var(--i, 0) * 55ms); }
+        .chart-enter .chart-summary-item { animation: motion-rise-sm .55s ease both; }
+        .chart-enter .chart-summary-item:nth-child(1) { animation-delay: .9s; }
+        .chart-enter .chart-summary-item:nth-child(2) { animation-delay: 1s; }
+        .chart-enter .chart-summary-item:nth-child(3) { animation-delay: 1.1s; }
+
         /* ===== CHART TOOLTIP ===== */
         .chart-tooltip {
             position: absolute;
@@ -3184,6 +3218,128 @@
                 padding: 14px 16px;
             }
         }
+    
+        /* =====================================================
+           HARAKAT TIZIMI (MOTION) — yengil va bir xil uslubdagi animatsiyalar
+           .view-enter sinfi bo'lim ochilganda JS (motionEnter) tomonidan
+           qisqa vaqtga qo'yiladi, shuning uchun qidiruv/filtr paytida
+           ro'yxatlar qayta-qayta animatsiya qilmaydi.
+           ===================================================== */
+        @keyframes motion-rise      { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+        @keyframes motion-rise-sm   { from { opacity: 0; transform: translateY(6px); }  to { opacity: 1; transform: none; } }
+        @keyframes motion-fade      { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes motion-fade-left { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: none; } }
+        @keyframes motion-grow-x    { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+        @keyframes motion-grow-y    { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+        @keyframes motion-modal     { from { opacity: 0; transform: translateY(10px) scale(.96); } to { opacity: 1; transform: none; } }
+
+        /* bo'limlar almashganda yumshoq paydo bo'lish */
+        .content-view.active-view { animation: motion-rise-sm .35s cubic-bezier(.22, 1, .36, 1); }
+
+        /* statistik kartalar */
+        .view-enter .stat-card { animation: motion-rise .55s cubic-bezier(.22, 1, .36, 1) both; }
+        .view-enter .stat-card:nth-child(1) { animation-delay: 0.00s; }
+        .view-enter .stat-card:nth-child(2) { animation-delay: 0.06s; }
+        .view-enter .stat-card:nth-child(3) { animation-delay: 0.12s; }
+        .view-enter .stat-card:nth-child(4) { animation-delay: 0.18s; }
+        .view-enter .stat-card:nth-child(5) { animation-delay: 0.24s; }
+        .view-enter .stat-card:nth-child(6) { animation-delay: 0.30s; }
+
+        /* katta bloklar: grafik, to'lovlar, moliya kartalari */
+        .view-enter .chart-card { animation: motion-rise .6s cubic-bezier(.22, 1, .36, 1) .1s both; }
+        .view-enter .payments-card { animation: motion-rise .6s cubic-bezier(.22, 1, .36, 1) .2s both; }
+
+        /* jadval qatorlari */
+        .view-enter .payments-table tbody tr { animation: motion-rise-sm .45s ease both; animation-delay: .3s; }
+        .view-enter .payments-table tbody tr:nth-child(1) { animation-delay: 0.31s; }
+        .view-enter .payments-table tbody tr:nth-child(2) { animation-delay: 0.34s; }
+        .view-enter .payments-table tbody tr:nth-child(3) { animation-delay: 0.37s; }
+        .view-enter .payments-table tbody tr:nth-child(4) { animation-delay: 0.40s; }
+        .view-enter .payments-table tbody tr:nth-child(5) { animation-delay: 0.43s; }
+        .view-enter .payments-table tbody tr:nth-child(6) { animation-delay: 0.46s; }
+        .view-enter .payments-table tbody tr:nth-child(7) { animation-delay: 0.49s; }
+        .view-enter .payments-table tbody tr:nth-child(8) { animation-delay: 0.52s; }
+        .view-enter .payments-table tbody tr:nth-child(9) { animation-delay: 0.55s; }
+        .view-enter .payments-table tbody tr:nth-child(10) { animation-delay: 0.58s; }
+        .view-enter .payments-table tbody tr:nth-child(11) { animation-delay: 0.61s; }
+        .view-enter .payments-table tbody tr:nth-child(12) { animation-delay: 0.64s; }
+
+        /* guruh kartalari */
+        .view-enter .gr-card { animation: motion-rise .5s cubic-bezier(.22, 1, .36, 1) both; }
+        .view-enter .gr-card:nth-child(1) { animation-delay: 0.12s; }
+        .view-enter .gr-card:nth-child(2) { animation-delay: 0.16s; }
+        .view-enter .gr-card:nth-child(3) { animation-delay: 0.20s; }
+        .view-enter .gr-card:nth-child(4) { animation-delay: 0.24s; }
+        .view-enter .gr-card:nth-child(5) { animation-delay: 0.28s; }
+        .view-enter .gr-card:nth-child(6) { animation-delay: 0.32s; }
+        .view-enter .gr-card:nth-child(7) { animation-delay: 0.36s; }
+        .view-enter .gr-card:nth-child(8) { animation-delay: 0.40s; }
+        .view-enter .gr-card:nth-child(9) { animation-delay: 0.44s; }
+        .view-enter .gr-card:nth-child(10) { animation-delay: 0.48s; }
+        .view-enter .gr-card:nth-child(11) { animation-delay: 0.52s; }
+        .view-enter .gr-card:nth-child(12) { animation-delay: 0.56s; }
+
+        /* mijozlar doskasi ustunlari */
+        .view-enter .clients-column { animation: motion-rise .55s cubic-bezier(.22, 1, .36, 1) both; }
+        .view-enter .clients-column:nth-child(1) { animation-delay: 0.11s; }
+        .view-enter .clients-column:nth-child(2) { animation-delay: 0.17s; }
+        .view-enter .clients-column:nth-child(3) { animation-delay: 0.23s; }
+        .view-enter .clients-column:nth-child(4) { animation-delay: 0.29s; }
+        .view-enter .clients-column:nth-child(5) { animation-delay: 0.35s; }
+        .view-enter .clients-column:nth-child(6) { animation-delay: 0.41s; }
+
+        /* progress chiziqlar chapdan o'ngga to'ladi */
+        .view-enter .gr-bar i,
+        .view-enter .fin-meter i { transform-origin: left center; animation: motion-grow-x .9s cubic-bezier(.22, 1, .36, 1) .35s both; }
+
+        /* moliya grafigi ustunlari pastdan o'sadi */
+        .view-enter .fin-bar { transform-origin: bottom center; animation: motion-grow-y .8s cubic-bezier(.22, 1, .36, 1) .3s both; }
+        .view-enter .fin-col:nth-child(1) .fin-bar { animation-delay: 0.34s; }
+        .view-enter .fin-col:nth-child(2) .fin-bar { animation-delay: 0.38s; }
+        .view-enter .fin-col:nth-child(3) .fin-bar { animation-delay: 0.42s; }
+        .view-enter .fin-col:nth-child(4) .fin-bar { animation-delay: 0.46s; }
+        .view-enter .fin-col:nth-child(5) .fin-bar { animation-delay: 0.50s; }
+        .view-enter .fin-col:nth-child(6) .fin-bar { animation-delay: 0.54s; }
+        .view-enter .fin-col:nth-child(7) .fin-bar { animation-delay: 0.58s; }
+        .view-enter .fin-col:nth-child(8) .fin-bar { animation-delay: 0.62s; }
+        .view-enter .fin-col:nth-child(9) .fin-bar { animation-delay: 0.66s; }
+        .view-enter .fin-col:nth-child(10) .fin-bar { animation-delay: 0.70s; }
+        .view-enter .fin-col:nth-child(11) .fin-bar { animation-delay: 0.74s; }
+        .view-enter .fin-col:nth-child(12) .fin-bar { animation-delay: 0.78s; }
+
+        /* modal oynalar */
+        .clients-modal-backdrop.open { animation: motion-fade .2s ease; }
+        .clients-modal-backdrop.open .clients-modal { animation: motion-modal .3s cubic-bezier(.22, 1, .36, 1); }
+        .sch-modal-backdrop.open { animation: motion-fade .25s ease; }
+        .sch-modal-backdrop.open .sch-modal { animation: motion-rise-sm .3s cubic-bezier(.22, 1, .36, 1); }
+
+        /* tugmalarni bosganda yengil siqilish */
+        .clients-add-btn:active,
+        .clients-modal-save:active,
+        .clients-modal-cancel:active,
+        .pay-download:active,
+        .st-pager button:not(:disabled):active,
+        .fin-tab:active { transform: scale(.97); }
+
+        /* mavzu (yorug/qorong'u) almashganda ranglar silliq o'tadi */
+        html.theme-fade,
+        html.theme-fade *,
+        html.theme-fade *::before,
+        html.theme-fade *::after {
+            transition: background-color .35s ease, color .35s ease, border-color .35s ease,
+                        fill .35s ease, stroke .35s ease, box-shadow .35s ease !important;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .content-view.active-view,
+            .view-enter *,
+            .chart-enter *,
+            .chart-plot.scanning::after,
+            .clients-modal-backdrop.open,
+            .clients-modal-backdrop.open .clients-modal,
+            .sch-modal-backdrop.open,
+            .sch-modal-backdrop.open .sch-modal { animation: none !important; }
+        }
     </style>
 </head>
 
@@ -3993,7 +4149,7 @@
             });
         }
 
-        function renderChart(year, month = 'all') {
+        function renderChart(year, month = 'all', animate = false) {
             const data = CHART_DATA[year] || CHART_DATA['2025'];
             const max = Math.max(...data);
             const min = Math.min(...data);
@@ -4026,12 +4182,52 @@
 
             attachTooltipEvents();
 
+            // "Skaner" animatsiyasi: yorug' chiziq o'tadi, ustunlar ketma-ket o'sib chiqadi
+            if (animate) {
+                const bars = plot.querySelectorAll('.chart-bar');
+                const SCAN_START = 220, SCAN_TIME = 1150;
+                plot.style.setProperty('--scan-w', plot.clientWidth + 'px');
+                plot.classList.remove('scanning');
+                void plot.offsetWidth;
+                plot.classList.add('scanning');
+                chartCardEl.classList.add('chart-enter');
+                bars.forEach((bar, i) => {
+                    const delay = Math.max(0, SCAN_START + ((i + 0.5) / bars.length) * SCAN_TIME - 80);
+                    bar.animate(
+                        [{ height: '0%', opacity: 0 }, { height: bar.style.height, opacity: 1 }],
+                        { duration: 800, delay: delay, easing: 'cubic-bezier(.16, 1, .3, 1)', fill: 'backwards' }
+                    );
+                });
+                clearTimeout(renderChart._t);
+                renderChart._t = setTimeout(() => {
+                    plot.classList.remove('scanning');
+                    chartCardEl.classList.remove('chart-enter');
+                }, SCAN_START + SCAN_TIME + 1000);
+            }
+
             const labels = document.getElementById('chartLabels');
-            labels.innerHTML = MONTH_KEYS.map(k => `<span data-i18n="${k}"></span>`).join('');
+            labels.innerHTML = MONTH_KEYS.map((k, i) => `<span data-i18n="${k}" style="--i:${i}"></span>`).join('');
 
             document.getElementById('chartMax').textContent = max;
             document.getElementById('chartMin').textContent = min;
             document.getElementById('chartAvg').textContent = avg;
+
+            if (animate) {
+                const countUp = (el, to, delay) => {
+                    const dec = Number.isInteger(to) ? 0 : 1;
+                    const t0 = performance.now() + delay, dur = 1200;
+                    el.textContent = (0).toFixed(dec);
+                    const tick = now => {
+                        const p = Math.min(Math.max((now - t0) / dur, 0), 1);
+                        el.textContent = p >= 1 ? String(to) : (to * (1 - Math.pow(1 - p, 3))).toFixed(dec);
+                        if (p < 1) requestAnimationFrame(tick);
+                    };
+                    requestAnimationFrame(tick);
+                };
+                countUp(document.getElementById('chartMax'), max, 900);
+                countUp(document.getElementById('chartMin'), min, 1000);
+                countUp(document.getElementById('chartAvg'), avg, 1100);
+            }
 
             // Chart yangi matnlar bilan chizilgach, joriy til bilan sinxronlashtiramiz
             // (TRANSLATIONS skript oxirida e'lon qilingani uchun, birinchi
@@ -4218,7 +4414,7 @@
         dashMonthSelect.addEventListener('change', () => renderChart(dashYearSelect.value, dashMonthSelect.value));
 
         renderStatCards();
-        renderChart(dashYearSelect.value, dashMonthSelect.value);
+        renderChart(dashYearSelect.value, dashMonthSelect.value, !prefersReducedMotion());
         renderPayments();
 
         // ======================================================
@@ -4508,10 +4704,32 @@
         // ======================================================
         // ===== CONTENT VIEWS (BOSH SAHIFA / PROFIL) ===========
         // ======================================================
+        function prefersReducedMotion() {
+            return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        }
+
+        // Bo'lim (yoki uning ichki sahifasi) ochilganda kartalar, jadval qatorlari,
+        // progress chiziqlar va grafiklar navbat bilan paydo bo'ladi.
+        function motionEnter(name) {
+            if (prefersReducedMotion()) return;
+            const v = document.querySelector(`.content-view[data-view="${name}"]`);
+            if (!v) return;
+            v.classList.remove('view-enter');
+            void v.offsetWidth;
+            v.classList.add('view-enter');
+            clearTimeout(v._motionTimer);
+            v._motionTimer = setTimeout(() => v.classList.remove('view-enter'), 1500);
+        }
+        window.motionEnter = motionEnter;
+
         function showView(name) {
             document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active-view'));
             const target = document.querySelector(`.content-view[data-view="${name}"]`);
             if (target) target.classList.add('active-view');
+            motionEnter(name);
+            if (name === 'home' && typeof dashYearSelect !== 'undefined') {
+                renderChart(dashYearSelect.value, dashMonthSelect.value, !prefersReducedMotion());
+            }
             if (name === 'groups' && typeof renderGroups === 'function') { if (window.closeGroupDetail) window.closeGroupDetail(); renderGroups(); }
             if (name === 'students' && typeof renderStudents === 'function') renderStudents();
             if (name === 'teachers' && typeof renderTeachers === 'function') { if (window.closeTeacherDetail) window.closeTeacherDetail(); renderTeachers(); }
@@ -4600,6 +4818,12 @@
 
         themeBtn.addEventListener('click', () => {
             const current = document.documentElement.getAttribute('data-theme');
+            if (!prefersReducedMotion()) {
+                const root = document.documentElement;
+                root.classList.add('theme-fade');
+                clearTimeout(themeBtn._fadeTimer);
+                themeBtn._fadeTimer = setTimeout(() => root.classList.remove('theme-fade'), 450);
+            }
             applyTheme(current === 'dark' ? 'light' : 'dark');
         });
 
@@ -5832,7 +6056,7 @@
                 on('grAdd', 'click', () => openModal());
                 on('grCancel', 'click', closeModal);
                 on('grSave', 'click', save);
-                on('grBack', 'click', () => { openId = null; f.sq = ''; shell(); });
+                on('grBack', 'click', () => { openId = null; f.sq = ''; shell(); if (window.motionEnter) window.motionEnter('groups'); });
                 on('grDetEdit', 'click', () => openModal(openId));
                 on('grDetAdd', 'click', openAddStudent);
                 on('grStudSearch', 'input', e => { f.sq = e.target.value; drawStudents(); });
@@ -5855,7 +6079,7 @@
                         return;
                     }
                     const card = e.target.closest('.gr-card');
-                    if (card) { openId = +card.dataset.id; f.sq = ''; shell(); window.scrollTo(0, 0); }
+                    if (card) { openId = +card.dataset.id; f.sq = ''; shell(); window.scrollTo(0, 0); if (window.motionEnter) window.motionEnter('groups'); }
                 });
                 on('grStudTable', 'change', e => {
                     const sel = e.target.closest('.gr-move'); if (!sel) return;
@@ -5876,8 +6100,10 @@
                 document.querySelector('.content-view[data-view="groups"]').classList.add('active-view');
                 document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active', i.getAttribute('data-view') === 'groups'));
                 shell(); window.scrollTo(0, 0);
+                if (window.motionEnter) window.motionEnter('groups');
             };
             window.closeGroupDetail = () => { openId = null; f.sq = ''; };
+            window.getOpenGroupId = () => openId;
             window.renderGroups = shell;
             shell();
         })();
@@ -6273,7 +6499,7 @@
                 on('thAdd', 'click', () => openModal());
                 on('thCancel', 'click', closeModal);
                 on('thSave', 'click', save);
-                on('thBack', 'click', () => { openId = null; shell(); });
+                on('thBack', 'click', () => { openId = null; shell(); if (window.motionEnter) window.motionEnter('teachers'); });
                 on('thDetEdit', 'click', () => openModal(openId));
                 on('thModalBackdrop', 'click', e => { if (e.target.id === 'thModalBackdrop') closeModal(); });
                 on('thGrid', 'click', e => {
@@ -6286,7 +6512,7 @@
                         return;
                     }
                     const card = e.target.closest('tr[data-id]');
-                    if (card) { openId = +card.dataset.id; shell(); window.scrollTo(0, 0); }
+                    if (card) { openId = +card.dataset.id; shell(); window.scrollTo(0, 0); if (window.motionEnter) window.motionEnter('teachers'); }
                 });
                 document.querySelectorAll('.th-row').forEach(r => r.addEventListener('click', () => {
                     if (typeof window.openGroup === 'function') window.openGroup(+r.dataset.gid);
@@ -6296,6 +6522,8 @@
             window.teacherNames = () => TH.filter(x => x.status !== 'left').map(x => x.name);
             window.allTeachers = () => TH;
             window.closeTeacherDetail = () => { openId = null; };
+            window.getOpenTeacherId = () => openId;
+            window.openTeacher = id => { openId = id; shell(); window.scrollTo(0, 0); };
             window.renderTeachers = shell;
             shell();
         })();
@@ -6810,6 +7038,45 @@
         (function initLanguage() {
             const saved = localStorage.getItem(LANG_STORAGE_KEY);
             applyLanguage(saved && TRANSLATIONS[saved] ? saved : 'uz');
+        })();
+
+        // ======================================================
+        // ===== SAHIFA YANGILANGANDA JORIY BO'LIMNI TIKLASH =====
+        // ======================================================
+        // Qaysi bo'lim (va guruh/o'qituvchi ichki sahifasi) ochiq bo'lsa,
+        // sahifa yangilanganda ham o'sha joyning o'zi qayta ochiladi.
+        (function persistNavigation() {
+            const NAV_KEY = 'ferdinant_nav';
+
+            function saveNav() {
+                try {
+                    const active = document.querySelector('.content-view.active-view');
+                    if (!active) return;
+                    const view = active.getAttribute('data-view');
+                    sessionStorage.setItem(NAV_KEY, JSON.stringify({
+                        view: view,
+                        groupId: view === 'groups' && window.getOpenGroupId ? window.getOpenGroupId() : null,
+                        teacherId: view === 'teachers' && window.getOpenTeacherId ? window.getOpenTeacherId() : null
+                    }));
+                } catch (e) { /* storage mavjud emas — e'tiborsiz */ }
+            }
+
+            window.addEventListener('pagehide', saveNav);
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'hidden') saveNav();
+            });
+
+            let st = null;
+            try { st = JSON.parse(sessionStorage.getItem(NAV_KEY) || 'null'); } catch (e) { st = null; }
+            const valid = st && st.view && st.view !== 'home' &&
+                document.querySelector(`.content-view[data-view="${st.view}"]`);
+            if (!valid) { motionEnter('home'); return; }
+
+            document.querySelectorAll('.nav-item').forEach(i =>
+                i.classList.toggle('active', i.getAttribute('data-view') === st.view));
+            showView(st.view);
+            if (st.view === 'groups' && st.groupId && typeof window.openGroup === 'function') window.openGroup(st.groupId);
+            if (st.view === 'teachers' && st.teacherId && typeof window.openTeacher === 'function') window.openTeacher(st.teacherId);
         })();
     </script>
 
