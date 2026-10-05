@@ -2545,6 +2545,63 @@
         #thGrid tbody tr { cursor: pointer; }
         #thGrid tbody tr:hover { background: var(--hover-bg); }
 
+        /* ===== MOLIYA (FINANCE) ===== */
+        .fin-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0 18px; padding: 5px; background: var(--clients-wrap-bg); border: 1px solid var(--clients-wrap-border); border-radius: 14px; width: fit-content; max-width: 100%; overflow-x: auto; }
+        .fin-tab { padding: 9px 16px; border: none; border-radius: 10px; background: transparent; color: var(--fg-page-muted); font: 600 13px inherit; font-family: inherit; cursor: pointer; white-space: nowrap; }
+        .fin-tab:hover { color: var(--fg-page); }
+        .fin-tab.active { background: var(--highlight-bg); color: var(--highlight-fg); }
+        .fin-grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-bottom: 16px; }
+        .fin-grid2 .payments-card { margin-top: 0; }
+        .fin-card-title { font-size: 15px; font-weight: 600; margin: 0 0 14px; color: var(--fg-panel); display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .fin-legend { display: flex; gap: 14px; font-size: 12px; color: var(--fg-muted); font-weight: 500; }
+        .fin-legend i { display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 6px; }
+        .fin-legend .inc { background: var(--chart-bar-bottom); } .fin-legend .exp { background: #F87171; }
+        .fin-chart { display: flex; align-items: flex-end; gap: 10px; height: 220px; padding-top: 10px; }
+        .fin-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; height: 100%; min-width: 0; }
+        .fin-bars { flex: 1; width: 100%; display: flex; align-items: flex-end; justify-content: center; gap: 5px; }
+        .fin-bar { width: 38%; max-width: 30px; min-height: 3px; border-radius: 7px 7px 3px 3px; transition: opacity .15s ease; cursor: default; }
+        .fin-bar:hover { opacity: .8; }
+        .fin-bar.inc { background: linear-gradient(to top, var(--chart-bar-bottom), var(--chart-bar-top)); }
+        .fin-bar.exp { background: linear-gradient(to top, #E5484D, #FCA5A5); }
+        .fin-col span { font-size: 11.5px; color: var(--fg-muted); }
+        .fin-col.cur span { color: var(--fg-panel); font-weight: 700; }
+        .fin-split { display: flex; flex-direction: column; gap: 13px; }
+        .fin-split-row .top { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; margin-bottom: 6px; color: var(--fg-muted); }
+        .fin-split-row .top b { color: var(--fg-panel); font-weight: 600; font-variant-numeric: tabular-nums; }
+        .fin-meter { height: 6px; border-radius: 6px; background: var(--hover-bg); overflow: hidden; }
+        .fin-meter i { display: block; height: 100%; border-radius: 6px; background: var(--accent); }
+        .fin-meter i.red { background: #F87171; } .fin-meter i.amber { background: #F5B942; } .fin-meter i.green { background: #4ADE80; }
+        .fin-sum { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--panel-border); font-size: 13px; color: var(--fg-muted); }
+        .fin-sum b { color: var(--fg-panel); font-variant-numeric: tabular-nums; }
+        .fin-feed { display: flex; flex-direction: column; }
+        .fin-feed-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--panel-border); }
+        .fin-feed-row:last-child { border-bottom: none; }
+        .fin-feed-ic { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .fin-feed-ic svg { width: 17px; height: 17px; }
+        .fin-feed-ic.in { background: rgba(74, 222, 128, .16); color: #4ADE80; } .fin-feed-ic.out { background: rgba(248, 113, 113, .16); color: #F87171; }
+        .fin-feed-main { flex: 1; min-width: 0; }
+        .fin-feed-main div { font-size: 13.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .fin-feed-main small { font-size: 12px; color: var(--fg-muted); }
+        .fin-feed-amt { font-size: 13.5px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .fin-feed-amt.in { color: #4ADE80; } .fin-feed-amt.out { color: #F87171; }
+        .fin-method { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; background: var(--hover-bg); color: var(--fg-panel); white-space: nowrap; }
+        .fin-cat { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+        .fin-cat.rent { background: rgba(167, 139, 250, .18); color: #A78BFA; } .fin-cat.utilities { background: rgba(245, 185, 66, .16); color: #F5B942; }
+        .fin-cat.marketing { background: rgba(111, 163, 245, .16); color: #6FA3F5; } .fin-cat.equipment { background: rgba(87, 217, 196, .16); color: #57D9C4; }
+        .fin-cat.salary { background: rgba(74, 222, 128, .16); color: #4ADE80; } .fin-cat.other { background: var(--hover-bg); color: var(--fg-muted); }
+        .fin-act-btn { padding: 6px 12px; border-radius: 9px; border: 1px solid var(--panel-border); background: transparent; color: var(--fg-panel); font: 600 12px inherit; font-family: inherit; cursor: pointer; white-space: nowrap; }
+        .fin-act-btn:hover { background: var(--hover-bg); }
+        .fin-act-btn.primary { background: var(--highlight-bg); color: var(--highlight-fg); border-color: transparent; }
+        .fin-act-btn.primary:hover { opacity: .88; }
+        .fin-total-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--panel-border); font-size: 13px; color: var(--fg-muted); }
+        .fin-total-row b { color: var(--fg-panel); font-size: 15px; font-variant-numeric: tabular-nums; }
+        .fin-err { color: #F87171; font-size: 12.5px; display: none; margin-top: 4px; }
+        .fin-modal .clients-modal { max-width: 440px; }
+        @media (max-width: 720px) {
+            .fin-chart { height: 180px; gap: 6px; }
+            .fin-tabs { width: 100%; }
+        }
+
         /* Scroll ishlayveradi, lekin scrollbar korinmaydi */
         * {
             scrollbar-width: none;
@@ -3807,13 +3864,7 @@
             </div>
 
             <div class="content-view" data-view="finance">
-                <div class="view-empty">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-                        <circle cx="12" cy="12" r="8" />
-                        <path d="M12 8v8M9 10h4.5a1.5 1.5 0 0 1 0 3H9m0 0h4.5a1.5 1.5 0 0 1 0 3H9" />
-                    </svg>
-                    <span data-i18n="content.comingSoon">Bu bo'lim tez orada to'liq ishga tushiriladi</span>
-                </div>
+                <div id="financeRoot"></div>
             </div>
 
             <div class="content-view" data-view="settings">
@@ -4464,6 +4515,7 @@
             if (name === 'groups' && typeof renderGroups === 'function') { if (window.closeGroupDetail) window.closeGroupDetail(); renderGroups(); }
             if (name === 'students' && typeof renderStudents === 'function') renderStudents();
             if (name === 'teachers' && typeof renderTeachers === 'function') { if (window.closeTeacherDetail) window.closeTeacherDetail(); renderTeachers(); }
+            if (name === 'finance' && typeof renderFinance === 'function') renderFinance();
             if (name === 'clients' && typeof updateClientsScrollButtons === 'function') {
                 if (typeof requestAnimationFrame === 'function') {
                     requestAnimationFrame(updateClientsScrollButtons);
@@ -5231,6 +5283,7 @@
             if (typeof renderStudents === 'function') renderStudents();
             if (typeof renderGroups === 'function') renderGroups();
             if (typeof renderTeachers === 'function') renderTeachers();
+            if (typeof renderFinance === 'function') renderFinance();
             if (typeof renderScheduleModal === 'function' && document.getElementById('scheduleModalBackdrop').classList.contains('open')) renderScheduleModal();
         }
 
@@ -5814,6 +5867,7 @@
             }
 
             window.groupNames = () => GR.map(g => g.name);
+            window.allGroups = () => GR;
             window.groupsOfTeacher = name => GR.filter(g => g.teacher === name).map(g => ({ ...g, students: count(g) }));
             window.renameTeacherInGroups = (a, b) => GR.forEach(g => { if (g.teacher === a) g.teacher = b; });
             window.openGroup = id => {
@@ -6020,6 +6074,7 @@
             window.studentCountByGroup = name => ST.filter(x => x.group === name && x.status === 'active').length;
             window.studentsOfGroup = name => ST.filter(x => x.group === name);
             window.allStudents = () => ST;
+            window.adjustStudentBalance = (id, delta) => { const x = ST.find(y => y.id === id); if (x) x.balance += delta; };
             window.moveStudentToGroup = (id, name) => { const x = ST.find(y => y.id === id); if (x) x.group = name; };
             window.renameStudentGroup = (a, b) => ST.forEach(x => { if (x.group === a) x.group = b; });
             window.renderStudents = shell;
@@ -6239,8 +6294,516 @@
             }
 
             window.teacherNames = () => TH.filter(x => x.status !== 'left').map(x => x.name);
+            window.allTeachers = () => TH;
             window.closeTeacherDetail = () => { openId = null; };
             window.renderTeachers = shell;
+            shell();
+        })();
+
+        // ======================================================
+        // ===== MOLIYA (FINANCE) ===============================
+        // ======================================================
+        (function initFinance() {
+            const S = {
+                uz: { title: 'Moliya', t_overview: 'Umumiy', t_payments: "To'lovlar", t_expenses: 'Xarajatlar', t_salaries: 'Maoshlar', t_debtors: 'Qarzdorlar',
+                    p_thisMonth: 'Shu oy', p_lastMonth: "O'tgan oy", p_last3: 'Oxirgi 3 oy', p_thisYear: 'Shu yil', p_all: 'Barcha vaqt',
+                    income: 'Tushum', expense: 'Xarajat', profit: 'Sof foyda', debt: 'Umumiy qarz',
+                    chartTitle: 'Oxirgi 6 oy dinamikasi', byCat: 'Xarajatlar tuzilmasi', byMethod: "To'lov usullari bo'yicha", topDebtors: 'Eng katta qarzdorlar', recent: "So'nggi operatsiyalar", noData: "Ma'lumot yo'q",
+                    m_cash: 'Naqd', m_card: 'Karta', m_click: 'Click / Payme', m_bank: "Bank o'tkazma",
+                    c_rent: 'Ijara', c_utilities: 'Kommunal', c_marketing: 'Marketing', c_equipment: 'Jihozlar', c_salary: 'Maosh', c_other: 'Boshqa',
+                    addPay: "To'lov qabul qilish", searchPay: "Talaba yoki guruh bo'yicha qidirish", allMethods: 'Barcha usullar', allGroups: 'Barcha guruhlar',
+                    colDate: 'Sana', colStudent: 'Talaba', colGroup: 'Guruh', colMethod: 'Usul', colAmount: 'Summa', colNote: 'Izoh', total: 'Jami', emptyPay: "To'lovlar topilmadi",
+                    newPay: "Yangi to'lov", editPay: "To'lovni tahrirlash", student: 'Talaba', pickStud: 'Talabani tanlang', amount: 'Summa', method: 'Usul', date: 'Sana', note: 'Izoh (ixtiyoriy)',
+                    errStud: 'Talabani tanlang', errAmount: "Summa 0 dan katta bo'lishi kerak", errDate: 'Sanani kiriting', errFuture: "Kelajak sanasini tanlab bo'lmaydi", errTitle: 'Nomini kiriting',
+                    delPay: "To'lovni o'chirmoqchimisiz? Talaba balansi qaytariladi.",
+                    addExp: "Xarajat qo'shish", searchExp: "Nomi bo'yicha qidirish", allCats: 'Barcha turkumlar', colCat: 'Turkum', colTitle: 'Nomi', emptyExp: 'Xarajatlar topilmadi',
+                    newExp: 'Yangi xarajat', editExp: 'Xarajatni tahrirlash', expTitle: 'Nomi', category: 'Turkum', delExp: "Xarajatni o'chirmoqchimisiz?",
+                    delSal: "Bu maosh to'lovi. O'chirsangiz, maosh \"to'lanmagan\" holatiga qaytadi. Davom etasizmi?",
+                    month: 'Oy', payroll: 'Maosh fondi', paidSum: "To'langan", leftSum: 'Qoldiq', colTeacher: "O'qituvchi", colSubject: "Yo'nalish", colSalary: 'Maosh', colStatus: 'Holat', colPaidOn: "To'langan sana",
+                    s_paid: "To'langan", s_unpaid: "To'lanmagan", pay: "To'lash", undo: 'Bekor qilish', payAll: "Hammasiga to'lash",
+                    payAllConfirm: "Tanlangan oy uchun barcha to'lanmagan maoshlarni to'laysizmi?", undoConfirm: "Maosh to'lovini bekor qilasizmi?", emptySal: "O'qituvchilar yo'q", futureMonth: "Kelgusi oy uchun maosh to'lab bo'lmaydi",
+                    searchDeb: "Ism yoki telefon bo'yicha qidirish", colPhone: 'Telefon', colDebt: 'Qarz', collect: "To'lov olish", emptyDeb: "Qarzdorlar yo'q", totalDebt: 'Jami qarz', debtCount: 'Qarzdorlar soni',
+                    export: 'CSV yuklash', cur: "so'm", save: 'Saqlash', cancel: 'Bekor qilish', edit: 'Tahrirlash', del: "O'chirish", prev: 'Oldingi', next: 'Keyingi',
+                    months: ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'],
+                    mshort: ['Yan', 'Fev', 'Mar', 'Apr', 'May', 'Iyn', 'Iyl', 'Avg', 'Sen', 'Okt', 'Noy', 'Dek'] },
+                en: { title: 'Finance', t_overview: 'Overview', t_payments: 'Payments', t_expenses: 'Expenses', t_salaries: 'Salaries', t_debtors: 'Debtors',
+                    p_thisMonth: 'This month', p_lastMonth: 'Last month', p_last3: 'Last 3 months', p_thisYear: 'This year', p_all: 'All time',
+                    income: 'Income', expense: 'Expenses', profit: 'Net profit', debt: 'Total debt',
+                    chartTitle: 'Last 6 months', byCat: 'Expense breakdown', byMethod: 'By payment method', topDebtors: 'Top debtors', recent: 'Recent transactions', noData: 'No data',
+                    m_cash: 'Cash', m_card: 'Card', m_click: 'Click / Payme', m_bank: 'Bank transfer',
+                    c_rent: 'Rent', c_utilities: 'Utilities', c_marketing: 'Marketing', c_equipment: 'Equipment', c_salary: 'Salary', c_other: 'Other',
+                    addPay: 'Accept payment', searchPay: 'Search by student or group', allMethods: 'All methods', allGroups: 'All groups',
+                    colDate: 'Date', colStudent: 'Student', colGroup: 'Group', colMethod: 'Method', colAmount: 'Amount', colNote: 'Note', total: 'Total', emptyPay: 'No payments found',
+                    newPay: 'New payment', editPay: 'Edit payment', student: 'Student', pickStud: 'Select a student', amount: 'Amount', method: 'Method', date: 'Date', note: 'Note (optional)',
+                    errStud: 'Select a student', errAmount: 'Amount must be greater than 0', errDate: 'Enter a date', errFuture: 'Date cannot be in the future', errTitle: 'Enter a title',
+                    delPay: "Delete this payment? The student's balance will be reverted.",
+                    addExp: 'Add expense', searchExp: 'Search by title', allCats: 'All categories', colCat: 'Category', colTitle: 'Title', emptyExp: 'No expenses found',
+                    newExp: 'New expense', editExp: 'Edit expense', expTitle: 'Title', category: 'Category', delExp: 'Delete this expense?',
+                    delSal: 'This is a salary payment. Deleting it will mark the salary as unpaid. Continue?',
+                    month: 'Month', payroll: 'Payroll', paidSum: 'Paid', leftSum: 'Remaining', colTeacher: 'Teacher', colSubject: 'Subject', colSalary: 'Salary', colStatus: 'Status', colPaidOn: 'Paid on',
+                    s_paid: 'Paid', s_unpaid: 'Unpaid', pay: 'Pay', undo: 'Undo', payAll: 'Pay all',
+                    payAllConfirm: 'Pay all unpaid salaries for the selected month?', undoConfirm: 'Cancel this salary payment?', emptySal: 'No teachers', futureMonth: 'You cannot pay salary for a future month',
+                    searchDeb: 'Search by name or phone', colPhone: 'Phone', colDebt: 'Debt', collect: 'Collect', emptyDeb: 'No debtors', totalDebt: 'Total debt', debtCount: 'Number of debtors',
+                    export: 'Export CSV', cur: 'UZS', save: 'Save', cancel: 'Cancel', edit: 'Edit', del: 'Delete', prev: 'Prev', next: 'Next',
+                    months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                    mshort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] },
+                ru: { title: 'Финансы', t_overview: 'Обзор', t_payments: 'Платежи', t_expenses: 'Расходы', t_salaries: 'Зарплаты', t_debtors: 'Должники',
+                    p_thisMonth: 'Этот месяц', p_lastMonth: 'Прошлый месяц', p_last3: 'Последние 3 месяца', p_thisYear: 'Этот год', p_all: 'За всё время',
+                    income: 'Доход', expense: 'Расходы', profit: 'Чистая прибыль', debt: 'Общий долг',
+                    chartTitle: 'Последние 6 месяцев', byCat: 'Структура расходов', byMethod: 'По способам оплаты', topDebtors: 'Крупнейшие должники', recent: 'Последние операции', noData: 'Нет данных',
+                    m_cash: 'Наличные', m_card: 'Карта', m_click: 'Click / Payme', m_bank: 'Банковский перевод',
+                    c_rent: 'Аренда', c_utilities: 'Коммунальные', c_marketing: 'Маркетинг', c_equipment: 'Оборудование', c_salary: 'Зарплата', c_other: 'Прочее',
+                    addPay: 'Принять платёж', searchPay: 'Поиск по студенту или группе', allMethods: 'Все способы', allGroups: 'Все группы',
+                    colDate: 'Дата', colStudent: 'Студент', colGroup: 'Группа', colMethod: 'Способ', colAmount: 'Сумма', colNote: 'Примечание', total: 'Итого', emptyPay: 'Платежи не найдены',
+                    newPay: 'Новый платёж', editPay: 'Изменить платёж', student: 'Студент', pickStud: 'Выберите студента', amount: 'Сумма', method: 'Способ', date: 'Дата', note: 'Примечание (необязательно)',
+                    errStud: 'Выберите студента', errAmount: 'Сумма должна быть больше 0', errDate: 'Укажите дату', errFuture: 'Дата не может быть в будущем', errTitle: 'Введите название',
+                    delPay: 'Удалить платёж? Баланс студента будет возвращён.',
+                    addExp: 'Добавить расход', searchExp: 'Поиск по названию', allCats: 'Все категории', colCat: 'Категория', colTitle: 'Название', emptyExp: 'Расходы не найдены',
+                    newExp: 'Новый расход', editExp: 'Изменить расход', expTitle: 'Название', category: 'Категория', delExp: 'Удалить расход?',
+                    delSal: 'Это выплата зарплаты. После удаления зарплата станет «не выплачена». Продолжить?',
+                    month: 'Месяц', payroll: 'Фонд зарплаты', paidSum: 'Выплачено', leftSum: 'Остаток', colTeacher: 'Преподаватель', colSubject: 'Направление', colSalary: 'Оклад', colStatus: 'Статус', colPaidOn: 'Дата выплаты',
+                    s_paid: 'Выплачено', s_unpaid: 'Не выплачено', pay: 'Выплатить', undo: 'Отменить', payAll: 'Выплатить всем',
+                    payAllConfirm: 'Выплатить все невыплаченные зарплаты за выбранный месяц?', undoConfirm: 'Отменить выплату зарплаты?', emptySal: 'Нет преподавателей', futureMonth: 'Нельзя выплатить зарплату за будущий месяц',
+                    searchDeb: 'Поиск по имени или телефону', colPhone: 'Телефон', colDebt: 'Долг', collect: 'Принять оплату', emptyDeb: 'Должников нет', totalDebt: 'Общий долг', debtCount: 'Количество должников',
+                    export: 'Скачать CSV', cur: 'сум', save: 'Сохранить', cancel: 'Отмена', edit: 'Изменить', del: 'Удалить', prev: 'Назад', next: 'Далее',
+                    months: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+                    mshort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'] }
+            };
+            const T = () => S[document.documentElement.getAttribute('lang')] || S.uz;
+            const METHODS = ['cash', 'card', 'click', 'bank'];
+            const CATS = ['rent', 'utilities', 'marketing', 'equipment', 'salary', 'other'];
+            const PER = 10;
+            const root = document.getElementById('financeRoot');
+            const $ = id => document.getElementById(id);
+            const ic = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+            const pad = n => String(n).padStart(2, '0');
+            const iso = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+            const mk = d => d.getFullYear() + '-' + pad(d.getMonth() + 1);
+            const now = new Date();
+            const TODAY = iso(now), THIS_MONTH = mk(now);
+            const fmtDate = s => s.slice(8, 10) + '.' + s.slice(5, 7) + '.' + s.slice(0, 4);
+            const money = n => Math.round(Math.abs(Number(n))).toLocaleString('ru-RU');
+            const short = n => n >= 1e6 ? (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M' : n >= 1e3 ? Math.round(n / 1e3) + 'K' : String(Math.round(n));
+            const sum = (a, k) => a.reduce((s, x) => s + x[k], 0);
+            const studs = () => typeof window.allStudents === 'function' ? window.allStudents() : [];
+            const groups = () => typeof window.allGroups === 'function' ? window.allGroups() : [];
+            const teachers = () => typeof window.allTeachers === 'function' ? window.allTeachers() : [];
+            const priceOf = name => { const g = groups().find(x => x.name === name); return g ? g.price : 500000; };
+            const adjust = (id, delta) => { if (typeof window.adjustStudentBalance === 'function') window.adjustStudentBalance(id, delta); };
+            const monthLabel = (t, key) => t.months[+key.slice(5, 7) - 1] + ' ' + key.slice(0, 4);
+
+            let PAY = [], EXP = [], nextPid = 1, nextEid = 1, editPayId = null, editExpId = null;
+            const F = { tab: 'overview', period: 'thisMonth', q: '', method: '', group: '', cat: '', month: THIS_MONTH, page: 1 };
+
+            // ----- boshlang'ich (demo) ma'lumotlar -----
+            (function seed() {
+                const act = studs().filter(s => s.status === 'active'), th = teachers().filter(x => x.status !== 'left');
+                for (let k = 5; k >= 0; k--) {
+                    const key = mk(new Date(now.getFullYear(), now.getMonth() - k, 1));
+                    const maxDay = k === 0 ? now.getDate() : 28;
+                    act.forEach((s, i) => {
+                        if ((i * 7 + k * 13) % 10 >= 7) return;
+                        const day = Math.min(maxDay, 1 + (i * 5 + k * 3) % 27);
+                        PAY.push({ id: nextPid++, sid: s.id, student: s.name, group: s.group, amount: priceOf(s.group), method: METHODS[(i + k) % 4], date: key + '-' + pad(day), note: '' });
+                    });
+                    const add = (cat, title, amount, day, extra) => { if (day <= maxDay) EXP.push(Object.assign({ id: nextEid++, cat, title, amount, date: key + '-' + pad(day), note: '' }, extra)); };
+                    add('rent', 'Ijara haqi', 6000000, 1);
+                    add('utilities', 'Elektr, suv, internet', 1100000 + (k * 90000) % 400000, 5);
+                    add('marketing', 'Reklama (Instagram, Telegram)', 800000 + (k * 170000) % 700000, 10);
+                    add('other', 'Choy-qahva va tozalik', 450000, 15);
+                    if (k === 3) add('equipment', 'Proyektor', 3200000, 12);
+                    if (k === 1) add('equipment', 'Mebel va stullar', 1100000, 8);
+                    if (k > 0) th.forEach(x => add('salary', '', x.salary, 5, { tid: x.id, tname: x.name, month: key }));
+                }
+            })();
+
+            // ----- davrlar -----
+            function range(p) {
+                const y = now.getFullYear(), m = now.getMonth();
+                const first = (yy, mm) => iso(new Date(yy, mm, 1)), last = (yy, mm) => iso(new Date(yy, mm + 1, 0));
+                if (p === 'thisMonth') return [first(y, m), last(y, m)];
+                if (p === 'lastMonth') return [first(y, m - 1), last(y, m - 1)];
+                if (p === 'last3') return [first(y, m - 2), last(y, m)];
+                if (p === 'thisYear') return [first(y, 0), last(y, 11)];
+                return ['0000-01-01', '9999-12-31'];
+            }
+            function prevRange(p) {
+                const y = now.getFullYear(), m = now.getMonth();
+                const first = (yy, mm) => iso(new Date(yy, mm, 1)), last = (yy, mm) => iso(new Date(yy, mm + 1, 0));
+                if (p === 'thisMonth') return [first(y, m - 1), last(y, m - 1)];
+                if (p === 'lastMonth') return [first(y, m - 2), last(y, m - 2)];
+                if (p === 'last3') return [first(y, m - 5), last(y, m - 3)];
+                if (p === 'thisYear') return [first(y - 1, 0), last(y - 1, 11)];
+                return null;
+            }
+            const inR = (d, r) => d >= r[0] && d <= r[1];
+            const payIn = r => PAY.filter(p => inR(p.date, r));
+            const expIn = r => EXP.filter(e => inR(e.date, r));
+            const byDate = (a, b) => b.date.localeCompare(a.date) || b.id - a.id;
+            const expTitle = (t, e) => e.tid ? `${t.c_salary} — ${e.tname} (${t.months[+e.month.slice(5, 7) - 1]})` : e.title;
+            const debtors = () => studs().filter(s => s.balance < 0);
+
+            // ----- umumiy qismlar -----
+            const periodSel = t => `<select class="st-select" data-f="period">${['thisMonth', 'lastMonth', 'last3', 'thisYear', 'all'].map(p => `<option value="${p}" ${F.period === p ? 'selected' : ''}>${t['p_' + p]}</option>`).join('')}</select>`;
+            const searchBox = (ph) => `<div class="clients-search">${ic('<circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>')}<input data-f="q" type="text" autocomplete="off" placeholder="${ph}" value="${escapeHtml(F.q)}"></div>`;
+            const exportBtn = t => `<button class="st-ghost-btn" type="button" data-act="export">${ic('<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>')}<span>${t.export}</span></button>`;
+            const addBtn = (act, label) => `<button class="clients-add-btn" type="button" data-act="${act}">${ic('<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>')}<span>${label}</span></button>`;
+            const statCard = (label, val, path, delta) => `<div class="stat-card"><div class="stat-icon">${ic(path)}</div><div class="stat-label">${label}</div><div class="stat-value">${val}${delta || ''}</div></div>`;
+            const delta = (cur, prev, goodUp) => {
+                if (!prev) return '';
+                const pct = Math.round((cur - prev) / Math.abs(prev) * 100);
+                return `<span class="stat-delta"><span class="${(pct >= 0) === goodUp ? 'up' : 'down'}">${pct >= 0 ? '+' : ''}${pct}%</span></span>`;
+            };
+            function pager(total) {
+                const t = T(), pages = Math.max(1, Math.ceil(total / PER));
+                if (F.page > pages) F.page = pages;
+                const from = total ? (F.page - 1) * PER + 1 : 0, to = Math.min(total, F.page * PER);
+                return `<div class="st-pager"><span>${from}–${to} / ${total}</span><div style="display:flex;gap:8px">
+                    <button type="button" data-act="prev" ${F.page <= 1 ? 'disabled' : ''}>${t.prev}</button>
+                    <button type="button" data-act="next" ${F.page >= pages ? 'disabled' : ''}>${t.next}</button></div></div>`;
+            }
+            const slice = rows => rows.slice((F.page - 1) * PER, F.page * PER);
+
+            // ----- UMUMIY (OVERVIEW) -----
+            function overviewHTML(t) {
+                const r = range(F.period), pr = prevRange(F.period);
+                const P = payIn(r), E = expIn(r), inc = sum(P, 'amount'), exp = sum(E, 'amount'), profit = inc - exp;
+                const pInc = pr ? sum(payIn(pr), 'amount') : 0, pExp = pr ? sum(expIn(pr), 'amount') : 0;
+                const debtSum = debtors().reduce((s, x) => s - x.balance, 0);
+                const cards = statCard(t.income, money(inc) + ' <small style="font-size:12px;font-weight:500;color:var(--fg-muted)">' + t.cur + '</small>', '<path d="M12 19V5M5 12l7-7 7 7"/>', pr ? delta(inc, pInc, true) : '')
+                    + statCard(t.expense, money(exp) + ' <small style="font-size:12px;font-weight:500;color:var(--fg-muted)">' + t.cur + '</small>', '<path d="M12 5v14M5 12l7 7 7-7"/>', pr ? delta(exp, pExp, false) : '')
+                    + statCard(t.profit, (profit < 0 ? '−' : '') + money(profit) + ' <small style="font-size:12px;font-weight:500;color:var(--fg-muted)">' + t.cur + '</small>', '<path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/>', pr ? delta(profit, pInc - pExp, true) : '')
+                    + statCard(t.debt, money(debtSum) + ' <small style="font-size:12px;font-weight:500;color:var(--fg-muted)">' + t.cur + '</small>', '<circle cx="12" cy="12" r="8"/><path d="M12 8v5M12 16v.5"/>');
+
+                const months = [];
+                for (let k = 5; k >= 0; k--) {
+                    const d = new Date(now.getFullYear(), now.getMonth() - k, 1), key = mk(d);
+                    months.push({ key, m: d.getMonth(), inc: sum(PAY.filter(p => p.date.startsWith(key)), 'amount'), exp: sum(EXP.filter(e => e.date.startsWith(key)), 'amount') });
+                }
+                const max = Math.max(1, ...months.map(x => Math.max(x.inc, x.exp)));
+                const chart = months.map(x => `<div class="fin-col ${x.key === THIS_MONTH ? 'cur' : ''}"><div class="fin-bars">
+                    <div class="fin-bar inc" style="height:${x.inc / max * 100}%" title="${t.income}: ${money(x.inc)} ${t.cur}"></div>
+                    <div class="fin-bar exp" style="height:${x.exp / max * 100}%" title="${t.expense}: ${money(x.exp)} ${t.cur}"></div></div><span>${t.mshort[x.m]}</span></div>`).join('');
+
+                const catRows = CATS.map(c => [c, sum(E.filter(e => e.cat === c), 'amount')]).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]);
+                const catHTML = catRows.length ? catRows.map(x => `<div class="fin-split-row"><div class="top"><span>${t['c_' + x[0]]}</span><b>${money(x[1])} · ${Math.round(x[1] / exp * 100)}%</b></div><div class="fin-meter"><i class="red" style="width:${x[1] / exp * 100}%"></i></div></div>`).join('') : `<div class="st-empty">${t.noData}</div>`;
+                const metRows = METHODS.map(m => [m, sum(P.filter(p => p.method === m), 'amount')]).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]);
+                const metHTML = metRows.length ? metRows.map(x => `<div class="fin-split-row"><div class="top"><span>${t['m_' + x[0]]}</span><b>${money(x[1])} · ${Math.round(x[1] / inc * 100)}%</b></div><div class="fin-meter"><i style="width:${x[1] / inc * 100}%"></i></div></div>`).join('') : `<div class="st-empty">${t.noData}</div>`;
+
+                const top = debtors().sort((a, b) => a.balance - b.balance).slice(0, 5);
+                const topHTML = top.length ? `<div class="fin-feed">${top.map(s => `<div class="fin-feed-row"><div class="st-avatar">${escapeHtml(clientInitials(s.name))}</div>
+                    <div class="fin-feed-main"><div>${escapeHtml(s.name)}</div><small>${escapeHtml(s.group)}</small></div><div class="fin-feed-amt out">−${money(s.balance)}</div></div>`).join('')}</div>` : `<div class="st-empty">${t.emptyDeb}</div>`;
+
+                const recent = PAY.map(p => ({ k: 'in', id: p.id, date: p.date, title: p.student, sub: p.group, amt: p.amount }))
+                    .concat(EXP.map(e => ({ k: 'out', id: e.id + 1e6, date: e.date, title: expTitle(t, e), sub: t['c_' + e.cat], amt: e.amount })))
+                    .sort(byDate).slice(0, 8);
+                const recentHTML = `<div class="fin-feed">${recent.map(x => `<div class="fin-feed-row"><div class="fin-feed-ic ${x.k}">${ic(x.k === 'in' ? '<path d="M12 19V5M5 12l7-7 7 7"/>' : '<path d="M12 5v14M5 12l7 7 7-7"/>')}</div>
+                    <div class="fin-feed-main"><div>${escapeHtml(x.title)}</div><small>${fmtDate(x.date)} · ${escapeHtml(x.sub)}</small></div><div class="fin-feed-amt ${x.k}">${x.k === 'in' ? '+' : '−'}${money(x.amt)}</div></div>`).join('')}</div>`;
+
+                return `<div class="st-toolbar">${periodSel(t)}</div>
+                    <div class="stat-cards" style="margin-top:0">${cards}</div>
+                    <div class="payments-card" style="margin-top:0;margin-bottom:16px"><h3 class="fin-card-title"><span>${t.chartTitle}</span><span class="fin-legend"><span><i class="inc"></i>${t.income}</span><span><i class="exp"></i>${t.expense}</span></span></h3><div class="fin-chart">${chart}</div></div>
+                    <div class="fin-grid2"><div class="payments-card"><h3 class="fin-card-title">${t.byCat}</h3><div class="fin-split">${catHTML}</div></div>
+                        <div class="payments-card"><h3 class="fin-card-title">${t.byMethod}</h3><div class="fin-split">${metHTML}</div></div></div>
+                    <div class="fin-grid2"><div class="payments-card"><h3 class="fin-card-title">${t.topDebtors}</h3>${topHTML}</div>
+                        <div class="payments-card"><h3 class="fin-card-title">${t.recent}</h3>${recentHTML}</div></div>`;
+            }
+
+            // ----- TO'LOVLAR -----
+            function payFiltered() {
+                const q = F.q.trim().toLowerCase(), r = range(F.period);
+                return PAY.filter(p => inR(p.date, r) && (!F.method || p.method === F.method) && (!F.group || p.group === F.group)
+                    && (!q || p.student.toLowerCase().includes(q) || p.group.toLowerCase().includes(q) || (p.note || '').toLowerCase().includes(q))).sort(byDate);
+            }
+            function payToolbar(t) {
+                const gn = typeof window.groupNames === 'function' ? window.groupNames() : [];
+                return `<div class="st-toolbar">${searchBox(t.searchPay)}
+                    <select class="st-select" data-f="method"><option value="">${t.allMethods}</option>${METHODS.map(m => `<option value="${m}" ${F.method === m ? 'selected' : ''}>${t['m_' + m]}</option>`).join('')}</select>
+                    <select class="st-select" data-f="group"><option value="">${t.allGroups}</option>${gn.map(g => `<option ${F.group === g ? 'selected' : ''}>${escapeHtml(g)}</option>`).join('')}</select>
+                    ${periodSel(t)}<span class="spacer"></span>${exportBtn(t)}${addBtn('addPay', t.addPay)}</div>`;
+            }
+            function payList(t) {
+                const rows = payFiltered(), total = sum(rows, 'amount');
+                const body = slice(rows).map(p => `<tr><td class="muted">${fmtDate(p.date)}</td>
+                    <td><div class="st-user"><div class="st-avatar">${escapeHtml(clientInitials(p.student))}</div>${escapeHtml(p.student)}</div></td>
+                    <td class="col-hide-sm">${escapeHtml(p.group)}</td><td><span class="fin-method">${t['m_' + p.method]}</span></td>
+                    <td class="num st-pos">+${money(p.amount)} <span class="pay-cur">${t.cur}</span></td><td class="muted col-hide-sm">${escapeHtml(p.note || '')}</td>
+                    <td style="white-space:nowrap"><button class="st-act" data-act="editPay" data-id="${p.id}" title="${t.edit}">${ic('<path d="M4 20h4L19 9l-4-4L4 16v4z"/>')}</button>
+                    <button class="st-act del" data-act="delPay" data-id="${p.id}" title="${t.del}">${ic('<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>')}</button></td></tr>`).join('');
+                return `<div class="payments-card" style="margin-top:0"><div class="payments-table-wrap" style="max-height:none"><table class="payments-table"><thead><tr>
+                    <th>${t.colDate}</th><th>${t.colStudent}</th><th class="col-hide-sm">${t.colGroup}</th><th>${t.colMethod}</th><th class="num">${t.colAmount}</th><th class="col-hide-sm">${t.colNote}</th><th></th></tr></thead><tbody>${body}</tbody></table>
+                    ${rows.length ? '' : `<div class="st-empty">${t.emptyPay}</div>`}</div>
+                    <div class="fin-total-row"><span>${rows.length}</span><span>${t.total}: <b>${money(total)} ${t.cur}</b></span></div>${pager(rows.length)}</div>`;
+            }
+
+            // ----- XARAJATLAR -----
+            function expFiltered() {
+                const q = F.q.trim().toLowerCase(), r = range(F.period), t = T();
+                return EXP.filter(e => inR(e.date, r) && (!F.cat || e.cat === F.cat) && (!q || expTitle(t, e).toLowerCase().includes(q) || (e.note || '').toLowerCase().includes(q))).sort(byDate);
+            }
+            function expToolbar(t) {
+                return `<div class="st-toolbar">${searchBox(t.searchExp)}
+                    <select class="st-select" data-f="cat"><option value="">${t.allCats}</option>${CATS.map(c => `<option value="${c}" ${F.cat === c ? 'selected' : ''}>${t['c_' + c]}</option>`).join('')}</select>
+                    ${periodSel(t)}<span class="spacer"></span>${exportBtn(t)}${addBtn('addExp', t.addExp)}</div>`;
+            }
+            function expList(t) {
+                const rows = expFiltered(), total = sum(rows, 'amount');
+                const body = slice(rows).map(e => `<tr><td class="muted">${fmtDate(e.date)}</td><td><span class="fin-cat ${e.cat}">${t['c_' + e.cat]}</span></td>
+                    <td>${escapeHtml(expTitle(t, e))}</td><td class="num st-neg">−${money(e.amount)} <span class="pay-cur">${t.cur}</span></td><td class="muted col-hide-sm">${escapeHtml(e.note || '')}</td>
+                    <td style="white-space:nowrap">${e.tid ? '' : `<button class="st-act" data-act="editExp" data-id="${e.id}" title="${t.edit}">${ic('<path d="M4 20h4L19 9l-4-4L4 16v4z"/>')}</button>`}
+                    <button class="st-act del" data-act="delExp" data-id="${e.id}" title="${t.del}">${ic('<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>')}</button></td></tr>`).join('');
+                return `<div class="payments-card" style="margin-top:0"><div class="payments-table-wrap" style="max-height:none"><table class="payments-table"><thead><tr>
+                    <th>${t.colDate}</th><th>${t.colCat}</th><th>${t.colTitle}</th><th class="num">${t.colAmount}</th><th class="col-hide-sm">${t.colNote}</th><th></th></tr></thead><tbody>${body}</tbody></table>
+                    ${rows.length ? '' : `<div class="st-empty">${t.emptyExp}</div>`}</div>
+                    <div class="fin-total-row"><span>${rows.length}</span><span>${t.total}: <b>${money(total)} ${t.cur}</b></span></div>${pager(rows.length)}</div>`;
+            }
+
+            // ----- MAOSHLAR -----
+            const salaryRec = (tid, month) => EXP.find(e => e.tid === tid && e.month === month);
+            const payroll = () => teachers().filter(x => x.status !== 'left');
+            function salToolbar(t) {
+                const opts = [];
+                for (let k = 0; k < 12; k++) { const key = mk(new Date(now.getFullYear(), now.getMonth() - k, 1)); opts.push(`<option value="${key}" ${F.month === key ? 'selected' : ''}>${monthLabel(t, key)}</option>`); }
+                return `<div class="st-toolbar"><select class="st-select" data-f="month">${opts.join('')}</select><span class="spacer"></span>${exportBtn(t)}
+                    <button class="clients-add-btn" type="button" data-act="payAll">${ic('<path d="M5 12l5 5 9-10"/>')}<span>${t.payAll}</span></button></div>`;
+            }
+            function salList(t) {
+                const list = payroll(), total = sum(list, 'salary');
+                const paid = list.reduce((s, x) => s + (salaryRec(x.id, F.month) ? x.salary : 0), 0);
+                const cards = statCard(t.payroll, money(total) + ' ' + t.cur, '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>')
+                    + statCard(t.paidSum, money(paid) + ' ' + t.cur, '<path d="M5 12l5 5 9-10"/>') + statCard(t.leftSum, money(total - paid) + ' ' + t.cur, '<circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/>');
+                const body = list.map(x => {
+                    const rec = salaryRec(x.id, F.month);
+                    return `<tr><td><div class="st-user"><div class="st-avatar">${escapeHtml(clientInitials(x.name))}</div>${escapeHtml(x.name)}</div></td>
+                        <td class="col-hide-sm muted">${escapeHtml(x.subject)}</td><td class="num">${money(x.salary)} <span class="pay-cur">${t.cur}</span></td>
+                        <td><span class="st-badge ${rec ? 'active' : 'frozen'}">${rec ? t.s_paid : t.s_unpaid}</span></td>
+                        <td class="muted col-hide-sm">${rec ? fmtDate(rec.date) : '—'}</td>
+                        <td style="text-align:right">${rec ? `<button class="fin-act-btn" data-act="undoSal" data-id="${x.id}">${t.undo}</button>` : `<button class="fin-act-btn primary" data-act="paySal" data-id="${x.id}">${t.pay}</button>`}</td></tr>`;
+                }).join('');
+                return `<div class="stat-cards" style="margin-top:0">${cards}</div><div class="payments-card" style="margin-top:0"><div class="payments-table-wrap" style="max-height:none"><table class="payments-table"><thead><tr>
+                    <th>${t.colTeacher}</th><th class="col-hide-sm">${t.colSubject}</th><th class="num">${t.colSalary}</th><th>${t.colStatus}</th><th class="col-hide-sm">${t.colPaidOn}</th><th></th></tr></thead><tbody>${body}</tbody></table>
+                    ${list.length ? '' : `<div class="st-empty">${t.emptySal}</div>`}</div></div>`;
+            }
+            function doPaySalary(tid) {
+                const x = teachers().find(y => y.id === tid);
+                if (!x || salaryRec(tid, F.month)) return;
+                EXP.push({ id: nextEid++, cat: 'salary', title: '', amount: x.salary, date: TODAY, note: '', tid: x.id, tname: x.name, month: F.month });
+            }
+
+            // ----- QARZDORLAR -----
+            function debFiltered() {
+                const q = F.q.trim().toLowerCase(), qd = q.replace(/\D/g, '');
+                return debtors().filter(s => (!F.group || s.group === F.group) && (!q || s.name.toLowerCase().includes(q) || (qd && s.phone.replace(/\D/g, '').includes(qd)))).sort((a, b) => a.balance - b.balance);
+            }
+            function debToolbar(t) {
+                const gn = typeof window.groupNames === 'function' ? window.groupNames() : [];
+                return `<div class="st-toolbar">${searchBox(t.searchDeb)}
+                    <select class="st-select" data-f="group"><option value="">${t.allGroups}</option>${gn.map(g => `<option ${F.group === g ? 'selected' : ''}>${escapeHtml(g)}</option>`).join('')}</select>
+                    <span class="spacer"></span>${exportBtn(t)}</div>`;
+            }
+            function debList(t) {
+                const rows = debFiltered(), all = debtors(), totalAll = all.reduce((s, x) => s - x.balance, 0);
+                const cards = statCard(t.totalDebt, money(totalAll) + ' ' + t.cur, '<circle cx="12" cy="12" r="8"/><path d="M12 8v5M12 16v.5"/>')
+                    + statCard(t.debtCount, all.length, '<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 2.5-5 6-5s6 2 6 5"/><circle cx="17" cy="9" r="2.4"/>');
+                const body = slice(rows).map(s => `<tr><td><div class="st-user"><div class="st-avatar">${escapeHtml(clientInitials(s.name))}</div>${escapeHtml(s.name)}</div></td>
+                    <td class="muted col-hide-sm">${escapeHtml(s.phone)}</td><td>${escapeHtml(s.group)}</td><td class="num st-neg">−${money(s.balance)} <span class="pay-cur">${t.cur}</span></td>
+                    <td style="text-align:right"><button class="fin-act-btn primary" data-act="collect" data-id="${s.id}">${t.collect}</button></td></tr>`).join('');
+                return `<div class="stat-cards" style="margin-top:0">${cards}</div><div class="payments-card" style="margin-top:0"><div class="payments-table-wrap" style="max-height:none"><table class="payments-table"><thead><tr>
+                    <th>${t.colStudent}</th><th class="col-hide-sm">${t.colPhone}</th><th>${t.colGroup}</th><th class="num">${t.colDebt}</th><th></th></tr></thead><tbody>${body}</tbody></table>
+                    ${rows.length ? '' : `<div class="st-empty">${t.emptyDeb}</div>`}</div>
+                    <div class="fin-total-row"><span>${rows.length}</span><span>${t.total}: <b>${money(rows.reduce((s, x) => s - x.balance, 0))} ${t.cur}</b></span></div>${pager(rows.length)}</div>`;
+            }
+
+            // ----- chizish -----
+            function modalsHTML(t) {
+                return `<div class="clients-modal-backdrop fin-modal" id="finPayBackdrop"><div class="clients-modal">
+                        <h2 id="finPayTitle"></h2>
+                        <div class="clients-modal-field"><label>${t.student}</label><select id="finPaySid"></select></div>
+                        <div class="clients-modal-row">
+                            <div class="clients-modal-field"><label>${t.amount} (${t.cur})</label><input id="finPayAmount" type="number" min="0" step="10000"></div>
+                            <div class="clients-modal-field"><label>${t.method}</label><select id="finPayMethod">${METHODS.map(m => `<option value="${m}">${t['m_' + m]}</option>`).join('')}</select></div></div>
+                        <div class="clients-modal-field"><label>${t.date}</label><input id="finPayDate" type="date" max="${TODAY}"></div>
+                        <div class="clients-modal-field"><label>${t.note}</label><input id="finPayNote" type="text" autocomplete="off"></div>
+                        <div class="fin-err" id="finPayErr"></div>
+                        <div class="clients-modal-actions"><button type="button" class="clients-modal-cancel" data-act="payCancel">${t.cancel}</button><button type="button" class="clients-modal-save" data-act="paySave">${t.save}</button></div>
+                    </div></div>
+                    <div class="clients-modal-backdrop fin-modal" id="finExpBackdrop"><div class="clients-modal">
+                        <h2 id="finExpTitleH"></h2>
+                        <div class="clients-modal-field"><label>${t.category}</label><select id="finExpCat">${CATS.filter(c => c !== 'salary').map(c => `<option value="${c}">${t['c_' + c]}</option>`).join('')}</select></div>
+                        <div class="clients-modal-field"><label>${t.expTitle}</label><input id="finExpName" type="text" autocomplete="off"></div>
+                        <div class="clients-modal-row">
+                            <div class="clients-modal-field"><label>${t.amount} (${t.cur})</label><input id="finExpAmount" type="number" min="0" step="10000"></div>
+                            <div class="clients-modal-field"><label>${t.date}</label><input id="finExpDate" type="date" max="${TODAY}"></div></div>
+                        <div class="clients-modal-field"><label>${t.note}</label><input id="finExpNote" type="text" autocomplete="off"></div>
+                        <div class="fin-err" id="finExpErr"></div>
+                        <div class="clients-modal-actions"><button type="button" class="clients-modal-cancel" data-act="expCancel">${t.cancel}</button><button type="button" class="clients-modal-save" data-act="expSave">${t.save}</button></div>
+                    </div></div>`;
+            }
+            function shell() {
+                const t = T();
+                if (F.month > THIS_MONTH) F.month = THIS_MONTH;
+                root.innerHTML = `<div class="clients-head"><div class="clients-head-text"><h1>${t.title}</h1></div></div>
+                    <div class="fin-tabs">${['overview', 'payments', 'expenses', 'salaries', 'debtors'].map(k => `<button type="button" class="fin-tab ${F.tab === k ? 'active' : ''}" data-tab="${k}">${t['t_' + k]}</button>`).join('')}</div>
+                    <div id="finBody"></div>${modalsHTML(t)}`;
+                drawBody();
+            }
+            function drawBody() {
+                const t = T(), body = $('finBody'); if (!body) return;
+                const bars = { payments: payToolbar, expenses: expToolbar, salaries: salToolbar, debtors: debToolbar };
+                body.innerHTML = F.tab === 'overview' ? overviewHTML(t) : bars[F.tab](t) + '<div id="finList"></div>';
+                drawList();
+            }
+            function drawList() {
+                const t = T(), el = $('finList'); if (!el) return;
+                const fn = { payments: payList, expenses: expList, salaries: salList, debtors: debList }[F.tab];
+                el.innerHTML = fn(t);
+            }
+
+            // ----- modallar -----
+            const showErr = (id, msg) => { const e = $(id); e.textContent = msg; e.style.display = msg ? 'block' : 'none'; };
+            function fillAmount() {
+                if (editPayId) return;
+                const s = studs().find(x => x.id === +$('finPaySid').value);
+                if (s) $('finPayAmount').value = s.balance < 0 ? -s.balance : priceOf(s.group);
+            }
+            function openPay(id, sid) {
+                const t = T(), p = id ? PAY.find(x => x.id === id) : null;
+                editPayId = p ? p.id : null;
+                $('finPayTitle').textContent = p ? t.editPay : t.newPay;
+                const list = studs().filter(s => s.status !== 'grad' || (p && p.sid === s.id));
+                $('finPaySid').innerHTML = `<option value="">${t.pickStud}</option>` + list.map(s => `<option value="${s.id}">${escapeHtml(s.name)} — ${escapeHtml(s.group)}</option>`).join('');
+                $('finPaySid').value = p ? p.sid : (sid || '');
+                $('finPayAmount').value = p ? p.amount : '';
+                $('finPayMethod').value = p ? p.method : 'cash';
+                $('finPayDate').value = p ? p.date : TODAY;
+                $('finPayNote').value = p ? (p.note || '') : '';
+                showErr('finPayErr', '');
+                if (!p && sid) fillAmount();
+                $('finPayBackdrop').classList.add('open');
+            }
+            function savePay() {
+                const t = T(), sid = +$('finPaySid').value, amount = Math.round(+$('finPayAmount').value), date = $('finPayDate').value;
+                const s = studs().find(x => x.id === sid);
+                if (!s) return showErr('finPayErr', t.errStud);
+                if (!(amount > 0)) return showErr('finPayErr', t.errAmount);
+                if (!date) return showErr('finPayErr', t.errDate);
+                if (date > TODAY) return showErr('finPayErr', t.errFuture);
+                const data = { sid, student: s.name, group: s.group, amount, method: $('finPayMethod').value, date, note: $('finPayNote').value.trim() };
+                if (editPayId) {
+                    const p = PAY.find(x => x.id === editPayId);
+                    adjust(p.sid, -p.amount); Object.assign(p, data);
+                } else PAY.push(Object.assign({ id: nextPid++ }, data));
+                adjust(sid, amount);
+                $('finPayBackdrop').classList.remove('open');
+                refreshOthers(); drawBody();
+            }
+            function openExp(id) {
+                const t = T(), e = id ? EXP.find(x => x.id === id) : null;
+                editExpId = e ? e.id : null;
+                $('finExpTitleH').textContent = e ? t.editExp : t.newExp;
+                $('finExpCat').value = e ? e.cat : 'other';
+                $('finExpName').value = e ? e.title : '';
+                $('finExpAmount').value = e ? e.amount : '';
+                $('finExpDate').value = e ? e.date : TODAY;
+                $('finExpNote').value = e ? (e.note || '') : '';
+                showErr('finExpErr', '');
+                $('finExpBackdrop').classList.add('open');
+            }
+            function saveExp() {
+                const t = T(), title = $('finExpName').value.trim(), amount = Math.round(+$('finExpAmount').value), date = $('finExpDate').value;
+                if (!title) return showErr('finExpErr', t.errTitle);
+                if (!(amount > 0)) return showErr('finExpErr', t.errAmount);
+                if (!date) return showErr('finExpErr', t.errDate);
+                if (date > TODAY) return showErr('finExpErr', t.errFuture);
+                const data = { cat: $('finExpCat').value, title, amount, date, note: $('finExpNote').value.trim() };
+                if (editExpId) Object.assign(EXP.find(x => x.id === editExpId), data);
+                else EXP.push(Object.assign({ id: nextEid++ }, data));
+                $('finExpBackdrop').classList.remove('open');
+                drawBody();
+            }
+            function refreshOthers() {
+                if (typeof window.renderStudents === 'function') window.renderStudents();
+                if (typeof window.renderGroups === 'function') window.renderGroups();
+            }
+
+            // ----- CSV -----
+            function exportCsv() {
+                const t = T(); let name, head, rows;
+                if (F.tab === 'payments') {
+                    name = 'tolovlar'; head = [t.colDate, t.colStudent, t.colGroup, t.colMethod, t.colAmount + ' (' + t.cur + ')', t.colNote];
+                    rows = payFiltered().map(p => [fmtDate(p.date), p.student, p.group, t['m_' + p.method], p.amount, p.note || '']);
+                } else if (F.tab === 'expenses') {
+                    name = 'xarajatlar'; head = [t.colDate, t.colCat, t.colTitle, t.colAmount + ' (' + t.cur + ')', t.colNote];
+                    rows = expFiltered().map(e => [fmtDate(e.date), t['c_' + e.cat], expTitle(t, e), e.amount, e.note || '']);
+                } else if (F.tab === 'salaries') {
+                    name = 'maoshlar-' + F.month; head = [t.colTeacher, t.colSubject, t.colSalary + ' (' + t.cur + ')', t.colStatus, t.colPaidOn];
+                    rows = payroll().map(x => { const r = salaryRec(x.id, F.month); return [x.name, x.subject, x.salary, r ? t.s_paid : t.s_unpaid, r ? fmtDate(r.date) : '']; });
+                } else if (F.tab === 'debtors') {
+                    name = 'qarzdorlar'; head = [t.colStudent, t.colPhone, t.colGroup, t.colDebt + ' (' + t.cur + ')'];
+                    rows = debFiltered().map(s => [s.name, s.phone, s.group, -s.balance]);
+                } else return;
+                const csv = '\uFEFF' + [head].concat(rows).map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(';')).join('\r\n');
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
+                a.download = name + '-' + TODAY + '.csv';
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+            }
+
+            // ----- hodisalar (bir marta, root ustida) -----
+            root.addEventListener('click', e => {
+                const t = T();
+                const tab = e.target.closest('[data-tab]');
+                if (tab) { Object.assign(F, { tab: tab.dataset.tab, q: '', method: '', group: '', cat: '', page: 1 }); shell(); return; }
+                if (e.target.classList.contains('clients-modal-backdrop')) { e.target.classList.remove('open'); return; }
+                const b = e.target.closest('[data-act]'); if (!b) return;
+                const id = +b.dataset.id;
+                switch (b.dataset.act) {
+                    case 'addPay': openPay(); break;
+                    case 'editPay': openPay(id); break;
+                    case 'delPay': {
+                        const p = PAY.find(x => x.id === id);
+                        if (p && confirm(t.delPay)) { adjust(p.sid, -p.amount); PAY = PAY.filter(x => x.id !== id); refreshOthers(); drawBody(); }
+                        break;
+                    }
+                    case 'collect': openPay(null, id); break;
+                    case 'payCancel': $('finPayBackdrop').classList.remove('open'); break;
+                    case 'paySave': savePay(); break;
+                    case 'addExp': openExp(); break;
+                    case 'editExp': openExp(id); break;
+                    case 'delExp': {
+                        const x = EXP.find(y => y.id === id);
+                        if (x && confirm(x.tid ? t.delSal : t.delExp)) { EXP = EXP.filter(y => y.id !== id); drawBody(); }
+                        break;
+                    }
+                    case 'expCancel': $('finExpBackdrop').classList.remove('open'); break;
+                    case 'expSave': saveExp(); break;
+                    case 'paySal':
+                        if (F.month > THIS_MONTH) { alert(t.futureMonth); break; }
+                        doPaySalary(id); drawList(); break;
+                    case 'undoSal':
+                        if (confirm(t.undoConfirm)) { EXP = EXP.filter(x => !(x.tid === id && x.month === F.month)); drawList(); }
+                        break;
+                    case 'payAll':
+                        if (F.month > THIS_MONTH) { alert(t.futureMonth); break; }
+                        if (payroll().some(x => !salaryRec(x.id, F.month)) && confirm(t.payAllConfirm)) { payroll().forEach(x => doPaySalary(x.id)); drawList(); }
+                        break;
+                    case 'export': exportCsv(); break;
+                    case 'prev': F.page--; drawList(); break;
+                    case 'next': F.page++; drawList(); break;
+                }
+            });
+            root.addEventListener('input', e => {
+                const k = e.target.dataset.f;
+                if (k && e.target.tagName === 'INPUT') { F[k] = e.target.value; F.page = 1; drawList(); }
+            });
+            root.addEventListener('change', e => {
+                const k = e.target.dataset.f;
+                if (k && e.target.tagName === 'SELECT') { F[k] = e.target.value; F.page = 1; drawBody(); return; }
+                if (e.target.id === 'finPaySid') fillAmount();
+            });
+
+            window.renderFinance = shell;
             shell();
         })();
 
