@@ -37,10 +37,10 @@
             --menu-shadow: 0 16px 40px rgba(0, 0, 0, .45);
             --block-shadow: 0 12px 32px rgba(15, 23, 42, .14), 0 2px 8px rgba(15, 23, 42, .08);
             --stat-icon-bg: rgba(244, 239, 230, 0.10);
-            --chart-bar-top: #57D9C4;
-            --chart-bar-bottom: #2F6FE0;
-            --chart-bar-peak-top: #A78BFA;
-            --chart-bar-peak-bottom: #6D4FE0;
+            --chart-bar-top: #6FA8FF;
+            --chart-bar-bottom: #4F46E5;
+            --chart-bar-peak-top: #FFC857;
+            --chart-bar-peak-bottom: #F0643C;
 
             /* dars jadvali (schedule) — och, hashamatli sirt; menu-bg dan mustaqil,
                shunda u dark/light almashganda ham to'g'ri moslashadi */
@@ -83,10 +83,10 @@
             --menu-shadow: 0 16px 40px rgba(0, 0, 0, .60);
             --block-shadow: 0 12px 32px rgba(0, 0, 0, .45), 0 2px 8px rgba(0, 0, 0, .30);
             --stat-icon-bg: rgba(233, 236, 243, 0.08);
-            --chart-bar-top: #59E3C9;
-            --chart-bar-bottom: #3C7EF0;
-            --chart-bar-peak-top: #B9A5FF;
-            --chart-bar-peak-bottom: #7C5CFC;
+            --chart-bar-top: #7DB4FF;
+            --chart-bar-bottom: #6366F1;
+            --chart-bar-peak-top: #FFD36E;
+            --chart-bar-peak-bottom: #F77B4A;
 
             --surface-bg: #0E1526;
             --surface-alt-bg: #0A0F1C;
@@ -2185,56 +2185,61 @@
             justify-content: center;
         }
 
+        .chart-col { position: relative; }
+        .chart-col::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            top: 6px;
+            left: 50%;
+            width: 76%;
+            max-width: 52px;
+            transform: translateX(-50%);
+            border-radius: 14px 14px 4px 4px;
+            background: repeating-linear-gradient(135deg, rgba(120, 140, 190, .09) 0 6px, transparent 6px 12px);
+            pointer-events: none;
+        }
+
         .chart-bar {
             position: relative;
             width: 76%;
             max-width: 52px;
-            border-radius: 0 0 4px 4px;
-            background:
-                linear-gradient(90deg, rgba(0, 0, 0, .24) 0%, rgba(255, 255, 255, .26) 36%, rgba(255, 255, 255, .04) 55%, rgba(0, 0, 0, .20) 100%),
-                linear-gradient(to bottom, var(--chart-bar-top), var(--chart-bar-bottom));
-            box-shadow: 3px 6px 12px rgba(15, 23, 42, .22);
-            transition: height .5s cubic-bezier(.65, 0, .35, 1), opacity .2s ease, transform .2s ease;
+            border-radius: 14px 14px 4px 4px;
+            background: linear-gradient(to bottom, var(--chart-bar-top), var(--chart-bar-bottom));
+            box-shadow: 0 10px 24px -6px color-mix(in srgb, var(--chart-bar-bottom) 55%, transparent), inset 0 1px 0 rgba(255, 255, 255, .45);
+            transition: height .5s cubic-bezier(.65, 0, .35, 1), opacity .2s ease, transform .2s ease, filter .2s ease;
             cursor: default;
         }
 
         .chart-bar::before {
             content: '';
             position: absolute;
-            top: -9px;
-            left: 0;
-            right: 0;
-            height: 18px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, rgba(255, 255, 255, .9), var(--chart-bar-top));
-            box-shadow: inset 0 -3px 4px rgba(0, 0, 0, .14);
+            top: 5px;
+            left: 50%;
+            width: 36%;
+            height: 5px;
+            transform: translateX(-50%);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, .55);
         }
 
         .chart-bar::after {
             content: '';
             position: absolute;
-            left: 8%;
-            right: 46%;
-            top: 2px;
-            bottom: 10%;
-            border-radius: 3px;
-            background: linear-gradient(to bottom, rgba(255, 255, 255, .30), rgba(255, 255, 255, 0));
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(100deg, rgba(255, 255, 255, .22) 0%, rgba(255, 255, 255, 0) 45%, rgba(0, 0, 0, .12) 100%);
             pointer-events: none;
         }
 
         .chart-bar:hover {
-            opacity: .9;
-            transform: translateY(-3px);
+            filter: brightness(1.1) saturate(1.1);
+            transform: translateY(-4px);
         }
 
         .chart-bar.peak {
-            background:
-                linear-gradient(90deg, rgba(0, 0, 0, .28) 0%, rgba(255, 255, 255, .26) 36%, rgba(255, 255, 255, .04) 55%, rgba(0, 0, 0, .22) 100%),
-                linear-gradient(to bottom, var(--chart-bar-peak-top), var(--chart-bar-peak-bottom));
-        }
-
-        .chart-bar.peak::before {
-            background: linear-gradient(135deg, rgba(255, 255, 255, .92), var(--chart-bar-peak-top));
+            background: linear-gradient(to bottom, var(--chart-bar-peak-top), var(--chart-bar-peak-bottom));
+            box-shadow: 0 12px 28px -6px color-mix(in srgb, var(--chart-bar-peak-bottom) 60%, transparent), inset 0 1px 0 rgba(255, 255, 255, .5);
         }
 
         /* ===== CHART: "SKANER" ANIMATSIYASI =====
@@ -3396,7 +3401,7 @@
             .sch-modal-backdrop.open .sch-modal { animation: none !important; }
         }
             /* ===== TOAST (BILDIRISHNOMALAR) ===== */
-        .tt-stack { position: fixed; bottom: 22px; right: 22px; z-index: 200; width: min(410px, calc(100vw - 32px)); display: flex; flex-direction: column-reverse; pointer-events: none; }
+        .tt-stack { position: fixed; bottom: 104px; right: 22px; z-index: 200; width: min(410px, calc(100vw - 32px)); display: flex; flex-direction: column-reverse; pointer-events: none; }
         .tt-wrap { margin-top: 12px; pointer-events: none; transition: height .34s cubic-bezier(.22, 1, .36, 1), margin .34s cubic-bezier(.22, 1, .36, 1); }
         .tt-wrap.out { height: 0 !important; margin-top: 0; }
         .tt { --tc: #6FA3F5; --tc-soft: rgba(111, 163, 245, .16); position: relative; pointer-events: auto; display: flex; align-items: flex-start; gap: 14px; padding: 16px 14px 19px 16px; border-radius: 18px; overflow: hidden; color: var(--menu-fg); border: 1px solid rgba(237, 235, 227, .10); box-shadow: var(--menu-shadow); background: linear-gradient(100deg, var(--tc-soft), transparent 62%), var(--menu-bg); opacity: 0; transform: translateX(40px) scale(.95); transition: opacity .26s ease, transform .42s cubic-bezier(.22, 1, .36, 1); }
@@ -3426,7 +3431,7 @@
         @keyframes tt-pop { from { transform: scale(.4) rotate(-12deg); opacity: 0; } to { transform: none; opacity: 1; } }
         @keyframes tt-bump { 0%, 100% { transform: scale(1); } 40% { transform: scale(1.04); } }
         @media (max-width: 768px) {
-            .tt-stack { bottom: calc(92px + env(safe-area-inset-bottom, 0px)); right: 12px; left: 12px; width: auto; }
+            .tt-stack { bottom: calc(160px + env(safe-area-inset-bottom, 0px)); right: 12px; left: 12px; width: auto; }
             .tt { transform: translateY(24px) scale(.97); padding: 14px 12px 17px 14px; }
             .tt-wrap.out .tt { transform: translateY(24px) scale(.97); }
         }
@@ -3434,6 +3439,191 @@
             .tt, .tt-wrap { transition: opacity .15s ease; transform: none !important; }
             .tt.in .tt-ic svg, .tt.bump { animation: none; }
         }
+            /* ===== CHAT (suzuvchi vidjet) ===== */
+        .ch-fab { position: fixed; right: 24px; bottom: 24px; z-index: 85; width: 62px; height: 62px; border: none; border-radius: 22px; cursor: pointer; display: grid; place-items: center; color: #fff; background: linear-gradient(145deg, #5B9BF5, #2D62D8); box-shadow: 0 12px 30px rgba(45, 98, 216, .45), inset 0 1px 0 rgba(255, 255, 255, .3); transition: transform .25s cubic-bezier(.22, 1.3, .36, 1), border-radius .3s ease; }
+        .ch-fab:hover { transform: translateY(-3px) scale(1.04); }
+        .ch-fab:active { transform: scale(.94); }
+        .ch-fab svg { grid-area: 1/1; width: 27px; height: 27px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .35s cubic-bezier(.22, 1, .36, 1), opacity .2s ease; }
+        .ch-fab .ic-x { opacity: 0; transform: rotate(-90deg) scale(.5); }
+        .ch-fab.open { border-radius: 50%; }
+        .ch-fab.open .ic-c { opacity: 0; transform: rotate(90deg) scale(.5); }
+        .ch-fab.open .ic-x { opacity: 1; transform: none; }
+        .ch-fab.pulse::before { content: ''; position: absolute; inset: 0; border-radius: inherit; border: 2px solid #5B9BF5; animation: ch-ring 2s ease-out infinite; }
+        .ch-badge { position: absolute; top: -6px; right: -6px; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 20px; background: #F87171; color: #fff; font-size: 12px; font-weight: 700; display: none; place-items: center; border: 3px solid var(--bg-page, #fff); box-sizing: content-box; }
+        .ch-badge.show { display: grid; }
+        .ch-panel { position: fixed; right: 24px; bottom: 100px; z-index: 90; width: 410px; height: min(680px, calc(100vh - 128px)); border-radius: 26px; overflow: hidden; background: var(--menu-bg); color: var(--menu-fg); border: 1px solid rgba(237, 235, 227, .10); box-shadow: 0 30px 70px rgba(5, 10, 25, .5); --ox: calc(100% - 31px); --oy: calc(100% + 45px); transform-origin: bottom right; visibility: hidden; pointer-events: none; }
+        .ch-panel.open, .ch-panel.closing { visibility: visible; }
+        .ch-panel.open { pointer-events: auto; animation: ch-open .65s cubic-bezier(.22, 1, .36, 1) both; }
+        .ch-panel.closing { animation: ch-close .42s cubic-bezier(.55, 0, .75, .3) both; }
+        .ch-scr { position: absolute; inset: 0; display: flex; flex-direction: column; transition: transform .35s cubic-bezier(.22, 1, .36, 1); background: var(--menu-bg); }
+        .ch-scr.chatv { transform: translateX(100%); }
+        .ch-panel.inchat .ch-scr.chatv { transform: none; }
+        .ch-panel.inchat .ch-scr.listv { transform: translateX(-22%); }
+        .ch-hero { padding: 24px 22px 18px; background: radial-gradient(120% 140% at 0% 0%, rgba(91, 155, 245, .38), transparent 60%), radial-gradient(90% 120% at 100% 0%, rgba(139, 92, 246, .26), transparent 60%); }
+        .ch-hero h2 { margin: 0; font-size: 22px; letter-spacing: -.2px; }
+        .ch-hero p { margin: 3px 0 0; font-size: 13px; color: rgba(233, 236, 243, .65); }
+        .ch-sbox { position: relative; margin: 14px 0 0; }
+        .ch-sbox svg { position: absolute; left: 14px; top: 50%; width: 17px; height: 17px; margin-top: -8.5px; fill: none; stroke: rgba(233, 236, 243, .5); stroke-width: 2; stroke-linecap: round; }
+        .ch-search { width: 100%; box-sizing: border-box; padding: 12px 14px 12px 40px; border-radius: 14px; border: 1px solid rgba(237, 235, 227, .12); background: rgba(8, 14, 30, .35); color: inherit; font: 14px inherit; font-family: inherit; outline: none; }
+        .ch-search:focus { border-color: #5B9BF5; }
+        .ch-tabs { display: flex; gap: 8px; padding: 14px 18px 6px; }
+        .ch-tab { position: relative; flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px; padding: 10px 6px; border: 1px solid rgba(237, 235, 227, .10); border-radius: 13px; background: transparent; color: rgba(233, 236, 243, .65); font: 600 13px inherit; font-family: inherit; cursor: pointer; transition: all .2s ease; }
+        .ch-tab svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .ch-tab.on { background: rgba(91, 155, 245, .2); border-color: rgba(91, 155, 245, .55); color: #BFD9FF; }
+        .ch-tab i { position: absolute; top: 6px; right: 8px; width: 8px; height: 8px; border-radius: 50%; background: #F87171; }
+        .ch-bar { display: flex; align-items: center; justify-content: space-between; padding: 8px 20px 4px; }
+        .ch-chip { padding: 6px 13px; border-radius: 20px; border: 1px solid rgba(237, 235, 227, .14); background: transparent; color: rgba(233, 236, 243, .7); font: 600 12px inherit; font-family: inherit; cursor: pointer; }
+        .ch-chip.on { background: #5B9BF5; border-color: #5B9BF5; color: #fff; }
+        .ch-list { flex: 1; overflow-y: auto; padding: 4px 12px 14px; min-height: 0; }
+        .ch-newbtn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; margin: 4px 0 8px; padding: 12px; border: 1.5px dashed rgba(91, 155, 245, .5); border-radius: 15px; background: rgba(91, 155, 245, .08); color: #BFD9FF; font: 700 13.5px inherit; font-family: inherit; cursor: pointer; }
+        .ch-newbtn:hover { background: rgba(91, 155, 245, .16); }
+        .ch-sec { padding: 12px 8px 6px; font-size: 11.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(233, 236, 243, .42); }
+        .ch-item { display: flex; align-items: center; gap: 12px; padding: 11px 10px; border-radius: 16px; cursor: pointer; transition: background .15s ease; }
+        .ch-item:hover { background: rgba(237, 235, 227, .07); }
+        .ch-av { position: relative; flex: none; width: 46px; height: 46px; border-radius: 16px; display: grid; place-items: center; font-weight: 700; font-size: 14.5px; color: #fff; }
+        .ch-av.pr { border-radius: 50%; }
+        .ch-av i { position: absolute; right: -1px; bottom: -1px; width: 12px; height: 12px; border-radius: 50%; background: #4ADE80; border: 2.5px solid var(--menu-bg); }
+        .ch-mid { flex: 1; min-width: 0; }
+        .ch-mid b { display: block; font-size: 14.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .ch-mid small { display: block; margin-top: 2px; font-size: 12.5px; color: rgba(233, 236, 243, .55); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .ch-item.un .ch-mid small { color: var(--menu-fg); font-weight: 600; }
+        .ch-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; font-size: 11.5px; color: rgba(233, 236, 243, .5); }
+        .ch-un { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 20px; background: #5B9BF5; color: #fff; font-size: 11.5px; font-weight: 700; display: grid; place-items: center; }
+        .ch-empty { margin: auto; text-align: center; color: rgba(233, 236, 243, .5); font-size: 14px; padding: 40px 0; }
+        .ch-top { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid rgba(237, 235, 227, .10); background: linear-gradient(100deg, rgba(91, 155, 245, .16), transparent 70%); }
+        .ch-bk { flex: none; width: 36px; height: 36px; border: none; border-radius: 12px; background: rgba(237, 235, 227, .08); color: inherit; display: grid; place-items: center; cursor: pointer; }
+        .ch-bk:hover { background: rgba(237, 235, 227, .16); }
+        .ch-bk svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+        .ch-top .ch-av { width: 40px; height: 40px; font-size: 13px; }
+        .ch-top .ok { color: #4ADE80; }
+        .ch-msgs { flex: 1; overflow-y: auto; padding: 16px 16px 6px; display: flex; flex-direction: column; gap: 3px; min-height: 0; }
+        .ch-day { align-self: center; margin: 8px 0 10px; padding: 4px 14px; border-radius: 20px; background: rgba(237, 235, 227, .08); font-size: 12px; color: rgba(233, 236, 243, .6); }
+        .ch-m { position: relative; max-width: 80%; padding: 9px 13px 6px; border-radius: 18px 18px 18px 6px; font-size: 14.5px; line-height: 1.45; word-break: break-word; background: rgba(237, 235, 227, .11); align-self: flex-start; animation: ch-in .28s cubic-bezier(.22, 1, .36, 1); }
+        .ch-m.me { align-self: flex-end; background: linear-gradient(140deg, #5B9BF5, #2D62D8); color: #fff; border-radius: 18px 18px 6px 18px; }
+        .ch-m + .ch-m { margin-top: 0; }
+        .ch-m .who { display: block; font-size: 12px; font-weight: 700; color: #9CC2FA; margin-bottom: 2px; }
+        .ch-m time { display: block; text-align: right; margin-top: 2px; font-size: 10.5px; opacity: .6; }
+        .ch-typing { align-self: flex-start; padding: 13px 15px; border-radius: 18px 18px 18px 6px; background: rgba(237, 235, 227, .11); display: flex; gap: 4px; }
+        .ch-typing i { width: 6px; height: 6px; border-radius: 50%; background: rgba(233, 236, 243, .65); animation: ch-dot 1s infinite; }
+        .ch-typing i:nth-child(2) { animation-delay: .15s; } .ch-typing i:nth-child(3) { animation-delay: .3s; }
+        .ch-quick { display: flex; gap: 7px; padding: 8px 16px 2px; overflow-x: auto; scrollbar-width: none; }
+        .ch-quick button { flex: none; padding: 7px 13px; border-radius: 20px; border: 1px solid rgba(91, 155, 245, .4); background: rgba(91, 155, 245, .1); color: #BFD9FF; font: 600 12.5px inherit; font-family: inherit; cursor: pointer; }
+        .ch-quick button:hover { background: rgba(91, 155, 245, .22); }
+        .ch-emo { display: none; flex-wrap: wrap; gap: 2px; padding: 8px 14px 0; }
+        .ch-emo.open { display: flex; }
+        .ch-emo button { border: none; background: transparent; font-size: 22px; padding: 4px 6px; border-radius: 9px; cursor: pointer; }
+        .ch-emo button:hover { background: rgba(237, 235, 227, .12); }
+        .ch-comp { display: flex; align-items: flex-end; gap: 8px; margin: 10px 14px 14px; padding: 6px 6px 6px 8px; border-radius: 22px; border: 1px solid rgba(237, 235, 227, .12); background: rgba(8, 14, 30, .35); }
+        .ch-comp:focus-within { border-color: #5B9BF5; }
+        .ch-comp textarea { flex: 1; resize: none; max-height: 120px; padding: 9px 4px; border: none; background: transparent; color: inherit; font: 14.5px/1.4 inherit; font-family: inherit; outline: none; }
+        .ch-ib { flex: none; width: 38px; height: 38px; border: none; border-radius: 50%; background: transparent; color: rgba(233, 236, 243, .7); font-size: 21px; cursor: pointer; display: grid; place-items: center; }
+        .ch-ib:hover { background: rgba(237, 235, 227, .1); }
+        .ch-ib.send { background: linear-gradient(140deg, #5B9BF5, #2D62D8); color: #fff; }
+        .ch-ib svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+        .ch-mem { max-height: 240px; overflow-y: auto; }
+        .ch-mem label { display: flex; align-items: center; gap: 10px; padding: 8px 4px; font-size: 14px; cursor: pointer; }
+        .ch-mem input { width: auto; }
+        @keyframes ch-open { from { clip-path: circle(0px at var(--ox) var(--oy)); opacity: .5; transform: scale(.88); } to { clip-path: circle(160vmax at var(--ox) var(--oy)); opacity: 1; transform: none; } }
+        @keyframes ch-close { from { clip-path: circle(160vmax at var(--ox) var(--oy)); opacity: 1; transform: none; } 55% { opacity: .9; } to { clip-path: circle(0px at var(--ox) var(--oy)); opacity: .4; transform: scale(.88); } }
+        @keyframes ch-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+        .ch-panel.opening .ch-hero > *, .ch-panel.opening .ch-tabs, .ch-panel.opening .ch-bar, .ch-panel.opening .ch-newbtn, .ch-panel.opening .ch-item { animation: ch-rise .55s cubic-bezier(.22, 1, .36, 1) both; }
+        .ch-panel.opening .ch-hero h2 { animation-delay: .2s; } .ch-panel.opening .ch-hero p { animation-delay: .26s; } .ch-panel.opening .ch-sbox { animation-delay: .32s; }
+        .ch-panel.opening .ch-tabs { animation-delay: .38s; } .ch-panel.opening .ch-bar { animation-delay: .44s; } .ch-panel.opening .ch-newbtn { animation-delay: .48s; }
+        .ch-panel.opening .ch-item { animation-delay: calc(var(--i, 0) * 50ms + .5s); }
+        .ch-x { width: 36px; height: 36px; flex: none; border: none; border-radius: 12px; background: rgba(237, 235, 227, .10); color: inherit; display: grid; place-items: center; cursor: pointer; transition: background .2s ease, transform .3s cubic-bezier(.22, 1, .36, 1); }
+        .ch-x:hover { background: rgba(248, 113, 113, .28); transform: rotate(90deg); }
+        .ch-x svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.3; stroke-linecap: round; }
+        .ch-hero { position: relative; }
+        .ch-hero .ch-x { position: absolute; top: 18px; right: 18px; }
+        .ch-top .ch-x { margin-left: auto; }
+        @keyframes ch-in { from { opacity: 0; transform: translateY(10px) scale(.96); } }
+        @keyframes ch-dot { 0%, 60%, 100% { transform: none; opacity: .5; } 30% { transform: translateY(-4px); opacity: 1; } }
+        @keyframes ch-ring { from { transform: scale(1); opacity: .8; } to { transform: scale(1.5); opacity: 0; } }
+        @media (max-width: 768px) {
+            .ch-fab { right: 16px; bottom: calc(92px + env(safe-area-inset-bottom, 0px)); width: 56px; height: 56px; border-radius: 20px; }
+            .ch-panel { right: 0; left: 0; top: 0; bottom: 0; width: auto; height: auto; border-radius: 0; z-index: 95; }
+            .ch-fab.open { display: none; }
+            .ch-panel { --ox: calc(100% - 44px); --oy: calc(100% - 120px); }
+        }
+        @media (prefers-reduced-motion: reduce) { .ch-panel, .ch-panel *, .ch-scr, .ch-fab, .ch-fab svg { transition: none !important; animation-duration: .01s !important; animation-delay: 0s !important; } .ch-fab.pulse::before { animation: none; } }
+        /* ===== SOZLAMALAR ===== */
+        html.no-anim *, html.no-anim *::before, html.no-anim *::after { animation-duration: .01ms !important; animation-delay: 0s !important; transition-duration: .01ms !important; }
+        .sv-wrap { display: grid; grid-template-columns: 250px 1fr; gap: 20px; align-items: start; margin-top: 8px; }
+        .sv-nav { display: flex; flex-direction: column; gap: 4px; padding: 10px; border-radius: 18px; background: var(--bg-panel); border: 1px solid var(--panel-border); position: sticky; top: 12px; }
+        .sv-tab { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: none; border-radius: 12px; background: transparent; color: var(--fg-muted); font: 600 14px inherit; font-family: inherit; text-align: left; cursor: pointer; transition: background .2s ease, color .2s ease; }
+        .sv-tab:hover { background: var(--hover-bg); color: var(--fg-panel); }
+        .sv-tab.on { background: var(--highlight-bg); color: var(--highlight-fg); }
+        .sv-tab svg { width: 19px; height: 19px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .sv-pane { display: flex; flex-direction: column; gap: 16px; animation: sv-in .35s cubic-bezier(.22, 1, .36, 1); }
+        @keyframes sv-in { from { opacity: 0; transform: translateY(12px); } }
+        .sv-card { padding: 24px; border-radius: 18px; background: var(--bg-panel); border: 1px solid var(--panel-border); color: var(--fg-panel); }
+        .sv-card h3 { margin: 0 0 4px; font-size: 17px; }
+        .sv-card > p { margin: 0 0 18px; font-size: 13.5px; color: var(--fg-muted); }
+        .sv-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .sv-f label { display: block; margin-bottom: 7px; font-size: 13px; font-weight: 600; color: var(--fg-muted); }
+        .sv-f input, .sv-f select { width: 100%; box-sizing: border-box; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--panel-border); background: var(--hover-bg); color: var(--fg-panel); font: 14.5px inherit; font-family: inherit; outline: none; }
+        .sv-f input:focus, .sv-f select:focus { border-color: var(--accent); }
+        .sv-f.full { grid-column: 1 / -1; }
+        .sv-err { display: none; margin-top: 12px; font-size: 13px; color: #F87171; }
+        .sv-act { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+        .sv-btn { padding: 12px 22px; border: none; border-radius: 12px; background: var(--highlight-bg); color: var(--highlight-fg); font: 700 14px inherit; font-family: inherit; cursor: pointer; transition: transform .15s ease, opacity .15s ease; }
+        .sv-btn:hover { opacity: .9; } .sv-btn:active { transform: scale(.97); }
+        .sv-btn.ghost { background: transparent; color: var(--fg-panel); border: 1px solid var(--panel-border); }
+        .sv-btn.danger { background: rgba(248, 113, 113, .16); color: #F87171; }
+        .sv-row { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 15px 0; border-top: 1px solid var(--panel-border); }
+        .sv-row:first-of-type { border-top: none; padding-top: 4px; }
+        .sv-row b { display: block; font-size: 14.5px; font-weight: 600; }
+        .sv-row small { display: block; margin-top: 3px; font-size: 13px; color: var(--fg-muted); }
+        .sv-row.off { opacity: .45; pointer-events: none; }
+        .sv-sw { position: relative; flex: none; width: 46px; height: 26px; cursor: pointer; }
+        .sv-sw input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; z-index: 1; }
+        .sv-sw i { position: absolute; inset: 0; border-radius: 20px; background: rgba(130, 145, 180, .35); transition: background .25s ease; }
+        .sv-sw i::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .3); transition: transform .3s cubic-bezier(.22, 1.3, .36, 1); }
+        .sv-sw input:checked + i { background: #4F8CF0; }
+        .sv-sw input:checked + i::after { transform: translateX(20px); }
+        .sv-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 18px; }
+        .sv-opt { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 14px; border: 1.5px solid var(--panel-border); background: transparent; color: var(--fg-panel); font: 600 14px inherit; font-family: inherit; cursor: pointer; transition: all .2s ease; }
+        .sv-opt:hover { border-color: var(--accent); }
+        .sv-opt.on { border-color: #4F8CF0; background: rgba(79, 140, 240, .12); }
+        .sv-opt .sw { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; font-size: 18px; flex: none; }
+        .sv-sub { margin: 0 0 10px; font-size: 13px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--fg-muted); }
+        @media (max-width: 860px) {
+            .sv-wrap { grid-template-columns: 1fr; }
+            .sv-nav { flex-direction: row; overflow-x: auto; position: static; scrollbar-width: none; }
+            .sv-tab { white-space: nowrap; }
+            .sv-grid { grid-template-columns: 1fr; }
+        }
+        .sv-gh { padding: 14px 14px 4px; font-size: 11.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-muted); opacity: .75; }
+        .sv-gh:first-child { padding-top: 6px; }
+        .sv-bar { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+        .sv-bar p { margin: 0 !important; }
+        .sv-tools { display: flex; gap: 10px; flex: none; }
+        .sv-q { width: 200px; padding: 11px 14px; border-radius: 12px; border: 1px solid var(--panel-border); background: var(--hover-bg); color: var(--fg-panel); font: 14px inherit; font-family: inherit; outline: none; }
+        .sv-q:focus { border-color: var(--accent); }
+        .sv-cnt { display: inline-block; margin-left: 6px; padding: 2px 10px; border-radius: 20px; background: var(--hover-bg); font-size: 12.5px; font-weight: 700; color: var(--fg-muted); vertical-align: middle; }
+        .sv-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+        .sv-chip { display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 20px; border: 1px solid var(--panel-border); background: transparent; color: var(--fg-muted); font: 600 13px inherit; font-family: inherit; cursor: pointer; transition: all .2s ease; }
+        .sv-chip em { font-style: normal; font-size: 11.5px; padding: 1px 7px; border-radius: 20px; background: var(--hover-bg); }
+        .sv-chip.on { background: var(--highlight-bg); border-color: transparent; color: var(--highlight-fg); }
+        .sv-tw { overflow-x: auto; }
+        .sv-table { width: 100%; border-collapse: collapse; }
+        .sv-table th { padding: 10px 12px; text-align: left; font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--fg-muted); border-bottom: 1px solid var(--panel-border); white-space: nowrap; }
+        .sv-table td { padding: 13px 12px; font-size: 14px; border-bottom: 1px solid var(--panel-border); }
+        .sv-table tbody tr { transition: background .15s ease; animation: sv-in .3s ease both; }
+        .sv-table tbody tr:hover { background: var(--hover-bg); }
+        .sv-table tbody tr:last-child td { border-bottom: none; }
+        .sv-ra { text-align: right; white-space: nowrap; }
+        .sv-ib { width: 34px; height: 34px; border: none; border-radius: 10px; background: transparent; color: var(--fg-muted); cursor: pointer; display: inline-grid; place-items: center; }
+        .sv-ib:hover { background: var(--hover-bg); color: var(--fg-panel); }
+        .sv-ib.del:hover { background: rgba(248, 113, 113, .16); color: #F87171; }
+        .sv-ib svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .sv-none { text-align: center; padding: 36px 12px !important; color: var(--fg-muted); }
+        .sv-none b { display: block; font-size: 15px; } .sv-none small { display: block; margin-top: 4px; }
+        .sv-nm { display: flex; align-items: center; gap: 11px; }
+        .sv-av { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: 12px; font-weight: 700; flex: none; }
+        .sv-bd { display: inline-block; padding: 4px 11px; border-radius: 20px; font-size: 12px; font-weight: 700; background: var(--hover-bg); }
+        .sv-bd.g { background: rgba(74, 222, 128, .16); color: #2FB864; } .sv-bd.a { background: rgba(245, 185, 66, .18); color: #D99A1F; } .sv-bd.r { background: rgba(248, 113, 113, .16); color: #E5484D; }
+        @media (max-width: 860px) { .sv-gh { display: none; } .sv-bar { flex-direction: column; align-items: stretch; } .sv-q { width: 100%; flex: 1; } }
     </style>
 </head>
 
@@ -4118,14 +4308,7 @@
             </div>
 
             <div class="content-view" data-view="settings">
-                <div class="view-empty">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-                        <circle cx="12" cy="12" r="3" />
-                        <path
-                            d="M19.4 15a1.7 1.7 0 0 0 .35 1.9l.05.05a2 2 0 1 1-2.85 2.85l-.05-.05a1.7 1.7 0 0 0-1.9-.35 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.9.35l-.05.05A2 2 0 1 1 4.15 17l.05-.05A1.7 1.7 0 0 0 4.5 15a1.7 1.7 0 0 0-1.55-1H2.9a2 2 0 1 1 0-4H3a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.35-1.9l-.05-.05A2 2 0 1 1 7 4.15l.05.05a1.7 1.7 0 0 0 1.9.35H9a1.7 1.7 0 0 0 1-1.55V2.9a2 2 0 1 1 4 0V3a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.9-.35l.05-.05A2 2 0 1 1 19.85 7l-.05.05a1.7 1.7 0 0 0-.35 1.9V9a1.7 1.7 0 0 0 1.55 1h.1a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.55 1z" />
-                    </svg>
-                    <span data-i18n="content.comingSoon">Bu bo'lim tez orada to'liq ishga tushiriladi</span>
-                </div>
+                <div id="settingsRoot"></div>
             </div>
 
             <div class="content-view" data-view="reports">
@@ -4172,6 +4355,8 @@
                 if (type && typeof type === 'object') { opts = type; message = opts.message; type = opts.type; }
                 opts = opts || {};
                 if (!TITLES[type]) type = 'info';
+                const pf = window.toastPrefs;
+                if (pf && !opts.force && (pf.off || (pf.important && (type === 'success' || type === 'info')))) return { close() { } };
                 const msg = pick(message), title = pick(opts.title) || pick(TITLES[type]);
                 const key = type + '|' + title + '|' + msg;
                 const same = live.find(x => x.key === key);
@@ -4947,6 +5132,7 @@
             if (name === 'students' && typeof renderStudents === 'function') renderStudents();
             if (name === 'teachers' && typeof renderTeachers === 'function') { if (window.closeTeacherDetail) window.closeTeacherDetail(); renderTeachers(); }
             if (name === 'payments' && typeof renderPaymentsView === 'function') renderPaymentsView();
+            if (name === 'settings' && typeof renderSettings === 'function') renderSettings();
             if (name === 'clients' && typeof updateClientsScrollButtons === 'function') {
                 if (typeof requestAnimationFrame === 'function') {
                     requestAnimationFrame(updateClientsScrollButtons);
@@ -5721,6 +5907,7 @@
             if (typeof renderGroups === 'function') renderGroups();
             if (typeof renderTeachers === 'function') renderTeachers();
             if (typeof renderPaymentsView === 'function') renderPaymentsView();
+            if (typeof renderSettings === 'function') renderSettings();
             if (typeof renderScheduleModal === 'function' && document.getElementById('scheduleModalBackdrop').classList.contains('open')) renderScheduleModal();
         }
 
@@ -6824,6 +7011,7 @@
             };
             const T = () => S[document.documentElement.getAttribute('lang')] || S.uz;
             const METHODS = ['cash', 'card', 'click', 'payme', 'bank'];
+            const payMethods = () => { const off = ((window.appSettings || {}).pay || {}).off || []; const l = METHODS.filter(m => !off.includes(m)); return l.length ? l : METHODS; };
             const PER = 10;
             const root = document.getElementById('paymentsRoot');
             const $ = id => document.getElementById(id);
@@ -7058,7 +7246,7 @@
             })();
             function receiptHTML(p, t) {
                 const row = (k, v) => `<div class="rc-row"><span>${k}</span><b>${v}</b></div>`;
-                return `<div class="rc"><div class="rc-brand">Ferdinant</div><div class="rc-sub">${t.rcTitle}</div>
+                return `<div class="rc"><div class="rc-brand">${escapeHtml((window.appSettings && window.appSettings.center.name) || 'Ferdinant')}</div><div class="rc-sub">${t.rcTitle}</div>
                     <div class="rc-ok">${ic('<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>')}${t.rcPaid}</div>
                     <div class="rc-amount">${money(p.amount)} <small>${t.cur}</small></div>
                     <div class="rc-line"></div>
@@ -7098,7 +7286,7 @@
                         <div class="pm-info" id="pmPayInfo"></div>
                         <div class="clients-modal-row">
                             <div class="clients-modal-field"><label>${t.amount} (${t.cur})</label><input id="pmPayAmount" type="number" min="0" step="10000"></div>
-                            <div class="clients-modal-field"><label>${t.method}</label><select id="pmPayMethod">${METHODS.map(m => `<option value="${m}">${t['m_' + m]}</option>`).join('')}</select></div></div>
+                            <div class="clients-modal-field"><label>${t.method}</label><select id="pmPayMethod">${payMethods().map(m => `<option value="${m}">${t['m_' + m]}</option>`).join('')}</select></div></div>
                         <div class="pm-quick" id="pmPayQuick"></div>
                         <div class="clients-modal-row">
                             <div class="clients-modal-field"><label>${t.date}</label><input id="pmPayDate" type="date" max="${TODAY}"></div>
@@ -7200,7 +7388,8 @@
                 $('pmPaySid').value = pre ? pre.id : '';
                 $('pmPayStudQ').value = pre ? stLabel(pre) : '';
                 $('pmPayAmount').value = p ? p.amount : '';
-                $('pmPayMethod').value = p ? p.method : 'cash';
+                if (p && ![].some.call($('pmPayMethod').options, o => o.value === p.method)) $('pmPayMethod').insertAdjacentHTML('beforeend', `<option value="${p.method}">${t['m_' + p.method]}</option>`);
+                $('pmPayMethod').value = p ? p.method : (((window.appSettings || {}).pay || {}).def || 'cash');
                 $('pmPayDate').value = p ? p.date : TODAY;
                 const fm = p ? (p.forMonth || p.date.slice(0, 7)) : THIS_MONTH;
                 if (![].some.call($('pmPayFor').options, o => o.value === fm)) $('pmPayFor').insertAdjacentHTML('afterbegin', `<option value="${fm}">${monthLabel(t, fm)}</option>`);
@@ -7338,6 +7527,7 @@
             });
             document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModals(); cfAction = null; } });
 
+            window.allPayments = () => PAY.slice();
             window.renderPaymentsView = shell;
             shell();
         })();
@@ -7384,6 +7574,359 @@
             showView(st.view);
             if (st.view === 'groups' && st.groupId && typeof window.openGroup === 'function') window.openGroup(st.groupId);
             if (st.view === 'teachers' && st.teacherId && typeof window.openTeacher === 'function') window.openTeacher(st.teacherId);
+        })();
+        // ===== SOZLAMALAR =====
+        (function initSettings() {
+            const X = {
+                title: ['Sozlamalar', 'Settings', 'Настройки'], center: ["Markaz ma'lumotlari", 'Center details', 'Данные центра'], look: ['Ko\'rinish va til', 'Appearance & language', 'Внешний вид и язык'],
+                notif: ['Bildirishnomalar', 'Notifications', 'Уведомления'], pay: ["To'lov sozlamalari", 'Payment settings', 'Настройки платежей'], sec: ['Xavfsizlik', 'Security', 'Безопасность'], data: ["Ma'lumotlar", 'Data', 'Данные'],
+                centerD: ["Chek va sarlavhada ko'rinadigan asosiy ma'lumotlar", 'Main details shown in the header and receipts', 'Основные данные для шапки и чеков'],
+                name: ['Markaz nomi', 'Center name', 'Название центра'], phone: ['Telefon', 'Phone', 'Телефон'], email: ['Email', 'Email', 'Email'], address: ['Manzil', 'Address', 'Адрес'], hours: ['Ish vaqti', 'Working hours', 'Время работы'],
+                save: ['Saqlash', 'Save', 'Сохранить'], saved: ['Sozlamalar saqlandi', 'Settings saved', 'Настройки сохранены'],
+                eName: ['Markaz nomini kiriting', 'Enter the center name', 'Введите название центра'], eEmail: ["Email noto'g'ri", 'Invalid email', 'Неверный email'], ePhone: ["Telefon raqami noto'g'ri", 'Invalid phone number', 'Неверный номер телефона'],
+                theme: ['Mavzu', 'Theme', 'Тема'], light: ["Yorug'", 'Light', 'Светлая'], dark: ["Qorong'i", 'Dark', 'Тёмная'], lang: ['Til', 'Language', 'Язык'],
+                anim: ['Animatsiyalarni kamaytirish', 'Reduce animations', 'Уменьшить анимации'], animD: ["Interfeys tezroq va sokinroq ishlaydi", 'The interface feels faster and calmer', 'Интерфейс работает быстрее и спокойнее'],
+                nOn: ["Bildirishnomalarni ko'rsatish", 'Show notifications', 'Показывать уведомления'], nOnD: ["Guruh, talaba va to'lov amallari haqida xabar chiqadi", 'Get messages about group, student and payment actions', 'Сообщения о действиях с группами, студентами и платежами'],
+                nImp: ['Faqat muhimlari', 'Only important', 'Только важные'], nImpD: ["Faqat xato va ogohlantirishlar ko'rsatiladi", 'Only errors and warnings are shown', 'Показываются только ошибки и предупреждения'],
+                test: ['Sinab ko\'rish', 'Send a test', 'Проверить'], testMsg: ['Bildirishnomalar ishlayapti', 'Notifications are working', 'Уведомления работают'],
+                pMeth: ["Faol to'lov usullari", 'Active payment methods', 'Активные способы оплаты'], pMethD: ["To'lov qabul qilishda faqat shu usullar tanlanadi", 'Only these methods appear when accepting a payment', 'При приёме платежа доступны только эти способы'],
+                pDef: ["Standart to'lov usuli", 'Default payment method', 'Способ оплаты по умолчанию'], pMin: ['Kamida bitta usul faol bo\'lishi kerak', 'At least one method must stay active', 'Должен остаться хотя бы один способ'],
+                m_cash: ['Naqd', 'Cash', 'Наличные'], m_card: ['Karta', 'Card', 'Карта'], m_click: ['Click', 'Click', 'Click'], m_payme: ['Payme', 'Payme', 'Payme'], m_bank: ["Bank o'tkazma", 'Bank transfer', 'Банковский перевод'],
+                pwT: ["Parolni o'zgartirish", 'Change password', 'Смена пароля'], pwD: ['Hisobingizni himoyalash uchun kuchli parol tanlang', 'Choose a strong password to protect your account', 'Выберите надёжный пароль для защиты аккаунта'],
+                pCur: ['Joriy parol', 'Current password', 'Текущий пароль'], pNew: ['Yangi parol', 'New password', 'Новый пароль'], pCon: ['Yangi parolni takrorlang', 'Confirm new password', 'Повторите новый пароль'], pChange: ["Parolni yangilash", 'Update password', 'Обновить пароль'],
+                eCur: ['Joriy parolni kiriting', 'Enter your current password', 'Введите текущий пароль'], eLen: ["Yangi parol kamida 8 belgidan iborat bo'lib, raqam ham bo'lsin", 'New password needs 8+ characters and a digit', 'Новый пароль: минимум 8 символов и цифра'], eMatch: ['Parollar mos kelmadi', 'Passwords do not match', 'Пароли не совпадают'], pOk: ['Parol yangilandi', 'Password updated', 'Пароль обновлён'],
+                tfa: ['Ikki bosqichli himoya', 'Two-step protection', 'Двухэтапная защита'], tfaD: ['Kirishda qo\'shimcha tasdiqlash so\'raladi', 'Ask for extra verification when signing in', 'Запрашивать дополнительное подтверждение при входе'],
+                outAll: ['Barcha qurilmalardan chiqish', 'Sign out of all devices', 'Выйти на всех устройствах'], outAllD: ['Boshqa qurilmalardagi seanslar yopiladi', 'Sessions on other devices will be closed', 'Сеансы на других устройствах будут закрыты'], outOk: ['Boshqa qurilmalardagi seanslar yopildi', 'Other sessions were closed', 'Другие сеансы закрыты'],
+                bk: ['Zaxira nusxa', 'Backup', 'Резервная копия'], bkD: ['Talabalar, guruhlar, o\'qituvchilar, to\'lovlar va sozlamalarni JSON faylga yuklab oling', 'Download students, groups, teachers, payments and settings as a JSON file', 'Скачайте студентов, группы, преподавателей, платежи и настройки в JSON'], bkBtn: ['Yuklab olish', 'Download', 'Скачать'], bkOk: ['Zaxira nusxa yuklab olindi', 'Backup downloaded', 'Резервная копия скачана'],
+                rs: ['Sozlamalarni tiklash', 'Reset settings', 'Сбросить настройки'], rsD: ['Barcha sozlamalar boshlang\'ich holatga qaytadi', 'All settings return to their defaults', 'Все настройки вернутся к значениям по умолчанию'], rsQ: ['Barcha sozlamalar boshlang\'ich holatga qaytarilsinmi?', 'Reset all settings to defaults?', 'Сбросить все настройки по умолчанию?'], rsOk: ['Sozlamalar tiklandi', 'Settings were reset', 'Настройки сброшены']
+            };
+            Object.assign(X, {
+                g_gen: ['Umumiy', 'General', 'Общее'], g_office: ['Ofis', 'Office', 'Офис'], g_edu: ["O'quv bo'limi", 'Education', 'Обучение'], g_fin: ['Moliya', 'Finance', 'Финансы'], g_sys: ['Tizim', 'System', 'Система'],
+                positions: ['Lavozimlar', 'Positions', 'Должности'], staff: ['Xodimlar', 'Staff', 'Сотрудники'], rooms: ['Xonalar', 'Rooms', 'Кабинеты'], courses: ['Kurslar', 'Courses', 'Курсы'], reasons: ['Sabablar', 'Reasons', 'Причины'],
+                cSearch: ['Qidirish...', 'Search...', 'Поиск...'], cAdd: ["Qo'shish", 'Add', 'Добавить'], cNone: ["Hozircha hech narsa yo'q", 'Nothing here yet', 'Пока ничего нет'], cNoneHint: ["Birinchisini qo'shing", 'Add the first one', 'Добавьте первую запись'], cNoRes: ['Hech narsa topilmadi', 'No results', 'Ничего не найдено'],
+                cEdit: ['Tahrirlash', 'Edit', 'Изменить'], cDel: ["O'chirish", 'Delete', 'Удалить'], cCancel: ['Bekor qilish', 'Cancel', 'Отмена'], cUndo: ['Qaytarish', 'Undo', 'Вернуть'],
+                cReq: ["Majburiy maydonni to'ldiring", 'Fill in the required field', 'Заполните обязательное поле'], cDup: ['Bunday nom allaqachon mavjud', 'This name already exists', 'Такое название уже есть'], cMin: ["Qiymat noto'g'ri", 'Invalid value', 'Неверное значение'],
+                cUsed: ['Bu lavozimda xodimlar bor, avval ularni boshqa lavozimga o\'tkazing', 'This position has staff; move them to another position first', 'В этой должности есть сотрудники — сначала переведите их'],
+                cAdded: ["Qo'shildi", 'Added', 'Добавлено'], cUpd: ['Yangilandi', 'Updated', 'Обновлено'], cGone: ["o'chirildi", 'deleted', 'удалено'],
+                lvFull: ["To'liq huquq", 'Full access', 'Полный доступ'], lvMgr: ['Boshqaruv', 'Management', 'Управление'], lvTch: ["O'qituvchi", 'Teacher', 'Преподаватель'], lvView: ["Faqat ko'rish", 'View only', 'Только просмотр'],
+                stAct: ['Faol', 'Active', 'Активен'], stLeave: ["Ta'tilda", 'On leave', 'В отпуске'], stOff: ['Ishdan ketgan', 'Left', 'Уволен'], rOk: ['Ishlayapti', 'Available', 'Доступен'], rRep: ["Ta'mirda", 'Under repair', 'На ремонте'], cPause: ["To'xtatilgan", 'Paused', 'Приостановлен'],
+                beg: ["Boshlang'ich", 'Beginner', 'Начальный'], mid: ["O'rta", 'Intermediate', 'Средний'], adv: ['Yuqori', 'Advanced', 'Продвинутый'], all: ['Barcha daraja', 'All levels', 'Все уровни'],
+                fName: ['Nomi', 'Name', 'Название'], fLevel: ['Huquq darajasi', 'Access level', 'Уровень доступа'], fNote: ['Izoh', 'Note', 'Примечание'], fPos: ['Lavozim', 'Position', 'Должность'], fPhone: ['Telefon', 'Phone', 'Телефон'], fSalary: ['Oylik maosh (so\'m)', 'Monthly salary (UZS)', 'Зарплата в месяц (сум)'], fStatus: ['Holati', 'Status', 'Статус'],
+                fCap: ["Sig'imi (o'rin)", 'Capacity (seats)', 'Вместимость (мест)'], fFloor: ['Qavat', 'Floor', 'Этаж'], fEquip: ['Jihozlar', 'Equipment', 'Оборудование'], fCLevel: ['Daraja', 'Level', 'Уровень'], fMonths: ['Davomiyligi (oy)', 'Duration (months)', 'Длительность (мес.)'], fPrice: ["Oylik narx (so'm)", 'Monthly price (UZS)', 'Цена в месяц (сум)'], fPct: ['Chegirma (%)', 'Discount (%)', 'Скидка (%)'], fReason: ['Sabab', 'Reason', 'Причина'],
+                hStaff: ['Xodimlar', 'Staff', 'Сотрудники'], mo: ['oy', 'mo.', 'мес.'], cur: ["so'm", 'UZS', 'сум'],
+                rLeave: ['Ketish', 'Leaving', 'Уход'], rLost: ["Lid yo'qotish", 'Lost leads', 'Потеря лида'], rAbs: ['Dars qoldirish', 'Absence', 'Пропуски'], rDisc: ['Chegirma', 'Discounts', 'Скидки'],
+                dPositions: ["Ofisdagi lavozimlar va ularning huquq darajasi", 'Office positions and their access level', 'Должности в офисе и их уровень доступа'], dStaff: ["Ofis xodimlari, ularning lavozimi va holati. Chatda ham shu ro'yxat ishlatiladi", 'Office staff, their positions and status. The same list is used in Chat', 'Сотрудники офиса, их должности и статус. Этот же список используется в чате'],
+                dRooms: ["O'quv xonalari, sig'imi va jihozlari", 'Classrooms, capacity and equipment', 'Учебные кабинеты, вместимость и оборудование'], dCourses: ["Markazda o'qitiladigan kurslar, davomiyligi va narxi", 'Courses taught at the center, duration and price', 'Курсы центра, их длительность и цена'],
+                dLeave: ["Talaba markazni tark etganda tanlanadigan sabablar", 'Reasons to pick when a student leaves', 'Причины ухода студента'], dLost: ["Lid sotuvga aylanmaganda tanlanadigan sabablar", "Reasons to pick when a lead isn't converted", 'Причины, почему лид не стал клиентом'], dAbs: ['Darsga kelmaslik sabablari', 'Reasons for missing a lesson', 'Причины пропуска занятий'], dDisc: ['Chegirma turlari va foizlari', 'Discount types and percentages', 'Виды скидок и проценты']
+            });
+            const li = () => ({ uz: 0, en: 1, ru: 2 }[document.documentElement.getAttribute('lang')] || 0);
+            const x = k => X[k][li()];
+            const KEY = 'crm_settings_v1';
+            const SEED = {
+                positions: [{ id: 1, name: 'Markaz rahbari', level: 'full', note: '' }, { id: 2, name: 'Administrator', level: 'mgr', note: '' }, { id: 3, name: 'Buxgalter', level: 'mgr', note: '' }, { id: 4, name: "O'qituvchi", level: 'tch', note: '' }, { id: 5, name: 'Qabulxona', level: 'view', note: '' }],
+                staff: [{ id: 1, name: 'Foziljon', pos: 2, phone: '+998 90 111 22 33', salary: 4000000, status: 'active' }, { id: 2, name: 'Fozilova Halimaxon', pos: 2, phone: '+998 91 222 33 44', salary: 4000000, status: 'active' }, { id: 3, name: 'SEO', pos: 1, phone: '+998 93 333 44 55', salary: 8000000, status: 'active' }, { id: 4, name: 'Xoldarova Zuhra', pos: 2, phone: '+998 94 444 55 66', salary: 4000000, status: 'active' }, { id: 5, name: 'Karimova Dilfuza', pos: 3, phone: '+998 97 555 66 77', salary: 5000000, status: 'active' }],
+                rooms: [{ id: 1, name: '1-xona', cap: 12, floor: 1, equip: 'Proyektor, doska', status: 'ok' }, { id: 2, name: '2-xona', cap: 10, floor: 1, equip: 'Doska, televizor', status: 'ok' }, { id: 3, name: '3-xona', cap: 16, floor: 2, equip: 'Proyektor, konditsioner', status: 'ok' }, { id: 4, name: 'Katta zal', cap: 30, floor: 2, equip: "Proyektor, ovoz tizimi", status: 'ok' }],
+                courses: [{ id: 1, name: 'Beginner English', level: 'beg', months: 4, price: 500000, status: 'active' }, { id: 2, name: 'IELTS 6.0+', level: 'adv', months: 6, price: 800000, status: 'active' }, { id: 3, name: 'Intensive kurs', level: 'mid', months: 3, price: 600000, status: 'active' }, { id: 4, name: 'Kids English', level: 'beg', months: 8, price: 400000, status: 'active' }, { id: 5, name: 'HTML/CSS asoslari', level: 'beg', months: 3, price: 700000, status: 'active' }],
+                reasonLeave: ['Narx qimmat', 'Vaqt mos kelmadi', "Boshqa markazga o'tdi", 'Shaxsiy sabab', "Natija ko'rinmadi"].map((name, i) => ({ id: i + 1, name })),
+                reasonLost: ['Narx qimmat', 'Javob bermadi', 'Qiziqmadi', 'Boshqa markazni tanladi', 'Vaqt mos emas'].map((name, i) => ({ id: i + 1, name })),
+                reasonAbsence: ['Kasallik', 'Oilaviy sabab', 'Ishi bor', 'Ob-havo', 'Sababsiz'].map((name, i) => ({ id: i + 1, name })),
+                reasonDiscount: [{ id: 1, name: 'Aka-uka', pct: 10 }, { id: 2, name: "Ketma-ket to'lov", pct: 5 }, { id: 3, name: 'Aksiya', pct: 15 }, { id: 4, name: 'Imtiyozli', pct: 20 }]
+            };
+            const D = { center: { name: 'Ferdinant', phone: '+998 90 123 45 67', email: 'info@ferdinant.uz', address: "Toshkent sh., Chilonzor t.", hours: '09:00 – 21:00' }, notif: { off: false, important: false }, anim: false, pay: { off: [], def: 'cash' }, tfa: false, cat: SEED };
+            const clone = o => JSON.parse(JSON.stringify(o));
+            const merge = (a, b) => { Object.keys(b || {}).forEach(k => { if (a[k] && typeof a[k] === 'object' && !Array.isArray(a[k])) merge(a[k], b[k]); else a[k] = b[k]; }); return a; };
+            let S = clone(D);
+            try { S = merge(clone(D), JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) { /* saqlangan sozlama yo'q */ }
+            const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* xotira mavjud emas */ } };
+            const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+            const root = document.getElementById('settingsRoot'), METH = ['cash', 'card', 'click', 'payme', 'bank'];
+            let tab = 'center';
+            function apply() {
+                document.documentElement.classList.toggle('no-anim', !!S.anim);
+                document.querySelectorAll('.logo-text').forEach(el => { el.textContent = S.center.name || 'Ferdinant'; });
+                window.appSettings = S; window.toastPrefs = S.notif;
+            }
+            const ic = d => `<svg viewBox="0 0 24 24">${d}</svg>`;
+            const ICONS = { center: '<path d="M3 21h18M5 21V8l7-4 7 4v13M9 21v-6h6v6"/>', look: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.900l1.4 1.400M17.7 17.700l1.4 1.400M2 12h2M20 12h2M4.9 19.100l1.4-1.400M17.7 6.300l1.4-1.4"/>', notif: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8M10 21a2 2 0 0 0 4 0"/>', pay: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/>', sec: '<path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/>', data: '<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>' };
+            Object.assign(ICONS, { positions: '<path d="M12 3l2.6 5.3 5.8.8-4.2 4.1 1 5.800L12 16.300 6.800 19l1-5.8L3.6 9.1l5.8-.8z"/>', staff: '<circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.5 3-6 7-6s7 2.5 7 6M17 5a3 3 0 0 1 0 6M22 20c0-2.800-2-4.800-5-5.500"/>', rooms: '<path d="M5 21V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v17M3 21h18"/><circle cx="15" cy="12" r="1"/>', courses: '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M9 8h6"/>', reasons: '<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>' });
+            const sw = (key, on, inv) => `<label class="sv-sw"><input type="checkbox" data-k="${key}" ${inv ? 'data-inv="1"' : ''} ${on ? 'checked' : ''}><i></i></label>`;
+            const row = (t, d, ctl, off) => `<div class="sv-row ${off ? 'off' : ''}"><div><b>${t}</b><small>${d}</small></div>${ctl}</div>`;
+            const field = (id, label, val, type, full) => `<div class="sv-f ${full ? 'full' : ''}"><label for="${id}">${label}</label><input id="${id}" type="${type || 'text'}" value="${esc(val)}" autocomplete="off"></div>`;
+            const PANES = {
+                center: () => `<div class="sv-card"><h3>${x('center')}</h3><p>${x('centerD')}</p><div class="sv-grid">${field('svName', x('name'), S.center.name)}${field('svPhone', x('phone'), S.center.phone, 'tel')}${field('svEmail', x('email'), S.center.email, 'email')}${field('svHours', x('hours'), S.center.hours)}${field('svAddr', x('address'), S.center.address, 'text', 1)}</div><div class="sv-err" id="svErr"></div><div class="sv-act"><button class="sv-btn" data-a="saveCenter">${x('save')}</button></div></div>`,
+                look: () => { const dk = document.documentElement.getAttribute('data-theme') === 'dark', lg = document.documentElement.getAttribute('lang') || 'uz';
+                    return `<div class="sv-card"><p class="sv-sub">${x('theme')}</p><div class="sv-opts"><button class="sv-opt ${dk ? '' : 'on'}" data-a="theme" data-v="light"><span class="sw" style="background:#F5B942">☀️</span>${x('light')}</button><button class="sv-opt ${dk ? 'on' : ''}" data-a="theme" data-v="dark"><span class="sw" style="background:#2D3A5E">🌙</span>${x('dark')}</button></div>
+                    <p class="sv-sub">${x('lang')}</p><div class="sv-opts">${[['uz', '🇺🇿', "O'zbekcha"], ['en', '🇬🇧', 'English'], ['ru', '🇷🇺', 'Русский']].map(l => `<button class="sv-opt ${lg === l[0] ? 'on' : ''}" data-a="lang" data-v="${l[0]}"><span class="sw">${l[1]}</span>${l[2]}</button>`).join('')}</div>
+                    ${row(x('anim'), x('animD'), sw('anim', S.anim))}</div>`; },
+                notif: () => `<div class="sv-card">${row(x('nOn'), x('nOnD'), sw('notif.off', !S.notif.off, true))}${row(x('nImp'), x('nImpD'), sw('notif.important', S.notif.important), S.notif.off)}<div class="sv-act"><button class="sv-btn ghost" data-a="test">${x('test')}</button></div></div>`,
+                pay: () => { const on = METH.filter(m => !S.pay.off.includes(m));
+                    return `<div class="sv-card"><h3>${x('pMeth')}</h3><p>${x('pMethD')}</p>${METH.map(m => row(x('m_' + m), '', sw('pm.' + m, on.includes(m)))).join('')}</div>
+                    <div class="sv-card"><div class="sv-f"><label for="svDef">${x('pDef')}</label><select id="svDef" data-k="pay.def">${on.map(m => `<option value="${m}" ${S.pay.def === m ? 'selected' : ''}>${x('m_' + m)}</option>`).join('')}</select></div></div>`; },
+                sec: () => `<div class="sv-card"><h3>${x('pwT')}</h3><p>${x('pwD')}</p><div class="sv-grid">${field('svCur', x('pCur'), '', 'password', 1)}${field('svNew', x('pNew'), '', 'password')}${field('svCon', x('pCon'), '', 'password')}</div><div class="sv-err" id="svErr"></div><div class="sv-act"><button class="sv-btn" data-a="savePw">${x('pChange')}</button></div></div>
+                    <div class="sv-card">${row(x('tfa'), x('tfaD'), sw('tfa', S.tfa))}${row(x('outAll'), x('outAllD'), `<button class="sv-btn ghost" data-a="outAll">${x('outAll').split(' ')[0]}</button>`)}</div>`,
+                data: () => `<div class="sv-card">${row(x('bk'), x('bkD'), `<button class="sv-btn" data-a="backup">${x('bkBtn')}</button>`)}${row(x('rs'), x('rsD'), `<button class="sv-btn danger" data-a="reset">${x('rs').split(' ')[0]}</button>`)}</div>`
+            };
+            // ----- Katalog boshqaruvi (lavozim, xodim, xona, kurs, sabablar) -----
+            const t3 = (a, b, c) => [a, b, c], ol = v => Array.isArray(v) ? v[li()] : v;
+            const LV = [['full', X.lvFull], ['mgr', X.lvMgr], ['tch', X.lvTch], ['view', X.lvView]];
+            const ST = [['active', X.stAct], ['leave', X.stLeave], ['off', X.stOff]];
+            const nameF = { k: 'name', l: X.fName, req: 1, full: 1 };
+            const CAT = {
+                positions: { t: X.positions, d: X.dPositions, fields: [nameF, { k: 'level', l: X.fLevel, t: 'sel', o: LV }, { k: 'note', l: X.fNote, full: 1 }], cols: [{ k: 'name' }, { k: 'level' }, { h: X.hStaff, f: r => S.cat.staff.filter(s => s.pos === r.id).length }] },
+                staff: { t: X.staff, d: X.dStaff, fields: [nameF, { k: 'pos', l: X.fPos, t: 'sel', o: () => S.cat.positions.map(p => [p.id, p.name]) }, { k: 'phone', l: X.fPhone, tp: 'tel' }, { k: 'salary', l: X.fSalary, t: 'num', min: 0 }, { k: 'status', l: X.fStatus, t: 'sel', o: ST, bd: 1 }], cols: [{ k: 'name', av: 1 }, { k: 'pos' }, { k: 'phone' }, { k: 'status' }] },
+                rooms: { t: X.rooms, d: X.dRooms, fields: [nameF, { k: 'cap', l: X.fCap, t: 'num', min: 1, req: 1 }, { k: 'floor', l: X.fFloor, t: 'num', min: 0 }, { k: 'equip', l: X.fEquip, full: 1 }, { k: 'status', l: X.fStatus, t: 'sel', o: [['ok', X.rOk], ['repair', X.rRep]], bd: 1 }], cols: [{ k: 'name' }, { k: 'cap' }, { k: 'equip' }, { k: 'status' }] },
+                courses: { t: X.courses, d: X.dCourses, fields: [nameF, { k: 'level', l: X.fCLevel, t: 'sel', o: [['beg', X.beg], ['mid', X.mid], ['adv', X.adv], ['all', X.all]] }, { k: 'months', l: X.fMonths, t: 'num', min: 1, req: 1 }, { k: 'price', l: X.fPrice, t: 'num', min: 0, req: 1 }, { k: 'status', l: X.fStatus, t: 'sel', o: [['active', X.stAct], ['pause', X.cPause]], bd: 1 }], cols: [{ k: 'name' }, { k: 'level' }, { k: 'months' }, { k: 'price' }, { k: 'status' }] },
+                reasonLeave: { t: X.rLeave, d: X.dLeave, fields: [{ k: 'name', l: X.fReason, req: 1, full: 1 }], cols: [{ k: 'name' }] },
+                reasonLost: { t: X.rLost, d: X.dLost, fields: [{ k: 'name', l: X.fReason, req: 1, full: 1 }], cols: [{ k: 'name' }] },
+                reasonAbsence: { t: X.rAbs, d: X.dAbs, fields: [{ k: 'name', l: X.fReason, req: 1, full: 1 }], cols: [{ k: 'name' }] },
+                reasonDiscount: { t: X.rDisc, d: X.dDisc, fields: [{ k: 'name', l: X.fReason, req: 1 }, { k: 'pct', l: X.fPct, t: 'num', min: 1, req: 1 }], cols: [{ k: 'name' }, { k: 'pct' }] }
+            };
+            const BD = { active: 'g', ok: 'g', leave: 'a', repair: 'a', pause: 'a', off: 'r' };
+            const COLS = ['#C77D2B', '#1F7AE0', '#3D68C9', '#4F8A3A', '#8B5CF6', '#D9467B', '#0E9AA7'];
+            const optsOf = f => typeof f.o === 'function' ? f.o() : f.o;
+            const fmt = n => Math.round(n).toLocaleString('ru-RU');
+            let sub = 'reasonLeave', q = '';
+            const curKey = () => tab === 'reasons' ? sub : tab;
+            function cell(cfg, r, c) {
+                if (c.f) return c.f(r);
+                const f = cfg.fields.find(z => z.k === c.k), v = r[c.k];
+                if (!f) return '';
+                if (c.k === 'name') return c.av ? `<div class="sv-nm"><span class="sv-av" style="background:${COLS[[...String(v)].reduce((a, ch) => a + ch.charCodeAt(0), 0) % COLS.length]}">${esc(String(v).split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase())}</span><b>${esc(v)}</b></div>` : `<b>${esc(v)}</b>`;
+                if (f.t === 'sel') { const o = optsOf(f).find(z => String(z[0]) === String(v)), txt = o ? ol(o[1]) : '—'; return f.bd ? `<span class="sv-bd ${BD[v] || ''}">${esc(txt)}</span>` : esc(txt); }
+                if (v === '' || v == null) return '—';
+                if (c.k === 'price' || c.k === 'salary') return fmt(v) + ' ' + x('cur');
+                if (c.k === 'months') return v + ' ' + x('mo');
+                if (c.k === 'pct') return v + '%';
+                return esc(v);
+            }
+            function rowsHTML(key) {
+                const cfg = CAT[key], needle = q.trim().toLowerCase();
+                const rows = S.cat[key].filter(r => !needle || Object.values(r).join(' ').toLowerCase().includes(needle) || cfg.fields.some(f => f.t === 'sel' && String(optsOf(f).find(z => String(z[0]) === String(r[f.k]))?.[1] || '').toLowerCase().includes(needle)));
+                if (!rows.length) return `<tr><td class="sv-none" colspan="${cfg.cols.length + 1}"><b>${S.cat[key].length ? x('cNoRes') : x('cNone')}</b>${S.cat[key].length ? '' : `<small>${x('cNoneHint')}</small>`}</td></tr>`;
+                return rows.map(r => `<tr>${cfg.cols.map(c => `<td>${cell(cfg, r, c)}</td>`).join('')}<td class="sv-ra"><button class="sv-ib" data-c="edit" data-id="${r.id}" title="${x('cEdit')}">${ic('<path d="M4 20h4L19 9l-4-4L4 16z"/>')}</button><button class="sv-ib del" data-c="del" data-id="${r.id}" title="${x('cDel')}">${ic('<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>')}</button></td></tr>`).join('');
+            }
+            function catPane(key) {
+                const cfg = CAT[key], head = c => c.h ? x2(c.h) : x2(cfg.fields.find(f => f.k === c.k).l);
+                const chips = tab === 'reasons' ? `<div class="sv-chips">${['reasonLeave', 'reasonLost', 'reasonAbsence', 'reasonDiscount'].map(k => `<button class="sv-chip ${sub === k ? 'on' : ''}" data-c="sub" data-v="${k}">${x2(CAT[k].t)}<em>${S.cat[k].length}</em></button>`).join('')}</div>` : '';
+                return `<div class="sv-card">${chips}<div class="sv-bar"><div><h3>${x2(cfg.t)} <span class="sv-cnt" id="svCnt">${S.cat[key].length}</span></h3><p>${x2(cfg.d)}</p></div><div class="sv-tools"><input class="sv-q" data-cq placeholder="${x('cSearch')}" value="${esc(q)}"><button class="sv-btn" data-c="add">+ ${x('cAdd')}</button></div></div>
+                    <div class="sv-tw"><table class="sv-table"><thead><tr>${cfg.cols.map(c => `<th>${head(c)}</th>`).join('')}<th></th></tr></thead><tbody id="svRows">${rowsHTML(key)}</tbody></table></div></div>`;
+            }
+            const x2 = a => a[li()];
+            ['positions', 'staff', 'rooms', 'courses', 'reasons'].forEach(k => { PANES[k] = () => catPane(curKey()); });
+            const sync = () => { persist(); if (typeof window.renderChat === 'function') window.renderChat(); };
+            function form(key, id) {
+                const cfg = CAT[key], row = id ? S.cat[key].find(r => r.id === id) : null;
+                const el = document.createElement('div'); el.className = 'clients-modal-backdrop open'; el.style.zIndex = 120;
+                const inp = f => { const v = row ? row[f.k] : '', lab = x2(f.l) + (f.req ? ' *' : '');
+                    if (f.t === 'sel') { const o = optsOf(f); return `<div class="clients-modal-field" ${f.full ? 'style="grid-column:1/-1"' : ''}><label>${lab}</label><select data-f="${f.k}">${o.map(z => `<option value="${z[0]}" ${String(row ? row[f.k] : o[0][0]) === String(z[0]) ? 'selected' : ''}>${esc(ol(z[1]))}</option>`).join('')}</select></div>`; }
+                    return `<div class="clients-modal-field" ${f.full ? 'style="grid-column:1/-1"' : ''}><label>${lab}</label><input data-f="${f.k}" type="${f.t === 'num' ? 'number' : (f.tp || 'text')}" ${f.t === 'num' ? `min="${f.min || 0}" step="1"` : ''} value="${esc(v == null ? '' : v)}" autocomplete="off"></div>`; };
+                el.innerHTML = `<div class="clients-modal" style="max-width:560px;padding:30px"><h2>${x2(cfg.t)}: ${row ? x('cEdit') : x('cAdd')}</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px">${cfg.fields.map(inp).join('')}</div><div class="sv-err" id="svFErr"></div><div class="clients-modal-actions"><button class="clients-modal-cancel" data-x>${x('cCancel')}</button><button class="clients-modal-save" data-ok>${x('save')}</button></div></div>`;
+                document.body.appendChild(el);
+                const first = el.querySelector('input,select'); if (first) first.focus();
+                const bad = m => { const e = el.querySelector('#svFErr'); e.textContent = m; e.style.display = 'block'; };
+                const submit = () => {
+                    const d = {};
+                    for (const f of cfg.fields) {
+                        const raw = el.querySelector(`[data-f="${f.k}"]`).value.trim();
+                        if (f.req && raw === '') return bad(x('cReq'));
+                        if (f.t === 'num') { if (raw !== '' && (isNaN(+raw) || +raw < (f.min || 0))) return bad(x('cMin')); d[f.k] = raw === '' ? '' : Math.round(+raw); }
+                        else if (f.t === 'sel') d[f.k] = isNaN(+raw) || raw === '' ? raw : +raw; else d[f.k] = raw;
+                    }
+                    if (S.cat[key].some(r => r.id !== id && String(r.name).toLowerCase() === d.name.toLowerCase())) return bad(x('cDup'));
+                    if (row) Object.assign(row, d); else S.cat[key].push(Object.assign({ id: S.cat[key].reduce((m, r) => Math.max(m, r.id), 0) + 1 }, d));
+                    sync(); el.remove(); pane(); toast('success', `${d.name}: ${row ? x('cUpd') : x('cAdded')}`);
+                };
+                el.addEventListener('click', e => { if (e.target === el || e.target.hasAttribute('data-x')) el.remove(); else if (e.target.hasAttribute('data-ok')) submit(); });
+                el.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.tagName === 'INPUT') { e.preventDefault(); submit(); } else if (e.key === 'Escape') { e.stopPropagation(); el.remove(); } });
+            }
+            function remove(key, id) {
+                const arr = S.cat[key], i = arr.findIndex(r => r.id === id), item = arr[i]; if (!item) return;
+                if (key === 'positions' && S.cat.staff.some(s => s.pos === id)) return toast('warning', x('cUsed'));
+                arr.splice(i, 1); sync(); pane();
+                if (window.toast) window.toast.info(`${item.name} ${x('cGone')}`, { force: true, duration: 7000, action: { label: x('cUndo'), onClick() { arr.splice(Math.min(i, arr.length), 0, item); sync(); if (document.getElementById('svRows')) pane(); } } });
+            }
+            root.addEventListener('click', e => {
+                const c = e.target.closest('[data-c]'); if (!c) return;
+                const k = c.dataset.c, key = curKey();
+                if (k === 'add') form(key); else if (k === 'edit') form(key, +c.dataset.id); else if (k === 'del') remove(key, +c.dataset.id);
+                else if (k === 'sub') { sub = c.dataset.v; q = ''; pane(); }
+            });
+            root.addEventListener('input', e => {
+                if (!e.target.hasAttribute('data-cq')) return;
+                q = e.target.value; const key = curKey(), r = document.getElementById('svRows'); if (r) r.innerHTML = rowsHTML(key);
+            });
+            window.appCatalog = () => { const C = S.cat, pn = id => (C.positions.find(p => p.id === id) || {}).name || '', names = a => a.map(r => r.name);
+                return { positions: names(C.positions), staff: C.staff.map(s => Object.assign({}, s, { position: pn(s.pos) })), rooms: C.rooms.slice(), courses: C.courses.slice(), reasons: { leave: names(C.reasonLeave), lost: names(C.reasonLost), absence: names(C.reasonAbsence), discount: C.reasonDiscount.slice() } }; };
+            const NAV = [['gen', ['center', 'look', 'notif']], ['office', ['positions', 'staff', 'rooms']], ['edu', ['courses', 'reasons']], ['fin', ['pay']], ['sys', ['sec', 'data']]];
+            function pane() { const p = document.getElementById('svPane'); if (p) { p.style.animation = 'none'; void p.offsetWidth; p.style.animation = ''; p.innerHTML = PANES[tab](); } }
+            function shell() {
+                root.innerHTML = `<div class="clients-head"><div class="clients-head-text"><h1>${x('title')}</h1></div></div><div class="sv-wrap"><nav class="sv-nav">${NAV.map(g => `<div class="sv-gh">${x('g_' + g[0])}</div>` + g[1].map(k => `<button class="sv-tab ${tab === k ? 'on' : ''}" data-tab="${k}">${ic(ICONS[k])}${x(k)}</button>`).join('')).join('')}</nav><div class="sv-pane" id="svPane"></div></div>`;
+                document.getElementById('svPane').innerHTML = PANES[tab]();
+            }
+            const toast = (t, m) => window.toast && window.toast[t](m);
+            const err = m => { const e = document.getElementById('svErr'); e.textContent = m; e.style.display = 'block'; };
+            const val = id => document.getElementById(id).value.trim();
+            function download(name, data) { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); }
+            const call = f => typeof window[f] === 'function' ? window[f]() : [];
+            root.addEventListener('click', e => {
+                const t = e.target.closest('[data-tab]'), a = e.target.closest('[data-a]');
+                if (t) { tab = t.dataset.tab; q = ''; shell(); return; }
+                if (!a) return;
+                const k = a.dataset.a;
+                if (k === 'saveCenter') {
+                    const c = { name: val('svName'), phone: val('svPhone'), email: val('svEmail'), hours: val('svHours'), address: val('svAddr') };
+                    if (!c.name) return err(x('eName'));
+                    if (c.phone && c.phone.replace(/\D/g, '').length < 9) return err(x('ePhone'));
+                    if (c.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.email)) return err(x('eEmail'));
+                    S.center = c; persist(); apply(); toast('success', x('saved'));
+                } else if (k === 'theme') { if (typeof applyTheme === 'function') applyTheme(a.dataset.v); pane(); }
+                else if (k === 'lang') { if (typeof applyLanguage === 'function') applyLanguage(a.dataset.v); }
+                else if (k === 'test') { const p = S.notif; const old = { off: p.off, important: p.important }; p.off = false; p.important = false; toast('success', x('testMsg')); p.off = old.off; p.important = old.important; }
+                else if (k === 'savePw') {
+                    const c = val('svCur'), n = val('svNew'), m = val('svCon');
+                    if (!c) return err(x('eCur'));
+                    if (n.length < 8 || !/\d/.test(n)) return err(x('eLen'));
+                    if (n !== m) return err(x('eMatch'));
+                    pane(); toast('success', x('pOk'));
+                } else if (k === 'outAll') toast('info', x('outOk'));
+                else if (k === 'backup') { download('crm-backup-' + new Date().toISOString().slice(0, 10) + '.json', { settings: S, students: call('allStudents'), groups: call('allGroups'), teachers: call('allTeachers'), payments: call('allPayments'), catalog: window.appCatalog() }); toast('success', x('bkOk')); }
+                else if (k === 'reset') { if (confirm(x('rsQ'))) { S = clone(D); persist(); apply(); shell(); toast('success', x('rsOk')); } }
+            });
+            root.addEventListener('change', e => {
+                const el = e.target, k = el.dataset.k; if (!k) return;
+                if (k.startsWith('pm.')) {
+                    const m = k.slice(3), on = METH.filter(q => !S.pay.off.includes(q));
+                    if (!el.checked && on.length <= 1) { el.checked = true; return toast('warning', x('pMin')); }
+                    S.pay.off = el.checked ? S.pay.off.filter(q => q !== m) : S.pay.off.concat(m);
+                    const now = METH.filter(q => !S.pay.off.includes(q)); if (!now.includes(S.pay.def)) S.pay.def = now[0];
+                    persist(); pane(); return;
+                }
+                const v = el.type === 'checkbox' ? (el.dataset.inv ? !el.checked : el.checked) : el.value, path = k.split('.');
+                if (path.length === 2) S[path[0]][path[1]] = v; else S[path[0]] = v;
+                persist(); apply(); if (k === 'notif.off') pane();
+            });
+            window.renderSettings = () => { if (root.innerHTML) shell(); else shell(); };
+            apply(); shell();
+        })();
+
+        // ===== CHAT (suzuvchi vidjet) =====
+        (function initChat() {
+            const L = { uz: { title: 'Chat', staff: 'Xodimlar', teachers: "O'qituvchilar", groups: 'Guruhlar', search: 'Suhbat qidirish...', mine: 'Mening guruhlarim', courses: 'Kurs guruhlari', people: 'Suhbatlar', add: 'Yangi guruh yaratish', pick: 'Suhbat topilmadi', ph: 'Xabar yozing...', today: 'Bugun', online: 'onlayn', all: 'Barchasi', unr: "O'qilmagan", sub: n => n ? `${n} ta o'qilmagan xabar` : "Yangi xabarlar yo'q", newT: 'Yangi guruh', name: 'Guruh nomi', members: "A'zolar", create: 'Yaratish', cancel: 'Bekor qilish', made: g => `«${g}» guruhi yaratildi`, need: "Nom kiriting va kamida 1 a'zo tanlang", you: 'Siz', mem: n => n + " a'zo", quick: ['Salom! 👋', 'Rahmat', 'Hozir yozaman', 'Kelishdik ✅'] },
+                en: { title: 'Chat', staff: 'Staff', teachers: 'Teachers', groups: 'Groups', search: 'Search chats...', mine: 'My groups', courses: 'Course groups', people: 'Conversations', add: 'Create new group', pick: 'No conversations found', ph: 'Type a message...', today: 'Today', online: 'online', all: 'All', unr: 'Unread', sub: n => n ? `${n} unread message${n > 1 ? 's' : ''}` : 'No new messages', newT: 'New group', name: 'Group name', members: 'Members', create: 'Create', cancel: 'Cancel', made: g => `Group «${g}» created`, need: 'Enter a name and pick at least 1 member', you: 'You', mem: n => n + ' members', quick: ['Hello! 👋', 'Thanks', "I'll write soon", 'Agreed ✅'] },
+                ru: { title: 'Чат', staff: 'Сотрудники', teachers: 'Преподаватели', groups: 'Группы', search: 'Поиск чатов...', mine: 'Мои группы', courses: 'Группы курсов', people: 'Беседы', add: 'Создать новую группу', pick: 'Беседы не найдены', ph: 'Напишите сообщение...', today: 'Сегодня', online: 'в сети', all: 'Все', unr: 'Непрочитанные', sub: n => n ? `Непрочитанных: ${n}` : 'Нет новых сообщений', newT: 'Новая группа', name: 'Название группы', members: 'Участники', create: 'Создать', cancel: 'Отмена', made: g => `Группа «${g}» создана`, need: 'Введите название и выберите участников', you: 'Вы', mem: n => 'Участников: ' + n, quick: ['Привет! 👋', 'Спасибо', 'Скоро напишу', 'Договорились ✅'] } };
+            const T = () => L[document.documentElement.getAttribute('lang')] || L.uz;
+            const COL = ['#C77D2B', '#1F7AE0', '#3D68C9', '#4F8A3A', '#8B5CF6', '#D9467B', '#0E9AA7'];
+            const col = n => COL[[...n].reduce((a, c) => a + c.charCodeAt(0), 0) % COL.length];
+            const ini = n => n.split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+            const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+            const hm = d => String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+            const ic = d => `<svg viewBox="0 0 24 24">${d}</svg>`;
+            const TABI = { staff: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/>', teachers: '<path d="M3 9l9-4 9 4-9 4z"/><path d="M7 11v5c2.5 2 7.5 2 10 0v-5"/>', groups: '<circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.4"/><path d="M3 19c0-3 2.5-5 6-5s6 2 6 5M15 15c3 0 6 1.5 6 4"/>' };
+            const EMO = ['😀', '😂', '😍', '👍', '🙏', '🎉', '🔥', '❤️', '😊', '🤝', '✅', '👏'];
+            const REPLY = ["Xo'p, tushundim 👍", "Rahmat, hozir ko'rib chiqaman", 'Yaxshi, kelishdik!', 'Bir ozdan keyin javob beraman', 'Albatta, yordam beraman 🙂'];
+            const now = Date.now();
+            const STAFF_DEF = [['Foziljon', 'Admin'], ['Fozilova Halimaxon', 'Administrator'], ['SEO', 'Markaz rahbari'], ['Xoldarova Zuhra', 'Administrator']];
+            const staffList = () => { const c = window.appCatalog && window.appCatalog(); return c ? c.staff.filter(z => z.status === 'active').map(z => [z.name, z.position]) : STAFF_DEF; };
+            const CH = {}; let custom = [], tab = 'staff', q = '', onlyUn = false, cur = null, nid = 1;
+            const get = (id, name, sub, type) => CH[id] || (CH[id] = { id, name, sub, type, msgs: [], unread: 0, t: 0 });
+            const seed = (c, from, text, ago, un) => { c.msgs.push({ me: false, who: from, text, t: now - ago * 60000 }); c.t = now - ago * 60000; c.unread += un; };
+            staffList().forEach(([n, r], i) => { const c = get('s:' + n, n, r, 'staff'); if (i < 2) seed(c, n, i ? "Bugungi to'lovlar ro'yxatini yubordim" : 'Salom! Yangi guruh jadvali tayyor', 40 + i * 120, 1 + i); });
+            const people = () => {
+                const th = typeof window.allTeachers === 'function' ? window.allTeachers() : [], gr = typeof window.allGroups === 'function' ? window.allGroups() : [], st = typeof window.allStudents === 'function' ? window.allStudents() : [];
+                return { staff: staffList().map(([n, r]) => get('s:' + n, n, r, 'staff')), teachers: th.map(x => get('t:' + x.name, x.name, x.subject || "O'qituvchi", 'teachers')),
+                    groups: gr.map(x => { const c = get('g:' + x.name, x.name, T().mem(st.filter(s => s.group === x.name).length + 1) + ' · ' + x.teacher, 'groups'); c.course = true; return c; }).concat(custom.map(id => CH[id])) };
+            };
+            const fab = document.createElement('button');
+            fab.className = 'ch-fab'; fab.type = 'button'; fab.setAttribute('aria-label', 'Chat');
+            fab.innerHTML = ic('<path d="M21 12a8 8 0 0 1-11.6 7.100L4 20.500l1.2-4.800A8 8 0 1 1 21 12z"/><path d="M9 11.500h6M9 14.500h3.5"/>').replace('<svg', '<svg class="ic-c"') + ic('<path d="M6 6l12 12M18 6L6 18"/>').replace('<svg', '<svg class="ic-x"') + '<span class="ch-badge" id="chBadge"></span>';
+            const panel = document.createElement('section'); panel.className = 'ch-panel'; panel.setAttribute('aria-label', 'Chat');
+            document.body.appendChild(panel); document.body.appendChild(fab);
+            const $ = id => document.getElementById(id);
+            const unreadOf = k => (people()[k] || []).reduce((s, c) => s + c.unread, 0);
+            const unreadAll = () => Object.values(CH).reduce((s, c) => s + c.unread, 0);
+            function badge() { const b = $('chBadge'), n = unreadAll(); b.textContent = n > 99 ? '99+' : n; b.classList.toggle('show', n > 0); fab.classList.toggle('pulse', n > 0 && !panel.classList.contains('open')); const s = $('chSub'); if (s) s.textContent = T().sub(n); }
+            function shell() {
+                const t = T();
+                panel.innerHTML = `<div class="ch-scr listv"><div class="ch-hero"><button class="ch-x" data-a="close" aria-label="Close">${ic('<path d="M6 6l12 12M18 6L6 18"/>')}</button><h2>${t.title}</h2><p id="chSub"></p><div class="ch-sbox">${ic('<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>')}<input class="ch-search" id="chQ" placeholder="${t.search}" value="${esc(q)}" autocomplete="off"></div></div>
+                    <div class="ch-tabs">${['staff', 'teachers', 'groups'].map(k => `<button class="ch-tab ${tab === k ? 'on' : ''}" data-tab="${k}">${ic(TABI[k])}${t[k]}${unreadOf(k) ? '<i></i>' : ''}</button>`).join('')}</div>
+                    <div class="ch-bar"><div style="display:flex;gap:6px"><button class="ch-chip ${onlyUn ? '' : 'on'}" data-f="all">${t.all}</button><button class="ch-chip ${onlyUn ? 'on' : ''}" data-f="un">${t.unr}</button></div></div>
+                    <div class="ch-list" id="chList"></div></div><div class="ch-scr chatv" id="chMain"></div>`;
+                list(); conv(); badge();
+            }
+            function item(c, i) {
+                const last = c.msgs[c.msgs.length - 1], grp = c.type === 'groups';
+                return `<div class="ch-item ${c.unread ? 'un' : ''}" style="--i:${Math.min(i || 0, 8)}" data-open="${esc(c.id)}"><div class="ch-av ${grp ? '' : 'pr'}" style="background:${col(c.name)}">${esc(ini(c.name))}${grp ? '' : '<i></i>'}</div>
+                    <div class="ch-mid"><b>${esc(c.name)}</b><small>${esc(last ? (last.me ? t_().you + ': ' : '') + last.text : c.sub)}</small></div>
+                    <div class="ch-meta">${last ? hm(new Date(last.t)) : ''}${c.unread ? `<span class="ch-un">${c.unread}</span>` : ''}</div></div>`;
+            }
+            const t_ = T;
+            function list() {
+                const t = T(), el = $('chList'); if (!el) return;
+                const all = people()[tab].filter(c => (!q || c.name.toLowerCase().includes(q.toLowerCase())) && (!onlyUn || c.unread));
+                const srt = a => a.slice().sort((x, y) => y.t - x.t || x.name.localeCompare(y.name));
+                let h = '';
+                if (tab === 'groups') h += `<button class="ch-newbtn" data-a="new">${ic('<path d="M12 5v14M5 12h14"/>').replace('<svg', '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"')}${t.add}</button>` + (all.some(c => !c.course) ? `<div class="ch-sec">${t.mine}</div>` + srt(all.filter(c => !c.course)).map(item).join('') : '') + `<div class="ch-sec">${t.courses}</div>` + srt(all.filter(c => c.course)).map(item).join('');
+                else h = srt(all).map(item).join('');
+                el.innerHTML = all.length || tab === 'groups' ? h : `<div class="ch-empty">${t.pick}</div>`;
+            }
+            function conv() {
+                const t = T(), m = $('chMain'), c = CH[cur]; if (!m) return;
+                if (!c) { m.innerHTML = ''; return; }
+                const grp = c.type === 'groups';
+                m.innerHTML = `<div class="ch-top"><button class="ch-bk" data-a="back">${ic('<path d="M15 6l-6 6 6 6"/>')}</button><div class="ch-av ${grp ? '' : 'pr'}" style="background:${col(c.name)}">${esc(ini(c.name))}</div><div class="ch-mid"><b>${esc(c.name)}</b><small class="${grp ? '' : 'ok'}">${grp ? esc(c.sub) : '● ' + t.online}</small></div><button class="ch-x" data-a="close" aria-label="Close">${ic('<path d="M6 6l12 12M18 6L6 18"/>')}</button></div>
+                    <div class="ch-msgs" id="chMsgs"></div><div class="ch-quick">${t.quick.map(x => `<button data-q="${esc(x)}">${esc(x)}</button>`).join('')}</div><div class="ch-emo" id="chEmo">${EMO.map(e => `<button data-emo="${e}">${e}</button>`).join('')}</div>
+                    <div class="ch-comp"><button class="ch-ib" data-a="emo">😊</button><textarea id="chTxt" rows="1" placeholder="${t.ph}"></textarea><button class="ch-ib send" data-a="send">${ic('<path d="M5 12l14-7-5 14-2.5-5.500z"/>')}</button></div>`;
+                msgs();
+            }
+            function msgs() {
+                const c = CH[cur], box = $('chMsgs'); if (!c || !box) return;
+                box.innerHTML = (c.msgs.length ? `<div class="ch-day">${T().today}</div>` : '') + c.msgs.map(x => `<div class="ch-m ${x.me ? 'me' : ''}">${!x.me && c.type === 'groups' ? `<span class="who">${esc(x.who)}</span>` : ''}${esc(x.text).replace(/\n/g, '<br>')}<time>${hm(new Date(x.t))}${x.me ? ' ✓✓' : ''}</time></div>`).join('') + (c.typing ? '<div class="ch-typing"><i></i><i></i><i></i></div>' : '');
+                box.scrollTop = box.scrollHeight;
+            }
+            function send(text) {
+                const ta = $('chTxt'), c = CH[cur]; text = (text || (ta && ta.value) || '').trim(); if (!c || !text) return;
+                c.msgs.push({ me: true, text, t: Date.now() }); c.t = Date.now(); if (ta) { ta.value = ''; ta.style.height = ''; }
+                msgs(); list();
+                clearTimeout(c.rt); c.rt = setTimeout(() => { c.typing = true; if (cur === c.id) msgs(); setTimeout(() => {
+                    c.typing = false; const th = typeof window.allTeachers === 'function' ? window.allTeachers() : [], who = c.type === 'groups' ? (th[0] ? th[0].name : 'Ustoz') : c.name;
+                    c.msgs.push({ me: false, who, text: REPLY[Math.floor(Math.random() * REPLY.length)], t: Date.now() }); c.t = Date.now();
+                    if (panel.classList.contains('open') && cur === c.id) msgs(); else c.unread++;
+                    list(); badge(); }, 1400); }, 700);
+            }
+            function newGroup() {
+                const t = T(), all = people(), pool = all.staff.concat(all.teachers);
+                const el = document.createElement('div'); el.className = 'clients-modal-backdrop open'; el.style.zIndex = 120;
+                el.innerHTML = `<div class="clients-modal" style="max-width:460px;padding:28px"><h2>${t.newT}</h2><div class="clients-modal-field"><label>${t.name}</label><input id="chGn" type="text" autocomplete="off"></div><div class="clients-modal-field"><label>${t.members}</label><div class="ch-mem">${pool.map(c => `<label><input type="checkbox" value="${esc(c.name)}">${esc(c.name)}</label>`).join('')}</div></div><div class="clients-modal-actions"><button class="clients-modal-cancel" data-x>${t.cancel}</button><button class="clients-modal-save" data-ok>${t.create}</button></div></div>`;
+                document.body.appendChild(el);
+                el.addEventListener('click', e => {
+                    if (e.target === el || e.target.hasAttribute('data-x')) return el.remove();
+                    if (!e.target.hasAttribute('data-ok')) return;
+                    const n = el.querySelector('#chGn').value.trim(), m = el.querySelectorAll('input:checked').length;
+                    if (!n || !m) return window.toast && window.toast.warning(t.need);
+                    const c = get('c:' + (nid++), n, t.mem(m + 1), 'groups'); c.t = Date.now(); custom.push(c.id); cur = c.id; tab = 'groups'; el.remove(); shell();
+                    panel.classList.add('inchat'); if (window.toast) window.toast.success(t.made(n));
+                });
+            }
+            const open = () => { clearTimeout(panel._t); if (!panel.innerHTML) shell(); panel.classList.remove('closing'); panel.classList.add('open', 'opening'); fab.classList.add('open'); fab.classList.remove('pulse'); badge(); panel._t = setTimeout(() => panel.classList.remove('opening'), 1100); };
+            const close = () => { if (!panel.classList.contains('open')) return; clearTimeout(panel._t); panel.classList.remove('open', 'opening'); panel.classList.add('closing'); fab.classList.remove('open'); cur = null; badge(); panel._t = setTimeout(() => panel.classList.remove('closing', 'inchat'), 440); };
+            fab.addEventListener('click', () => panel.classList.contains('open') ? close() : open());
+            panel.addEventListener('click', e => {
+                const o = e.target.closest('[data-open]'), tb = e.target.closest('[data-tab]'), a = e.target.closest('[data-a]'), em = e.target.closest('[data-emo]'), qk = e.target.closest('[data-q]'), f = e.target.closest('[data-f]');
+                if (o) { cur = o.dataset.open; CH[cur].unread = 0; conv(); panel.classList.add('inchat'); list(); badge(); setTimeout(() => { const ta = $('chTxt'); if (ta) ta.focus(); }, 350); }
+                else if (tb) { tab = tb.dataset.tab; shell(); }
+                else if (f) { onlyUn = f.dataset.f === 'un'; shell(); }
+                else if (qk) send(qk.dataset.q);
+                else if (em) { const ta = $('chTxt'); ta.value += em.dataset.emo; ta.focus(); }
+                else if (a) { const k = a.dataset.a; if (k === 'back') { panel.classList.remove('inchat'); cur = null; list(); } else if (k === 'close') close(); else if (k === 'send') send(); else if (k === 'new') newGroup(); else if (k === 'emo') $('chEmo').classList.toggle('open'); }
+            });
+            panel.addEventListener('input', e => {
+                if (e.target.id === 'chQ') { q = e.target.value; list(); }
+                if (e.target.id === 'chTxt') { e.target.style.height = 'auto'; e.target.style.height = Math.min(120, e.target.scrollHeight) + 'px'; }
+            });
+            panel.addEventListener('keydown', e => { if (e.target.id === 'chTxt' && e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
+            document.addEventListener('keydown', e => { if (e.key === 'Escape' && panel.classList.contains('open') && !document.querySelector('.clients-modal-backdrop.open')) { if (panel.classList.contains('inchat')) { panel.classList.remove('inchat'); cur = null; list(); } else close(); } });
+            window.openChat = open; window.renderChat = () => { if (panel.classList.contains('open')) shell(); };
+            badge();
         })();
     </script>
 
