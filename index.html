@@ -2055,7 +2055,8 @@
                 display: none;
             }
 
-            .header-icons #headerThemeBtn {
+            .header-icons #headerThemeBtn,
+            .header-icons #scheduleBtn {
                 display: none;
             }
         }
@@ -4138,106 +4139,247 @@
         }
 
         /* =====================================================================
-           LIQUID GLASS — mobil pastki navigatsiya (footer bar)
+           LIQUID GLASS — mobil pastki navigatsiya (footer bar), iOS 26 uslubida
+           • to'liq kapsula shakl, suzib turadi, kontentni shaffof ko'rsatadi
+           • yupqa "rim light" chegara + yuqoridan tushuvchi yorug'lik
+           • tanlangan band ostida siljiydigan shisha kapsula (barmoq bilan
+             sudrab ham o'tish mumkin, bosganda "ko'tarilib" kattalashadi)
            ===================================================================== */
         @media (max-width: 768px) {
             .mobile-bottom-nav {
-                --lg-bg: linear-gradient(145deg, rgba(255, 255, 255, .76), rgba(236, 242, 255, .50));
-                --lg-border: rgba(255, 255, 255, .75);
-                --lg-fg: rgba(15, 23, 42, .84);
-                --lg-fg-active: #1F5FD6;
-                --lg-pill: linear-gradient(160deg, rgba(255, 255, 255, .85), rgba(47, 111, 224, .20));
-                --lg-pill-ring: rgba(47, 111, 224, .35);
-                --lg-shadow: 0 12px 32px rgba(15, 23, 42, .16), 0 2px 8px rgba(15, 23, 42, .08);
+                --lg-tint: rgba(255, 255, 255, .56);
+                --lg-glow-a: rgba(255, 255, 255, .60);
+                --lg-glow-b: rgba(255, 255, 255, .20);
+                --lg-rim-a: rgba(255, 255, 255, .95);
+                --lg-rim-b: rgba(255, 255, 255, .10);
+                --lg-fg: rgba(15, 23, 42, .80);
+                --lg-fg-active: #0A62E0;
+                --lg-pill: rgba(96, 108, 140, .20);
+                --lg-pill-press: rgba(255, 255, 255, .42);
+                --lg-pill-hi: rgba(255, 255, 255, .70);
+                --lg-shadow: 0 10px 30px rgba(15, 23, 42, .14), 0 2px 6px rgba(15, 23, 42, .06);
+                --lg-spring: cubic-bezier(.34, 1.56, .5, 1);
+                --lg-st: 1;
                 --lg-x: 0px; --lg-w: 0px; --lg-on: 0;
 
                 position: fixed;
+                left: 0;
+                right: 0;
+                margin-inline: auto;
+                width: min(calc(100% - 32px), 460px);
+                height: 64px;
+                bottom: calc(8px + env(safe-area-inset-bottom, 0px) * .4);
+                padding: 4px;
+                gap: 0;
+                border: 0;
+                border-radius: 999px;
                 isolation: isolate;
-                overflow: hidden;
-                padding: 6px;
-                border-radius: 26px;
-                background: var(--lg-bg);
-                border: 1px solid var(--lg-border);
-                -webkit-backdrop-filter: blur(22px) saturate(190%) brightness(1.04);
-                backdrop-filter: blur(22px) saturate(190%) brightness(1.04);
+                overflow: visible;
+                background:
+                    radial-gradient(130% 120% at 14% -35%, var(--lg-glow-a), transparent 56%),
+                    radial-gradient(100% 90% at 92% 135%, var(--lg-glow-b), transparent 60%),
+                    var(--lg-tint);
+                -webkit-backdrop-filter: blur(22px) saturate(180%);
+                backdrop-filter: blur(22px) saturate(180%);
                 box-shadow:
                     var(--lg-shadow),
-                    inset 0 1.5px 0 rgba(255, 255, 255, .9),
-                    inset 0 -1px 0 rgba(255, 255, 255, .25),
-                    inset 0 0 22px rgba(255, 255, 255, .22);
+                    inset 0 1px 1px rgba(255, 255, 255, .75),
+                    inset 0 -1px 1px rgba(255, 255, 255, .28),
+                    inset 0 0 18px rgba(255, 255, 255, .20);
+                touch-action: none;
+                -webkit-user-select: none;
+                user-select: none;
+                -webkit-touch-callout: none;
+                transition: transform .5s var(--lg-spring);
             }
+            .mobile-bottom-nav.lg-press { transform: scale(1.025, 1.045); }
             html[data-theme="dark"] .mobile-bottom-nav {
-                --lg-bg: linear-gradient(145deg, rgba(60, 84, 140, .42), rgba(14, 21, 38, .46));
-                --lg-border: rgba(255, 255, 255, .20);
-                --lg-fg: rgba(233, 236, 243, .66);
-                --lg-fg-active: #BBD6FF;
-                --lg-pill: linear-gradient(160deg, rgba(255, 255, 255, .26), rgba(111, 163, 245, .30));
-                --lg-pill-ring: rgba(156, 194, 250, .45);
-                --lg-shadow: 0 14px 34px rgba(0, 0, 0, .50), 0 2px 8px rgba(0, 0, 0, .30);
+                --lg-tint: rgba(26, 32, 50, .44);
+                --lg-glow-a: rgba(255, 255, 255, .20);
+                --lg-glow-b: rgba(120, 160, 255, .10);
+                --lg-rim-a: rgba(255, 255, 255, .50);
+                --lg-rim-b: rgba(255, 255, 255, .06);
+                --lg-fg: rgba(235, 238, 248, .70);
+                --lg-fg-active: #4C9AFF;
+                --lg-pill: rgba(255, 255, 255, .14);
+                --lg-pill-press: rgba(255, 255, 255, .24);
+                --lg-pill-hi: rgba(255, 255, 255, .30);
+                --lg-shadow: 0 12px 34px rgba(0, 0, 0, .50), 0 2px 8px rgba(0, 0, 0, .30);
+                box-shadow:
+                    var(--lg-shadow),
+                    inset 0 1px 1px rgba(255, 255, 255, .22),
+                    inset 0 -1px 1px rgba(255, 255, 255, .06),
+                    inset 0 0 18px rgba(255, 255, 255, .05);
             }
 
-            /* yuqoridan tushayotgan yorug'lik (specular) */
+            /* shisha chekkasi: diagonal bo'ylab yorqin → xira → yorqin yupqa "rim" */
             .mobile-bottom-nav::after {
                 content: '';
                 position: absolute;
                 inset: 0;
-                z-index: 0;
-                pointer-events: none;
+                z-index: 2;
+                padding: 1px;
                 border-radius: inherit;
-                background:
-                    radial-gradient(120% 90% at 18% -20%, rgba(255, 255, 255, .55), transparent 55%),
-                    radial-gradient(90% 70% at 100% 120%, rgba(255, 255, 255, .16), transparent 60%);
-                opacity: .75;
+                pointer-events: none;
+                background: linear-gradient(140deg, var(--lg-rim-a), var(--lg-rim-b) 38%, var(--lg-rim-b) 62%, var(--lg-rim-a));
+                -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+                -webkit-mask-composite: xor;
+                mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
             }
-            html[data-theme="dark"] .mobile-bottom-nav::after { opacity: .38; }
 
-            /* siljib yuruvchi shisha "tabletka" */
+            /* tanlangan band ostidagi siljiydigan shisha kapsula */
             .mobile-bottom-nav::before {
                 content: '';
                 position: absolute;
                 z-index: 0;
-                top: 5px;
-                bottom: 5px;
+                top: 4px;
+                bottom: 4px;
                 left: var(--lg-x);
                 width: var(--lg-w);
-                border-radius: 21px;
-                background: var(--lg-pill);
+                border-radius: 999px;
+                background:
+                    radial-gradient(70% 90% at 28% 8%, rgba(255, 255, 255, .55), transparent 62%),
+                    radial-gradient(60% 70% at 78% 108%, rgba(255, 255, 255, .28), transparent 66%),
+                    var(--lg-pill);
                 box-shadow:
-                    0 6px 16px rgba(15, 23, 42, .14),
-                    inset 0 1px 0 rgba(255, 255, 255, .9),
-                    inset 0 -1px 0 rgba(255, 255, 255, .18),
-                    0 0 0 1px var(--lg-pill-ring);
+                    inset 0 1px .5px var(--lg-pill-hi),
+                    inset 0 -1px 1px rgba(255, 255, 255, .16),
+                    inset 0 0 14px rgba(255, 255, 255, .18),
+                    0 1px 3px rgba(15, 23, 42, .06);
                 opacity: 0;
+                transform: scale(1);
                 transition:
-                    left .55s cubic-bezier(.34, 1.45, .5, 1),
-                    width .55s cubic-bezier(.34, 1.45, .5, 1),
+                    left .65s var(--lg-spring),
+                    width .65s var(--lg-spring),
+                    transform .45s var(--lg-spring),
+                    background-color .25s ease,
+                    box-shadow .25s ease,
                     opacity .25s ease;
                 pointer-events: none;
             }
             .mobile-bottom-nav.lg-ready::before { opacity: var(--lg-on); }
+            /* suv tomchisi kabi: siljiganda cho'ziladi, so'ng yig'ilib joyiga o'tiradi */
+            @keyframes lg-jelly {
+                0%   { transform: scale(1, 1); }
+                28%  { transform: scale(1.28, .88); }
+                55%  { transform: scale(.94, 1.07); }
+                78%  { transform: scale(1.03, .98); }
+                100% { transform: scale(1, 1); }
+            }
+            .mobile-bottom-nav.lg-jelly::before { animation: lg-jelly .7s cubic-bezier(.3, .7, .3, 1); }
+            /* tanlangan ikonka sakrab chiqadi */
+            @keyframes lg-bob {
+                0%   { transform: translateY(0) scale(1); }
+                35%  { transform: translateY(-4px) scale(1.18, .92); }
+                65%  { transform: translateY(1px) scale(.95, 1.06); }
+                100% { transform: translateY(0) scale(1); }
+            }
+            .mobile-bottom-nav .nav-item.lg-bob svg { animation: lg-bob .6s cubic-bezier(.3, .7, .3, 1); }
+            /* bosilgan joydan tarqaladigan to'lqin */
+            .mobile-bottom-nav .lg-ripples {
+                position: absolute;
+                inset: 0;
+                z-index: 0;
+                border-radius: inherit;
+                overflow: hidden;
+                pointer-events: none;
+            }
+            .mobile-bottom-nav .lg-ripple {
+                position: absolute;
+                width: 20px;
+                height: 20px;
+                margin: -10px 0 0 -10px;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(255, 255, 255, .75) 0%, rgba(255, 255, 255, .28) 45%, transparent 70%);
+                box-shadow: 0 0 0 1px rgba(255, 255, 255, .35);
+                transform: scale(.4);
+                opacity: .9;
+                animation: lg-ripple .8s cubic-bezier(.2, .6, .3, 1) forwards;
+            }
+            html[data-theme="dark"] .mobile-bottom-nav .lg-ripple {
+                background: radial-gradient(circle, rgba(255, 255, 255, .38) 0%, rgba(255, 255, 255, .12) 45%, transparent 70%);
+                box-shadow: 0 0 0 1px rgba(255, 255, 255, .22);
+            }
+            @keyframes lg-ripple { to { transform: scale(9); opacity: 0; } }
+            /* bosilganda: kapsula "ko'tariladi", kattalashadi va yorqinroq bo'ladi */
+            .mobile-bottom-nav.lg-press::before {
+                transform: scale(calc(1.14 * var(--lg-st, 1)), calc(1.10 / var(--lg-st, 1)));
+                background: var(--lg-pill-press);
+                box-shadow:
+                    inset 0 1px 1px var(--lg-pill-hi),
+                    inset 0 -1px 2px rgba(255, 255, 255, .22),
+                    0 8px 22px rgba(15, 23, 42, .18),
+                    0 0 0 .5px rgba(255, 255, 255, .35);
+            }
+            /* sudralayotganda kapsula barmoqni to'g'ridan-to'g'ri kuzatadi */
+            .mobile-bottom-nav.lg-drag::before {
+                transition:
+                    width .3s var(--lg-spring),
+                    transform .22s ease-out,
+                    background-color .25s ease,
+                    box-shadow .25s ease,
+                    opacity .25s ease;
+            }
 
             .mobile-bottom-nav .nav-item {
                 position: relative;
                 z-index: 1;
-                color: var(--lg-fg);
+                flex: 1 1 0;
+                min-width: 0;
+                height: 100%;
+                padding: 0 2px;
+                gap: 2px;
+                justify-content: center;
+                align-items: center;
+                border-radius: 999px;
                 background: none;
-                border-radius: 20px;
-                transition: color .25s ease, transform .35s cubic-bezier(.34, 1.56, .64, 1);
+                color: var(--lg-fg);
+                font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", sans-serif;
+                font-size: 10px;
+                font-weight: 600;
+                letter-spacing: 0;
+                transition: color .25s ease;
             }
-            .mobile-bottom-nav .nav-item:active { transform: scale(.92); }
-            .mobile-bottom-nav .nav-item.active { color: var(--lg-fg-active); background: var(--lg-pill); font-weight: 700; }
-            /* JS tayyor bo'lsa — faol bandning o'z foni yo'q, uni tabletka almashtiradi */
-            .mobile-bottom-nav.lg-ready .nav-item.active { background: none; }
-            .mobile-bottom-nav .nav-item svg { transition: transform .35s cubic-bezier(.34, 1.56, .64, 1); }
-            .mobile-bottom-nav .nav-item.active svg { transform: translateY(-1px) scale(1.08); }
+            .mobile-bottom-nav .nav-item svg {
+                width: 24px;
+                height: 24px;
+                stroke-width: 1.8;
+                transition: transform .38s var(--lg-spring);
+            }
+            .mobile-bottom-nav .nav-item .label {
+                font-size: 10px;
+                line-height: 12px;
+                font-weight: 600;
+            }
+            .mobile-bottom-nav .nav-item.active {
+                color: var(--lg-fg-active);
+                background: none;
+                font-weight: 600;
+            }
+            .mobile-bottom-nav .nav-item:active { transform: none; }
 
+            /* "Ko'proq" ochiq bo'lsa — faqat shu band tanlangan ko'rinadi */
+            .mobile-bottom-nav:has(.more-btn.active) .nav-item.active:not(.more-btn) { color: var(--lg-fg); }
+            /* sudrash/bosish paytida rang barmoq ostidagi bandni kuzatadi */
+            .mobile-bottom-nav.lg-press .nav-item.active:not(.lg-over) { color: var(--lg-fg); }
+            .mobile-bottom-nav.lg-press .nav-item.lg-over { color: var(--lg-fg-active); }
+            .mobile-bottom-nav.lg-press .nav-item.lg-over svg { transform: scale(1.08); }
+
+            .content { padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
+
+            /* shaffoflik kamaytirilgan bo'lsa (Accessibility) — ko'proq zich fon */
+            @media (prefers-reduced-transparency: reduce) {
+                .mobile-bottom-nav { --lg-tint: rgba(255, 255, 255, .88); }
+                html[data-theme="dark"] .mobile-bottom-nav { --lg-tint: rgba(22, 30, 50, .94); }
+            }
             /* backdrop-filter qo'llab-quvvatlanmasa — oddiy qattiq fon */
             @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-                .mobile-bottom-nav { background: var(--bg-panel); --lg-fg: var(--fg-muted); --lg-fg-active: var(--highlight-fg); --lg-pill: var(--highlight-bg); }
+                .mobile-bottom-nav { --lg-tint: var(--bg-panel); --lg-fg: var(--fg-muted); --lg-fg-active: #fff; }
             }
         }
         @media (max-width: 768px) and (prefers-reduced-motion: reduce) {
-            .mobile-bottom-nav::before, .mobile-bottom-nav .nav-item, .mobile-bottom-nav .nav-item svg { transition: none; }
+            .mobile-bottom-nav, .mobile-bottom-nav::before, .mobile-bottom-nav .nav-item, .mobile-bottom-nav .nav-item svg { transition: none; animation: none !important; }
+            .mobile-bottom-nav .lg-ripples { display: none; }
         }
 
         /* ---------- Mijoz kartasi: "ko'chirish" varag'i (faqat telefonda tugma ko'rinadi) ---------- */
@@ -4555,6 +4697,15 @@
                                 <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
                             </svg>
                             <span data-i18n="theme.toggle">Kunduzgi/tungi rejim</span>
+                        </div>
+                        <div class="profile-menu-item pm-only-mobile" id="profileScheduleBtn" role="button" tabindex="0">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" />
+                                <line x1="16" y1="2" x2="16" y2="6" />
+                                <line x1="8" y1="2" x2="8" y2="6" />
+                                <line x1="3" y1="10" x2="21" y2="10" />
+                            </svg>
+                            <span data-i18n="schedule.button">Dars jadvali</span>
                         </div>
                         <div class="profile-menu-item" id="profileSettingsBtn">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -8902,6 +9053,15 @@
             themeItem.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fire(); } });
         }
 
+        /* profil menyusidagi "Dars jadvali" — mobilda headerdagi tugma yashirin */
+        const schedItem = document.getElementById('profileScheduleBtn');
+        const schedBtn = document.getElementById('scheduleBtn');
+        if (schedItem && schedBtn) {
+            const fireSch = () => { if (dd) dd.classList.remove('open'); schedBtn.click(); };
+            schedItem.addEventListener('click', fireSch);
+            schedItem.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fireSch(); } });
+        }
+
         /* "Ko'proq" varag'ini pastga surib yopish */
         const sb = document.getElementById('sidebar');
         const bd = document.getElementById('sidebarBackdrop');
@@ -8918,18 +9078,125 @@
     </script>
 
     <script>
-    /* ===== Liquid glass: faol band ostidagi shisha tabletkani joylashtirish ===== */
+    /* ===== Liquid glass: shisha kapsulani joylashtirish + bosish/sudrash ===== */
     (function liquidNav() {
         const nav = document.getElementById('mobileBottomNav');
         if (!nav) return;
-        function place() {
-            const a = nav.querySelector('.nav-item.active');
-            if (!a || !nav.offsetWidth) { nav.style.setProperty('--lg-on', '0'); return; }
-            nav.style.setProperty('--lg-x', a.offsetLeft + 'px');
-            nav.style.setProperty('--lg-w', a.offsetWidth + 'px');
+        const items = () => Array.from(nav.querySelectorAll('.nav-item'));
+
+        function setPill(el) {
+            nav.style.setProperty('--lg-x', el.offsetLeft + 'px');
+            nav.style.setProperty('--lg-w', el.offsetWidth + 'px');
             nav.style.setProperty('--lg-on', '1');
+        }
+        const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let lastEl = null;
+        function retrigger(el, cls) {
+            el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls);
+            clearTimeout(el._lgT); el._lgT = setTimeout(() => el.classList.remove(cls), 800);
+        }
+        /* suvli to'lqin: bosilgan nuqtadan */
+        const ripples = document.createElement('span');
+        ripples.className = 'lg-ripples';
+        nav.insertBefore(ripples, nav.firstChild);
+        function ripple(clientX, clientY) {
+            if (reduce) return;
+            const nr = nav.getBoundingClientRect();
+            const r = document.createElement('span');
+            r.className = 'lg-ripple';
+            r.style.left = (clientX - nr.left) + 'px';
+            r.style.top = (clientY - nr.top) + 'px';
+            ripples.appendChild(r);
+            setTimeout(() => r.remove(), 900);
+        }
+        function place() {
+            if (pressing) return;
+            const a = nav.querySelector('.more-btn.active') || nav.querySelector('.nav-item.active');
+            if (!a || !nav.offsetWidth) { nav.style.setProperty('--lg-on', '0'); return; }
+            if (lastEl && lastEl !== a && nav.classList.contains('lg-ready') && !reduce) {
+                retrigger(nav, 'lg-jelly');
+                retrigger(a, 'lg-bob');
+            }
+            lastEl = a;
+            setPill(a);
             if (!nav.classList.contains('lg-ready')) nav.classList.add('lg-ready');
         }
+
+        /* --- barmoq bilan bosish / sudrash (iPhone'dagi kabi) --- */
+        let pressing = false, startEl = null, overEl = null, pid = null, lastX = 0, stT = null;
+        function itemAt(x) {
+            const list = items();
+            let best = list[0], bd = Infinity;
+            for (const it of list) {
+                const r = it.getBoundingClientRect();
+                if (x >= r.left && x <= r.right) return it;
+                const d = Math.min(Math.abs(x - r.left), Math.abs(x - r.right));
+                if (d < bd) { bd = d; best = it; }
+            }
+            return best;
+        }
+        function preview(x, follow) {
+            const it = itemAt(x);
+            if (it !== overEl) {
+                if (overEl) overEl.classList.remove('lg-over');
+                it.classList.add('lg-over');
+                overEl = it;
+            }
+            nav.style.setProperty('--lg-w', it.offsetWidth + 'px');
+            if (follow) {
+                const nr = nav.getBoundingClientRect();
+                const list = items(), last = list[list.length - 1];
+                const lo = list[0].offsetLeft;
+                const hi = last.offsetLeft + last.offsetWidth - it.offsetWidth;
+                let left = x - nr.left - it.offsetWidth / 2;
+                left = Math.max(lo, Math.min(hi, left));
+                nav.style.setProperty('--lg-x', left + 'px');
+            } else {
+                nav.style.setProperty('--lg-x', it.offsetLeft + 'px');
+            }
+            nav.style.setProperty('--lg-on', '1');
+            nav.classList.add('lg-ready');
+        }
+        function endPress(commit, x) {
+            if (!pressing) return;
+            pressing = false;
+            const target = overEl;
+            nav.classList.remove('lg-press', 'lg-drag');
+            clearTimeout(stT); nav.style.setProperty('--lg-st', '1');
+            if (overEl) { overEl.classList.remove('lg-over'); overEl = null; }
+            if (nav.hasPointerCapture && pid !== null && nav.hasPointerCapture(pid)) { try { nav.releasePointerCapture(pid); } catch (e) {} }
+            pid = null;
+            /* boshqa bandda qo'yib yuborilgan bo'lsa — native click kelmaydi, o'zimiz bosamiz */
+            if (commit && target && target !== startEl) target.click();
+            startEl = null;
+            /* commit bo'lsa kapsula joyida qoladi — click faol bandni o'zgartirgach o'zi siljiydi */
+            if (commit) setTimeout(place, 90); else place();
+        }
+        nav.addEventListener('pointerdown', e => {
+            if (e.pointerType === 'mouse' && e.button !== 0) return;
+            pressing = true; pid = e.pointerId;
+            startEl = itemAt(e.clientX);
+            nav.classList.add('lg-press');
+            preview(e.clientX, false);
+            ripple(e.clientX, e.clientY);
+            lastX = e.clientX;
+        });
+        nav.addEventListener('pointermove', e => {
+            if (!pressing || e.pointerId !== pid) return;
+            if (itemAt(e.clientX) !== startEl) nav.classList.add('lg-drag');
+            preview(e.clientX, nav.classList.contains('lg-drag'));
+            /* tezlikka qarab kapsula cho'ziladi (suyuqlik kabi) */
+            if (!reduce) {
+                const v = Math.min(Math.abs(e.clientX - lastX) / 18, 1);
+                nav.style.setProperty('--lg-st', (1 + v * .22).toFixed(3));
+                clearTimeout(stT); stT = setTimeout(() => nav.style.setProperty('--lg-st', '1'), 90);
+            }
+            lastX = e.clientX;
+        });
+        nav.addEventListener('pointerup', e => { if (e.pointerId === pid) endPress(true, e.clientX); });
+        nav.addEventListener('pointercancel', e => { if (e.pointerId === pid) endPress(false, e.clientX); });
+        nav.addEventListener('lostpointercapture', () => { if (pressing) endPress(false); });
+
         new MutationObserver(place).observe(nav, { attributes: true, subtree: true, attributeFilter: ['class'] });
         window.addEventListener('resize', place);
         window.addEventListener('orientationchange', place);
