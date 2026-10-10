@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
     <title>Ferdinant - Sidebar & Header</title>
     <style>
         :root {
@@ -3705,6 +3705,578 @@
         .sv-bd { display: inline-block; padding: 4px 11px; border-radius: 20px; font-size: 12px; font-weight: 700; background: var(--hover-bg); }
         .sv-bd.g { background: rgba(74, 222, 128, .16); color: #2FB864; } .sv-bd.a { background: rgba(245, 185, 66, .18); color: #D99A1F; } .sv-bd.r { background: rgba(248, 113, 113, .16); color: #E5484D; }
         @media (max-width: 860px) { .sv-gh { display: none; } .sv-bar { flex-direction: column; align-items: stretch; } .sv-q { width: 100%; flex: 1; } }
+
+        /* =====================================================================
+           MOBIL VERSIYA — barcha bo'limlar uchun yagona moslashuv bloki
+           Bu blok fayl oxirida turadi, shuning uchun yuqoridagi desktop
+           qoidalarini faqat telefon/planshet o'lchamida bekor qiladi.
+           Desktop (>768px) ko'rinishiga ta'sir qilmaydi.
+           ===================================================================== */
+        .pm-only-mobile { display: none; }
+
+        @media (max-width: 768px) {
+            html { -webkit-text-size-adjust: 100%; }
+
+            body {
+                height: 100vh;
+                height: 100dvh;
+                padding: calc(8px + env(safe-area-inset-top, 0px)) 8px 0;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .main {
+                height: calc(100vh - 8px);
+                height: calc(100dvh - 8px - env(safe-area-inset-top, 0px));
+                gap: 10px;
+            }
+
+            .content {
+                padding: 2px 2px calc(104px + env(safe-area-inset-bottom, 0px));
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior: contain;
+            }
+
+            .content h1 { font-size: 21px; }
+            .content p { font-size: 13.5px; }
+            .pm-only-mobile { display: flex; }
+
+            /* ---------- HEADER ---------- */
+            .header {
+                border-radius: 18px;
+                min-height: 58px;
+                padding: 7px 10px;
+                gap: 8px;
+            }
+
+            .header-logo .logo-mark { width: 34px; height: 34px; }
+            .search-box { height: 38px; border-radius: 11px; gap: 6px; }
+            .search-box .search-icon { width: 16px; height: 16px; }
+            .header-icons { gap: 2px; margin-left: 0; }
+            .icon-btn, .lang-btn { width: 38px; height: 38px; }
+            .icon-btn svg, .lang-btn svg { width: 19px; height: 19px; }
+            .notif-badge { top: 2px; right: 2px; }
+
+            /* dropdown'lar sarlavhaga nisbatan joylashadi — ekrandan chiqib ketmaydi */
+            .lang-dropdown, .notif-dropdown, .profile-dropdown { position: static; }
+            .lang-menu, .profile-menu {
+                top: calc(100% + 8px);
+                right: 0;
+                left: auto;
+                width: min(250px, 100%);
+                min-width: 0;
+            }
+            .notif-panel {
+                top: calc(100% + 8px);
+                left: 0;
+                right: 0;
+                width: auto;
+                max-width: none;
+            }
+            .notif-list { max-height: min(320px, 46vh); }
+            .lang-option, .profile-menu-item { padding: 12px 10px; }
+
+            /* ---------- PASTKI NAVIGATSIYA ---------- */
+            .mobile-bottom-nav {
+                left: 10px;
+                right: 10px;
+                bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+                border-radius: 20px;
+                padding: 6px;
+                gap: 2px;
+            }
+            .mobile-bottom-nav .nav-item {
+                flex: 1 1 0;
+                min-width: 0;
+                padding: 8px 2px;
+                font-size: 10.5px;
+                -webkit-tap-highlight-color: transparent;
+            }
+            .mobile-bottom-nav .nav-item svg { width: 20px; height: 20px; }
+            .mobile-bottom-nav .nav-item .label {
+                max-width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                line-height: 1.2;
+            }
+
+            /* "Ko'proq" menyusi */
+            .sidebar {
+                max-height: 82vh;
+                max-height: 82dvh;
+                padding-bottom: env(safe-area-inset-bottom, 0px);
+                z-index: 110;
+            }
+            .sidebar::before {
+                content: '';
+                display: block;
+                width: 42px;
+                height: 4px;
+                border-radius: 4px;
+                margin: 8px auto 0;
+                background: var(--panel-border);
+                flex-shrink: 0;
+            }
+            .sidebar-top { height: 56px; padding: 10px 20px 0; }
+            .sidebar-top .logo-mark { width: 38px; height: 38px; }
+            .sidebar-backdrop { z-index: 105; }
+            .nav-item { padding: 13px 14px; }
+            .sidebar-bottom { padding-bottom: 14px; }
+
+            /* ---------- KARTALAR (statistika) ---------- */
+            .stat-cards {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+                margin: 12px 0 14px;
+            }
+            .stat-card { padding: 14px 10px; border-radius: 16px; min-width: 0; }
+            .stat-card:hover { transform: none; }
+            .stat-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
+            .stat-icon { width: 34px; height: 34px; border-radius: 10px; margin-bottom: 8px; }
+            .stat-icon svg { width: 18px; height: 18px; }
+            .stat-label { font-size: 12px; margin-bottom: 4px; line-height: 1.25; }
+            .stat-value { font-size: 16px; line-height: 1.3; overflow-wrap: anywhere; }
+            .stat-delta { font-size: 11px; margin-left: 4px; }
+
+            /* ---------- BOSH SAHIFA ---------- */
+            .chart-card { padding: 16px 12px 14px; border-radius: 18px; }
+            .chart-card-head { margin-bottom: 14px; }
+            .chart-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 14px; }
+            .chart-summary-item { padding: 10px 6px; border-radius: 12px; min-width: 0; }
+            .chart-summary-label { font-size: 11px; margin-bottom: 3px; }
+            .chart-summary-value { font-size: 15px; }
+            .payments-card { padding: 16px 12px 14px; margin-top: 14px; border-radius: 18px; }
+            .payments-head { margin-bottom: 14px; }
+
+            /* ---------- SARLAVHA / ASBOB PANELI (barcha bo'limlar) ---------- */
+            .clients-head {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+                margin-bottom: 14px;
+            }
+            .clients-head-text { max-width: none; }
+            .clients-head-actions { align-items: stretch; width: 100%; }
+            .clients-head-actions-top { width: 100%; gap: 8px; flex-wrap: nowrap; }
+            .clients-head-actions-top .clients-search { flex: 1; min-width: 0; }
+            .clients-add-btn { justify-content: center; padding: 12px 16px; min-height: 44px; white-space: nowrap; }
+            .clients-head > .clients-add-btn,
+            .clients-head-actions > .clients-add-btn { width: 100%; }
+            .clients-search { min-width: 0; padding: 11px 14px; }
+            .clients-search input { font-size: 16px; }
+
+            .st-toolbar {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8px;
+                margin-bottom: 12px;
+            }
+            .st-toolbar > * { min-width: 0; }
+            .st-toolbar .clients-search { grid-column: 1 / -1; max-width: none; min-width: 0; }
+            .st-toolbar .spacer { display: none; }
+            .st-toolbar > label, .st-toolbar > .st-ghost-btn { grid-column: 1 / -1; }
+            .st-select { width: 100%; padding: 12px; font-size: 14px; text-overflow: ellipsis; }
+            .st-ghost-btn { justify-content: center; min-height: 44px; }
+            .st-pager { flex-wrap: wrap; }
+            .st-pager button { min-height: 40px; padding: 8px 16px; }
+
+            /* ---------- MIJOZLAR (kanban) ---------- */
+            .clients-board {
+                zoom: 1 !important;
+                gap: 12px;
+                scroll-snap-type: x mandatory;
+                scroll-padding-inline: 2px;
+                padding: 0 2px 12px;
+            }
+            .clients-column {
+                flex: 0 0 85%;
+                width: 85%;
+                scroll-snap-align: center;
+            }
+            .clients-column-body {
+                height: min(var(--clients-body-h, 560px), calc(100vh - 330px));
+                height: min(var(--clients-body-h, 560px), calc(100dvh - 330px));
+                min-height: 220px;
+                -webkit-overflow-scrolling: touch;
+            }
+            .clients-column-add { width: 32px; height: 32px; }
+
+            /* ---------- GURUHLAR ---------- */
+            .gr-grid { grid-template-columns: 1fr; gap: 12px; }
+            .gr-meta { gap: 10px 12px; }
+
+            /* ---------- TO'LOVLAR ---------- */
+            .pm-tabs { margin: 2px 0 14px; flex-wrap: nowrap; overflow-x: auto; }
+            .pm-tab { white-space: nowrap; flex: 0 0 auto; }
+            .pm-chart { height: 180px; }
+            .pm-total-row { flex-direction: row; }
+
+            /* ---------- SOZLAMALAR ---------- */
+            .sv-wrap { gap: 12px; }
+            .sv-nav {
+                margin: 0 -2px;
+                padding: 2px;
+                -webkit-overflow-scrolling: touch;
+                scroll-snap-type: x proximity;
+            }
+            .sv-tab { flex: 0 0 auto; scroll-snap-align: start; min-height: 42px; }
+            .sv-card { padding: 16px 14px; border-radius: 16px; }
+            .sv-act { flex-wrap: wrap; }
+            .sv-act .sv-btn { flex: 1 1 140px; justify-content: center; }
+            .sv-tw { -webkit-overflow-scrolling: touch; }
+
+            /* ---------- PROFIL ---------- */
+            .profile-form-card { padding: 18px 14px; margin-top: 14px; border-radius: 18px; }
+            .profile-form-title { font-size: 18px; margin-bottom: 18px; }
+            .profile-form-top { align-items: stretch; gap: 14px; margin-bottom: 18px; }
+            .profile-avatar-upload { align-self: flex-start; }
+            .st-ghost-btn input[type="checkbox"] { width: 18px; height: 18px; }
+            .clients-head-actions-top > .st-ghost-btn { flex: 1; justify-content: center; }
+            .clients-head-actions-top > .clients-add-btn { flex: 1; }
+
+            /* ---------- BO'SH BO'LIM ---------- */
+            .view-empty { margin-top: 14px; padding: 48px 18px; border-radius: 18px; }
+
+            /* ---------- MODAL OYNALAR -> pastdan chiqadigan varaq ---------- */
+            .clients-modal-backdrop {
+                z-index: 120;
+                padding: 0;
+                align-items: flex-end;
+            }
+            .clients-modal,
+            .pm-modal .clients-modal,
+            .pm-modal .clients-modal.pm-rc-modal,
+            .pm-modal .clients-modal.pm-cf-modal,
+            .gr-modal-wide .clients-modal {
+                width: 100%;
+                max-width: none;
+                max-height: 92vh;
+                max-height: 92dvh;
+                overflow-y: auto;
+                overscroll-behavior: contain;
+                -webkit-overflow-scrolling: touch;
+                border-radius: 22px 22px 0 0;
+                padding: 20px 16px calc(18px + env(safe-area-inset-bottom, 0px));
+            }
+            .clients-modal h2, .pm-modal .clients-modal h2 { font-size: 18px; margin-bottom: 14px; }
+            .clients-modal-row, .pm-modal .clients-modal-row { flex-wrap: wrap; gap: 0 10px; }
+            .clients-modal-row .clients-modal-field { flex: 1 1 140px; }
+            .pm-modal .clients-modal-field { margin-bottom: 14px; }
+            .pm-modal .clients-modal-field label { font-size: 12.5px; margin-bottom: 6px; }
+            .clients-modal-field input,
+            .clients-modal-field select,
+            .clients-modal-field textarea,
+            .pm-modal .clients-modal-field input,
+            .pm-modal .clients-modal-field select {
+                font-size: 16px;
+                padding: 12px 13px;
+                min-height: 46px;
+            }
+            .clients-modal-actions, .pm-modal .clients-modal-actions { margin-top: 10px; gap: 10px; }
+            .clients-modal-cancel, .clients-modal-save,
+            .pm-modal .clients-modal-cancel, .pm-modal .clients-modal-save {
+                flex: 1;
+                min-height: 46px;
+                padding: 12px 14px;
+                font-size: 15px;
+            }
+            .pm-modal .pm-info { grid-template-columns: 1fr 1fr; padding: 12px; margin: -2px 0 14px; }
+            .pm-modal .pm-combo-items { max-height: 38vh; }
+
+            /* ---------- DARS JADVALI ---------- */
+            .sch-header { padding: 12px 12px; gap: 10px; }
+            .sch-header-controls { flex-direction: column; align-items: stretch; gap: 10px; }
+            .sch-header-section, .sch-header-section.sch-header-view { flex: none; min-width: 0; width: 100%; margin-left: 0; gap: 6px; }
+            .sch-tabs { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 8px; padding-bottom: 2px; -webkit-overflow-scrolling: touch; }
+            .sch-tabs > * { flex: 0 0 auto; }
+            .sch-viewtoggle { display: flex; width: 100%; }
+            .sch-viewtoggle .sch-viewbtn { flex: 1; justify-content: center; min-height: 40px; }
+            .sch-main { padding: 10px 10px calc(16px + env(safe-area-inset-bottom, 0px)); }
+            .sch-modal-backdrop { z-index: 115; }
+
+            /* modal / jadval ochiq paytida suzuvchi chat tugmasi ustini bosmasin */
+            body:has(.clients-modal-backdrop.open) .ch-fab,
+            body:has(.sch-modal-backdrop.open) .ch-fab,
+            body:has(.sidebar.mobile-open) .ch-fab,
+            body:has(.clients-modal-backdrop.open) .ct-stack,
+            body:has(.sch-modal-backdrop.open) .ct-stack,
+            body:has(.sidebar.mobile-open) .ct-stack { display: none; }
+
+            /* ---------- TOAST (bildirishnomalar) ---------- */
+            .ct-stack {
+                left: 10px;
+                right: 82px;
+                width: auto;
+                bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+            }
+            .ct-list .ct-wrap:not(:last-child) { display: none; }
+            .ct-all-btn { padding: 8px 12px; font-size: 12.5px; }
+            .ct-body { padding: 8px 12px 10px; font-size: 13px; -webkit-line-clamp: 2; }
+            .tt-stack { bottom: calc(92px + env(safe-area-inset-bottom, 0px)); left: 10px; right: 10px; }
+            body.ct-on .tt-stack {
+                right: 10px;
+                bottom: calc(100px + var(--ct-h, 0px) + env(safe-area-inset-bottom, 0px));
+            }
+        }
+
+        /* ---------- JADVALLAR -> KARTALAR (talabalar, o'qituvchilar, to'lovlar) ---------- */
+        @media (max-width: 640px) {
+            #studentsRoot .payments-table-wrap,
+            #teachersRoot .payments-table-wrap,
+            #paymentsRoot .payments-table-wrap {
+                max-height: none;
+                overflow: visible;
+                border: none;
+                border-radius: 0;
+            }
+            #studentsRoot .payments-card,
+            #teachersRoot .payments-card,
+            #paymentsRoot .payments-card {
+                padding: 12px 10px 12px;
+            }
+            #studentsRoot .payments-table,
+            #teachersRoot .payments-table,
+            #paymentsRoot .payments-table,
+            #studentsRoot .payments-table tbody,
+            #teachersRoot .payments-table tbody,
+            #paymentsRoot .payments-table tbody {
+                display: block;
+                width: 100%;
+            }
+            #studentsRoot .payments-table thead,
+            #teachersRoot .payments-table thead,
+            #paymentsRoot .payments-table thead { display: none; }
+
+            #studentsRoot .payments-table tr,
+            #teachersRoot .payments-table tr,
+            #paymentsRoot .payments-table tr {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px 12px;
+                padding: 12px;
+                margin-bottom: 10px;
+                border: 1px solid var(--panel-border);
+                border-radius: 16px;
+                background: var(--hover-bg);
+            }
+            #studentsRoot .payments-table td,
+            #teachersRoot .payments-table td,
+            #paymentsRoot .payments-table td {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+                min-width: 0;
+                padding: 0;
+                border: none;
+                text-align: left;
+                font-size: 13.5px;
+                overflow-wrap: anywhere;
+            }
+            #studentsRoot .payments-table td.col-hide-sm,
+            #teachersRoot .payments-table td.col-hide-sm,
+            #paymentsRoot .payments-table td.col-hide-sm { display: flex; }
+            #studentsRoot .payments-table td::before,
+            #teachersRoot .payments-table td::before,
+            #paymentsRoot .payments-table td::before {
+                content: attr(data-label);
+                font-size: 10.5px;
+                font-weight: 700;
+                letter-spacing: .05em;
+                text-transform: uppercase;
+                color: var(--fg-muted);
+            }
+            #studentsRoot .payments-table td[data-label=""]::before,
+            #teachersRoot .payments-table td[data-label=""]::before,
+            #paymentsRoot .payments-table td[data-label=""]::before,
+            #studentsRoot .payments-table td.c-user::before,
+            #teachersRoot .payments-table td.c-user::before,
+            #paymentsRoot .payments-table td.c-user::before,
+            #studentsRoot .payments-table td.c-act::before,
+            #teachersRoot .payments-table td.c-act::before,
+            #paymentsRoot .payments-table td.c-act::before { display: none; }
+
+            /* ism — kartaning tepasida, to'liq kenglikda */
+            #studentsRoot .payments-table td.c-user,
+            #teachersRoot .payments-table td.c-user,
+            #paymentsRoot .payments-table td.c-user { grid-column: 1 / -1; order: -2; font-size: 15px; font-weight: 600; }
+            /* amallar tugmalari — pastda, o'ng tomonda */
+            #studentsRoot .payments-table td.c-act,
+            #teachersRoot .payments-table td.c-act,
+            #paymentsRoot .payments-table td.c-act {
+                grid-column: 1 / -1;
+                order: 99;
+                flex-direction: row;
+                justify-content: flex-end;
+                align-items: center;
+                gap: 8px;
+                padding-top: 10px;
+                border-top: 1px solid var(--panel-border);
+                white-space: normal !important;
+                text-align: right !important;
+            }
+            #studentsRoot .payments-table td[colspan],
+            #teachersRoot .payments-table td[colspan],
+            #paymentsRoot .payments-table td[colspan] { grid-column: 1 / -1; text-align: center; }
+            #studentsRoot .payments-table td > .st-badge,
+            #teachersRoot .payments-table td > .st-badge,
+            #paymentsRoot .payments-table td > .st-badge,
+            #paymentsRoot .payments-table td > .pm-method,
+            #paymentsRoot .payments-table td > .pm-month,
+            #paymentsRoot .payments-table td > .pm-no { align-self: flex-start; }
+            #studentsRoot .payments-table td.num,
+            #teachersRoot .payments-table td.num,
+            #paymentsRoot .payments-table td.num { text-align: left; }
+            #studentsRoot .st-act,
+            #teachersRoot .st-act,
+            #paymentsRoot .st-act { width: 40px; height: 40px; }
+        }
+
+        @media (max-width: 380px) {
+            .header-logo { display: none; }
+            .stat-value { font-size: 15px; }
+            .clients-column { flex-basis: 90%; width: 90%; }
+        }
+
+        /* =====================================================================
+           LIQUID GLASS — mobil pastki navigatsiya (footer bar)
+           ===================================================================== */
+        @media (max-width: 768px) {
+            .mobile-bottom-nav {
+                --lg-bg: linear-gradient(145deg, rgba(255, 255, 255, .76), rgba(236, 242, 255, .50));
+                --lg-border: rgba(255, 255, 255, .75);
+                --lg-fg: rgba(15, 23, 42, .84);
+                --lg-fg-active: #1F5FD6;
+                --lg-pill: linear-gradient(160deg, rgba(255, 255, 255, .85), rgba(47, 111, 224, .20));
+                --lg-pill-ring: rgba(47, 111, 224, .35);
+                --lg-shadow: 0 12px 32px rgba(15, 23, 42, .16), 0 2px 8px rgba(15, 23, 42, .08);
+                --lg-x: 0px; --lg-w: 0px; --lg-on: 0;
+
+                position: fixed;
+                isolation: isolate;
+                overflow: hidden;
+                padding: 6px;
+                border-radius: 26px;
+                background: var(--lg-bg);
+                border: 1px solid var(--lg-border);
+                -webkit-backdrop-filter: blur(22px) saturate(190%) brightness(1.04);
+                backdrop-filter: blur(22px) saturate(190%) brightness(1.04);
+                box-shadow:
+                    var(--lg-shadow),
+                    inset 0 1.5px 0 rgba(255, 255, 255, .9),
+                    inset 0 -1px 0 rgba(255, 255, 255, .25),
+                    inset 0 0 22px rgba(255, 255, 255, .22);
+            }
+            html[data-theme="dark"] .mobile-bottom-nav {
+                --lg-bg: linear-gradient(145deg, rgba(60, 84, 140, .42), rgba(14, 21, 38, .46));
+                --lg-border: rgba(255, 255, 255, .20);
+                --lg-fg: rgba(233, 236, 243, .66);
+                --lg-fg-active: #BBD6FF;
+                --lg-pill: linear-gradient(160deg, rgba(255, 255, 255, .26), rgba(111, 163, 245, .30));
+                --lg-pill-ring: rgba(156, 194, 250, .45);
+                --lg-shadow: 0 14px 34px rgba(0, 0, 0, .50), 0 2px 8px rgba(0, 0, 0, .30);
+            }
+
+            /* yuqoridan tushayotgan yorug'lik (specular) */
+            .mobile-bottom-nav::after {
+                content: '';
+                position: absolute;
+                inset: 0;
+                z-index: 0;
+                pointer-events: none;
+                border-radius: inherit;
+                background:
+                    radial-gradient(120% 90% at 18% -20%, rgba(255, 255, 255, .55), transparent 55%),
+                    radial-gradient(90% 70% at 100% 120%, rgba(255, 255, 255, .16), transparent 60%);
+                opacity: .75;
+            }
+            html[data-theme="dark"] .mobile-bottom-nav::after { opacity: .38; }
+
+            /* siljib yuruvchi shisha "tabletka" */
+            .mobile-bottom-nav::before {
+                content: '';
+                position: absolute;
+                z-index: 0;
+                top: 5px;
+                bottom: 5px;
+                left: var(--lg-x);
+                width: var(--lg-w);
+                border-radius: 21px;
+                background: var(--lg-pill);
+                box-shadow:
+                    0 6px 16px rgba(15, 23, 42, .14),
+                    inset 0 1px 0 rgba(255, 255, 255, .9),
+                    inset 0 -1px 0 rgba(255, 255, 255, .18),
+                    0 0 0 1px var(--lg-pill-ring);
+                opacity: 0;
+                transition:
+                    left .55s cubic-bezier(.34, 1.45, .5, 1),
+                    width .55s cubic-bezier(.34, 1.45, .5, 1),
+                    opacity .25s ease;
+                pointer-events: none;
+            }
+            .mobile-bottom-nav.lg-ready::before { opacity: var(--lg-on); }
+
+            .mobile-bottom-nav .nav-item {
+                position: relative;
+                z-index: 1;
+                color: var(--lg-fg);
+                background: none;
+                border-radius: 20px;
+                transition: color .25s ease, transform .35s cubic-bezier(.34, 1.56, .64, 1);
+            }
+            .mobile-bottom-nav .nav-item:active { transform: scale(.92); }
+            .mobile-bottom-nav .nav-item.active { color: var(--lg-fg-active); background: var(--lg-pill); font-weight: 700; }
+            /* JS tayyor bo'lsa — faol bandning o'z foni yo'q, uni tabletka almashtiradi */
+            .mobile-bottom-nav.lg-ready .nav-item.active { background: none; }
+            .mobile-bottom-nav .nav-item svg { transition: transform .35s cubic-bezier(.34, 1.56, .64, 1); }
+            .mobile-bottom-nav .nav-item.active svg { transform: translateY(-1px) scale(1.08); }
+
+            /* backdrop-filter qo'llab-quvvatlanmasa — oddiy qattiq fon */
+            @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+                .mobile-bottom-nav { background: var(--bg-panel); --lg-fg: var(--fg-muted); --lg-fg-active: var(--highlight-fg); --lg-pill: var(--highlight-bg); }
+            }
+        }
+        @media (max-width: 768px) and (prefers-reduced-motion: reduce) {
+            .mobile-bottom-nav::before, .mobile-bottom-nav .nav-item, .mobile-bottom-nav .nav-item svg { transition: none; }
+        }
+
+        /* ---------- Mijoz kartasi: "ko'chirish" varag'i (faqat telefonda tugma ko'rinadi) ---------- */
+        .client-card-move { display: none; }
+        .cm-backdrop { position: fixed; inset: 0; z-index: 130; background: rgba(9, 13, 22, .55); display: flex; align-items: flex-end; opacity: 0; transition: opacity .2s ease; }
+        .cm-backdrop.open { opacity: 1; }
+        .cm-sheet { width: 100%; max-height: 80vh; max-height: 80dvh; overflow-y: auto; background: var(--menu-bg); color: var(--menu-fg); border-radius: 22px 22px 0 0; padding: 10px 14px calc(16px + env(safe-area-inset-bottom, 0px)); box-shadow: var(--menu-shadow); transform: translateY(28px); transition: transform .28s cubic-bezier(.22, 1, .36, 1); }
+        .cm-backdrop.open .cm-sheet { transform: none; }
+        .cm-handle { width: 42px; height: 4px; border-radius: 4px; background: var(--panel-border); margin: 0 auto 12px; }
+        .cm-sheet h3 { font-size: 17px; margin: 0 4px 2px; }
+        .cm-sheet p { font-size: 13px; opacity: .65; margin: 0 4px 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .cm-list { display: flex; flex-direction: column; gap: 6px; }
+        .cm-item { display: flex; align-items: center; gap: 12px; min-height: 50px; padding: 0 14px; border-radius: 14px; border: 1px solid var(--panel-border); background: transparent; color: inherit; font-family: inherit; font-size: 15px; font-weight: 600; text-align: left; cursor: pointer; }
+        .cm-item .cm-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .cm-item .cm-count { font-size: 12px; opacity: .6; }
+        .cm-item:active:not(:disabled) { background: var(--menu-hover); }
+        .cm-item.current { background: var(--menu-selected-bg); color: var(--menu-selected-fg); cursor: default; }
+        body:has(.cm-backdrop) .ch-fab { display: none; }
+
+        @media (max-width: 768px) {
+            .client-card { padding: 12px 50px 12px 12px; min-height: 126px; cursor: default; -webkit-user-select: none; user-select: none; }
+            .client-card:hover { transform: none; box-shadow: none; }
+            .client-card-flag, .client-card-del, .client-card-move {
+                display: flex; position: absolute; right: 6px; width: 36px; height: 36px; border-radius: 11px;
+                border: none; align-items: center; justify-content: center; cursor: pointer;
+                background: rgba(237, 235, 227, 0.07); color: var(--fg-muted);
+            }
+            .client-card-flag { top: 6px; }
+            .client-card-move { top: 46px; color: var(--accent); }
+            .client-card-del { top: 86px; opacity: 1; color: #F87171; }
+            .client-card-flag svg, .client-card-del svg, .client-card-move svg { width: 16px; height: 16px; }
+            .client-card-meta a { padding: 2px 0; }
+        }
+
+        /* planshet (769–1024px): kanban va jadvallar uchun kichik tuzatishlar */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .content { padding: 22px 20px; }
+            .gr-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+        }
     </style>
 </head>
 
@@ -3977,6 +4549,13 @@
                         </svg>
                     </button>
                     <div class="profile-menu" id="profileMenu">
+                        <div class="profile-menu-item pm-only-mobile" id="profileThemeBtn" role="button" tabindex="0">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="4" />
+                                <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+                            </svg>
+                            <span data-i18n="theme.toggle">Kunduzgi/tungi rejim</span>
+                        </div>
                         <div class="profile-menu-item" id="profileSettingsBtn">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <circle cx="12" cy="12" r="3" />
@@ -4983,6 +5562,55 @@
             }
         }
 
+        const clientsTr = (uz, en, ru) => {
+            const l = document.documentElement.getAttribute('lang');
+            return l === 'en' ? en : l === 'ru' ? ru : uz;
+        };
+        const CLIENTS_TOUCH_ONLY = !!(window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches);
+
+        /* Telefonda drag-and-drop ishonchsiz: kartani boshqa ustunga ko'chirish uchun pastdan chiqadigan varaq */
+        function closeClientMoveSheet() {
+            const el = document.getElementById('clientMoveSheet');
+            if (el) el.remove();
+        }
+
+        function openClientMoveSheet(id) {
+            const c = CLIENTS.find(x => x.id == id);
+            if (!c) return;
+            closeClientMoveSheet();
+            const tr = clientsTr;
+            const wrap = document.createElement('div');
+            wrap.className = 'cm-backdrop';
+            wrap.id = 'clientMoveSheet';
+            wrap.innerHTML = `
+                <div class="cm-sheet" role="dialog" aria-modal="true">
+                    <div class="cm-handle"></div>
+                    <h3>${escapeHtml(tr("Boshqa ustunga ko'chirish", 'Move to another column', 'Переместить в другую колонку'))}</h3>
+                    <p>${escapeHtml(c.name)}</p>
+                    <div class="cm-list">
+                        ${CLIENT_COURSES.map(co => `
+                            <button type="button" class="cm-item ${co.id === c.course ? 'current' : ''}" data-course="${co.id}" ${co.id === c.course ? 'disabled' : ''}>
+                                <span class="clients-column-dot" style="background:${co.color}"></span>
+                                <span class="cm-name">${escapeHtml(co.name)}</span>
+                                <span class="cm-count">${CLIENTS.filter(x => x.course === co.id).length}</span>
+                            </button>`).join('')}
+                    </div>
+                </div>`;
+            document.body.appendChild(wrap);
+            requestAnimationFrame(() => wrap.classList.add('open'));
+            wrap.addEventListener('click', (e) => {
+                const item = e.target.closest('.cm-item');
+                if (item && !item.disabled) {
+                    c.course = item.dataset.course;
+                    closeClientMoveSheet();
+                    renderClientsBoard();
+                    return;
+                }
+                if (e.target === wrap) closeClientMoveSheet();
+            });
+        }
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeClientMoveSheet(); });
+
         function renderClientsBoard() {
             const board = document.getElementById('clientsBoard');
             if (!board) return;
@@ -4993,12 +5621,15 @@
                 const items = CLIENTS.filter(c => c.course === course.id &&
                     (!term || c.name.toLowerCase().includes(term) || (termDigits && c.phone.replace(/\D/g, '').includes(termDigits))));
                 const cardsHtml = items.length ? items.map(c => `
-                    <div class="client-card" draggable="true" data-id="${c.id}">
+                    <div class="client-card" draggable="${CLIENTS_TOUCH_ONLY ? 'false' : 'true'}" data-id="${c.id}">
                         <button type="button" class="client-card-flag ${c.flagged ? 'active' : ''}" data-action="flag" data-id="${c.id}" title="${ct('clients.flagTitle', 'Belgilash')}">
                             <svg viewBox="0 0 24 24" fill="${c.flagged ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2l2.9 6.6 7.1.7-5.4 4.7 1.7 7-6.3-3.8-6.3 3.8 1.7-7-5.4-4.7 7.1-.7z"/></svg>
                         </button>
                         <button type="button" class="client-card-del" data-action="del" data-id="${c.id}" title="${ct('clients.deleteTitle', "O'chirish")}">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="5" y1="5" x2="15" y2="15"/><line x1="15" y1="5" x2="5" y2="15"/></svg>
+                        </button>
+                        <button type="button" class="client-card-move" data-action="move" data-id="${c.id}" title="${escapeHtml(clientsTr("Boshqa ustunga ko'chirish", 'Move to another column', 'Переместить в другую колонку'))}">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 7 3 12 7 17"/><polyline points="17 7 21 12 17 17"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
                         </button>
                         <div class="client-card-top">
                             <div class="client-card-avatar" style="background:${course.color}22;color:${course.color}">${clientInitials(c.name)}</div>
@@ -5049,6 +5680,9 @@
                     const c = CLIENTS.find(x => x.id == btn.dataset.id);
                     if (c) { c.flagged = !c.flagged; renderClientsBoard(); }
                 });
+            });
+            document.querySelectorAll('.client-card-move').forEach(btn => {
+                btn.addEventListener('click', (e) => { e.stopPropagation(); openClientMoveSheet(btn.dataset.id); });
             });
             document.querySelectorAll('.client-card-del').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -8230,6 +8864,81 @@
             badge();
         })();
     </script>
+
+    <script>
+    /* ===== MOBIL YORDAMCHI: jadval kataklariga sarlavha yorlig'i (kartaga aylantirish uchun) ===== */
+    (function mobileEnhance() {
+        const roots = ['studentsRoot', 'teachersRoot', 'paymentsRoot']
+            .map(id => document.getElementById(id)).filter(Boolean);
+        const clean = t => (t || '').replace(/[\u25B2\u25BC\u2191\u2193]/g, '').replace(/\s+/g, ' ').trim();
+
+        function label(root) {
+            root.querySelectorAll('table.payments-table').forEach(table => {
+                const heads = Array.from(table.querySelectorAll('thead th')).map(th => clean(th.textContent));
+                table.querySelectorAll('tbody tr').forEach(tr => {
+                    Array.from(tr.children).forEach((td, i) => {
+                        if (td.tagName !== 'TD') return;
+                        const txt = td.hasAttribute('colspan') ? '' : (heads[i] || '');
+                        if (td.getAttribute('data-label') !== txt) td.setAttribute('data-label', txt);
+                        td.classList.toggle('c-user', !!td.querySelector('.st-user'));
+                        td.classList.toggle('c-act', !!td.querySelector('.st-act'));
+                    });
+                });
+            });
+        }
+
+        let raf = 0;
+        const run = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => roots.forEach(label)); };
+        const mo = new MutationObserver(run);
+        roots.forEach(r => { mo.observe(r, { childList: true, subtree: true }); label(r); });
+
+        /* profil menyusidagi "kunduzgi/tungi rejim" — mobilda headerdagi tugma yashirin */
+        const themeItem = document.getElementById('profileThemeBtn');
+        const themeBtn = document.getElementById('headerThemeBtn');
+        const dd = document.getElementById('profileDropdown');
+        if (themeItem && themeBtn) {
+            const fire = () => { themeBtn.click(); if (dd) dd.classList.remove('open'); };
+            themeItem.addEventListener('click', fire);
+            themeItem.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fire(); } });
+        }
+
+        /* "Ko'proq" varag'ini pastga surib yopish */
+        const sb = document.getElementById('sidebar');
+        const bd = document.getElementById('sidebarBackdrop');
+        if (sb && bd) {
+            let y0 = null;
+            sb.addEventListener('touchstart', e => { if (sb.classList.contains('mobile-open') && sb.scrollTop === 0) y0 = e.touches[0].clientY; }, { passive: true });
+            sb.addEventListener('touchend', e => {
+                if (y0 === null) return;
+                const dy = e.changedTouches[0].clientY - y0; y0 = null;
+                if (dy > 70) bd.click();
+            }, { passive: true });
+        }
+    })();
+    </script>
+
+    <script>
+    /* ===== Liquid glass: faol band ostidagi shisha tabletkani joylashtirish ===== */
+    (function liquidNav() {
+        const nav = document.getElementById('mobileBottomNav');
+        if (!nav) return;
+        function place() {
+            const a = nav.querySelector('.nav-item.active');
+            if (!a || !nav.offsetWidth) { nav.style.setProperty('--lg-on', '0'); return; }
+            nav.style.setProperty('--lg-x', a.offsetLeft + 'px');
+            nav.style.setProperty('--lg-w', a.offsetWidth + 'px');
+            nav.style.setProperty('--lg-on', '1');
+            if (!nav.classList.contains('lg-ready')) nav.classList.add('lg-ready');
+        }
+        new MutationObserver(place).observe(nav, { attributes: true, subtree: true, attributeFilter: ['class'] });
+        window.addEventListener('resize', place);
+        window.addEventListener('orientationchange', place);
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
+        requestAnimationFrame(() => { place(); setTimeout(place, 300); });
+    })();
+    </script>
+
+
 
 </body>
 
