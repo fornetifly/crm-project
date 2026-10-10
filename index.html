@@ -3439,6 +3439,87 @@
             .tt, .tt-wrap { transition: opacity .15s ease; transform: none !important; }
             .tt.in .tt-ic svg, .tt.bump { animation: none; }
         }
+
+
+            /* ===== LAVOZIMLAR VA HUQUQLAR ===== */
+        .rp-wrap { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 16px; align-items: start; }
+        .rp-lh { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+        .rp-lh h3 { margin: 0 !important; font-size: 15px; }
+        .rp-add { padding: 8px 14px; font-size: 13px; border-radius: 10px; white-space: nowrap; flex: none; }
+        .rp-list { display: flex; flex-direction: column; gap: 6px; }
+        .rp-it { display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 12px; cursor: pointer; border: 1px solid transparent; color: var(--fg-muted); transition: background .15s ease, border-color .15s ease, color .15s ease; }
+        .rp-it:hover { background: var(--hover-bg); color: var(--fg-panel); }
+        .rp-it.on { background: rgba(79, 140, 240, .14); border-color: rgba(79, 140, 240, .38); color: var(--fg-panel); }
+        .rp-av { flex: none; width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 15px; }
+        .rp-im { flex: 1; min-width: 0; }
+        .rp-im b { display: block; font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .rp-im small { display: block; margin-top: 1px; font-size: 12px; opacity: .65; }
+        .rp-bar { height: 4px; margin-top: 7px; border-radius: 4px; background: var(--hover-bg); overflow: hidden; }
+        .rp-bar i { display: block; height: 100%; border-radius: 4px; background: rgba(74, 222, 128, .75); transition: width .4s cubic-bezier(.22, 1, .36, 1); }
+        .rp-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
+        .rp-head h3 { margin: 0 0 4px !important; font-size: 19px; }
+        .rp-head p { margin: 0 !important; font-size: 13.5px; color: var(--fg-muted); max-width: 520px; }
+        .rp-hr { display: flex; align-items: center; gap: 6px; }
+        .rp-cnt { padding: 6px 12px; border-radius: 20px; font-size: 12.5px; font-weight: 700; background: rgba(74, 222, 128, .13); color: #7FE3A6; margin-right: 4px; white-space: nowrap; }
+        .rp-tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+        .rp-tools .sv-q { flex: 1; min-width: 180px; }
+        .rp-tools .sv-btn { padding: 10px 16px; font-size: 13px; }
+        .rp-grp { margin-top: 20px; }
+        .rp-gh { display: flex; align-items: center; gap: 10px; margin-bottom: 11px; padding-bottom: 9px; border-bottom: 1px dashed var(--panel-border); }
+        .rp-gh h4 { margin: 0; font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--fg-muted); }
+        .rp-gh em { font-style: normal; font-size: 11.5px; padding: 1px 8px; border-radius: 20px; background: var(--hover-bg); color: var(--fg-muted); }
+        .rp-gh .sv-sw { margin-left: auto; transform: scale(.8); transform-origin: right center; }
+        .rp-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .rp-chip { display: inline-flex; align-items: center; gap: 7px; padding: 8px 13px; border-radius: 10px; border: 1px solid transparent; font: 600 12.5px inherit; font-family: inherit; cursor: pointer; text-align: left; transition: background .2s ease, border-color .2s ease, color .2s ease, transform .15s ease; }
+        .rp-chip svg { flex: none; width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+        .rp-chip.on { background: rgba(74, 222, 128, .13); border-color: rgba(74, 222, 128, .34); color: #7FE3A6; }
+        .rp-chip.off { background: transparent; border-color: var(--panel-border); color: var(--fg-muted); }
+        .rp-chip:hover { transform: translateY(-1px); }
+        .rp-chip.on:hover { background: rgba(74, 222, 128, .2); }
+        .rp-chip.off:hover { background: var(--hover-bg); color: var(--fg-panel); }
+        .rp-chip:active { transform: scale(.96); }
+        .rp-chip.pop { animation: rp-pop .32s cubic-bezier(.22, 1.4, .36, 1); }
+        @keyframes rp-pop { 0% { transform: scale(.9); } 60% { transform: scale(1.06); } 100% { transform: scale(1); } }
+        .rp-fade { animation: sv-in .3s cubic-bezier(.22, 1, .36, 1); }
+        .rp-none { padding: 40px 12px; text-align: center; font-size: 14px; color: var(--fg-muted); }
+        .rp-modal .rp-tools { margin-top: 2px; }
+        .rp-modal .rp-scroll { margin-top: 6px; padding-right: 4px; overflow-y: auto; flex: 1; min-height: 0; max-height: 46vh; }
+        @media (max-width: 980px) { .rp-wrap { grid-template-columns: 1fr; } }
+        @media (prefers-reduced-motion: reduce) { .rp-chip.pop, .rp-fade { animation: none; } }
+            /* ===== CHAT TOASTLARI (kelgan xabarlar, pastki o'ng burchak) ===== */
+        .ct-stack { position: fixed; right: 24px; bottom: 100px; z-index: 88; width: min(340px, calc(100vw - 32px)); display: flex; flex-direction: column; pointer-events: none; }
+        .ct-all { display: grid; grid-template-rows: 0fr; opacity: 0; visibility: hidden; transform: translateY(10px); transition: grid-template-rows .38s cubic-bezier(.22, 1, .36, 1), opacity .25s ease, transform .38s cubic-bezier(.22, 1, .36, 1), visibility 0s linear .38s; }
+        .ct-all.show { grid-template-rows: 1fr; opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+        .ct-all-in { min-height: 0; overflow: hidden; }
+        .ct-all-btn { pointer-events: none; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px; border-radius: 14px; cursor: pointer; color: var(--menu-selected-fg); font: 600 13px inherit; font-family: inherit; background: linear-gradient(var(--menu-selected-bg), var(--menu-selected-bg)), var(--menu-bg); border: 1px solid rgba(237, 235, 227, .12); box-shadow: var(--menu-shadow); transition: border-color .2s ease, background .2s ease, transform .15s ease; }
+        .ct-all.show .ct-all-btn { pointer-events: auto; }
+        .ct-all-btn:hover { border-color: rgba(111, 163, 245, .55); }
+        .ct-all-btn:active { transform: scale(.98); }
+        .ct-all-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+        .ct-all-btn em { font-style: normal; font-size: 11px; padding: 1px 7px; border-radius: 20px; background: rgba(237, 235, 227, .10); color: var(--menu-fg); }
+        .ct-wrap { margin-top: 10px; pointer-events: none; transition: height .34s cubic-bezier(.22, 1, .36, 1), margin .34s cubic-bezier(.22, 1, .36, 1); }
+        .ct-wrap.out { height: 0 !important; margin-top: 0; }
+        .ct { pointer-events: auto; cursor: pointer; overflow: hidden; border-radius: 14px; color: var(--menu-fg); background: var(--menu-bg); border: 1px solid rgba(237, 235, 227, .12); box-shadow: var(--menu-shadow); opacity: 0; transform: translateX(46px) scale(.96); transition: opacity .28s ease, transform .45s cubic-bezier(.22, 1, .36, 1), border-color .2s ease; }
+        .ct.in { opacity: 1; transform: none; }
+        .ct:hover { border-color: rgba(111, 163, 245, .55); }
+        .ct-wrap.out .ct { opacity: 0; transform: translateX(46px) scale(.96); transition-duration: .24s; }
+        .ct-head { display: flex; align-items: center; gap: 9px; padding: 8px 8px 8px 12px; background: rgba(237, 235, 227, .05); border-bottom: 1px solid rgba(237, 235, 227, .08); }
+        .ct-av { flex: none; width: 22px; height: 22px; border-radius: 7px; display: grid; place-items: center; color: #fff; font-size: 10px; font-weight: 700; }
+        .ct-head strong { flex: 1; min-width: 0; font-size: 13.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .ct-head small { flex: none; font-size: 11.5px; opacity: .55; }
+        .ct-x { flex: none; width: 24px; height: 24px; display: grid; place-items: center; border: none; border-radius: 7px; background: transparent; color: rgba(233, 236, 243, .55); cursor: pointer; transition: background .15s ease, color .15s ease; }
+        .ct-x:hover { background: rgba(237, 235, 227, .12); color: var(--menu-fg); }
+        .ct-x svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
+        .ct-body { padding: 10px 12px 12px; font-size: 13.5px; line-height: 1.45; color: rgba(233, 236, 243, .85); word-break: break-word; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .ct-body b { color: var(--menu-fg); }
+        body.ct-on .tt-stack { right: calc(24px + min(340px, 100vw - 32px) + 14px); }
+        @media (max-width: 768px) {
+            .ct-stack { left: 12px; right: 12px; width: auto; bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+            body.ct-on .tt-stack { right: 12px; bottom: calc(112px + var(--ct-h, 0px) + env(safe-area-inset-bottom, 0px)); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .ct, .ct-wrap, .ct-all { transition: opacity .15s ease; transform: none !important; }
+        }
             /* ===== CHAT (suzuvchi vidjet) ===== */
         .ch-fab { position: fixed; right: 24px; bottom: 24px; z-index: 85; width: 62px; height: 62px; border: none; border-radius: 22px; cursor: pointer; display: grid; place-items: center; color: #fff; background: linear-gradient(145deg, #5B9BF5, #2D62D8); box-shadow: 0 12px 30px rgba(45, 98, 216, .45), inset 0 1px 0 rgba(255, 255, 255, .3); transition: transform .25s cubic-bezier(.22, 1.3, .36, 1), border-radius .3s ease; }
         .ch-fab:hover { transform: translateY(-3px) scale(1.04); }
@@ -7672,7 +7753,7 @@
             const ST = [['active', X.stAct], ['leave', X.stLeave], ['off', X.stOff]];
             const nameF = { k: 'name', l: X.fName, req: 1, full: 1 };
             const CAT = {
-                positions: { t: X.positions, d: X.dPositions, fields: [nameF, { k: 'level', l: X.fLevel, t: 'sel', o: LV }, { k: 'note', l: X.fNote, full: 1 }], cols: [{ k: 'name' }, { k: 'level' }, { h: X.hStaff, f: r => S.cat.staff.filter(s => s.pos === r.id).length }] },
+                positions: { t: X.positions, d: X.dPositions, fields: [nameF, { k: 'note', l: X.fNote, full: 1 }], cols: [{ k: 'name' }, { h: X.hStaff, f: r => S.cat.staff.filter(s => s.pos === r.id).length }] },
                 staff: { t: X.staff, d: X.dStaff, fields: [nameF, { k: 'pos', l: X.fPos, t: 'sel', o: () => S.cat.positions.map(p => [p.id, p.name]) }, { k: 'phone', l: X.fPhone, tp: 'tel' }, { k: 'salary', l: X.fSalary, t: 'num', min: 0 }, { k: 'status', l: X.fStatus, t: 'sel', o: ST, bd: 1 }], cols: [{ k: 'name', av: 1 }, { k: 'pos' }, { k: 'phone' }, { k: 'status' }] },
                 rooms: { t: X.rooms, d: X.dRooms, fields: [nameF, { k: 'cap', l: X.fCap, t: 'num', min: 1, req: 1 }, { k: 'floor', l: X.fFloor, t: 'num', min: 0 }, { k: 'equip', l: X.fEquip, full: 1 }, { k: 'status', l: X.fStatus, t: 'sel', o: [['ok', X.rOk], ['repair', X.rRep]], bd: 1 }], cols: [{ k: 'name' }, { k: 'cap' }, { k: 'equip' }, { k: 'status' }] },
                 courses: { t: X.courses, d: X.dCourses, fields: [nameF, { k: 'level', l: X.fCLevel, t: 'sel', o: [['beg', X.beg], ['mid', X.mid], ['adv', X.adv], ['all', X.all]] }, { k: 'months', l: X.fMonths, t: 'num', min: 1, req: 1 }, { k: 'price', l: X.fPrice, t: 'num', min: 0, req: 1 }, { k: 'status', l: X.fStatus, t: 'sel', o: [['active', X.stAct], ['pause', X.cPause]], bd: 1 }], cols: [{ k: 'name' }, { k: 'level' }, { k: 'months' }, { k: 'price' }, { k: 'status' }] },
@@ -7713,6 +7794,151 @@
             }
             const x2 = a => a[li()];
             ['positions', 'staff', 'rooms', 'courses', 'reasons'].forEach(k => { PANES[k] = () => catPane(curKey()); });
+
+            // ===== LAVOZIMLAR VA HUQUQLAR (rol boshqaruvi) =====
+            Object.assign(X, {
+                rpList: ["Lavozimlar ro'yxati", 'Positions list', 'Список должностей'], rpNew: ['Yangi lavozim', 'New position', 'Новая должность'], rpPerm: ['huquq', 'permissions', 'прав'],
+                rpOn: ['Hammasini yoqish', 'Enable all', 'Включить все'], rpOff: ["Hammasini o'chirish", 'Disable all', 'Выключить все'], rpSearch: ['Huquqni qidirish...', 'Search permissions...', 'Поиск прав...'],
+                rpStaff: ['xodim', 'staff', 'сотр.'], rpFrom: ["Boshlang'ich huquqlar", 'Start from', 'Начать с'], rpEmpty: ["Bo'sh — hammasi bloklangan", 'Empty — everything blocked', 'Пусто — всё заблокировано'],
+                rpFull: ["To'liq — hammasi yoqilgan", 'Full — everything allowed', 'Полный — всё разрешено'], rpCopy: ['Nusxa: ', 'Copy of: ', 'Копия: '], rpName: ['Lavozim nomi', 'Position name', 'Название должности'],
+                rpNoRes: ['Huquq topilmadi', 'No permissions found', 'Права не найдены'], rpHint: ["Huquq ustiga bosib uni yoqing yoki bloklang", 'Click a permission to allow or block it', 'Нажмите на право, чтобы разрешить или заблокировать'],
+                rpBlocked: ['bloklangan', 'blocked', 'заблокировано'], rpAllowed: ['yoqilgan', 'allowed', 'разрешено']
+            });
+            // Huquqlar katalogi: modul -> [amal, [uz, en, ru]]
+            const VB = { view: ["ko'ra olsin", 'View', 'Просмотр'], add: ["qo'sha olsin", 'Add', 'Добавление'], edit: ["o'zgartira olsin", 'Edit', 'Изменение'], del: ["o'chira olsin", 'Delete', 'Удаление'] };
+            const crud = (acc, en, ru) => ['view', 'add', 'edit', 'del'].map(a => [a, [acc + ' ' + VB[a][0], VB[a][1] + ' ' + en, VB[a][2] + ' ' + ru]]);
+            const MODS = [
+                { k: 'home', n: ['Bosh sahifa', 'Dashboard', 'Главная'], p: [['view', ["Bosh sahifani ko'ra olsin", 'View dashboard', 'Просмотр главной страницы']], ['stats', ["Statistika kartalarini ko'rsin", 'See statistics cards', 'Видеть карточки статистики']], ['chart', ["Grafiklarni ko'rsin", 'See charts', 'Видеть графики']], ['money', ["Moliyaviy ko'rsatkichlarni ko'rsin", 'See financial figures', 'Видеть финансовые показатели']], ['sched', ["Dars jadvalini ko'rsin", 'See lesson schedule', 'Видеть расписание занятий']]] },
+                { k: 'clients', n: ['Mijozlar', 'Clients', 'Клиенты'], p: crud('Mijozlarni', 'clients', 'клиентов').concat([['move', ["Mijozni bosqichlar orasida ko'chira olsin", 'Move clients between stages', 'Перемещать клиентов между этапами']], ['phone', ["Mijoz telefon raqamini ko'rsin", 'See client phone numbers', 'Видеть телефоны клиентов']], ['export', ["Mijozlar ro'yxatini yuklab olsin", 'Download clients list', 'Скачивать список клиентов']]]) },
+                { k: 'students', n: ['Talabalar', 'Students', 'Студенты'], p: crud('Talabalarni', 'students', 'студентов').concat([['group', ["Talabani guruhga qo'sha olsin", 'Add students to a group', 'Добавлять студентов в группу']], ['phone', ["Talaba telefon raqamini ko'rsin", 'See student phone numbers', 'Видеть телефоны студентов']], ['balance', ["Talaba balansini ko'rsin", 'See student balance', 'Видеть баланс студента']], ['export', ["Talabalar ro'yxatini yuklab olsin (CSV)", 'Download students list (CSV)', 'Скачивать список студентов (CSV)']], ['leave', ["Talabani markazdan chiqara olsin", 'Remove a student from the center', 'Исключать студента из центра']]]) },
+                { k: 'groups', n: ['Guruhlar', 'Groups', 'Группы'], p: crud('Guruhlarni', 'groups', 'групп').concat([['students', ["Guruhga talaba qo'sha olsin", 'Add students to groups', 'Добавлять студентов в группы']], ['move', ["Talabani boshqa guruhga o'tkaza olsin", 'Move a student to another group', 'Переводить студента в другую группу']], ['teacher', ["Guruh o'qituvchisini o'zgartira olsin", 'Change group teacher', 'Менять преподавателя группы']], ['schedule', ["Guruh jadvalini ko'rsin", 'See group schedule', 'Видеть расписание группы']]]) },
+                { k: 'teachers', n: ["O'qituvchilar", 'Teachers', 'Преподаватели'], p: crud("O'qituvchilarni", 'teachers', 'преподавателей').concat([['salary', ["O'qituvchi oyligini ko'rsin", 'See teacher salary', 'Видеть зарплату преподавателя']], ['groups', ["O'qituvchi guruhlarini ko'rsin", 'See teacher groups', 'Видеть группы преподавателя']], ['phone', ["O'qituvchi telefon raqamini ko'rsin", 'See teacher phone numbers', 'Видеть телефоны преподавателей']]]) },
+                { k: 'payments', n: ["To'lovlar", 'Payments', 'Платежи'], p: [['view', ["To'lovlarni ko'ra olsin", 'View payments', 'Просмотр платежей']], ['add', ["To'lov qabul qila olsin", 'Accept payments', 'Принимать платежи']], ['edit', ["To'lovni o'zgartira olsin", 'Edit payments', 'Изменять платежи']], ['del', ["To'lovni o'chira olsin", 'Delete payments', 'Удалять платежи']], ['debtors', ["Qarzdorlar ro'yxatini ko'rsin", 'See debtors list', 'Видеть список должников']], ['remind', ["Qarzdorlarga eslatma yubora olsin", 'Send reminders to debtors', 'Отправлять напоминания должникам']], ['export', ["To'lovlarni yuklab olsin (CSV)", 'Download payments (CSV)', 'Скачивать платежи (CSV)']], ['sum', ["Umumiy tushum summasini ko'rsin", 'See total revenue', 'Видеть общую выручку']]] },
+                { k: 'reports', n: ['Hisobotlar', 'Reports', 'Отчёты'], p: [['view', ["Hisobotlarni ko'ra olsin", 'View reports', 'Просмотр отчётов']], ['finance', ["Moliyaviy hisobotni ko'rsin", 'See financial reports', 'Видеть финансовые отчёты']], ['export', ["Hisobotlarni yuklab olsin", 'Download reports', 'Скачивать отчёты']]] },
+                { k: 'chat', n: ['Chat', 'Chat', 'Чат'], p: [['use', ['Chatdan foydalana olsin', 'Use chat', 'Пользоваться чатом']], ['staff', ['Xodimlar bilan yozisha olsin', 'Chat with staff', 'Переписываться с сотрудниками']], ['teachers', ["O'qituvchilar bilan yozisha olsin", 'Chat with teachers', 'Переписываться с преподавателями']], ['groups', ["Guruh chatlarida qatnasha olsin", 'Take part in group chats', 'Участвовать в чатах групп']], ['create', ["Yangi chat guruhi yarata olsin", 'Create chat groups', 'Создавать групповые чаты']]] },
+                { k: 'positions', n: ['Lavozimlar', 'Positions', 'Должности'], p: crud('Lavozimlarni', 'positions', 'должностей').concat([['perms', ["Lavozim huquqlarini o'zgartira olsin", 'Change position permissions', 'Менять права должностей']]]) },
+                { k: 'staff', n: ['Xodimlar', 'Staff', 'Сотрудники'], p: crud('Xodimlarni', 'staff', 'сотрудников').concat([['salary', ["Xodim oyligini ko'rsin", 'See staff salary', 'Видеть зарплату сотрудников']], ['status', ["Xodim holatini o'zgartira olsin", 'Change staff status', 'Менять статус сотрудника']]]) },
+                { k: 'rooms', n: ['Xonalar', 'Rooms', 'Кабинеты'], p: crud('Xonalarni', 'rooms', 'кабинетов') },
+                { k: 'courses', n: ['Kurslar', 'Courses', 'Курсы'], p: crud('Kurslarni', 'courses', 'курсов').concat([['price', ["Kurs narxini o'zgartira olsin", 'Change course price', 'Менять цену курса']]]) },
+                { k: 'reasons', n: ['Sabablar', 'Reasons', 'Причины'], p: crud('Sabablarni', 'reasons', 'причин') },
+                { k: 'settings', n: ['Sozlamalar', 'Settings', 'Настройки'], p: [['view', ["Sozlamalar bo'limini ko'ra olsin", 'Open settings', 'Открывать настройки']], ['center', ["Markaz ma'lumotlarini o'zgartira olsin", 'Edit center details', 'Менять данные центра']], ['look', ["Mavzu va tilni o'zgartira olsin", 'Change theme and language', 'Менять тему и язык']], ['notif', ["Bildirishnoma sozlamalarini o'zgartira olsin", 'Change notification settings', 'Менять настройки уведомлений']], ['pay', ["To'lov usullarini sozlay olsin", 'Configure payment methods', 'Настраивать способы оплаты']], ['sec', ["Xavfsizlik sozlamalarini o'zgartira olsin", 'Change security settings', 'Менять настройки безопасности']], ['backup', ['Zaxira nusxa yuklab olsin', 'Download backup', 'Скачивать резервную копию']], ['reset', ['Sozlamalarni tiklay olsin', 'Reset settings', 'Сбрасывать настройки']]] },
+                { k: 'profile', n: ['Profil', 'Profile', 'Профиль'], p: [['view', ["Profilni ko'ra olsin", 'View profile', 'Просмотр профиля']], ['edit', ['Profilni tahrirlay olsin', 'Edit profile', 'Редактировать профиль']]] }
+            ];
+            const PERMS = MODS.reduce((a, m) => a.concat(m.p.map(p => m.k + '.' + p[0])), []);
+            const lab = a => a[li()];
+            // eski ma'lumotda (perms yo'q) huquqlar "daraja"dan hosil qilinadi
+            const MGR_DENY = ['positions.add', 'positions.edit', 'positions.del', 'positions.perms', 'settings.reset', 'settings.backup', 'settings.sec', 'staff.del', 'staff.salary'];
+            const TCH_OK = ['home.view', 'home.sched', 'students.view', 'groups.view', 'groups.schedule', 'teachers.view', 'chat.use', 'chat.staff', 'chat.teachers', 'chat.groups', 'profile.view', 'profile.edit', 'settings.look'];
+            const baseFor = lv => { const o = {}; PERMS.forEach(k => { o[k] = lv === 'full' ? true : lv === 'mgr' ? !MGR_DENY.includes(k) : lv === 'tch' ? TCH_OK.includes(k) : lv === 'view' ? (/\.view$/.test(k) && !/^(settings|positions)\./.test(k)) || k === 'chat.use' : false; }); return o; };
+            const ensurePerms = () => S.cat.positions.forEach(p => { if (!p.perms) p.perms = baseFor(p.level); else PERMS.forEach(k => { if (!(k in p.perms)) p.perms[k] = false; }); });
+            ensurePerms();
+            const LOCK = '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>', TICK = '<path d="M5 12.500l4.200 4.200L19 7"/>';
+            const chipHTML = (k, t, on) => `<button type="button" class="rp-chip ${on ? 'on' : 'off'}" data-rk="${k}" aria-pressed="${on}" title="${esc(t)} — ${on ? x('rpAllowed') : x('rpBlocked')}">${ic(on ? TICK : LOCK)}<span>${esc(t)}</span></button>`;
+            function edHTML(perms, needle) {
+                needle = (needle || '').trim().toLowerCase();
+                const out = MODS.map(m => {
+                    const items = m.p.filter(p => !needle || (lab(p[1]) + ' ' + lab(m.n)).toLowerCase().includes(needle));
+                    if (!items.length) return '';
+                    const on = m.p.filter(p => perms[m.k + '.' + p[0]]).length;
+                    return `<section class="rp-grp"><div class="rp-gh"><h4>${esc(lab(m.n))}</h4><em data-rmc="${m.k}">${on}/${m.p.length}</em><label class="sv-sw"><input type="checkbox" data-rmod="${m.k}" ${on === m.p.length ? 'checked' : ''}><i></i></label></div><div class="rp-chips">${items.map(p => chipHTML(m.k + '.' + p[0], lab(p[1]), !!perms[m.k + '.' + p[0]])).join('')}</div></section>`;
+                }).join('');
+                return out || `<div class="rp-none">${x('rpNoRes')}</div>`;
+            }
+            function chipFlip(el, v) {
+                el.classList.toggle('on', v); el.classList.toggle('off', !v); el.setAttribute('aria-pressed', v);
+                el.querySelector('svg').innerHTML = v ? TICK : LOCK;
+                el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
+            }
+            function edMeta(scope, perms) {
+                scope.querySelectorAll('[data-rmc]').forEach(e => { const m = MODS.find(z => z.k === e.dataset.rmc); e.textContent = m.p.filter(p => perms[m.k + '.' + p[0]]).length + '/' + m.p.length; });
+                scope.querySelectorAll('[data-rmod]').forEach(i => { const m = MODS.find(z => z.k === i.dataset.rmod); i.checked = m.p.every(p => perms[m.k + '.' + p[0]]); });
+            }
+            // chip yoki modul kaliti bosilganda (asosiy panel ham, "yangi lavozim" oynasi ham ishlatadi)
+            function edClick(e, scope, perms, after) {
+                const c = e.target.closest('[data-rk]'), m = e.target.closest('[data-rmod]');
+                if (c && scope.contains(c)) {
+                    const k = c.dataset.rk; perms[k] = !perms[k]; chipFlip(c, perms[k]); edMeta(scope, perms); after(); return true;
+                }
+                if (m && scope.contains(m)) {
+                    const mod = MODS.find(z => z.k === m.dataset.rmod), all = mod.p.every(p => perms[mod.k + '.' + p[0]]);
+                    mod.p.forEach(p => { perms[mod.k + '.' + p[0]] = !all; });
+                    scope.querySelectorAll('[data-rk^="' + mod.k + '."]').forEach(el => chipFlip(el, perms[el.dataset.rk]));
+                    edMeta(scope, perms); after(); return true;
+                }
+                return false;
+            }
+            const cntOf = p => PERMS.filter(k => p.perms[k]).length;
+            const staffOf = p => S.cat.staff.filter(s => s.pos === p.id).length;
+            let rpSel = null, rpQ = '';
+            const rpCur = () => S.cat.positions.find(p => p.id === rpSel) || S.cat.positions[0];
+            const rpListHTML = () => S.cat.positions.map(p => { const n = cntOf(p), c = COLS[[...String(p.name)].reduce((a, ch) => a + ch.charCodeAt(0), 0) % COLS.length];
+                return `<div class="rp-it ${p.id === rpSel ? 'on' : ''}" data-rp="sel" data-id="${p.id}"><span class="rp-av" style="background:${c}">${esc(String(p.name).charAt(0).toUpperCase())}</span><div class="rp-im"><b>${esc(p.name)}</b><small>${staffOf(p)} ${x('rpStaff')} · ${n}/${PERMS.length}</small><div class="rp-bar"><i style="width:${Math.round(n / PERMS.length * 100)}%"></i></div></div></div>`; }).join('');
+            const rpHeadHTML = () => { const p = rpCur();
+                return `<div class="rp-head"><div><h3>${esc(p.name)}</h3><p>${esc(p.note || x('rpHint'))}</p></div><div class="rp-hr"><span class="rp-cnt">${cntOf(p)}/${PERMS.length} ${x('rpPerm')}</span><button class="sv-ib" data-rp="edit" title="${x('cEdit')}">${ic('<path d="M4 20h4L19 9l-4-4L4 16z"/>')}</button><button class="sv-ib del" data-rp="del" title="${x('cDel')}">${ic('<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>')}</button></div></div>`; };
+            function rpPane() {
+                ensurePerms();
+                if (!S.cat.positions.length) return `<div class="sv-card"><div class="rp-none">${x('cNone')}</div><div class="sv-act"><button class="sv-btn" data-rp="add">+ ${x('cAdd')}</button></div></div>`;
+                if (!S.cat.positions.some(p => p.id === rpSel)) rpSel = S.cat.positions[0].id;
+                return `<div class="rp-wrap" id="rpRoot"><div class="sv-card"><div class="rp-lh"><h3>${x('rpList')}</h3><button class="sv-btn rp-add" data-rp="add">+ ${x('cAdd')}</button></div><div class="rp-list" id="rpList">${rpListHTML()}</div></div>
+                    <div class="sv-card"><div id="rpHead">${rpHeadHTML()}</div><div class="rp-tools"><input class="sv-q" data-rpq placeholder="${x('rpSearch')}" value="${esc(rpQ)}"><button class="sv-btn ghost" data-rp="allon">${x('rpOn')}</button><button class="sv-btn ghost" data-rp="alloff">${x('rpOff')}</button></div><div id="rpBody">${edHTML(rpCur().perms, rpQ)}</div></div></div>`;
+            }
+            PANES.positions = rpPane;
+            const rpMeta = () => { const h = document.getElementById('rpHead'), l = document.getElementById('rpList'); if (h) h.innerHTML = rpHeadHTML(); if (l) l.innerHTML = rpListHTML(); };
+            const rpBody = () => { const b = document.getElementById('rpBody'); if (b) { b.innerHTML = edHTML(rpCur().perms, rpQ); b.classList.remove('rp-fade'); void b.offsetWidth; b.classList.add('rp-fade'); } };
+            const rpSave = () => { persist(); rpMeta(); };
+            root.addEventListener('click', e => {
+                const r = e.target.closest('#rpRoot'), solo = e.target.closest('[data-rp="add"]');
+                if (!r && !solo) return;
+                if (r && edClick(e, r.querySelector('#rpBody'), rpCur().perms, rpSave)) return;
+                const a = e.target.closest('[data-rp]'); if (!a) return;
+                const k = a.dataset.rp;
+                if (k === 'sel') { rpSel = +a.dataset.id; rpMeta(); rpBody(); }
+                else if (k === 'add') rpAdd();
+                else if (k === 'edit') form('positions', rpSel);
+                else if (k === 'del') remove('positions', rpSel);
+                else if (k === 'allon' || k === 'alloff') { const p = rpCur(); PERMS.forEach(q => { p.perms[q] = k === 'allon'; }); persist(); rpMeta(); rpBody(); }
+            });
+            root.addEventListener('input', e => { if (e.target.hasAttribute('data-rpq')) { rpQ = e.target.value; const b = document.getElementById('rpBody'); if (b) b.innerHTML = edHTML(rpCur().perms, rpQ); } });
+            // ----- yangi lavozim: har bir huquqni alohida yoqish/bloklash -----
+            function rpAdd() {
+                const el = document.createElement('div'); el.className = 'clients-modal-backdrop open'; el.style.zIndex = 120;
+                const draft = {}; PERMS.forEach(k => { draft[k] = false; });
+                let needle = '';
+                const fromOpts = [['none', x('rpEmpty')], ['all', x('rpFull')]].concat(S.cat.positions.map(p => ['p' + p.id, x('rpCopy') + p.name]));
+                el.innerHTML = `<div class="clients-modal rp-modal" style="max-width:860px;width:100%;padding:28px 30px;max-height:calc(100vh - 40px);display:flex;flex-direction:column;overflow:hidden"><h2>${x('rpNew')}</h2>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px"><div class="clients-modal-field"><label>${x('rpName')} *</label><input data-f="name" type="text" autocomplete="off"></div><div class="clients-modal-field"><label>${x('rpFrom')}</label><select data-f="from">${fromOpts.map(o => `<option value="${o[0]}">${esc(o[1])}</option>`).join('')}</select></div><div class="clients-modal-field" style="grid-column:1/-1"><label>${x('fNote')}</label><input data-f="note" type="text" autocomplete="off"></div></div>
+                    <div class="rp-tools"><input class="sv-q" data-rdq placeholder="${x('rpSearch')}"><button class="sv-btn ghost" data-rdm="on">${x('rpOn')}</button><button class="sv-btn ghost" data-rdm="off">${x('rpOff')}</button></div>
+                    <div class="rp-scroll" id="dmBody">${edHTML(draft, '')}</div><div class="sv-err" id="svFErr"></div>
+                    <div class="clients-modal-actions"><button class="clients-modal-cancel" data-x>${x('cCancel')}</button><button class="clients-modal-save" data-ok>${x('save')}</button></div></div>`;
+                document.body.appendChild(el);
+                const body = el.querySelector('#dmBody'), nm = el.querySelector('[data-f="name"]'); nm.focus();
+                const redraw = () => { body.innerHTML = edHTML(draft, needle); };
+                const bad = m => { const e2 = el.querySelector('#svFErr'); e2.textContent = m; e2.style.display = 'block'; };
+                const submit = () => {
+                    const name = nm.value.trim();
+                    if (!name) return bad(x('cReq'));
+                    if (S.cat.positions.some(r => String(r.name).toLowerCase() === name.toLowerCase())) return bad(x('cDup'));
+                    const id = S.cat.positions.reduce((m, r) => Math.max(m, r.id), 0) + 1;
+                    S.cat.positions.push({ id, name, level: 'custom', note: el.querySelector('[data-f="note"]').value.trim(), perms: Object.assign({}, draft) });
+                    rpSel = id; sync(); el.remove(); pane(); toast('success', `${name}: ${x('cAdded')}`);
+                };
+                el.addEventListener('click', e => {
+                    if (edClick(e, body, draft, () => { })) return;
+                    if (e.target === el || e.target.hasAttribute('data-x')) el.remove();
+                    else if (e.target.hasAttribute('data-ok')) submit();
+                    else if (e.target.dataset.rdm) { PERMS.forEach(k => { draft[k] = e.target.dataset.rdm === 'on'; }); redraw(); }
+                });
+                el.addEventListener('input', e => { if (e.target.hasAttribute('data-rdq')) { needle = e.target.value; redraw(); } });
+                el.addEventListener('change', e => {
+                    if (e.target.dataset.f !== 'from') return;
+                    const v = e.target.value, src = v.startsWith('p') ? S.cat.positions.find(p => p.id === +v.slice(1)) : null;
+                    PERMS.forEach(k => { draft[k] = v === 'all' ? true : src ? !!src.perms[k] : false; }); redraw();
+                });
+                el.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target === nm) { e.preventDefault(); submit(); } else if (e.key === 'Escape') { e.stopPropagation(); el.remove(); } });
+            }
+            // boshqa modullar uchun: can('Administrator' | id, 'students.add') -> true/false
+            window.can = (pos, key) => { ensurePerms(); const p = S.cat.positions.find(r => r.id === pos || String(r.name).toLowerCase() === String(pos).toLowerCase()); return !!(p && p.perms[key]); };
+            window.positionPerms = id => { ensurePerms(); const p = S.cat.positions.find(r => r.id === id); return p ? Object.assign({}, p.perms) : null; };
             const sync = () => { persist(); if (typeof window.renderChat === 'function') window.renderChat(); };
             function form(key, id) {
                 const cfg = CAT[key], row = id ? S.cat[key].find(r => r.id === id) : null;
@@ -7743,7 +7969,7 @@
                 const arr = S.cat[key], i = arr.findIndex(r => r.id === id), item = arr[i]; if (!item) return;
                 if (key === 'positions' && S.cat.staff.some(s => s.pos === id)) return toast('warning', x('cUsed'));
                 arr.splice(i, 1); sync(); pane();
-                if (window.toast) window.toast.info(`${item.name} ${x('cGone')}`, { force: true, duration: 7000, action: { label: x('cUndo'), onClick() { arr.splice(Math.min(i, arr.length), 0, item); sync(); if (document.getElementById('svRows')) pane(); } } });
+                if (window.toast) window.toast.info(`${item.name} ${x('cGone')}`, { force: true, duration: 7000, action: { label: x('cUndo'), onClick() { arr.splice(Math.min(i, arr.length), 0, item); sync(); if (document.getElementById('svRows') || document.getElementById('rpRoot')) pane(); } } });
             }
             root.addEventListener('click', e => {
                 const c = e.target.closest('[data-c]'); if (!c) return;
@@ -7890,7 +8116,7 @@
                 clearTimeout(c.rt); c.rt = setTimeout(() => { c.typing = true; if (cur === c.id) msgs(); setTimeout(() => {
                     c.typing = false; const th = typeof window.allTeachers === 'function' ? window.allTeachers() : [], who = c.type === 'groups' ? (th[0] ? th[0].name : 'Ustoz') : c.name;
                     c.msgs.push({ me: false, who, text: REPLY[Math.floor(Math.random() * REPLY.length)], t: Date.now() }); c.t = Date.now();
-                    if (panel.classList.contains('open') && cur === c.id) msgs(); else c.unread++;
+                    if (panel.classList.contains('open') && cur === c.id) msgs(); else { c.unread++; if (!panel.classList.contains('open')) ctNotify(c, c.msgs[c.msgs.length - 1].text, c.type === 'groups' ? who : ''); }
                     list(); badge(); }, 1400); }, 700);
             }
             function newGroup() {
@@ -7907,7 +8133,7 @@
                     panel.classList.add('inchat'); if (window.toast) window.toast.success(t.made(n));
                 });
             }
-            const open = () => { clearTimeout(panel._t); if (!panel.innerHTML) shell(); panel.classList.remove('closing'); panel.classList.add('open', 'opening'); fab.classList.add('open'); fab.classList.remove('pulse'); badge(); panel._t = setTimeout(() => panel.classList.remove('opening'), 1100); };
+            const open = () => { ctClear(); clearTimeout(panel._t); if (!panel.innerHTML) shell(); panel.classList.remove('closing'); panel.classList.add('open', 'opening'); fab.classList.add('open'); fab.classList.remove('pulse'); badge(); panel._t = setTimeout(() => panel.classList.remove('opening'), 1100); };
             const close = () => { if (!panel.classList.contains('open')) return; clearTimeout(panel._t); panel.classList.remove('open', 'opening'); panel.classList.add('closing'); fab.classList.remove('open'); cur = null; badge(); panel._t = setTimeout(() => panel.classList.remove('closing', 'inchat'), 440); };
             fab.addEventListener('click', () => panel.classList.contains('open') ? close() : open());
             panel.addEventListener('click', e => {
@@ -7926,6 +8152,81 @@
             panel.addEventListener('keydown', e => { if (e.target.id === 'chTxt' && e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
             document.addEventListener('keydown', e => { if (e.key === 'Escape' && panel.classList.contains('open') && !document.querySelector('.clients-modal-backdrop.open')) { if (panel.classList.contains('inchat')) { panel.classList.remove('inchat'); cur = null; list(); } else close(); } });
             window.openChat = open; window.renderChat = () => { if (panel.classList.contains('open')) shell(); };
+
+            // ===== CHAT TOASTLARI: kelgan xabar -> pastki o'ng burchakda toast =====
+            // 1 ta toast bo'lsa — faqat toast; 2 ta va undan ko'p bo'lsa — tepasida "Hammasini o'qish" tugmasi.
+            const TL = {
+                uz: { readAll: "Hammasini o'qish", now: 'hozir', close: 'Yopish' },
+                en: { readAll: 'Mark all as read', now: 'now', close: 'Close' },
+                ru: { readAll: 'Прочитать все', now: 'сейчас', close: 'Закрыть' }
+            };
+            const tl = () => TL[document.documentElement.getAttribute('lang')] || TL.uz;
+            const ctStack = document.createElement('div');
+            ctStack.className = 'ct-stack'; ctStack.setAttribute('aria-live', 'polite');
+            ctStack.innerHTML = '<div class="ct-all"><div class="ct-all-in"><button type="button" class="ct-all-btn"></button></div></div><div class="ct-list"></div>';
+            document.body.appendChild(ctStack);
+            const ctAll = ctStack.querySelector('.ct-all'), ctBtn = ctStack.querySelector('.ct-all-btn'), ctList = ctStack.querySelector('.ct-list');
+            const ctItems = [], CT_MAX = 5, CT_AUTO = 10000;
+            if (window.ResizeObserver) new ResizeObserver(() => document.body.style.setProperty('--ct-h', ctStack.offsetHeight + 'px')).observe(ctStack);
+
+            function ctSync() {
+                const n = ctItems.length;
+                ctAll.classList.toggle('show', n >= 2);
+                if (n >= 2) ctBtn.innerHTML = ic('<path d="M2 12.5l4.5 4.5L15 8.500"/><path d="M11 15.500l1.500 1.500L22 8"/>') + tl().readAll + ' <em>' + n + '</em>';
+                document.body.classList.toggle('ct-on', n > 0);
+            }
+            function ctRemove(it) {
+                if (it.gone) return; it.gone = true; clearTimeout(it.timer);
+                const i = ctItems.indexOf(it); if (i > -1) ctItems.splice(i, 1);
+                ctSync();
+                it.wrap.style.height = it.wrap.offsetHeight + 'px'; void it.wrap.offsetHeight;
+                it.wrap.classList.add('out');
+                setTimeout(() => it.wrap.remove(), 420);
+            }
+            function ctClear() { ctItems.slice().forEach((it, i) => setTimeout(() => ctRemove(it), i * 70)); }
+            function ctNotify(c, text, who) {
+                if (window.toastPrefs && window.toastPrefs.off) return;
+                while (ctItems.length >= CT_MAX) ctRemove(ctItems[0]);
+                const wrap = document.createElement('div'); wrap.className = 'ct-wrap';
+                const el = document.createElement('div'); el.className = 'ct'; el.setAttribute('role', 'status');
+                el.innerHTML = `<div class="ct-head"><span class="ct-av" style="background:${col(c.name)}">${esc(ini(c.name))}</span><strong>${esc(c.name)}</strong><small>${tl().now}</small><button type="button" class="ct-x" aria-label="${tl().close}">${ic('<path d="M6 6l12 12M18 6L6 18"/>')}</button></div><div class="ct-body">${who ? '<b>' + esc(who) + ':</b> ' : ''}${esc(text)}</div>`;
+                const it = { id: c.id, wrap, timer: 0, gone: false };
+                const arm = ms => { clearTimeout(it.timer); it.timer = setTimeout(() => ctRemove(it), ms); };
+                el.addEventListener('mouseenter', () => clearTimeout(it.timer));
+                el.addEventListener('mouseleave', () => arm(4000));
+                el.addEventListener('click', e => { if (e.target.closest('.ct-x')) ctRemove(it); else openConv(c.id); });
+                wrap.appendChild(el); ctList.appendChild(wrap); ctItems.push(it); ctSync();
+                requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('in')));
+                arm(CT_AUTO);
+            }
+            function readAll() {
+                Object.values(CH).forEach(c => { c.unread = 0; });
+                ctClear(); list(); badge();
+            }
+            function openConv(id) {
+                const c = CH[id]; if (!c) return;
+                tab = c.type; q = ''; onlyUn = false; cur = id; c.unread = 0;
+                open(); shell(); panel.classList.add('inchat'); badge();
+                setTimeout(() => { const ta = $('chTxt'); if (ta) ta.focus(); }, 350);
+            }
+            ctBtn.addEventListener('click', readAll);
+
+            // tashqaridan xabar qabul qilish uchun (backend/WebSocket ulanganda): chatReceive('s:Foziljon', 'Salom', 'Foziljon')
+            window.chatReceive = (id, text, who) => {
+                const c = CH[id]; if (!c || !text) return;
+                c.msgs.push({ me: false, who: who || c.name, text, t: Date.now() }); c.t = Date.now();
+                const isOpen = panel.classList.contains('open');
+                if (isOpen && cur === id) msgs(); else { c.unread++; if (!isOpen) ctNotify(c, text, c.type === 'groups' ? (who || '') : ''); }
+                list(); badge();
+            };
+
+            // sahifa ochilganda o'qilmagan xabarlar toast bo'lib chiqadi
+            setTimeout(() => {
+                if (panel.classList.contains('open')) return;
+                Object.values(CH).filter(c => c.unread && c.msgs.length).forEach((c, i) => setTimeout(() => {
+                    const last = c.msgs[c.msgs.length - 1]; if (!panel.classList.contains('open')) ctNotify(c, last.text, c.type === 'groups' ? last.who : '');
+                }, i * 500));
+            }, 1500);
             badge();
         })();
     </script>
