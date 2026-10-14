@@ -2638,6 +2638,88 @@
         .pm-act-btn.primary { background: var(--highlight-bg); color: var(--highlight-fg); border-color: transparent; }
         .pm-act-btn.primary:hover { opacity: .88; }
         .pm-act-btn + .pm-act-btn { margin-left: 6px; }
+        a.pm-act-btn { display: inline-block; text-decoration: none; }
+        /* ===== BOSILADIGAN HAVOLALAR (guruh / o'quvchi / o'qituvchi) ===== */
+        .go-link { cursor: pointer; transition: color .15s ease; }
+        .go-link:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+        .st-user.go-link:hover { text-decoration: none; }
+        .st-user.go-link:hover > :not(.st-avatar) { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+        .pm-feed-row.go-link:hover .pm-feed-main div { color: var(--accent); text-decoration: underline; }
+        .go-card { cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; }
+        .go-card:hover { transform: translateY(-2px); }
+        .sch-card[data-l-title] { cursor: pointer; }
+        .sch-card[data-l-title]:hover { filter: brightness(1.08); }
+        /* ===== GURUH TUGMASI (pill) ===== */
+        .go-pill { display: inline-flex; align-items: center; gap: 7px; max-width: 100%; padding: 4px 11px 4px 9px; border-radius: 999px; font-size: 12.5px; font-weight: 600; line-height: 1.35; white-space: nowrap; cursor: pointer; vertical-align: middle;
+            color: var(--menu-selected-fg); background: linear-gradient(135deg, rgba(47, 111, 224, .20), rgba(79, 70, 229, .14)); border: 1px solid rgba(111, 163, 245, .32);
+            transition: background .2s ease, color .2s ease, transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+        .go-pill::before { content: ''; width: 13px; height: 13px; flex-shrink: 0; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3 3 8l9 5 9-5-9-5z'/%3E%3Cpath d='M3 12l9 5 9-5'/%3E%3Cpath d='M3 16l9 5 9-5'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3 3 8l9 5 9-5-9-5z'/%3E%3Cpath d='M3 12l9 5 9-5'/%3E%3Cpath d='M3 16l9 5 9-5'/%3E%3C/svg%3E") center / contain no-repeat; }
+        .go-pill::after { content: '\203A'; font-size: 16px; line-height: 1; opacity: .65; margin-left: 1px; transition: transform .2s ease, opacity .2s ease; }
+        .go-pill:hover { color: #fff; background: linear-gradient(135deg, #2F6FE0, #4F46E5); border-color: transparent; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(47, 111, 224, .38); }
+        .go-pill:hover::after { transform: translateX(3px); opacity: 1; }
+        .go-pill:active { transform: translateY(0) scale(.97); }
+        .go-pill.lg { padding: 9px 16px 9px 13px; font-size: 15px; gap: 9px; }
+        .go-pill.lg::before { width: 17px; height: 17px; }
+        /* ===== O'QUVCHI PROFILI (alohida sahifa) ===== */
+        .sp-top { margin-bottom: 14px; }
+        .sp-hero { position: relative; border-radius: 22px; overflow: hidden; background: var(--bg-panel); color: var(--fg-panel); border: 1px solid var(--panel-border); box-shadow: var(--block-shadow); margin-bottom: 18px; }
+        .sp-hero-bg { height: 104px; background: radial-gradient(circle at 12% 20%, rgba(255, 255, 255, .22), transparent 42%), radial-gradient(circle at 88% 90%, rgba(255, 255, 255, .14), transparent 40%), linear-gradient(120deg, #2F6FE0 0%, #4F46E5 58%, #7C3AED 100%); }
+        .sp-hero-body { display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap; padding: 0 26px 24px; }
+        .sp-avatar { width: 96px; height: 96px; border-radius: 28px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; letter-spacing: .5px; color: #fff; margin-top: -46px;
+            background: linear-gradient(135deg, #3B82F6, #6366F1); border: 5px solid var(--bg-panel); box-shadow: 0 10px 26px rgba(47, 111, 224, .45); }
+        .sp-id { flex: 1; min-width: 220px; padding-top: 16px; }
+        .sp-id h1 { font-size: 28px; font-weight: 800; margin: 0 0 10px; letter-spacing: .2px; color: var(--fg-panel); }
+        .sp-chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+        .sp-chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px; font-size: 12.5px; font-weight: 600; color: var(--fg-panel); background: var(--hover-bg); border: 1px solid var(--panel-border); text-decoration: none; }
+        .sp-chip svg { width: 14px; height: 14px; opacity: .8; }
+        a.sp-chip:hover { background: var(--menu-selected-bg); color: var(--menu-selected-fg); }
+        .sp-actions { display: flex; gap: 10px; flex-wrap: wrap; padding-top: 16px; }
+        .sp-actions .st-ghost-btn { color: var(--fg-panel); background: var(--hover-bg); border: 1px solid var(--panel-border); }
+        .sp-actions .st-ghost-btn:hover { background: var(--menu-selected-bg); color: var(--menu-selected-fg); }
+        .sp-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 18px; align-items: start; }
+        .sp-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 18px; }
+        .sp-stat { position: relative; padding: 16px 18px; border-radius: 18px; background: var(--bg-panel); color: var(--fg-panel); border: 1px solid var(--panel-border); box-shadow: var(--block-shadow); overflow: hidden; }
+        .sp-stat::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent); }
+        .sp-stat.neg::before { background: #F87171; } .sp-stat.pos::before { background: #4ADE80; }
+        .sp-stat small { display: block; font-size: 12px; color: var(--fg-muted); margin-bottom: 6px; }
+        .sp-stat b { font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; }
+        .sp-stat b i { font-style: normal; font-size: 12px; font-weight: 500; color: var(--fg-muted); }
+        .sp-stat.neg b { color: #F87171; } .sp-stat.pos b { color: #4ADE80; }
+        .sp-card { background: var(--bg-panel); color: var(--fg-panel); border: 1px solid var(--panel-border); border-radius: 20px; padding: 20px 22px; box-shadow: var(--block-shadow); margin-bottom: 18px; }
+        .sp-card h3 { font-size: 15px; font-weight: 700; margin: 0 0 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .sp-card h3 small { font-size: 12px; font-weight: 500; color: var(--fg-muted); }
+        .sp-tl { display: flex; flex-direction: column; max-height: 420px; overflow-y: auto; padding-right: 4px; }
+        .sp-tl-row { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--panel-border); }
+        .sp-tl-row:last-child { border-bottom: none; }
+        .sp-dot { width: 34px; height: 34px; border-radius: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: rgba(74, 222, 128, .14); color: #4ADE80; }
+        .sp-dot svg { width: 17px; height: 17px; }
+        .sp-tl-main { flex: 1; min-width: 0; }
+        .sp-tl-main b { display: block; font-size: 15px; color: #4ADE80; font-variant-numeric: tabular-nums; }
+        .sp-tl-main small { font-size: 12.5px; color: var(--fg-muted); }
+        .sp-tl-date { font-size: 12.5px; color: var(--fg-muted); white-space: nowrap; }
+        .sp-empty { padding: 26px 8px; text-align: center; color: var(--fg-muted); font-size: 14px; }
+        .sp-gname { margin-bottom: 14px; }
+        .sp-dl { display: flex; flex-direction: column; gap: 2px; margin: 0 0 14px; }
+        .sp-dl > div { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px dashed var(--panel-border); font-size: 13.5px; }
+        .sp-dl > div:last-child { border-bottom: none; }
+        .sp-dl dt { color: var(--fg-muted); } .sp-dl dd { font-weight: 600; text-align: right; }
+        .sp-fill { height: 8px; border-radius: 8px; background: var(--hover-bg); overflow: hidden; margin-top: 6px; }
+        .sp-fill i { display: block; height: 100%; border-radius: 8px; background: linear-gradient(90deg, #6FA8FF, #4F46E5); }
+        .sp-fill-lbl { display: flex; justify-content: space-between; font-size: 12px; color: var(--fg-muted); }
+        .sp-debt { display: flex; flex-direction: column; gap: 10px; border-color: rgba(248, 113, 113, .35); background: linear-gradient(180deg, rgba(248, 113, 113, .10), transparent 70%), var(--bg-panel); }
+        .sp-debt.ok { border-color: rgba(74, 222, 128, .3); background: linear-gradient(180deg, rgba(74, 222, 128, .09), transparent 70%), var(--bg-panel); }
+        .sp-debt small { color: var(--fg-muted); font-size: 12.5px; }
+        .sp-debt b { font-size: 24px; font-weight: 800; color: #F87171; font-variant-numeric: tabular-nums; }
+        .sp-debt.ok b { color: #4ADE80; font-size: 18px; }
+        @media (max-width: 980px) { .sp-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) { .sp-hero-body { padding: 0 18px 20px; } .sp-avatar { width: 80px; height: 80px; font-size: 26px; border-radius: 24px; } .sp-id h1 { font-size: 22px; } .sp-actions { width: 100%; } .sp-actions > * { flex: 1; justify-content: center; } }
+        a.db-call { padding: 6px 9px; vertical-align: middle; }
+        a.db-call svg { width: 15px; height: 15px; display: block; }
+        .db-sev { display: inline-block; margin-left: 8px; padding: 2px 9px; border-radius: 20px; font-size: 11.5px; font-weight: 700; white-space: nowrap; }
+        .db-sev.low { background: rgba(245, 185, 66, .16); color: #F5B942; }
+        .db-sev.mid { background: rgba(251, 146, 60, .18); color: #FB923C; }
+        .db-sev.high { background: rgba(248, 113, 113, .18); color: #F87171; }
+        .clients-head-text p { margin-top: 6px; font-size: 14px; color: var(--fg-page-muted); }
         .pm-total-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--panel-border); font-size: 13px; color: var(--fg-muted); }
         .pm-total-row b { color: var(--fg-panel); font-size: 15px; font-variant-numeric: tabular-nums; }
         .pm-err { color: #F87171; font-size: 12.5px; display: none; margin-top: 4px; }
@@ -4024,7 +4106,8 @@
         @media (max-width: 640px) {
             #studentsRoot .payments-table-wrap,
             #teachersRoot .payments-table-wrap,
-            #paymentsRoot .payments-table-wrap {
+            #paymentsRoot .payments-table-wrap,
+            #debtorsRoot .payments-table-wrap {
                 max-height: none;
                 overflow: visible;
                 border: none;
@@ -4032,25 +4115,30 @@
             }
             #studentsRoot .payments-card,
             #teachersRoot .payments-card,
-            #paymentsRoot .payments-card {
+            #paymentsRoot .payments-card,
+            #debtorsRoot .payments-card {
                 padding: 12px 10px 12px;
             }
             #studentsRoot .payments-table,
             #teachersRoot .payments-table,
             #paymentsRoot .payments-table,
+            #debtorsRoot .payments-table,
             #studentsRoot .payments-table tbody,
             #teachersRoot .payments-table tbody,
-            #paymentsRoot .payments-table tbody {
+            #paymentsRoot .payments-table tbody,
+            #debtorsRoot .payments-table tbody {
                 display: block;
                 width: 100%;
             }
             #studentsRoot .payments-table thead,
             #teachersRoot .payments-table thead,
-            #paymentsRoot .payments-table thead { display: none; }
+            #paymentsRoot .payments-table thead,
+            #debtorsRoot .payments-table thead { display: none; }
 
             #studentsRoot .payments-table tr,
             #teachersRoot .payments-table tr,
-            #paymentsRoot .payments-table tr {
+            #paymentsRoot .payments-table tr,
+            #debtorsRoot .payments-table tr {
                 display: grid;
                 grid-template-columns: repeat(2, minmax(0, 1fr));
                 gap: 10px 12px;
@@ -4062,7 +4150,8 @@
             }
             #studentsRoot .payments-table td,
             #teachersRoot .payments-table td,
-            #paymentsRoot .payments-table td {
+            #paymentsRoot .payments-table td,
+            #debtorsRoot .payments-table td {
                 display: flex;
                 flex-direction: column;
                 gap: 2px;
@@ -4075,10 +4164,12 @@
             }
             #studentsRoot .payments-table td.col-hide-sm,
             #teachersRoot .payments-table td.col-hide-sm,
-            #paymentsRoot .payments-table td.col-hide-sm { display: flex; }
+            #paymentsRoot .payments-table td.col-hide-sm,
+            #debtorsRoot .payments-table td.col-hide-sm { display: flex; }
             #studentsRoot .payments-table td::before,
             #teachersRoot .payments-table td::before,
-            #paymentsRoot .payments-table td::before {
+            #paymentsRoot .payments-table td::before,
+            #debtorsRoot .payments-table td::before {
                 content: attr(data-label);
                 font-size: 10.5px;
                 font-weight: 700;
@@ -4089,21 +4180,26 @@
             #studentsRoot .payments-table td[data-label=""]::before,
             #teachersRoot .payments-table td[data-label=""]::before,
             #paymentsRoot .payments-table td[data-label=""]::before,
+            #debtorsRoot .payments-table td[data-label=""]::before,
             #studentsRoot .payments-table td.c-user::before,
             #teachersRoot .payments-table td.c-user::before,
             #paymentsRoot .payments-table td.c-user::before,
+            #debtorsRoot .payments-table td.c-user::before,
             #studentsRoot .payments-table td.c-act::before,
             #teachersRoot .payments-table td.c-act::before,
-            #paymentsRoot .payments-table td.c-act::before { display: none; }
+            #paymentsRoot .payments-table td.c-act::before,
+            #debtorsRoot .payments-table td.c-act::before { display: none; }
 
             /* ism — kartaning tepasida, to'liq kenglikda */
             #studentsRoot .payments-table td.c-user,
             #teachersRoot .payments-table td.c-user,
-            #paymentsRoot .payments-table td.c-user { grid-column: 1 / -1; order: -2; font-size: 15px; font-weight: 600; }
+            #paymentsRoot .payments-table td.c-user,
+            #debtorsRoot .payments-table td.c-user { grid-column: 1 / -1; order: -2; font-size: 15px; font-weight: 600; }
             /* amallar tugmalari — pastda, o'ng tomonda */
             #studentsRoot .payments-table td.c-act,
             #teachersRoot .payments-table td.c-act,
-            #paymentsRoot .payments-table td.c-act {
+            #paymentsRoot .payments-table td.c-act,
+            #debtorsRoot .payments-table td.c-act {
                 grid-column: 1 / -1;
                 order: 99;
                 flex-direction: row;
@@ -4117,19 +4213,26 @@
             }
             #studentsRoot .payments-table td[colspan],
             #teachersRoot .payments-table td[colspan],
-            #paymentsRoot .payments-table td[colspan] { grid-column: 1 / -1; text-align: center; }
+            #paymentsRoot .payments-table td[colspan],
+            #debtorsRoot .payments-table td[colspan] { grid-column: 1 / -1; text-align: center; }
             #studentsRoot .payments-table td > .st-badge,
             #teachersRoot .payments-table td > .st-badge,
             #paymentsRoot .payments-table td > .st-badge,
+            #debtorsRoot .payments-table td > .st-badge,
             #paymentsRoot .payments-table td > .pm-method,
+            #debtorsRoot .payments-table td > .pm-method,
             #paymentsRoot .payments-table td > .pm-month,
-            #paymentsRoot .payments-table td > .pm-no { align-self: flex-start; }
+            #debtorsRoot .payments-table td > .pm-month,
+            #paymentsRoot .payments-table td > .pm-no,
+            #debtorsRoot .payments-table td > .pm-no { align-self: flex-start; }
             #studentsRoot .payments-table td.num,
             #teachersRoot .payments-table td.num,
-            #paymentsRoot .payments-table td.num { text-align: left; }
+            #paymentsRoot .payments-table td.num,
+            #debtorsRoot .payments-table td.num { text-align: left; }
             #studentsRoot .st-act,
             #teachersRoot .st-act,
-            #paymentsRoot .st-act { width: 40px; height: 40px; }
+            #paymentsRoot .st-act,
+            #debtorsRoot .st-act { width: 40px; height: 40px; }
         }
 
         @media (max-width: 380px) {
@@ -4482,6 +4585,14 @@
                     <path d="M3 10h18M7 15h4" />
                 </svg>
                 <span class="label" data-i18n="nav.payments">To'lovlar</span>
+            </li>
+            <li class="nav-item" data-i18n-label="nav.debtors" data-view="debtors">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="8" r="3" />
+                    <path d="M3 20c0-3 2.5-5 6-5s6 2 6 5" />
+                    <line x1="16" y1="9" x2="22" y2="9" />
+                </svg>
+                <span class="label" data-i18n="nav.debtors">Qarzdorlar</span>
             </li>
             <li class="nav-item" data-i18n-label="nav.settings" data-view="settings">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -5118,6 +5229,14 @@
                 <div id="paymentsRoot"></div>
             </div>
 
+            <div class="content-view" data-view="student">
+                <div id="studentProfileRoot"></div>
+            </div>
+
+            <div class="content-view" data-view="debtors">
+                <div id="debtorsRoot"></div>
+            </div>
+
             <div class="content-view" data-view="settings">
                 <div id="settingsRoot"></div>
             </div>
@@ -5307,8 +5426,9 @@
 
         function renderStatCards() {
             const wrap = document.getElementById('statCards');
+            const CARD_VIEWS = { 'dash.clients': 'clients', 'dash.activeStudents': 'students', 'dash.groups': 'groups', 'dash.revenue': 'payments', 'dash.teachers': 'teachers', 'dash.debtors': 'debtors' };
             wrap.innerHTML = STAT_CARDS.map(c => `
-                <div class="stat-card">
+                <div class="stat-card go-card" data-go-view="${CARD_VIEWS[c.labelKey] || ''}">
                     <div class="stat-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${c.icon}</svg>
                     </div>
@@ -5549,15 +5669,19 @@
             renderedDayKey = dayKey(today);
             currentPayments = getTodayPayments(today);
 
-            document.getElementById('payTableBody').innerHTML = currentPayments.map(r => `
+            const realStudents = typeof window.allStudents === 'function' ? window.allStudents() : [];
+            document.getElementById('payTableBody').innerHTML = currentPayments.map(r => {
+                const real = realStudents.find(st => st.name === r.student);
+                if (real) r = Object.assign({}, r, { group: real.group });
+                return `
                 <tr>
                     <td class="muted">${r.time}</td>
-                    <td>${r.student}</td>
-                    <td class="col-hide-sm muted">${r.group}</td>
+                    <td><span class="go-link" data-go-sname="${escapeHtml(r.student)}">${r.student}</span></td>
+                    <td class="col-hide-sm muted"><span class="go-pill" data-go-group="${escapeHtml(r.group)}">${r.group}</span></td>
                     <td class="col-hide-sm muted" data-i18n="${r.methodKey}"></td>
                     <td class="num"><strong>${formatNumber(r.amount)}</strong> <span class="muted pay-cur" data-i18n="pay.currency"></span></td>
                 </tr>
-            `).join('');
+            `; }).join('');
 
             const totalAmount = currentPayments.reduce((a, r) => a + r.amount, 0);
             document.getElementById('payTotalCount').textContent = currentPayments.length;
@@ -5998,6 +6122,7 @@
             if (name === 'students' && typeof renderStudents === 'function') renderStudents();
             if (name === 'teachers' && typeof renderTeachers === 'function') { if (window.closeTeacherDetail) window.closeTeacherDetail(); renderTeachers(); }
             if (name === 'payments' && typeof renderPaymentsView === 'function') renderPaymentsView();
+            if (name === 'debtors' && typeof renderDebtorsView === 'function') renderDebtorsView();
             if (name === 'settings' && typeof renderSettings === 'function') renderSettings();
             if (name === 'clients' && typeof updateClientsScrollButtons === 'function') {
                 if (typeof requestAnimationFrame === 'function') {
@@ -6013,6 +6138,12 @@
             const navItem = document.querySelector(`.nav-item[data-view="${view}"]`);
             if (navItem) navItem.classList.add('active');
         }
+
+        // Boshqa joydan (havola, modal) bo'limga o'tish
+        window.navTo = function (name) {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active', i.getAttribute('data-view') === name));
+            showView(name);
+        };
 
         function handleLogout() {
             const lang = document.documentElement.getAttribute('lang') || 'uz';
@@ -6322,6 +6453,7 @@
                 'nav.groups': 'Guruhlar',
                 'nav.teachers': "O'qituvchilar",
                 'nav.payments': "To'lovlar",
+                'nav.debtors': 'Qarzdorlar',
                 'nav.settings': 'Sozlamalar',
                 'nav.reports': 'Hisobotlar',
                 'nav.more': "Ko'proq",
@@ -6458,6 +6590,7 @@
                 'nav.groups': 'Groups',
                 'nav.teachers': 'Teachers',
                 'nav.payments': 'Payments',
+                'nav.debtors': 'Debtors',
                 'nav.settings': 'Settings',
                 'nav.reports': 'Reports',
                 'nav.more': 'More',
@@ -6594,6 +6727,7 @@
                 'nav.groups': 'Группы',
                 'nav.teachers': 'Преподаватели',
                 'nav.payments': 'Платежи',
+                'nav.debtors': 'Должники',
                 'nav.settings': 'Настройки',
                 'nav.reports': 'Отчёты',
                 'nav.more': 'Ещё',
@@ -6958,7 +7092,7 @@
                     const left = ((start - SCH_DAY_START) / SCH_DAY_RANGE * 100).toFixed(3);
                     const width = ((end - start) / SCH_DAY_RANGE * 100).toFixed(3);
                     const cat = SCH_CATS[l.cat] || SCH_CATS.beginner;
-                    return `<div class="sch-card sch-h-card" style="left:${left}%;width:${width}%;--cat-color:${cat.color};--cat-border:${cat.border};--cat-bg:${cat.bg}" title="${escapeHtml(l.title)} — ${escapeHtml(l.teacher)}, ${l.start}–${l.end}">
+                    return `<div class="sch-card sch-h-card" data-l-title="${escapeHtml(l.title)}" data-l-teacher="${escapeHtml(l.teacher)}" data-l-start="${l.start}" style="left:${left}%;width:${width}%;--cat-color:${cat.color};--cat-border:${cat.border};--cat-bg:${cat.bg}" title="${escapeHtml(l.title)} — ${escapeHtml(l.teacher)}, ${l.start}–${l.end}">
                         <div class="sch-card-head">
                             <span class="sch-card-time">${l.start}–${l.end}</span>
                             ${schCardBadge(l)}
@@ -6993,7 +7127,7 @@
                     const top = ((start - SCH_DAY_START) / SCH_DAY_RANGE * 100).toFixed(3);
                     const height = ((end - start) / SCH_DAY_RANGE * 100).toFixed(3);
                     const cat = SCH_CATS[l.cat] || SCH_CATS.beginner;
-                    return `<div class="sch-card sch-v-card" style="top:${top}%;height:${height}%;--cat-color:${cat.color};--cat-border:${cat.border};--cat-bg:${cat.bg}" title="${escapeHtml(l.title)} — ${escapeHtml(l.teacher)}, ${l.start}–${l.end}">
+                    return `<div class="sch-card sch-v-card" data-l-title="${escapeHtml(l.title)}" data-l-teacher="${escapeHtml(l.teacher)}" data-l-start="${l.start}" style="top:${top}%;height:${height}%;--cat-color:${cat.color};--cat-border:${cat.border};--cat-bg:${cat.bg}" title="${escapeHtml(l.title)} — ${escapeHtml(l.teacher)}, ${l.start}–${l.end}">
                         <div class="sch-card-head">
                             <span class="sch-card-time">${l.start}–${l.end}</span>
                             ${schCardBadge(l)}
@@ -7201,7 +7335,7 @@
                     </div></div>
                 <div class="gr-title"><h1>${escapeHtml(g.name)}</h1><span class="gr-status ${g.status}">${t['st_' + g.status]}</span></div>
                 <dl class="gr-info">
-                    <div><dt>${t.teacher}</dt><dd>${escapeHtml(g.teacher)}</dd></div>
+                    <div><dt>${t.teacher}</dt><dd><span class="go-link" data-go-teacher="${escapeHtml(g.teacher)}">${escapeHtml(g.teacher)}</span></dd></div>
                     <div><dt>${t.room}</dt><dd>${t.roomN} ${g.room}</dd></div>
                     <div><dt>${t.time}</dt><dd>${g.start} – ${g.end}</dd></div>
                     <div><dt>${t.days}</dt><dd>${daysText(g, t)}</dd></div>
@@ -7223,7 +7357,7 @@
                 const rows = studentsOf(g).filter(s => !q || s.name.toLowerCase().includes(q) || (qd && s.phone.replace(/\D/g, '').includes(qd)));
                 $('grStudTable').innerHTML = `<div class="payments-table-wrap" style="max-height:none"><table class="payments-table"><thead><tr>
                     <th>${t.cName}</th><th class="col-hide-sm">${t.cPhone}</th><th>${t.cStatus}</th><th class="num">${t.cBalance}</th><th>${t.cMove}</th></tr></thead><tbody>
-                    ${rows.map(s => `<tr><td><div class="st-user"><div class="st-avatar">${escapeHtml(clientInitials(s.name))}</div>${escapeHtml(s.name)}</div></td>
+                    ${rows.map(s => `<tr><td><div class="st-user go-link" data-go-student="${s.id}"><div class="st-avatar">${escapeHtml(clientInitials(s.name))}</div>${escapeHtml(s.name)}</div></td>
                         <td class="muted col-hide-sm">${escapeHtml(s.phone)}</td>
                         <td><span class="st-badge ${s.status}">${t['s_' + s.status]}</span></td>
                         <td class="num ${s.balance < 0 ? 'st-neg' : s.balance > 0 ? 'st-pos' : ''}">${s.balance < 0 ? '−' : ''}${money(Math.abs(s.balance))} <span class="pay-cur">${t.cur}</span></td>
@@ -7249,7 +7383,7 @@
                 grid.innerHTML = rows.length ? rows.map(g => {
                     const n = count(g), pct = Math.min(100, Math.round(n / g.cap * 100));
                     return `<div class="gr-card" data-id="${g.id}"><div class="gr-card-head">
-                        <div><div class="gr-name">${escapeHtml(g.name)}</div><div class="gr-sub">${escapeHtml(g.teacher)}</div></div>
+                        <div><div class="gr-name">${escapeHtml(g.name)}</div><div class="gr-sub"><span class="go-link" data-go-teacher="${escapeHtml(g.teacher)}">${escapeHtml(g.teacher)}</span></div></div>
                         <div class="gr-acts"><button class="st-act" data-act="edit" data-id="${g.id}" title="${t.edit}">${ic('<path d="M4 20h4L19 9l-4-4L4 16v4z"/>')}</button>
                         <button class="st-act del" data-act="del" data-id="${g.id}" title="${t.del}">${ic('<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>')}</button></div></div>
                         <dl class="gr-meta">
@@ -7491,8 +7625,8 @@
                 const th = (k, label, cls) => `<th ${k ? `data-sort="${k}"` : ''} class="${cls || ''}">${label}${f.sort === k ? (f.dir > 0 ? ' ▲' : ' ▼') : ''}</th>`;
                 document.getElementById('stTable').innerHTML = `<div class="payments-table-wrap"><table class="payments-table"><thead><tr>
                     ${th('name', t.name)}${th('phone', t.phone, 'col-hide-sm')}${th('group', t.group)}${th('status', t.status)}${th('balance', t.balance, 'num')}${th('date', t.joined, 'col-hide-sm')}<th></th></tr></thead><tbody>
-                    ${cur.map(s => `<tr><td><div class="st-user"><div class="st-avatar">${escapeHtml(clientInitials(s.name))}</div>${escapeHtml(s.name)}</div></td>
-                        <td class="muted col-hide-sm">${escapeHtml(s.phone)}</td><td>${escapeHtml(s.group)}</td>
+                    ${cur.map(s => `<tr><td><div class="st-user go-link" data-go-student="${s.id}"><div class="st-avatar">${escapeHtml(clientInitials(s.name))}</div>${escapeHtml(s.name)}</div></td>
+                        <td class="muted col-hide-sm">${escapeHtml(s.phone)}</td><td><span class="go-pill" data-go-group="${escapeHtml(s.group)}">${escapeHtml(s.group)}</span></td>
                         <td><span class="st-badge ${s.status}">${t['s_' + s.status]}</span></td>
                         <td class="num ${s.balance < 0 ? 'st-neg' : s.balance > 0 ? 'st-pos' : ''}">${s.balance < 0 ? '−' : ''}${money(s.balance)} <span class="pay-cur">${t.cur}</span></td>
                         <td class="muted col-hide-sm">${s.date}</td>
@@ -7581,6 +7715,7 @@
             window.moveStudentToGroup = (id, name) => { const x = ST.find(y => y.id === id); if (x) x.group = name; };
             window.renameStudentGroup = (a, b) => ST.forEach(x => { if (x.group === a) x.group = b; });
             window.renderStudents = shell;
+            window.editStudent = id => { if (window.navTo) window.navTo('students'); openModal(id); };
             shell();
         })();
 
@@ -7804,7 +7939,11 @@
             window.allTeachers = () => TH;
             window.closeTeacherDetail = () => { openId = null; };
             window.getOpenTeacherId = () => openId;
-            window.openTeacher = id => { openId = id; shell(); window.scrollTo(0, 0); };
+            window.openTeacher = id => {
+                if (!document.querySelector('.content-view[data-view="teachers"].active-view') && window.navTo) window.navTo('teachers');
+                openId = id; shell(); window.scrollTo(0, 0);
+                if (window.motionEnter) window.motionEnter('teachers');
+            };
             window.renderTeachers = shell;
             shell();
         })();
@@ -7900,7 +8039,11 @@
             const amt = (t, n) => money(n) + ' <span class="pm-cur">' + t.cur + '</span>';
 
             let PAY = [], nextPid = 1, editPayId = null, rcOpenId = null, cfAction = null;
-            const F = { tab: 'payments', period: 'thisMonth', q: '', method: '', group: '', teacher: '', page: 1, sort: 'date', dir: -1 };
+            let F = { tab: 'payments', period: 'thisMonth', q: '', method: '', group: '', teacher: '', page: 1, sort: 'date', dir: -1 };
+            const FD = { tab: 'debtors', period: 'all', q: '', method: '', group: '', teacher: '', page: 1, sort: 'debt', dir: -1 };
+            const droot = document.getElementById('debtorsRoot');
+            const host = document.createElement('div'); host.id = 'pmModalHost'; document.body.appendChild(host);
+            const withState = (st, fn) => { const old = F; F = st; try { return fn(); } finally { F = old; } };
 
             // ----- boshlang'ich (demo) ma'lumotlar -----
             (function seed() {
@@ -7967,7 +8110,7 @@
                     <button type="button" data-act="next" ${F.page >= pages ? 'disabled' : ''}>${t.next}</button></div></div>`;
             }
             const slice = rows => rows.slice((F.page - 1) * PER, F.page * PER);
-            const userCell = (name, sub) => `<div class="st-user"><div class="st-avatar">${escapeHtml(clientInitials(name))}</div>${sub ? `<div class="pm-feed-main"><div>${escapeHtml(name)}</div><small>${escapeHtml(sub)}</small></div>` : escapeHtml(name)}</div>`;
+            const userCell = (name, sub, sid) => `<div class="st-user${sid ? ' go-link' : ''}"${sid ? ` data-go-student="${sid}"` : ''}><div class="st-avatar">${escapeHtml(clientInitials(name))}</div>${sub ? `<div class="pm-feed-main"><div>${escapeHtml(name)}</div><small>${escapeHtml(sub)}</small></div>` : escapeHtml(name)}</div>`;
 
             // ----- TO'LOVLAR RO'YXATI -----
             const sorters = {
@@ -8007,8 +8150,8 @@
                 const body = slice(rows).map(p => `<tr class="pm-row" data-rc="${p.id}">
                     <td class="col-hide-sm"><span class="pm-no">${rcNo(p.id)}</span></td>
                     <td class="muted">${fmtDate(p.date)}</td>
-                    <td>${userCell(p.student)}</td>
-                    <td class="col-hide-sm">${escapeHtml(p.group)}</td>
+                    <td>${userCell(p.student, '', p.sid)}</td>
+                    <td class="col-hide-sm"><span class="go-pill" data-go-group="${escapeHtml(p.group)}">${escapeHtml(p.group)}</span></td>
                     <td class="col-hide-sm"><span class="pm-month">${monthLabel(t, p.forMonth || p.date.slice(0, 7))}</span></td>
                     <td>${methodChip(t, p.method)}</td>
                     <td class="num st-pos">+${money(p.amount)} <span class="pay-cur">${t.cur}</span></td>
@@ -8042,8 +8185,8 @@
                 const rows = debFiltered();
                 const body = slice(rows).map(s => {
                     const lp = lastPay(s.id);
-                    return `<tr><td>${userCell(s.name)}</td>
-                    <td class="muted col-hide-sm">${escapeHtml(s.phone)}</td><td>${escapeHtml(s.group)}</td>
+                    return `<tr><td>${userCell(s.name, '', s.id)}</td>
+                    <td class="muted col-hide-sm">${escapeHtml(s.phone)}</td><td><span class="go-pill" data-go-group="${escapeHtml(s.group)}">${escapeHtml(s.group)}</span></td>
                     <td class="muted col-hide-sm">${lp ? fmtDate(lp) : t.never}</td>
                     <td class="num st-neg">−${money(s.balance)} <span class="pay-cur">${t.cur}</span></td>
                     <td style="text-align:right;white-space:nowrap"><button class="pm-act-btn" data-act="remind" data-id="${s.id}">${t.remind}</button><button class="pm-act-btn primary" data-act="collect" data-id="${s.id}">${t.collect}</button></td></tr>`;
@@ -8076,9 +8219,9 @@
                 const metHTML = inc ? splitRows(metRows, inc) : emptyBox(t.noData);
                 const grpHTML = inc ? splitRows(grpRows, inc, 'green') : emptyBox(t.noData);
 
-                const payerMap = {}; P.forEach(p => { const o = payerMap[p.sid] || (payerMap[p.sid] = { name: p.student, group: p.group, total: 0, n: 0 }); o.total += p.amount; o.n++; });
+                const payerMap = {}; P.forEach(p => { const o = payerMap[p.sid] || (payerMap[p.sid] = { sid: p.sid, name: p.student, group: p.group, total: 0, n: 0 }); o.total += p.amount; o.n++; });
                 const top = Object.keys(payerMap).map(k => payerMap[k]).sort((a, b) => b.total - a.total).slice(0, 6);
-                const topHTML = top.length ? `<div class="pm-feed">${top.map(x => `<div class="pm-feed-row"><div class="st-avatar">${escapeHtml(clientInitials(x.name))}</div>
+                const topHTML = top.length ? `<div class="pm-feed">${top.map(x => `<div class="pm-feed-row go-link" data-go-student="${x.sid}"><div class="st-avatar">${escapeHtml(clientInitials(x.name))}</div>
                     <div class="pm-feed-main"><div>${escapeHtml(x.name)}</div><small>${escapeHtml(x.group)} · ${x.n} ${t.payN}</small></div><div class="pm-feed-amt">${money(x.total)}</div></div>`).join('')}</div>` : emptyBox(t.noData);
 
                 const recent = PAY.slice().sort(byDate).slice(0, 6);
@@ -8175,8 +8318,10 @@
                 root.innerHTML = `<div class="clients-head"><div class="clients-head-text"><h1>${t.title}</h1></div>
                     <div class="clients-head-actions-top"><button class="clients-add-btn" type="button" data-act="addPay">${ic('<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>')}<span>${t.addPay}</span></button></div></div>
                     <div class="pm-tabs">${['payments', 'debtors', 'stats'].map(k => `<button type="button" class="pm-tab ${F.tab === k ? 'active' : ''}" data-tab="${k}">${t['t_' + k]}${k === 'debtors' ? `<span class="pm-count">${debtors().length}</span>` : ''}</button>`).join('')}</div>
-                    <div id="pmBody"></div>${modalsHTML(t)}`;
+                    <div id="pmBody"></div>`;
+                host.innerHTML = modalsHTML(t);
                 drawBody();
+                dShell();
             }
             function drawBody() {
                 const t = T(), body = $('pmBody'); if (!body) return;
@@ -8193,7 +8338,7 @@
                 const badge = root.querySelector('.pm-tab[data-tab="debtors"] .pm-count');
                 if (badge) badge.textContent = debtors().length;
             }
-            const closeModals = () => root.querySelectorAll('.pm-modal.open').forEach(m => m.classList.remove('open'));
+            const closeModals = () => document.querySelectorAll('.pm-modal.open').forEach(m => m.classList.remove('open'));
 
             // ----- to'lov modali -----
             const showErr = (msg) => { const e = $('pmPayErr'); e.textContent = msg; e.style.display = msg ? 'block' : 'none'; };
@@ -8301,6 +8446,8 @@
             function refreshOthers() {
                 if (typeof window.renderStudents === 'function') window.renderStudents();
                 if (typeof window.renderGroups === 'function') window.renderGroups();
+                dDraw();
+                if (typeof window.refreshStudentProfile === 'function') window.refreshStudentProfile();
             }
             function remind(id) {
                 const t = T(), s = studs().find(x => x.id === id); if (!s) return;
@@ -8333,8 +8480,101 @@
                 window.toast.success(window.toast.t(`${name}.csv fayli yuklab olindi`, `${name}.csv was downloaded`, `Файл ${name}.csv скачан`));
             }
 
-            // ----- hodisalar (bir marta, root ustida) -----
-            root.addEventListener('click', e => {
+
+            // ----- ALOHIDA "QARZDORLAR" BO'LIMI -----
+            const DX = {
+                uz: { desc: "Balansi manfiy bo'lgan talabalar va ularning qarz miqdori", colDays: 'Muddat', ago: n => n + ' kun', sevHigh: 'Jiddiy', sevMid: "O'rta", sevLow: 'Yengil', call: "Qo'ng'iroq qilish", overdue: "30+ kun to'lamagan", avgDebt: "O'rtacha qarz" },
+                en: { desc: 'Students with a negative balance and the amount they owe', colDays: 'Overdue', ago: n => n + ' d', sevHigh: 'Critical', sevMid: 'Medium', sevLow: 'Low', call: 'Call', overdue: 'Unpaid for 30+ days', avgDebt: 'Average debt' },
+                ru: { desc: 'Студенты с отрицательным балансом и сумма их задолженности', colDays: 'Просрочка', ago: n => n + ' дн.', sevHigh: 'Критично', sevMid: 'Средне', sevLow: 'Низко', call: 'Позвонить', overdue: 'Не платят 30+ дней', avgDebt: 'Средний долг' }
+            };
+            const DXt = () => DX[document.documentElement.getAttribute('lang')] || DX.uz;
+            const daysSince = sid => { const lp = lastPay(sid); return lp ? Math.max(0, Math.floor((new Date(TODAY) - new Date(lp)) / 864e5)) : null; };
+            const sevOf = d => d === null || d > 60 ? 'high' : d > 30 ? 'mid' : 'low';
+            const dSorters = {
+                debt: (a, b) => (-a.balance) - (-b.balance),
+                name: (a, b) => a.name.localeCompare(b.name),
+                days: (a, b) => { const x = daysSince(a.id), y = daysSince(b.id); return (x === null ? 9999 : x) - (y === null ? 9999 : y); }
+            };
+            const dRows = () => debFiltered().sort((a, b) => FD.dir * (dSorters[FD.sort](a, b) || a.id - b.id));
+
+            function dKpis(t, x) {
+                const all = debtors(), total = all.reduce((sm, s) => sm - s.balance, 0), max = all.reduce((m, s) => Math.max(m, -s.balance), 0);
+                const late = all.filter(s => { const d = daysSince(s.id); return d === null || d > 30; }).length;
+                return `<div class="stat-cards pm-kpis" style="margin-top:0">`
+                    + statCard(t.totalDebt, amt(t, total), '<circle cx="12" cy="12" r="8"/><path d="M12 8v5M12 16v.5"/>', '<span class="pm-sub">' + x.avgDebt + ': ' + money(all.length ? total / all.length : 0) + ' ' + t.cur + '</span>')
+                    + statCard(t.debtCount, all.length, '<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 2.5-5 6-5s6 2 6 5"/><circle cx="17" cy="9" r="2.4"/>')
+                    + statCard(t.maxDebt, amt(t, max), '<path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/>')
+                    + statCard(x.overdue, late, '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>')
+                    + `</div>`;
+            }
+            function dList(t, x) {
+                const rows = dRows();
+                const th = (k, label, cls) => `<th ${k ? `data-sort="${k}"` : ''} class="${cls || ''}">${label}${FD.sort === k ? (FD.dir > 0 ? ' ▲' : ' ▼') : ''}</th>`;
+                const body = slice(rows).map(s => {
+                    const lp = lastPay(s.id), d = daysSince(s.id), sev = sevOf(d);
+                    const sevLbl = sev === 'high' ? x.sevHigh : sev === 'mid' ? x.sevMid : x.sevLow;
+                    const tel = String(s.phone || '').replace(/[^\d+]/g, '');
+                    return `<tr><td>${userCell(s.name, s.phone || '', s.id)}</td>
+                    <td><span class="go-pill" data-go-group="${escapeHtml(s.group)}">${escapeHtml(s.group)}</span></td>
+                    <td class="muted col-hide-sm">${lp ? fmtDate(lp) : t.never}<span class="db-sev ${sev}">${sevLbl}${d !== null ? ' · ' + x.ago(d) : ''}</span></td>
+                    <td class="num st-neg">−${money(s.balance)} <span class="pay-cur">${t.cur}</span></td>
+                    <td style="text-align:right;white-space:nowrap">${tel ? `<a class="pm-act-btn db-call" href="tel:${tel}" title="${x.call}" aria-label="${x.call}">${ic('<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>')}</a>` : ''}<button class="pm-act-btn" data-act="remind" data-id="${s.id}">${t.remind}</button><button class="pm-act-btn primary" data-act="collect" data-id="${s.id}">${t.collect}</button></td></tr>`;
+                }).join('');
+                return `<div class="payments-card" style="margin-top:0"><div class="payments-table-wrap" style="max-height:none"><table class="payments-table"><thead><tr>
+                    ${th('name', t.colStudent)}<th>${t.colGroup}</th>${th('days', t.colLast, 'col-hide-sm')}${th('debt', t.colDebt, 'num')}<th></th></tr></thead><tbody>${body}</tbody></table>
+                    ${rows.length ? '' : emptyBox(t.emptyDeb)}</div>
+                    <div class="pm-total-row"><span>${rows.length}</span><span>${t.total}: <b>${money(rows.reduce((sm, r) => sm - r.balance, 0))} ${t.cur}</b></span></div>${pager(rows.length)}</div>`;
+            }
+            function dDraw() {
+                if (!droot || !$('dbList')) return;
+                withState(FD, () => { const t = T(), x = DXt(); $('dbKpi').innerHTML = dKpis(t, x); $('dbList').innerHTML = dList(t, x); });
+            }
+            function dBody() {
+                if (!droot || !$('dbBar')) return;
+                withState(FD, () => { const t = T(); $('dbBar').innerHTML = `<div class="st-toolbar">${searchBox(t.searchDeb)}${teacherSel(t)}${groupSel(t)}<span class="spacer"></span>${exportBtn(t)}</div>`; });
+                dDraw();
+            }
+            function dShell() {
+                if (!droot) return;
+                const t = T(), x = DXt();
+                droot.innerHTML = `<div class="clients-head"><div class="clients-head-text"><h1>${t.t_debtors}</h1><p>${x.desc}</p></div>
+                    <div class="clients-head-actions-top"><button class="clients-add-btn" type="button" data-act="addPay">${ic('<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>')}<span>${t.addPay}</span></button></div></div>
+                    <div id="dbKpi"></div><div id="dbBar"></div><div id="dbList"></div>`;
+                dBody();
+            }
+            if (droot) {
+                droot.addEventListener('click', e => withState(FD, () => {
+                    const th = e.target.closest('th[data-sort]');
+                    if (th) { const k = th.dataset.sort; if (F.sort === k) F.dir *= -1; else { F.sort = k; F.dir = k === 'name' ? 1 : -1; } F.page = 1; dDraw(); return; }
+                    const b = e.target.closest('[data-act]'); if (!b) return;
+                    const id = +b.dataset.id;
+                    switch (b.dataset.act) {
+                        case 'addPay': openPay(); break;
+                        case 'collect': openPay(null, id); break;
+                        case 'remind': remind(id); break;
+                        case 'export': exportCsv(); break;
+                        case 'prev': F.page--; dDraw(); break;
+                        case 'next': F.page++; dDraw(); break;
+                    }
+                }));
+                droot.addEventListener('input', e => {
+                    const k = e.target.dataset.f;
+                    if (k === 'q' && e.target.tagName === 'INPUT') { FD.q = e.target.value; FD.page = 1; dDraw(); }
+                });
+                droot.addEventListener('change', e => {
+                    const k = e.target.dataset.f;
+                    if (k && e.target.tagName === 'SELECT') {
+                        FD[k] = e.target.value; FD.page = 1;
+                        if (k === 'teacher' && FD.group && !withState(FD, groupList).includes(FD.group)) FD.group = '';
+                        dBody();
+                    }
+                });
+            }
+            window.renderDebtorsView = dShell;
+
+            // ----- hodisalar (bir marta, root va modal konteyneri ustida) -----
+            const on = (ev, fn) => { root.addEventListener(ev, fn); host.addEventListener(ev, fn); };
+            on('click', e => {
                 if (!e.target.closest('.pm-combo')) closeCombo();
                 if (e.target.id === 'pmPayStudQ') { comboOpen(); return; }
                 const tab = e.target.closest('[data-tab]');
@@ -8371,12 +8611,12 @@
                     case 'next': F.page++; drawList(); break;
                 }
             });
-            root.addEventListener('input', e => {
+            on('input', e => {
                 if (e.target.id === 'pmPayStudQ') { comboInput(); return; }
                 const k = e.target.dataset.f;
                 if (k && e.target.tagName === 'INPUT') { F[k] = e.target.value; F.page = 1; drawList(); }
             });
-            root.addEventListener('change', e => {
+            on('change', e => {
                 const k = e.target.dataset.f;
                 if (k && e.target.tagName === 'SELECT') {
                     F[k] = e.target.value; F.page = 1;
@@ -8384,8 +8624,8 @@
                     drawBody(); return;
                 }
             });
-            root.addEventListener('focusin', e => { if (e.target.id === 'pmPayStudQ') comboOpen(); });
-            root.addEventListener('keydown', e => {
+            on('focusin', e => { if (e.target.id === 'pmPayStudQ') comboOpen(); });
+            on('keydown', e => {
                 if (e.target.id !== 'pmPayStudQ' || e.key !== 'Enter') return;
                 e.preventDefault();
                 const first = $('pmPayList').querySelector('[data-act="pick"]');
@@ -8395,6 +8635,7 @@
 
             window.allPayments = () => PAY.slice();
             window.renderPaymentsView = shell;
+            window.openPaymentFor = sid => openPay(null, sid);
             shell();
         })();
 
@@ -8415,11 +8656,12 @@
                 try {
                     const active = document.querySelector('.content-view.active-view');
                     if (!active) return;
-                    const view = active.getAttribute('data-view');
+                    let view = active.getAttribute('data-view'), back = null;
+                    if (view === 'student' && window.getStudentBack) { back = window.getStudentBack(); view = back.view; }
                     sessionStorage.setItem(NAV_KEY, JSON.stringify({
                         view: view,
-                        groupId: view === 'groups' && window.getOpenGroupId ? window.getOpenGroupId() : null,
-                        teacherId: view === 'teachers' && window.getOpenTeacherId ? window.getOpenTeacherId() : null
+                        groupId: back ? back.groupId : (view === 'groups' && window.getOpenGroupId ? window.getOpenGroupId() : null),
+                        teacherId: back ? back.teacherId : (view === 'teachers' && window.getOpenTeacherId ? window.getOpenTeacherId() : null)
                     }));
                 } catch (e) { /* storage mavjud emas — e'tiborsiz */ }
             }
@@ -9019,7 +9261,7 @@
     <script>
     /* ===== MOBIL YORDAMCHI: jadval kataklariga sarlavha yorlig'i (kartaga aylantirish uchun) ===== */
     (function mobileEnhance() {
-        const roots = ['studentsRoot', 'teachersRoot', 'paymentsRoot']
+        const roots = ['studentsRoot', 'teachersRoot', 'paymentsRoot', 'debtorsRoot']
             .map(id => document.getElementById(id)).filter(Boolean);
         const clean = t => (t || '').replace(/[\u25B2\u25BC\u2191\u2193]/g, '').replace(/\s+/g, ' ').trim();
 
@@ -9206,6 +9448,221 @@
     </script>
 
 
+
+    <script>
+    /* ===== BO'LIMLAR ARO O'TISH: guruh / o'quvchi / o'qituvchi havolalari + o'quvchi ma'lumotlari oynasi ===== */
+    (function crossLinks() {
+        const $ = id => document.getElementById(id);
+        const lang = () => document.documentElement.getAttribute('lang') || 'uz';
+        const X = {
+            uz: { info: "O'quvchi ma'lumotlari", phone: 'Telefon', group: 'Guruh', teacher: "O'qituvchi", status: 'Holat', balance: 'Balans', joined: "Qo'shilgan sana", lastPay: "Oxirgi to'lov", never: "To'lamagan",
+                hist: "So'nggi to'lovlar", noHist: "Hali to'lov qilinmagan", pay: "To'lov olish", edit: 'Tahrirlash', close: 'Yopish', cur: "so'm", debt: 'Qarz', plus: 'Avans', ok: "Qarzi yo'q",
+                st: { active: 'Faol', frozen: 'Muzlatilgan', grad: 'Bitirgan' }, m: { cash: 'Naqd', card: 'Karta', click: 'Click', payme: 'Payme', bank: "Bank o'tkazma" },
+                noLesson: "Bu dars uchun guruh yaratilmagan", noGroup: 'Guruh topilmadi', noStud: "O'quvchi topilmadi", noTeacher: "O'qituvchi topilmadi" },
+            en: { info: 'Student details', phone: 'Phone', group: 'Group', teacher: 'Teacher', status: 'Status', balance: 'Balance', joined: 'Joined', lastPay: 'Last payment', never: 'Never paid',
+                hist: 'Recent payments', noHist: 'No payments yet', pay: 'Accept payment', edit: 'Edit', close: 'Close', cur: 'UZS', debt: 'Debt', plus: 'Credit', ok: 'No debt',
+                st: { active: 'Active', frozen: 'Frozen', grad: 'Graduated' }, m: { cash: 'Cash', card: 'Card', click: 'Click', payme: 'Payme', bank: 'Bank transfer' },
+                noLesson: 'No group has been created for this lesson', noGroup: 'Group not found', noStud: 'Student not found', noTeacher: 'Teacher not found' },
+            ru: { info: 'Данные студента', phone: 'Телефон', group: 'Группа', teacher: 'Преподаватель', status: 'Статус', balance: 'Баланс', joined: 'Дата добавления', lastPay: 'Последний платёж', never: 'Не платил',
+                hist: 'Последние платежи', noHist: 'Платежей пока нет', pay: 'Принять оплату', edit: 'Изменить', close: 'Закрыть', cur: 'сум', debt: 'Долг', plus: 'Аванс', ok: 'Долга нет',
+                st: { active: 'Активен', frozen: 'Заморожен', grad: 'Выпускник' }, m: { cash: 'Наличные', card: 'Карта', click: 'Click', payme: 'Payme', bank: 'Банковский перевод' },
+                noLesson: 'Для этого урока группа не создана', noGroup: 'Группа не найдена', noStud: 'Студент не найден', noTeacher: 'Преподаватель не найден' }
+        };
+        const x = () => X[lang()] || X.uz;
+        const money = n => Math.round(Math.abs(Number(n))).toLocaleString('ru-RU');
+        const fmtDate = d => d && d.length >= 10 ? d.slice(8, 10) + '.' + d.slice(5, 7) + '.' + d.slice(0, 4) : (d || '');
+        const students = () => typeof window.allStudents === 'function' ? window.allStudents() : [];
+        const groups = () => typeof window.allGroups === 'function' ? window.allGroups() : [];
+        const teachers = () => typeof window.allTeachers === 'function' ? window.allTeachers() : [];
+        const payments = () => typeof window.allPayments === 'function' ? window.allPayments() : [];
+        const warn = msg => { if (window.toast && window.toast.warning) window.toast.warning(msg); };
+        const norm = v => String(v || '').trim().toLowerCase();
+
+        function closeOverlays() {
+            ['scheduleModalBackdrop', 'stInfoBackdrop'].forEach(id => { const el = $(id); if (el) el.classList.remove('open'); });
+        }
+
+        // ----- yo'naltirish -----
+        function goToGroup(ref) {
+            const g = typeof ref === 'object' && ref ? ref : groups().find(y => y.id === ref || norm(y.name) === norm(ref));
+            if (!g) { warn(x().noGroup); return false; }
+            closeOverlays(); window.openGroup(g.id); return true;
+        }
+        function goToTeacher(name) {
+            const t = teachers().find(y => norm(y.name) === norm(name));
+            if (!t) { warn(x().noTeacher); return false; }
+            closeOverlays(); window.openTeacher(t.id); return true;
+        }
+        function lessonGroup(title, teacher, start) {
+            const gs = groups(), byName = gs.filter(g => norm(g.name) === norm(title));
+            return byName.find(g => g.teacher === teacher && g.start === start) || byName.find(g => g.teacher === teacher) || byName[0]
+                || gs.find(g => g.teacher === teacher && g.start === start) || null;
+        }
+
+        // ----- O'QUVCHI PROFILI (alohida sahifa) -----
+        const P = {
+            uz: { back: 'Orqaga', pay: "To'lov olish", clear: 'Qarzni yopish', edit: 'Tahrirlash', joined: "Qo'shilgan", balance: 'Balans', paid: "Jami to'langan", cnt: "To'lovlar soni", last: "Oxirgi to'lov", never: "To'lamagan",
+                hist: "To'lovlar tarixi", noHist: "Hali to'lov qilinmagan", grp: 'Guruh', teacher: "O'qituvchi", time: 'Dars vaqti', days: 'Kunlar', room: 'Xona', price: 'Oylik narx', fill: "Guruh to'lganligi", noGroup: 'Guruh biriktirilmagan',
+                debtT: 'Qarz mavjud', ok: "Qarzi yo'q", plus: 'Avans', cur: "so'm", forMonth: 'uchun', calls: "Qo'ng'iroq",
+                dn: ['Du', 'Se', 'Chor', 'Pay', 'Ju', 'Sha', 'Yak'], mo: ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'],
+                st: { active: 'Faol', frozen: 'Muzlatilgan', grad: 'Bitirgan' }, m: { cash: 'Naqd', card: 'Karta', click: 'Click', payme: 'Payme', bank: "Bank o'tkazma" } },
+            en: { back: 'Back', pay: 'Accept payment', clear: 'Clear debt', edit: 'Edit', joined: 'Joined', balance: 'Balance', paid: 'Total paid', cnt: 'Payments', last: 'Last payment', never: 'Never paid',
+                hist: 'Payment history', noHist: 'No payments yet', grp: 'Group', teacher: 'Teacher', time: 'Lesson time', days: 'Days', room: 'Room', price: 'Monthly fee', fill: 'Group occupancy', noGroup: 'No group assigned',
+                debtT: 'Outstanding debt', ok: 'No debt', plus: 'Credit', cur: 'UZS', forMonth: 'for', calls: 'Call',
+                dn: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], mo: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                st: { active: 'Active', frozen: 'Frozen', grad: 'Graduated' }, m: { cash: 'Cash', card: 'Card', click: 'Click', payme: 'Payme', bank: 'Bank transfer' } },
+            ru: { back: 'Назад', pay: 'Принять оплату', clear: 'Закрыть долг', edit: 'Изменить', joined: 'Добавлен', balance: 'Баланс', paid: 'Всего оплачено', cnt: 'Платежей', last: 'Последний платёж', never: 'Не платил',
+                hist: 'История платежей', noHist: 'Платежей пока нет', grp: 'Группа', teacher: 'Преподаватель', time: 'Время занятий', days: 'Дни', room: 'Кабинет', price: 'Цена за месяц', fill: 'Заполненность группы', noGroup: 'Группа не назначена',
+                debtT: 'Есть задолженность', ok: 'Долга нет', plus: 'Аванс', cur: 'сум', forMonth: 'за', calls: 'Позвонить',
+                dn: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'], mo: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+                st: { active: 'Активен', frozen: 'Заморожен', grad: 'Выпускник' }, m: { cash: 'Наличные', card: 'Карта', click: 'Click', payme: 'Payme', bank: 'Банковский перевод' } }
+        };
+        const p = () => P[lang()] || P.uz;
+        const ic = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+        const proot = () => $('studentProfileRoot');
+        let curId = null, prev = null;
+
+        function backLabel() {
+            if (!prev) return p().back;
+            if (prev.view === 'groups' && prev.groupId) { const g = groups().find(y => y.id === prev.groupId); if (g) return g.name; }
+            if (prev.view === 'teachers' && prev.teacherId) { const t = teachers().find(y => y.id === prev.teacherId); if (t) return t.name; }
+            const el = document.querySelector('.sidebar .nav-item[data-view="' + prev.view + '"] .label');
+            return el ? el.textContent.trim() : p().back;
+        }
+
+        function renderProfile() {
+            const root = proot(), s = students().find(y => y.id === curId);
+            if (!root || !s) return;
+            const t = p(), g = groups().find(y => y.name === s.group);
+            const hist = payments().filter(y => y.sid === s.id).sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id);
+            const total = hist.reduce((sm, y) => sm + y.amount, 0);
+            const tel = String(s.phone || '').replace(/[^\d+]/g, '');
+            const cls = s.balance < 0 ? 'neg' : s.balance > 0 ? 'pos' : '';
+            const balTxt = (s.balance < 0 ? '−' : s.balance > 0 ? '+' : '') + money(s.balance);
+            const monthOf = k => k ? t.mo[+k.slice(5, 7) - 1] + ' ' + k.slice(0, 4) : '';
+            const stat = (label, val, c) => `<div class="sp-stat ${c || ''}"><small>${label}</small><b>${val}</b></div>`;
+            const fillN = g && typeof window.studentCountByGroup === 'function' ? window.studentCountByGroup(g.name) : 0;
+            const pct = g ? Math.min(100, Math.round(fillN / g.cap * 100)) : 0;
+            const idStr = '#' + String(s.id).padStart(3, '0');
+            const row = (k, v) => `<div><dt>${k}</dt><dd>${v}</dd></div>`;
+
+            root.innerHTML = `
+            <div class="sp-top"><button class="st-ghost-btn" type="button" data-sp="back">${ic('<polyline points="15 6 9 12 15 18"/>')}${escapeHtml(backLabel())}</button></div>
+            <section class="sp-hero">
+                <div class="sp-hero-bg"></div>
+                <div class="sp-hero-body">
+                    <div class="sp-avatar">${escapeHtml(clientInitials(s.name))}</div>
+                    <div class="sp-id">
+                        <h1>${escapeHtml(s.name)}</h1>
+                        <div class="sp-chips">
+                            <span class="st-badge ${s.status}">${t.st[s.status] || s.status}</span>
+                            ${tel ? `<a class="sp-chip" href="tel:${tel}" title="${t.calls}">${ic('<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>')}${escapeHtml(s.phone)}</a>` : ''}
+                            <span class="sp-chip">${ic('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h4M7 14h2"/>')}ID ${idStr}</span>
+                            <span class="sp-chip">${ic('<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>')}${t.joined}: ${fmtDate(s.date)}</span>
+                        </div>
+                    </div>
+                    <div class="sp-actions">
+                        <button class="clients-add-btn" type="button" data-sp="pay">${ic('<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>')}<span>${s.balance < 0 ? t.clear : t.pay}</span></button>
+                        <button class="st-ghost-btn" type="button" data-sp="edit">${ic('<path d="M4 20h4L19 9l-4-4L4 16v4z"/>')}${t.edit}</button>
+                    </div>
+                </div>
+            </section>
+            <div class="sp-grid">
+                <div>
+                    <div class="sp-stats">
+                        ${stat(t.balance, s.balance === 0 ? t.ok : `${balTxt} <i>${t.cur}</i>`, cls)}
+                        ${stat(t.paid, `${money(total)} <i>${t.cur}</i>`)}
+                        ${stat(t.cnt, hist.length)}
+                        ${stat(t.last, hist[0] ? fmtDate(hist[0].date) : t.never)}
+                    </div>
+                    <div class="sp-card">
+                        <h3><span>${t.hist}</span><small>${hist.length}</small></h3>
+                        ${hist.length ? `<div class="sp-tl">${hist.map(y => `<div class="sp-tl-row">
+                            <div class="sp-dot">${ic('<path d="M12 19V5M5 12l7-7 7 7"/>')}</div>
+                            <div class="sp-tl-main"><b>+${money(y.amount)} ${t.cur}</b><small>${t.m[y.method] || y.method}${y.forMonth ? ' · ' + monthOf(y.forMonth) + ' ' + t.forMonth : ''}</small></div>
+                            <span class="sp-tl-date">${fmtDate(y.date)}</span></div>`).join('')}</div>` : `<div class="sp-empty">${t.noHist}</div>`}
+                    </div>
+                </div>
+                <aside>
+                    <div class="sp-card sp-debt ${s.balance < 0 ? '' : 'ok'}">
+                        <small>${s.balance < 0 ? t.debtT : t.balance}</small>
+                        <b>${s.balance < 0 ? money(s.balance) + ' ' + t.cur : s.balance > 0 ? t.plus + ': ' + money(s.balance) + ' ' + t.cur : t.ok}</b>
+                        ${s.balance < 0 ? `<button class="clients-add-btn" type="button" data-sp="pay" style="justify-content:center">${t.clear}</button>` : ''}
+                    </div>
+                    <div class="sp-card">
+                        <h3><span>${t.grp}</span></h3>
+                        ${g ? `<div class="sp-gname"><span class="go-pill lg" data-go-group="${escapeHtml(g.name)}">${escapeHtml(g.name)}</span></div>
+                        <dl class="sp-dl">
+                            ${row(t.teacher, `<span class="go-link" data-go-teacher="${escapeHtml(g.teacher)}">${escapeHtml(g.teacher)}</span>`)}
+                            ${row(t.time, g.start + ' – ' + g.end)}
+                            ${row(t.days, g.days.map(i => t.dn[i]).join(' · '))}
+                            ${row(t.room, g.room)}
+                            ${row(t.price, money(g.price) + ' ' + t.cur)}
+                        </dl>
+                        <div class="sp-fill-lbl"><span>${t.fill}</span><span>${fillN} / ${g.cap}</span></div>
+                        <div class="sp-fill"><i style="width:${pct}%"></i></div>` : `<div class="sp-empty">${t.noGroup}</div>`}
+                    </div>
+                </aside>
+            </div>`;
+        }
+
+        function openStudentPage(id) {
+            const s = students().find(y => y.id === id);
+            if (!s) { warn(x().noStud); return; }
+            const active = document.querySelector('.content-view.active-view'), from = active ? active.dataset.view : 'students';
+            if (from !== 'student') prev = { view: from, groupId: from === 'groups' && window.getOpenGroupId ? window.getOpenGroupId() : null, teacherId: from === 'teachers' && window.getOpenTeacherId ? window.getOpenTeacherId() : null };
+            curId = id; closeOverlays(); renderProfile();
+            document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active-view'));
+            document.querySelector('.content-view[data-view="student"]').classList.add('active-view');
+            window.scrollTo(0, 0);
+            if (window.motionEnter) window.motionEnter('student');
+        }
+        function backFromProfile() {
+            const b = prev || { view: 'students' };
+            if (b.view === 'groups' && b.groupId && window.openGroup) window.openGroup(b.groupId);
+            else if (b.view === 'teachers' && b.teacherId && window.openTeacher) window.openTeacher(b.teacherId);
+            else window.navTo(b.view);
+        }
+        document.addEventListener('click', e => {
+            const b = e.target.closest('[data-sp]'); if (!b || !proot() || !proot().contains(b)) return;
+            if (b.dataset.sp === 'back') backFromProfile();
+            else if (b.dataset.sp === 'pay' && window.openPaymentFor) window.openPaymentFor(curId);
+            else if (b.dataset.sp === 'edit' && window.editStudent) window.editStudent(curId);
+        });
+        const profileActive = () => { const v = document.querySelector('.content-view[data-view="student"]'); return v && v.classList.contains('active-view'); };
+        window.refreshStudentProfile = () => { if (profileActive()) renderProfile(); };
+        window.getStudentBack = () => prev || { view: 'students', groupId: null, teacherId: null };
+        new MutationObserver(() => { if (profileActive()) renderProfile(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+        const openStudentInfo = openStudentPage;
+
+        // ----- hamma joyda ishlaydigan havolalar (capture: jadval qatori / karta o'z hodisasidan oldin) -----
+        document.addEventListener('click', e => {
+            if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.shiftKey) return;
+            const card = e.target.closest('.sch-card[data-l-title]');
+            if (card) {
+                e.preventDefault(); e.stopPropagation();
+                const g = lessonGroup(card.dataset.lTitle, card.dataset.lTeacher, card.dataset.lStart);
+                if (g) goToGroup(g); else warn(x().noLesson);
+                return;
+            }
+            const el = e.target.closest('[data-go-student],[data-go-sname],[data-go-group],[data-go-teacher],[data-go-view]');
+            if (!el) return;
+            e.preventDefault(); e.stopPropagation();
+            const d = el.dataset;
+            if (d.goStudent) openStudentInfo(+d.goStudent);
+            else if (d.goSname) { const st = students().find(y => norm(y.name) === norm(d.goSname)); if (st) openStudentInfo(st.id); else warn(x().noStud); }
+            else if (d.goGroup) goToGroup(d.goGroup);
+            else if (d.goTeacher) goToTeacher(d.goTeacher);
+            else if (d.goView) { closeOverlays(); window.navTo(d.goView); }
+        }, true);
+
+        if (typeof renderPayments === 'function') renderPayments(); // bosh sahifadagi jadval haqiqiy guruh nomlari bilan
+        window.openStudentInfo = openStudentPage;
+        window.openStudentPage = openStudentPage;
+        window.goToGroup = goToGroup;
+        window.goToTeacher = goToTeacher;
+    })();
+    </script>
 
 </body>
 
