@@ -4521,10 +4521,376 @@
             body, .main, .content { height: auto !important; overflow: visible !important; }
             #reportsRoot .rp-h, #reportsRoot .rp-v { max-height: none; overflow: visible; }
         }
+        /* ===== TALABA KABINETI ===== */
+        .sc-wrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; max-width: 980px; }
+        .sc-wrap > *, .sc-stats > * { min-width: 0; }
+        .sc-hero, .sc-card { background: var(--surface-bg); border: 1px solid var(--surface-border); box-shadow: var(--surface-shadow); border-radius: 22px; }
+        .sc-hero { padding: 22px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+        .sc-hero h2 { margin: 0 0 4px; font-size: 22px; color: var(--fg-page); }
+        .sc-hero p { margin: 0; font-size: 14px; color: var(--fg-page-muted); }
+        .sc-badge { padding: 5px 12px; border-radius: 999px; font-size: 12.5px; font-weight: 600; background: rgba(240, 100, 60, .12); color: #E0572F; }
+        .sc-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 14px; }
+        .sc-card { padding: 18px 20px; }
+        .sc-card h3 { margin: 0 0 12px; font-size: 16px; color: var(--fg-page); }
+        .sc-card small { display: block; font-size: 12.5px; color: var(--fg-page-muted); }
+        .sc-card b { display: block; margin-top: 6px; font-size: 21px; color: var(--fg-page); }
+        .sc-card b.sc-debt { color: #E5484D; } .sc-card b.sc-ok { color: #12A150; }
+        .sc-days { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 12px; }
+        .sc-days span { padding: 4px 11px; border-radius: 999px; font-size: 13px; font-weight: 600; background: rgba(47, 111, 224, .12); color: var(--accent); }
+        .sc-row { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; font-size: 14px; color: var(--fg-page); border-top: 1px solid var(--surface-border); }
+        .sc-row span:first-child { color: var(--fg-page-muted); }
+        .sc-table-wrap { overflow-x: auto; }
+        .sc-table { width: 100%; border-collapse: collapse; font-size: 14px; color: var(--fg-page); }
+        .sc-table th { text-align: left; font-weight: 600; font-size: 12.5px; color: var(--fg-page-muted); padding: 8px 10px; }
+        .sc-table td { padding: 10px; border-top: 1px solid var(--surface-border); white-space: nowrap; }
+        .sc-empty { padding: 28px 20px; text-align: center; color: var(--fg-page-muted); font-size: 14.5px; }
     </style>
+    <script>
+        /* ===== ROLE TIZIMI: URL ?role=ceo | admin | student  ->  INTERFEYS REJIMI =====
+           DIQQAT: URL'dagi role faqat KO'RINISHNI tanlaydi, hech qanday huquq bermaydi.
+           Haqiqiy ruxsatni backend tekshiradi (sessiya/token + foydalanuvchi huquqlari).
+           Backend sahifaga yoki /api/auth/me/ javobi orqali shuni beradi:
+               window.CRM_AUTH = { role: 'admin', studentId: 17 }     // yoki roles: ['admin']
+           yoki:  CRMRole.setServerAuth(javob)
+           CRM_AUTH bor bo'lsa, URL'dagi role serverdagi huquqdan YUQORI bo'la olmaydi. */
+        (function () {
+            'use strict';
+            var ROLES = ['ceo', 'admin', 'student'];
+            var RANK = { student: 0, admin: 1, ceo: 2 };
+            var DEFAULT_ROLE = 'student';
+            var PARAM = 'role';
+            /* Production'da true qiling: backend (CRM_AUTH) bo'lmasa har kim faqat student rejimini ko'radi. */
+            var REQUIRE_SERVER_AUTH = false;
+
+            /* Har bir rol qaysi bo'limlarni ko'radi (yagona manba). Kerak bo'lsa shu yerni tahrirlang. */
+            var VIEWS = {
+                ceo: ['home', 'clients', 'students', 'groups', 'teachers', 'payments', 'reports', 'archive', 'settings', 'profile'],
+                admin: ['home', 'clients', 'students', 'groups', 'teachers', 'payments', 'profile'],
+                student: ['student']
+            };
+            var HOME = { ceo: 'home', admin: 'home', student: 'student' };
+            var ALL_VIEWS = ['home', 'clients', 'students', 'groups', 'teachers', 'payments', 'reports', 'archive', 'settings', 'profile', 'student'];
+            var GROUP_SEL = { reports: '#navReports', archive: '#navArchive' };
+            var STUDENT_HIDE = ['.search-box', '#scheduleBtn', '#profileScheduleBtn', '#profileSettingsBtn', '#notifDropdown', '.ch-fab', '.ch-panel', '.ct-stack'];
+
+            var listeners = [], updaters = [];
+            var state = { role: DEFAULT_ROLE, mode: 'demo' };
+
+            function clean(v) { return String(v == null ? '' : v).trim().toLowerCase(); }
+            function requested() {
+                try { return new URLSearchParams(location.search).get(PARAM); } catch (e) { return null; }
+            }
+            function serverAuth() {
+                var a = window.CRM_AUTH;
+                if (!a || typeof a !== 'object') return null;
+                var list = Array.isArray(a.roles) ? a.roles : [a.role];
+                var max = 0;
+                list.forEach(function (r) { var k = clean(r); if (ROLES.indexOf(k) !== -1 && RANK[k] > max) max = RANK[k]; });
+                return { max: max };
+            }
+            function resolve(raw) {
+                var want = clean(raw);
+                if (ROLES.indexOf(want) === -1) want = DEFAULT_ROLE;      // noto'g'ri qiymat -> student
+                var auth = serverAuth();
+                if (auth === null) {
+                    return REQUIRE_SERVER_AUTH ? { role: DEFAULT_ROLE, mode: 'locked' } : { role: want, mode: 'demo' };
+                }
+                if (RANK[want] > auth.max) {                               // serverda huquq yo'q -> student
+                    try { console.warn('[CRMRole] "' + want + '" rejimi uchun serverda huquq yo\'q, student ko\'rsatildi.'); } catch (e) {}
+                    return { role: DEFAULT_ROLE, mode: 'server' };
+                }
+                return { role: want, mode: 'server' };
+            }
+            /* URL'ni toza holatga keltirish: noto'g'ri/ruxsatsiz qiymat olib tashlanadi, KATTA-kichik harf tuzatiladi */
+            function syncUrl(raw, role) {
+                if (raw === null) return;
+                var c = clean(raw), ok = ROLES.indexOf(c) !== -1 && c === role;
+                if (ok && raw === c) return;
+                try {
+                    var u = new URL(location.href);
+                    if (ok) u.searchParams.set(PARAM, role); else u.searchParams.delete(PARAM);
+                    history.replaceState(history.state, '', u.pathname + u.search + u.hash);
+                } catch (e) { /* file:// yoki cheklangan muhit — e'tiborsiz */ }
+            }
+            function paint() { document.documentElement.setAttribute('data-role', state.role); }
+            function sid() { var a = window.CRM_AUTH; return a && typeof a === 'object' && a.studentId != null ? a.studentId : null; }
+            function sig() { return state.role + '|' + state.mode + '|' + sid(); }
+            function fire(list, a, b) { list.slice().forEach(function (fn) { try { fn(a, b); } catch (e) { console.error(e); } }); }
+            var lastSig = '';
+            function refresh() {
+                var prev = state.role, raw = requested();
+                state = resolve(raw);
+                syncUrl(raw, state.role);
+                paint();
+                if (prev !== state.role) fire(listeners, state.role, prev);      // rol almashdi -> bosh sahifaga o'tish
+                var now = sig();
+                if (now !== lastSig) { lastSig = now; fire(updaters, state.role, prev); }   // rol/rejim/studentId o'zgardi -> qayta chizish
+                return state.role;
+            }
+
+            /* Ruxsat etilmagan bo'limlarni CSS orqali ham yashirish (flash bo'lmasligi uchun) */
+            var css = [];
+            ROLES.forEach(function (r) {
+                var base = 'html[data-role="' + r + '"] ';
+                ALL_VIEWS.forEach(function (v) {
+                    if (VIEWS[r].indexOf(v) !== -1) return;
+                    css.push(base + '[data-view="' + v + '"]{display:none!important}');
+                    if (GROUP_SEL[v]) css.push(base + GROUP_SEL[v] + '{display:none!important}');
+                });
+            });
+            STUDENT_HIDE.forEach(function (s) { css.push('html[data-role="student"] ' + s + '{display:none!important}'); });
+            var st = document.createElement('style');
+            st.id = 'role-style';
+            st.textContent = css.join('\n');
+            document.head.appendChild(st);
+
+            window.CRMRole = Object.freeze({
+                get current() { return state.role; },
+                get mode() { return state.mode; },           // 'server' | 'demo' | 'locked'
+                is: function (r) { return state.role === r; },
+                canView: function (view) { return VIEWS[state.role].indexOf(view) !== -1; },
+                home: function () { return HOME[state.role]; },
+                studentId: sid,                                   // faqat serverdan (CRM_AUTH), URL'dan EMAS
+                onChange: function (fn) { if (typeof fn === 'function') listeners.push(fn); },
+                onUpdate: function (fn) { if (typeof fn === 'function') updaters.push(fn); },
+                setServerAuth: function (auth) { window.CRM_AUTH = auth; return refresh(); },
+                refresh: refresh
+            });
+
+            refresh();
+            window.addEventListener('popstate', refresh);
+            if (state.mode === 'demo') {
+                try { console.info('[CRMRole] DEMO rejim: backend (window.CRM_AUTH) yo\'q, role faqat URL\'dan olindi. Bu xavfsizlik emas.'); } catch (e) {}
+            }
+        })();
+    </script>
+    <style id="auth-css">
+        /* ===== LOGIN EKRANI ===== */
+        .lg-screen { display: none; position: fixed; inset: 0; z-index: 500; overflow: auto; padding: 18px 24px 24px; flex-direction: column; align-items: center;
+            background: radial-gradient(620px 420px at 14% 8%, rgba(47, 111, 224, .24), transparent 62%), radial-gradient(540px 400px at 92% 96%, rgba(79, 70, 229, .20), transparent 62%), var(--bg-page); }
+        html:not([data-auth="in"]) .lg-screen { display: flex; }
+        html:not([data-auth="in"]) .sidebar, html:not([data-auth="in"]) .sidebar-backdrop, html:not([data-auth="in"]) .mobile-bottom-nav,
+        html:not([data-auth="in"]) .main, html:not([data-auth="in"]) .ch-fab, html:not([data-auth="in"]) .ch-panel, html:not([data-auth="in"]) .ct-stack { display: none !important; }
+        .lg-tools { align-self: flex-end; display: flex; gap: 8px; align-items: center; }
+        .lg-lang { display: flex; gap: 4px; padding: 4px; border-radius: 14px; background: var(--bg-panel); border: 1px solid var(--panel-border); }
+        .lg-lang button { border: none; background: transparent; color: var(--fg-muted); font: inherit; font-size: 13px; font-weight: 700; padding: 6px 11px; border-radius: 10px; cursor: pointer; transition: background .2s, color .2s; }
+        .lg-lang button:hover { color: var(--fg-panel); }
+        html[lang="uz"] .lg-lang [data-lang="uz"], html[lang="en"] .lg-lang [data-lang="en"], html[lang="ru"] .lg-lang [data-lang="ru"] { background: var(--highlight-bg); color: #fff; }
+        .lg-theme { width: 40px; height: 40px; border-radius: 13px; border: 1px solid var(--panel-border); background: var(--bg-panel); color: var(--fg-panel); cursor: pointer; display: grid; place-items: center; }
+        .lg-theme:hover { background: var(--menu-hover); } .lg-theme svg { width: 19px; height: 19px; }
+        .lg-card { width: min(100%, 420px); margin: auto; box-sizing: border-box; display: grid; gap: 14px; padding: 34px 32px 28px; border-radius: 26px;
+            background: var(--bg-panel); color: var(--fg-panel); border: 1px solid var(--panel-border); box-shadow: 0 30px 70px rgba(15, 23, 42, .35), inset 0 1px 0 rgba(255, 255, 255, .06); }
+        .lg-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+        .lg-brand img { width: 44px; height: 44px; object-fit: contain; }
+        .lg-brand span { font-size: 26px; font-weight: 700; letter-spacing: .2px; }
+        .lg-card h1 { margin: 6px 0 0; font-size: 22px; font-weight: 700; }
+        .lg-sub { margin: -6px 0 4px; font-size: 14px; color: var(--fg-muted); }
+        .lg-field { display: grid; gap: 7px; font-size: 13px; font-weight: 600; color: var(--fg-muted); }
+        .lg-field input { width: 100%; box-sizing: border-box; height: 48px; padding: 0 14px; border-radius: 14px; border: 1px solid var(--panel-border); background: var(--field-bg); color: var(--field-fg);
+            font: inherit; font-size: 15px; font-weight: 500; outline: none; transition: border-color .2s, box-shadow .2s, background .2s; }
+        .lg-field input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(47, 111, 224, .28); background: rgba(237, 235, 227, .14); }
+        .lg-field input:disabled { opacity: .6; }
+        .lg-pw { position: relative; } .lg-pw input { padding-right: 50px; }
+        .lg-eye { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border: none; background: transparent; color: var(--fg-muted); border-radius: 10px; cursor: pointer; display: grid; place-items: center; }
+        .lg-eye:hover { color: var(--fg-panel); background: var(--hover-bg); } .lg-eye svg { width: 20px; height: 20px; }
+        .lg-check { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--fg-muted); cursor: pointer; user-select: none; }
+        .lg-check input { width: 18px; height: 18px; accent-color: var(--accent); }
+        .lg-msg { min-height: 20px; font-size: 13.5px; font-weight: 600; line-height: 1.4; color: #FF8A8A; }
+        .lg-msg.info { color: #9CC2FA; } .lg-msg.warn { color: #FFC857; }
+        .lg-btn { height: 50px; border: none; border-radius: 15px; cursor: pointer; color: #fff; font: inherit; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: linear-gradient(145deg, #5B9BF5, #2D62D8); box-shadow: 0 12px 28px rgba(45, 98, 216, .42), inset 0 1px 0 rgba(255, 255, 255, .3); transition: transform .2s, filter .2s; }
+        .lg-btn:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.06); } .lg-btn:active:not(:disabled) { transform: scale(.98); }
+        .lg-btn:disabled { cursor: progress; filter: saturate(.7) brightness(.95); }
+        .lg-spin { display: none; width: 18px; height: 18px; border: 2.5px solid rgba(255, 255, 255, .4); border-top-color: #fff; border-radius: 50%; animation: lg-rot .7s linear infinite; }
+        .lg-btn.busy .lg-spin { display: inline-block; }
+        @keyframes lg-rot { to { transform: rotate(360deg); } }
+        .lg-card.shake { animation: lg-shake .4s; }
+        @keyframes lg-shake { 20%, 60% { transform: translateX(-7px); } 40%, 80% { transform: translateX(7px); } }
+        .lg-demo { margin-top: 2px; padding: 14px; border-radius: 16px; background: rgba(237, 235, 227, .06); border: 1px dashed var(--panel-border); }
+        .lg-demo[hidden] { display: none; }
+        .lg-demo h4 { margin: 0 0 9px; font-size: 12.5px; font-weight: 700; color: var(--fg-muted); }
+        .lg-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+        .lg-chip { border: 1px solid var(--panel-border); background: var(--hover-bg); color: var(--fg-panel); font: inherit; font-size: 13px; font-weight: 600; padding: 7px 12px; border-radius: 999px; cursor: pointer; }
+        .lg-chip:hover { background: var(--menu-selected-bg); color: var(--menu-selected-fg); }
+        .lg-demo p { margin: 10px 0 0; font-size: 12px; line-height: 1.45; color: var(--fg-muted); }
+        @media (max-width: 480px) { .lg-screen { padding: 12px 14px 18px; } .lg-card { padding: 26px 20px 22px; border-radius: 22px; } }
+        @media (prefers-reduced-motion: reduce) { .lg-card.shake, .lg-spin { animation: none; } }
+    </style>
+    <script>
+        /* ===== LOGIN / SESSIYA (CRMAuth) =====
+           API_URL bo'sh bo'lsa — DEMO rejim: hisoblar brauzerda tekshiriladi (XAVFSIZLIK EMAS, faqat ko'rinishni sinash uchun).
+           API_URL berilsa — haqiqiy backend:
+             POST {API_URL}/auth/login/   {username, password}  ->  200 {token, user:{role, studentId, name}}   (400/401/403 = noto'g'ri, 429 = ko'p urinish)
+             GET  {API_URL}/auth/me/      Authorization: Bearer <token>  ->  {role, studentId, name}           (401/403 = sessiya tugagan)
+             POST {API_URL}/auth/logout/  Authorization: Bearer <token>  (ixtiyoriy)
+           Rol FAQAT server javobidan olinadi va CRMRole.setServerAuth() orqali URL'dagi ?role= ni cheklaydi. */
+        (function () {
+            'use strict';
+            var API_URL = '';                      // masalan: 'https://api.ferdinant-crm.uz/api'
+            var ENDPOINTS = { login: '/auth/login/', me: '/auth/me/', logout: '/auth/logout/' };
+            var STORE_KEY = 'ferdinant_auth', FLASH_KEY = 'ferdinant_flash';
+            var DEMO = [
+                { u: 'ceo', p: 'ceo12345', role: 'ceo', name: 'Direktor', studentId: null },
+                { u: 'admin', p: 'admin123', role: 'admin', name: 'Administrator', studentId: null },
+                { u: 'student', p: 'student123', role: 'student', name: 'Azizbek Karimov', studentId: 1 }
+            ];
+            var ROLES = ['ceo', 'admin', 'student'];
+            var MAX_FAILS = 5, LOCK_MS = 30000, TIMEOUT_MS = 12000;
+            var isDemo = !API_URL;
+            var user = null, state = 'out', bootError = null, fails = 0, lockUntil = 0, listeners = [];
+
+            function clean(v) { return String(v == null ? '' : v).trim().toLowerCase(); }
+            function setState(s) { state = s; document.documentElement.setAttribute('data-auth', s); listeners.slice().forEach(function (fn) { try { fn(s); } catch (e) { console.error(e); } }); }
+            function boxes() { var b = []; try { b.push(window.localStorage); } catch (e) {} try { b.push(window.sessionStorage); } catch (e) {} return b; }
+            function readSession() {
+                var b = boxes();
+                for (var i = 0; i < b.length; i++) {
+                    try { var raw = b[i].getItem(STORE_KEY); if (raw) { var d = JSON.parse(raw); if (d && typeof d === 'object') return { box: b[i], data: d }; } } catch (e) {}
+                }
+                return null;
+            }
+            function clearSession() { boxes().forEach(function (x) { try { x.removeItem(STORE_KEY); } catch (e) {} }); }
+            function persist(data, remember) {
+                clearSession();
+                try { (remember ? window.localStorage : window.sessionStorage).setItem(STORE_KEY, JSON.stringify(data)); } catch (e) {}
+            }
+            function toUser(o) {
+                if (!o || typeof o !== 'object') return null;
+                var role = clean(o.role);
+                if (ROLES.indexOf(role) === -1) return null;
+                var sid = o.studentId != null ? o.studentId : (o.student_id != null ? o.student_id : null);
+                return { name: String(o.name || o.username || '').slice(0, 80), role: role, studentId: sid };
+            }
+            function apply(u) { user = u; window.CRMRole.setServerAuth({ role: u.role, studentId: u.studentId }); }
+            function findDemo(name) { var n = clean(name); for (var i = 0; i < DEMO.length; i++) if (DEMO[i].u === n) return DEMO[i]; return null; }
+            function demoUser(a) { return { name: a.name, role: a.role, studentId: a.studentId }; }
+
+            function request(path, o) {
+                o = o || {};
+                var ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+                var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, TIMEOUT_MS) : 0;
+                var headers = { 'Accept': 'application/json' };
+                if (o.body) headers['Content-Type'] = 'application/json';
+                if (o.token) headers['Authorization'] = 'Bearer ' + o.token;
+                return fetch(API_URL.replace(/\/+$/, '') + path, {
+                    method: o.method || 'GET', headers: headers, body: o.body ? JSON.stringify(o.body) : undefined,
+                    signal: ctrl ? ctrl.signal : undefined, keepalive: !!o.keepalive, credentials: 'omit'
+                }).then(function (r) { clearTimeout(timer); return r; }, function (e) { clearTimeout(timer); throw e; });
+            }
+            function demoLogin(username, password) {
+                return new Promise(function (resolve, reject) {
+                    setTimeout(function () {
+                        var a = findDemo(username);
+                        if (a && a.p === password) resolve({ user: demoUser(a), session: { demo: true, u: a.u } });
+                        else reject({ code: 'invalid' });
+                    }, 450);
+                });
+            }
+            function apiLogin(username, password) {
+                return request(ENDPOINTS.login, { method: 'POST', body: { username: username, password: password } }).then(function (r) {
+                    if (r.status === 400 || r.status === 401 || r.status === 403) throw { code: 'invalid' };
+                    if (r.status === 429) { var w = parseInt(r.headers.get('Retry-After'), 10); throw { code: 'locked', wait: w > 0 ? w : 30 }; }
+                    if (!r.ok) throw { code: 'server' };
+                    return r.json().then(function (j) {
+                        var token = j && (j.token || j.access), u = toUser(j && j.user ? j.user : j);
+                        if (typeof token !== 'string' || !token || !u) throw { code: 'server' };
+                        return { user: u, session: { token: token } };       // parol hech qayerda saqlanmaydi
+                    }, function () { throw { code: 'server' }; });
+                }, function () { throw { code: 'network' }; });
+            }
+            function login(username, password, remember) {
+                var now = Date.now();
+                if (lockUntil > now) return Promise.reject({ code: 'locked', wait: Math.ceil((lockUntil - now) / 1000) });
+                username = String(username == null ? '' : username).trim(); password = String(password == null ? '' : password);
+                if (!username || !password) return Promise.reject({ code: 'empty' });
+                return (isDemo ? demoLogin(username, password) : apiLogin(username, password)).then(function (res) {
+                    fails = 0; persist(res.session, !!remember); apply(res.user); return res.user;
+                }, function (err) {
+                    if (err && err.code === 'invalid' && ++fails >= MAX_FAILS) { lockUntil = Date.now() + LOCK_MS; fails = 0; }
+                    throw err;
+                });
+            }
+            function logout() {
+                var s = readSession();
+                if (!isDemo && s && s.data && typeof s.data.token === 'string') {
+                    try { request(ENDPOINTS.logout, { method: 'POST', token: s.data.token, keepalive: true }).catch(function () {}); } catch (e) {}
+                }
+                clearSession();
+                try { sessionStorage.removeItem('ferdinant_nav'); sessionStorage.setItem(FLASH_KEY, 'out'); } catch (e) {}
+                try { var u = new URL(location.href); u.searchParams.delete('role'); location.replace(u.pathname + u.search + u.hash); } catch (e) { location.reload(); }
+            }
+            function boot() {
+                var s = readSession();
+                if (!s) { setState('out'); return; }
+                if (isDemo) {
+                    var a = s.data.demo === true ? findDemo(s.data.u) : null;       // rol saqlangan qiymatdan emas, ro'yxatdan qayta olinadi
+                    if (!a) { clearSession(); setState('out'); return; }
+                    apply(demoUser(a)); setState('in'); return;
+                }
+                var token = typeof s.data.token === 'string' ? s.data.token : '';
+                if (!token || s.data.demo) { clearSession(); setState('out'); return; }
+                setState('checking');
+                request(ENDPOINTS.me, { token: token }).then(function (r) {
+                    if (r.status === 401 || r.status === 403) { clearSession(); setState('out'); return; }
+                    if (!r.ok) throw { code: 'server' };
+                    return r.json().then(function (j) {
+                        var u = toUser(j && j.user ? j.user : j);
+                        if (!u) throw { code: 'server' };
+                        apply(u); setState('in');
+                    }, function () { throw { code: 'server' }; });
+                }).catch(function (e) { bootError = e && e.code ? e.code : 'network'; setState('out'); });
+            }
+
+            window.CRMAuth = Object.freeze({
+                get user() { return user; },
+                get state() { return state; },               // 'out' | 'checking' | 'in'
+                get demo() { return isDemo; },
+                get bootError() { return bootError; },
+                login: login, logout: logout,
+                enter: function () { if (user) setState('in'); },
+                onState: function (fn) { if (typeof fn === 'function') listeners.push(fn); },
+                demoHints: function () { return isDemo ? DEMO.map(function (a) { return { u: a.u, p: a.p, role: a.role }; }) : []; }
+            });
+            boot();
+        })();
+    </script>
 </head>
 
 <body>
+
+    <!-- ===== LOGIN EKRANI ===== -->
+    <div class="lg-screen" id="loginRoot">
+        <div class="lg-tools">
+            <div class="lg-lang"><button type="button" data-lang="uz">UZ</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="ru">RU</button></div>
+            <button type="button" class="lg-theme" id="lgTheme" aria-label="Theme">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
+            </button>
+        </div>
+        <form class="lg-card" id="loginForm" novalidate>
+            <div class="lg-brand"><img src="./logo.png" alt=""><span>Ferdinant</span></div>
+            <h1 data-lg="title">Tizimga kirish</h1>
+            <p class="lg-sub" data-lg="sub">Hisobingiz bilan davom eting</p>
+            <label class="lg-field"><span data-lg="user">Login</span>
+                <input id="lgUser" name="username" type="text" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="150">
+            </label>
+            <label class="lg-field"><span data-lg="pass">Parol</span>
+                <div class="lg-pw">
+                    <input id="lgPass" name="password" type="password" autocomplete="current-password" maxlength="256">
+                    <button type="button" class="lg-eye" id="lgEye" aria-label="Parolni ko'rsatish">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" /><line id="lgSlash" x1="3" y1="3" x2="21" y2="21" style="display:none" /></svg>
+                    </button>
+                </div>
+            </label>
+            <label class="lg-check"><input type="checkbox" id="lgRemember"><span data-lg="remember">Bu qurilmada eslab qol</span></label>
+            <div class="lg-msg" id="lgMsg" role="alert" aria-live="polite"></div>
+            <button type="submit" class="lg-btn" id="lgSubmit"><span data-lg="submit">Kirish</span><i class="lg-spin"></i></button>
+            <div class="lg-demo" id="lgDemo" hidden>
+                <h4 data-lg="demoT">Demo hisoblar</h4>
+                <div class="lg-chips" id="lgChips"></div>
+                <p data-lg="demoNote"></p>
+            </div>
+        </form>
+    </div>
 
     <aside class="sidebar expanded" id="sidebar">
         <div class="sidebar-top">
@@ -4539,6 +4905,13 @@
         </button>
 
         <ul class="nav-list">
+            <li class="nav-item" data-i18n-label="nav.student" data-view="student">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 20c0-3.5 3.5-6 8-6s8 2.5 8 6" />
+                </svg>
+                <span class="label" data-i18n="nav.student">Mening kabinetim</span>
+            </li>
             <li class="nav-item active" data-i18n-label="nav.home" data-view="home">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M3 11.5 12 4l9 7.5" />
@@ -4641,6 +5014,13 @@
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
     <nav class="mobile-bottom-nav" id="mobileBottomNav">
+        <div class="nav-item" data-i18n-label="nav.student" data-view="student">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 20c0-3.5 3.5-6 8-6s8 2.5 8 6" />
+            </svg>
+            <span class="label" data-i18n="nav.student">Kabinet</span>
+        </div>
         <div class="nav-item active" data-i18n-label="nav.home" data-view="home">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 11.5 12 4l9 7.5" />
@@ -5244,6 +5624,10 @@
 
             <div class="content-view" data-view="archive">
                 <div id="archiveRoot"></div>
+            </div>
+
+            <div class="content-view" data-view="student">
+                <div id="studentRoot"></div>
             </div>
         </div>
     </div>
@@ -6100,6 +6484,11 @@
         window.motionEnter = motionEnter;
 
         function showView(name) {
+            // ROLE: rolga ruxsat etilmagan bo'lim ochilmaydi (bu UI rejimi; haqiqiy himoya backendda)
+            if (window.CRMRole && !window.CRMRole.canView(name)) {
+                name = window.CRMRole.home();
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active', i.getAttribute('data-view') === name));
+            }
             document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active-view'));
             const target = document.querySelector(`.content-view[data-view="${name}"]`);
             if (target) target.classList.add('active-view');
@@ -6114,6 +6503,7 @@
             if (name === 'settings' && typeof renderSettings === 'function') renderSettings();
             if (name === 'reports' && typeof renderReports === 'function') renderReports();
             if (name === 'archive' && typeof renderArchive === 'function') renderArchive();
+            if (name === 'student' && typeof renderStudentCabinet === 'function') renderStudentCabinet();
             if (typeof window.rpOnView === 'function') window.rpOnView(name);
             if (typeof window.arOnView === 'function') window.arOnView(name);
             if (name === 'clients' && typeof updateClientsScrollButtons === 'function') {
@@ -6137,6 +6527,8 @@
             // HAQIQIY LOYIHADA: shu yerga backend session/token'ni tozalash
             // va login sahifasiga yo'naltirish logikasi qo'shiladi.
             if (window.confirm(dict['profile.logoutConfirm'])) {
+                // LOGIN: sessiya o'chiriladi va sahifa qayta yuklanadi (oldingi foydalanuvchi ma'lumoti xotirada qolmasligi uchun)
+                if (window.CRMAuth) { window.CRMAuth.logout(); return; }
                 window.toast.success(dict['profile.loggedOut']);
             }
         }
@@ -6932,6 +7324,8 @@
             if (typeof renderSettings === 'function') renderSettings();
             if (typeof renderReports === 'function') renderReports();
             if (typeof renderArchive === 'function') renderArchive();
+            if (typeof renderStudentCabinet === 'function') renderStudentCabinet();
+            if (typeof paintLogin === 'function') paintLogin();
             if (typeof renderScheduleModal === 'function' && document.getElementById('scheduleModalBackdrop').classList.contains('open')) renderScheduleModal();
         }
 
@@ -9900,6 +10294,12 @@
         // sahifa yangilanganda ham o'sha joyning o'zi qayta ochiladi.
         (function persistNavigation() {
             const NAV_KEY = 'ferdinant_nav';
+            const R = window.CRMRole;
+            const roleHome = () => R ? R.home() : 'home';
+            const activateNav = view => document.querySelectorAll('.nav-item').forEach(i =>
+                i.classList.toggle('active', i.getAttribute('data-view') === view));
+            // URL'dagi role o'zgarsa (brauzer orqaga/oldinga) — tegishli interfeysning bosh sahifasi ochiladi
+            if (R) R.onChange(() => { activateNav(roleHome()); showView(roleHome()); });
 
             function saveNav() {
                 try {
@@ -9921,9 +10321,12 @@
 
             let st = null;
             try { st = JSON.parse(sessionStorage.getItem(NAV_KEY) || 'null'); } catch (e) { st = null; }
-            const valid = st && st.view && st.view !== 'home' &&
+            const valid = st && st.view && st.view !== roleHome() && (!R || R.canView(st.view)) &&
                 document.querySelector(`.content-view[data-view="${st.view}"]`);
-            if (!valid) { motionEnter('home'); return; }
+            if (!valid) {
+                if (roleHome() !== 'home') { activateNav(roleHome()); showView(roleHome()); } else motionEnter('home');
+                return;
+            }
 
             document.querySelectorAll('.nav-item').forEach(i =>
                 i.classList.toggle('active', i.getAttribute('data-view') === st.view));
@@ -10695,7 +11098,209 @@
     })();
     </script>
 
+    <script>
+    /* ===== TALABA KABINETI (faqat ?role=student rejimida chiziladi) =====
+       Talaba identifikatori URL'dan EMAS, faqat backend bergan CRM_AUTH.studentId dan olinadi.
+       Demo rejimda (backend yo'q) birinchi faol talaba namuna sifatida ko'rsatiladi. */
+    (function initStudentCabinet() {
+        const root = document.getElementById('studentRoot');
+        if (!root) return;
+        const lang = () => document.documentElement.getAttribute('lang') || 'uz';
+        const tr = (uz, en, ru) => ({ uz: uz, en: en, ru: ru }[lang()] || uz);
+        const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const money = n => Math.abs(Math.round(n || 0)).toLocaleString('ru-RU');
+        const cur = () => tr("so'm", 'UZS', 'сум');
 
+        // Navigatsiya yorlig'i (sidebar/mobil) — mavjud i18n tizimiga qo'shiladi
+        if (typeof TRANSLATIONS !== 'undefined') {
+            Object.assign(TRANSLATIONS.uz, { 'nav.student': 'Mening kabinetim' });
+            Object.assign(TRANSLATIONS.en, { 'nav.student': 'My account' });
+            Object.assign(TRANSLATIONS.ru, { 'nav.student': 'Мой кабинет' });
+            document.querySelectorAll('[data-i18n="nav.student"]').forEach(el => { el.textContent = TRANSLATIONS[lang()]['nav.student'] || el.textContent; });
+            document.querySelectorAll('[data-i18n-label="nav.student"]').forEach(el => el.setAttribute('title', TRANSLATIONS[lang()]['nav.student']));
+        }
+
+        const DAYS = () => ({ uz: ['Du', 'Se', 'Chor', 'Pay', 'Ju', 'Sha', 'Yak'], en: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], ru: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'] }[lang()] || []);
+        const MONTHS = () => ({
+            uz: ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'],
+            en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            ru: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
+        }[lang()] || []);
+        const METHOD = k => ({ cash: tr('Naqd', 'Cash', 'Наличные'), card: tr('Karta', 'Card', 'Карта'), click: 'Click', payme: 'Payme', bank: tr("Bank o'tkazmasi", 'Bank transfer', 'Банк') }[k] || k);
+        const STATUS = k => ({ active: tr('Faol', 'Active', 'Активен'), frozen: tr('Muzlatilgan', 'Frozen', 'Заморожен'), grad: tr('Bitirgan', 'Graduated', 'Выпускник') }[k] || k);
+
+        function currentStudent() {
+            const list = typeof window.allStudents === 'function' ? window.allStudents() : [];
+            const R = window.CRMRole;
+            const sid = R && R.studentId();
+            if (sid != null) return list.find(s => String(s.id) === String(sid)) || null;
+            if (R && R.mode === 'demo') return list.find(s => s.status === 'active') || list[0] || null;
+            return null;
+        }
+
+        function render() {
+            const R = window.CRMRole;
+            // Boshqa rollarda talaba ma'lumoti DOM'da turmasin
+            if (!R || R.current !== 'student') { root.innerHTML = ''; return; }
+            const s = currentStudent();
+            if (!s) {
+                root.innerHTML = '<div class="sc-wrap"><div class="sc-card sc-empty">' + esc(tr("Hisobingiz hali talaba profiliga bog'lanmagan. Markaz administratoriga murojaat qiling.", 'Your account is not linked to a student profile yet. Please contact the center administrator.', 'Ваш аккаунт ещё не привязан к профилю студента. Обратитесь к администратору центра.')) + '</div></div>';
+                return;
+            }
+            const groups = typeof window.allGroups === 'function' ? window.allGroups() : [];
+            const g = groups.find(x => x.name === s.group);
+            const cat = typeof window.appCatalog === 'function' ? window.appCatalog() : { rooms: [] };
+            const room = g && (cat.rooms || []).find(r => r.id === g.room);
+            const pays = (typeof window.allPayments === 'function' ? window.allPayments() : [])
+                .filter(p => String(p.sid) === String(s.id))
+                .sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, 8);
+            const first = String(s.name || '').split(' ')[0];
+            const bal = s.balance || 0;
+            const balCls = bal < 0 ? 'sc-debt' : bal > 0 ? 'sc-ok' : '';
+            const balLbl = bal < 0 ? tr('Qarzdorlik', 'Outstanding balance', 'Задолженность') : bal > 0 ? tr("Ortiqcha to'lov", 'Credit balance', 'Переплата') : tr("Qarz yo'q", 'No debt', 'Долга нет');
+            const mName = key => { const m = +String(key || '').slice(5, 7); return m ? MONTHS()[m - 1] + ' ' + String(key).slice(0, 4) : '—'; };
+            const days = g ? (g.days || []).map(d => '<span>' + esc(DAYS()[d] || d) + '</span>').join('') : '';
+
+            root.innerHTML = '<div class="sc-wrap">' +
+                '<div class="sc-hero"><div><h2>' + esc(tr('Salom', 'Hello', 'Здравствуйте')) + ', ' + esc(first) + '!</h2><p>' + esc(s.name) + ' · ' + esc(s.phone || '') + '</p></div>' +
+                (R.mode === 'demo' ? '<span class="sc-badge">' + esc(tr("Demo ma'lumot", 'Demo data', 'Демо-данные')) + '</span>' : '') + '</div>' +
+                '<div class="sc-stats">' +
+                '<div class="sc-card"><small>' + esc(tr('Guruh', 'Group', 'Группа')) + '</small><b>' + esc(s.group || '—') + '</b></div>' +
+                '<div class="sc-card"><small>' + esc(balLbl) + '</small><b class="' + balCls + '">' + money(bal) + ' ' + esc(cur()) + '</b></div>' +
+                '<div class="sc-card"><small>' + esc(tr('Holati', 'Status', 'Статус')) + '</small><b>' + esc(STATUS(s.status)) + '</b></div></div>' +
+                (g ? '<div class="sc-card"><h3>' + esc(tr('Dars jadvali', 'Class schedule', 'Расписание')) + '</h3><div class="sc-days">' + days + '</div>' +
+                    '<div class="sc-row"><span>' + esc(tr('Vaqti', 'Time', 'Время')) + '</span><span>' + esc(g.start) + ' – ' + esc(g.end) + '</span></div>' +
+                    '<div class="sc-row"><span>' + esc(tr("O'qituvchi", 'Teacher', 'Преподаватель')) + '</span><span>' + esc(g.teacher) + '</span></div>' +
+                    '<div class="sc-row"><span>' + esc(tr('Xona', 'Room', 'Кабинет')) + '</span><span>' + esc(room ? room.name : '—') + '</span></div></div>' : '') +
+                '<div class="sc-card"><h3>' + esc(tr("So'nggi to'lovlar", 'Recent payments', 'Последние платежи')) + '</h3>' +
+                (pays.length ? '<div class="sc-table-wrap"><table class="sc-table"><thead><tr><th>' + esc(tr('Sana', 'Date', 'Дата')) + '</th><th>' + esc(tr('Oy uchun', 'For month', 'За месяц')) + '</th><th>' + esc(tr('Summa', 'Amount', 'Сумма')) + '</th><th>' + esc(tr("Usul", 'Method', 'Способ')) + '</th></tr></thead><tbody>' +
+                    pays.map(p => '<tr><td>' + esc(p.date) + '</td><td>' + esc(mName(p.forMonth)) + '</td><td>' + money(p.amount) + ' ' + esc(cur()) + '</td><td>' + esc(METHOD(p.method)) + '</td></tr>').join('') +
+                    '</tbody></table></div>' : '<div class="sc-empty">' + esc(tr("To'lovlar topilmadi", 'No payments found', 'Платежей не найдено')) + '</div>') + '</div></div>';
+        }
+
+        window.renderStudentCabinet = render;
+        render();
+        if (window.CRMRole) window.CRMRole.onUpdate(render);
+    })();
+    </script>
+
+    <script>
+    /* ===== LOGIN EKRANI (UI) ===== */
+    (function initLogin() {
+        const A = window.CRMAuth, root = document.getElementById('loginRoot');
+        if (!A || !root) return;
+        const $ = id => document.getElementById(id);
+        const IDX = { uz: 0, en: 1, ru: 2 };
+        const lang = () => document.documentElement.getAttribute('lang') || 'uz';
+        const L = {
+            title: ['Tizimga kirish', 'Sign in', 'Вход в систему'],
+            sub: ['Hisobingiz bilan davom eting', 'Continue with your account', 'Войдите в свою учётную запись'],
+            user: ['Login', 'Username', 'Логин'], pass: ['Parol', 'Password', 'Пароль'],
+            remember: ['Bu qurilmada eslab qol', 'Keep me signed in on this device', 'Запомнить на этом устройстве'],
+            submit: ['Kirish', 'Sign in', 'Войти'], busy: ['Tekshirilmoqda…', 'Checking…', 'Проверка…'],
+            show: ["Parolni ko'rsatish", 'Show password', 'Показать пароль'], hide: ['Parolni yashirish', 'Hide password', 'Скрыть пароль'],
+            demoT: ['Demo hisoblar', 'Demo accounts', 'Демо-аккаунты'],
+            demoNote: ["Backend ulanmagan: bu hisoblar faqat brauzerda tekshiriladi va haqiqiy xavfsizlik bermaydi.", 'No backend is connected: these accounts are checked in the browser only and provide no real security.', 'Бэкенд не подключён: эти аккаунты проверяются только в браузере и не дают реальной защиты.'],
+            roleStudent: ['Talaba', 'Student', 'Студент'],
+            empty: ['Login va parolni kiriting', 'Enter your username and password', 'Введите логин и пароль'],
+            invalid: ["Login yoki parol noto'g'ri", 'Incorrect username or password', 'Неверный логин или пароль'],
+            locked: ["Urinishlar juda ko'p. {n} soniyadan keyin qayta urinib ko'ring", 'Too many attempts. Try again in {n} s', 'Слишком много попыток. Повторите через {n} с'],
+            network: ["Serverga ulanib bo'lmadi. Internetni tekshiring", 'Cannot reach the server. Check your connection', 'Не удалось подключиться к серверу. Проверьте интернет'],
+            server: ["Server kutilmagan javob qaytardi. Keyinroq urinib ko'ring", 'The server returned an unexpected response. Try again later', 'Сервер вернул неожиданный ответ. Повторите позже'],
+            caps: ['Caps Lock yoqilgan', 'Caps Lock is on', 'Включён Caps Lock'],
+            loggedOut: ['Tizimdan chiqdingiz', 'You have signed out', 'Вы вышли из системы'],
+            checking: ['Sessiya tekshirilmoqda…', 'Checking your session…', 'Проверка сессии…']
+        };
+        const t = k => { const v = L[k]; return v ? v[IDX[lang()] || 0] : k; };
+        const form = $('loginForm'), uEl = $('lgUser'), pEl = $('lgPass'), rEl = $('lgRemember'), msg = $('lgMsg'), btn = $('lgSubmit'), eye = $('lgEye');
+        let busy = false, msgKey = '', msgKind = '', msgN = 0;
+
+        function renderMsg() { msg.className = 'lg-msg' + (msgKind ? ' ' + msgKind : ''); msg.textContent = msgKey ? t(msgKey).replace('{n}', msgN) : ''; }
+        function setMsg(key, kind, n) { msgKey = key || ''; msgKind = kind || ''; msgN = n || 0; renderMsg(); }
+        const roleLabel = r => r === 'student' ? t('roleStudent') : r === 'ceo' ? 'CEO' : 'Admin';
+
+        function paint() {
+            root.querySelectorAll('[data-lg]').forEach(el => { el.textContent = t(el.dataset.lg); });
+            btn.querySelector('[data-lg]').textContent = t(busy ? 'busy' : 'submit');
+            eye.setAttribute('aria-label', t(pEl.type === 'password' ? 'show' : 'hide'));
+            const box = $('lgDemo');
+            box.hidden = !A.demo;
+            if (A.demo) {
+                const chips = $('lgChips'); chips.textContent = '';
+                A.demoHints().forEach(h => {
+                    const b = document.createElement('button'); b.type = 'button'; b.className = 'lg-chip';
+                    b.textContent = roleLabel(h.role) + ' · ' + h.u;
+                    b.addEventListener('click', () => { uEl.value = h.u; pEl.value = h.p; setMsg('', ''); btn.focus(); });
+                    chips.appendChild(b);
+                });
+            }
+            renderMsg();
+        }
+        window.paintLogin = paint;
+
+        function setBusy(v) { busy = v; btn.disabled = v || A.state === 'checking'; btn.classList.toggle('busy', v); [uEl, pEl, rEl].forEach(e => { e.disabled = v; }); btn.querySelector('[data-lg]').textContent = t(v ? 'busy' : 'submit'); }
+        function fail(el) { form.classList.remove('shake'); void form.offsetWidth; form.classList.add('shake'); el.focus(); }
+
+        // Kirgandan so'ng: URL'dagi ruxsat etilgan rejim saqlanadi, aks holda foydalanuvchining o'z roli
+        function enterApp(user) {
+            const rank = { student: 0, admin: 1, ceo: 2 };
+            let want = '';
+            try { want = String(new URL(location.href).searchParams.get('role') || '').trim().toLowerCase(); } catch (e) { want = ''; }
+            const target = Object.prototype.hasOwnProperty.call(rank, want) && rank[want] <= rank[user.role] ? want : user.role;
+            try {
+                const u = new URL(location.href);
+                if (target === 'student') u.searchParams.delete('role'); else u.searchParams.set('role', target);
+                history.replaceState(history.state, '', u.pathname + u.search + u.hash);
+            } catch (e) { /* file:// — e'tiborsiz */ }
+            window.CRMRole.refresh();
+            const home = window.CRMRole.home();
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active', i.getAttribute('data-view') === home));
+            showView(home);
+            A.enter();
+        }
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            if (busy || A.state !== 'out') return;
+            const u = uEl.value.trim(), p = pEl.value;
+            if (!u || !p) { setMsg('empty', 'err'); fail(!u ? uEl : pEl); return; }
+            setMsg('', ''); setBusy(true);
+            A.login(u, p, rEl.checked).then(user => {
+                pEl.value = ''; setBusy(false); enterApp(user);
+            }).catch(err => {
+                setBusy(false);
+                const code = err && L[err.code] ? err.code : 'server';
+                setMsg(code, code === 'locked' ? 'warn' : 'err', err && err.wait);
+                pEl.value = ''; fail(pEl);
+            });
+        });
+        eye.addEventListener('click', () => {
+            const show = pEl.type === 'password';
+            pEl.type = show ? 'text' : 'password';
+            $('lgSlash').style.display = show ? '' : 'none';
+            eye.setAttribute('aria-label', t(show ? 'hide' : 'show'));
+            pEl.focus();
+        });
+        pEl.addEventListener('keyup', e => {
+            const on = e.getModifierState && e.getModifierState('CapsLock');
+            if (on && !msgKey) setMsg('caps', 'warn'); else if (!on && msgKey === 'caps') setMsg('', '');
+        });
+        root.querySelectorAll('.lg-lang [data-lang]').forEach(b => b.addEventListener('click', () => applyLanguage(b.dataset.lang)));
+        $('lgTheme').addEventListener('click', () => { const b = document.getElementById('headerThemeBtn'); if (b) b.click(); });
+
+        function onState(s) {
+            btn.disabled = busy || s === 'checking';
+            if (s === 'checking') setMsg('checking', 'info');
+            else if (s === 'out') { if (msgKey === 'checking') setMsg('', ''); setTimeout(() => { if (A.state === 'out' && !busy) uEl.focus(); }, 60); }
+        }
+        A.onState(onState);
+
+        paint();
+        try { if (sessionStorage.getItem('ferdinant_flash')) { sessionStorage.removeItem('ferdinant_flash'); setMsg('loggedOut', 'info'); } } catch (e) { /* storage yo'q */ }
+        if (A.bootError) setMsg(A.bootError === 'network' ? 'network' : 'server', 'err');
+        onState(A.state);
+    })();
+    </script>
 
 </body>
 
