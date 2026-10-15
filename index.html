@@ -4024,7 +4024,7 @@
         @media (max-width: 640px) {
             #studentsRoot .payments-table-wrap,
             #teachersRoot .payments-table-wrap,
-            #paymentsRoot .payments-table-wrap {
+            :is(#paymentsRoot, #archiveRoot) .payments-table-wrap {
                 max-height: none;
                 overflow: visible;
                 border: none;
@@ -4032,25 +4032,25 @@
             }
             #studentsRoot .payments-card,
             #teachersRoot .payments-card,
-            #paymentsRoot .payments-card {
+            :is(#paymentsRoot, #archiveRoot) .payments-card {
                 padding: 12px 10px 12px;
             }
             #studentsRoot .payments-table,
             #teachersRoot .payments-table,
-            #paymentsRoot .payments-table,
+            :is(#paymentsRoot, #archiveRoot) .payments-table,
             #studentsRoot .payments-table tbody,
             #teachersRoot .payments-table tbody,
-            #paymentsRoot .payments-table tbody {
+            :is(#paymentsRoot, #archiveRoot) .payments-table tbody {
                 display: block;
                 width: 100%;
             }
             #studentsRoot .payments-table thead,
             #teachersRoot .payments-table thead,
-            #paymentsRoot .payments-table thead { display: none; }
+            :is(#paymentsRoot, #archiveRoot) .payments-table thead { display: none; }
 
             #studentsRoot .payments-table tr,
             #teachersRoot .payments-table tr,
-            #paymentsRoot .payments-table tr {
+            :is(#paymentsRoot, #archiveRoot) .payments-table tr {
                 display: grid;
                 grid-template-columns: repeat(2, minmax(0, 1fr));
                 gap: 10px 12px;
@@ -4062,7 +4062,7 @@
             }
             #studentsRoot .payments-table td,
             #teachersRoot .payments-table td,
-            #paymentsRoot .payments-table td {
+            :is(#paymentsRoot, #archiveRoot) .payments-table td {
                 display: flex;
                 flex-direction: column;
                 gap: 2px;
@@ -4075,10 +4075,10 @@
             }
             #studentsRoot .payments-table td.col-hide-sm,
             #teachersRoot .payments-table td.col-hide-sm,
-            #paymentsRoot .payments-table td.col-hide-sm { display: flex; }
+            :is(#paymentsRoot, #archiveRoot) .payments-table td.col-hide-sm { display: flex; }
             #studentsRoot .payments-table td::before,
             #teachersRoot .payments-table td::before,
-            #paymentsRoot .payments-table td::before {
+            :is(#paymentsRoot, #archiveRoot) .payments-table td::before {
                 content: attr(data-label);
                 font-size: 10.5px;
                 font-weight: 700;
@@ -4088,22 +4088,22 @@
             }
             #studentsRoot .payments-table td[data-label=""]::before,
             #teachersRoot .payments-table td[data-label=""]::before,
-            #paymentsRoot .payments-table td[data-label=""]::before,
+            :is(#paymentsRoot, #archiveRoot) .payments-table td[data-label=""]::before,
             #studentsRoot .payments-table td.c-user::before,
             #teachersRoot .payments-table td.c-user::before,
-            #paymentsRoot .payments-table td.c-user::before,
+            :is(#paymentsRoot, #archiveRoot) .payments-table td.c-user::before,
             #studentsRoot .payments-table td.c-act::before,
             #teachersRoot .payments-table td.c-act::before,
-            #paymentsRoot .payments-table td.c-act::before { display: none; }
+            :is(#paymentsRoot, #archiveRoot) .payments-table td.c-act::before { display: none; }
 
             /* ism — kartaning tepasida, to'liq kenglikda */
             #studentsRoot .payments-table td.c-user,
             #teachersRoot .payments-table td.c-user,
-            #paymentsRoot .payments-table td.c-user { grid-column: 1 / -1; order: -2; font-size: 15px; font-weight: 600; }
+            :is(#paymentsRoot, #archiveRoot) .payments-table td.c-user { grid-column: 1 / -1; order: -2; font-size: 15px; font-weight: 600; }
             /* amallar tugmalari — pastda, o'ng tomonda */
             #studentsRoot .payments-table td.c-act,
             #teachersRoot .payments-table td.c-act,
-            #paymentsRoot .payments-table td.c-act {
+            :is(#paymentsRoot, #archiveRoot) .payments-table td.c-act {
                 grid-column: 1 / -1;
                 order: 99;
                 flex-direction: row;
@@ -4117,19 +4117,19 @@
             }
             #studentsRoot .payments-table td[colspan],
             #teachersRoot .payments-table td[colspan],
-            #paymentsRoot .payments-table td[colspan] { grid-column: 1 / -1; text-align: center; }
+            :is(#paymentsRoot, #archiveRoot) .payments-table td[colspan] { grid-column: 1 / -1; text-align: center; }
             #studentsRoot .payments-table td > .st-badge,
             #teachersRoot .payments-table td > .st-badge,
-            #paymentsRoot .payments-table td > .st-badge,
-            #paymentsRoot .payments-table td > .pm-method,
-            #paymentsRoot .payments-table td > .pm-month,
-            #paymentsRoot .payments-table td > .pm-no { align-self: flex-start; }
+            :is(#paymentsRoot, #archiveRoot) .payments-table td > .st-badge,
+            :is(#paymentsRoot, #archiveRoot) .payments-table td > .pm-method,
+            :is(#paymentsRoot, #archiveRoot) .payments-table td > .pm-month,
+            :is(#paymentsRoot, #archiveRoot) .payments-table td > .pm-no { align-self: flex-start; }
             #studentsRoot .payments-table td.num,
             #teachersRoot .payments-table td.num,
-            #paymentsRoot .payments-table td.num { text-align: left; }
+            :is(#paymentsRoot, #archiveRoot) .payments-table td.num { text-align: left; }
             #studentsRoot .st-act,
             #teachersRoot .st-act,
-            #paymentsRoot .st-act { width: 40px; height: 40px; }
+            :is(#paymentsRoot, #archiveRoot) .st-act { width: 40px; height: 40px; }
         }
 
         @media (max-width: 380px) {
@@ -4436,90 +4436,104 @@
         @media (max-width: 900px) { .rp-fly { display: none; } }
         .nav-list { scrollbar-width: thin; }
 
-        #reportsRoot .rp-crumb { margin-top: 6px; font-size: 13px; color: var(--fg-page-muted); }
-        #reportsRoot .rp-crumb span { opacity: .6; margin: 0 3px; }
-        #reportsRoot .rp-desc { margin: 8px 0 0; font-size: 14px; color: var(--fg-page-muted); max-width: 640px; }
-        #reportsRoot .clients-head-text { max-width: 720px; }
-        #reportsRoot .rp-switch { width: 100%; }
-        #reportsRoot .rp-kpis { margin: 0 0 18px; }
-        #reportsRoot .stat-card { text-align: left; padding: 18px 18px; }
-        #reportsRoot .stat-icon { margin: 0 0 12px; }
-        #reportsRoot .stat-value { font-size: 22px; font-weight: 700; word-break: break-word; }
-        #reportsRoot .stat-value .pm-sub { font-size: 12px; font-weight: 500; }
-        #reportsRoot .stat-value .pm-sub small { font-size: 11px; opacity: .75; }
-        #reportsRoot .rp-charts { display: grid; gap: 16px; margin-bottom: 16px; grid-template-columns: 1fr; }
-        #reportsRoot .rp-charts.n2 { grid-template-columns: 1fr 1fr; }
-        #reportsRoot .rp-charts.n2.fw { grid-template-columns: 2fr 1fr; }
-        #reportsRoot .rp-charts.n3 { grid-template-columns: 1fr 1fr 1fr; }
-        #reportsRoot .rp-charts.n3.fw { grid-template-columns: 1.7fr 1fr 1fr; }
-        #reportsRoot .rp-ccard, #reportsRoot .rp-tcard { margin-top: 0; min-width: 0; }
-        #reportsRoot .rp-tcard { margin-bottom: 14px; }
+        :is(#reportsRoot, #archiveRoot) .rp-crumb { margin-top: 6px; font-size: 13px; color: var(--fg-page-muted); }
+        :is(#reportsRoot, #archiveRoot) .rp-crumb span { opacity: .6; margin: 0 3px; }
+        :is(#reportsRoot, #archiveRoot) .rp-desc { margin: 8px 0 0; font-size: 14px; color: var(--fg-page-muted); max-width: 640px; }
+        :is(#reportsRoot, #archiveRoot) .clients-head-text { max-width: 720px; }
+        :is(#reportsRoot, #archiveRoot) .rp-switch { width: 100%; }
+        :is(#reportsRoot, #archiveRoot) .rp-kpis { margin: 0 0 18px; }
+        :is(#reportsRoot, #archiveRoot) .stat-card { text-align: left; padding: 18px 18px; }
+        :is(#reportsRoot, #archiveRoot) .stat-icon { margin: 0 0 12px; }
+        :is(#reportsRoot, #archiveRoot) .stat-value { font-size: 22px; font-weight: 700; word-break: break-word; }
+        :is(#reportsRoot, #archiveRoot) .stat-value .pm-sub { font-size: 12px; font-weight: 500; }
+        :is(#reportsRoot, #archiveRoot) .stat-value .pm-sub small { font-size: 11px; opacity: .75; }
+        :is(#reportsRoot, #archiveRoot) .rp-charts { display: grid; gap: 16px; margin-bottom: 16px; grid-template-columns: 1fr; }
+        :is(#reportsRoot, #archiveRoot) .rp-charts.n2 { grid-template-columns: 1fr 1fr; }
+        :is(#reportsRoot, #archiveRoot) .rp-charts.n2.fw { grid-template-columns: 2fr 1fr; }
+        :is(#reportsRoot, #archiveRoot) .rp-charts.n3 { grid-template-columns: 1fr 1fr 1fr; }
+        :is(#reportsRoot, #archiveRoot) .rp-charts.n3.fw { grid-template-columns: 1.7fr 1fr 1fr; }
+        :is(#reportsRoot, #archiveRoot) .rp-ccard, :is(#reportsRoot, #archiveRoot) .rp-tcard { margin-top: 0; min-width: 0; }
+        :is(#reportsRoot, #archiveRoot) .rp-tcard { margin-bottom: 14px; }
         @media (max-width: 1100px) {
-            #reportsRoot .rp-charts.n3, #reportsRoot .rp-charts.n3.fw { grid-template-columns: 1fr 1fr; }
-            #reportsRoot .rp-charts.n3.fw .rp-ccard:first-child { grid-column: 1 / -1; }
+            :is(#reportsRoot, #archiveRoot) .rp-charts.n3, :is(#reportsRoot, #archiveRoot) .rp-charts.n3.fw { grid-template-columns: 1fr 1fr; }
+            :is(#reportsRoot, #archiveRoot) .rp-charts.n3.fw .rp-ccard:first-child { grid-column: 1 / -1; }
         }
         @media (max-width: 760px) {
-            #reportsRoot .rp-charts, #reportsRoot .rp-charts.n2, #reportsRoot .rp-charts.n3, #reportsRoot .rp-charts.n2.fw, #reportsRoot .rp-charts.n3.fw { grid-template-columns: 1fr; }
-            #reportsRoot .rp-search { flex: 1 1 100%; max-width: none; }
-            #reportsRoot .stat-value { font-size: 19px; }
+            :is(#reportsRoot, #archiveRoot) .rp-charts, :is(#reportsRoot, #archiveRoot) .rp-charts.n2, :is(#reportsRoot, #archiveRoot) .rp-charts.n3, :is(#reportsRoot, #archiveRoot) .rp-charts.n2.fw, :is(#reportsRoot, #archiveRoot) .rp-charts.n3.fw { grid-template-columns: 1fr; }
+            :is(#reportsRoot, #archiveRoot) .rp-search { flex: 1 1 100%; max-width: none; }
+            :is(#reportsRoot, #archiveRoot) .stat-value { font-size: 19px; }
         }
-        #reportsRoot .rp-h { display: flex; flex-direction: column; gap: 11px; max-height: 420px; overflow-y: auto; padding-right: 4px; }
-        #reportsRoot .rp-hrow { display: grid; grid-template-columns: minmax(80px, 150px) 1fr; gap: 12px; align-items: center; }
-        #reportsRoot .rp-hlab { font-size: 12.5px; color: var(--fg-muted); text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        #reportsRoot .rp-htrack { display: flex; flex-direction: column; gap: 3px; padding-right: 58px; border-left: 1px solid var(--panel-border); }
-        #reportsRoot .rp-hbar { position: relative; height: 13px; border-radius: 0 4px 4px 0; transition: opacity .15s ease; }
-        #reportsRoot .rp-hbar:hover { opacity: .8; }
-        #reportsRoot .rp-hbar i { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); margin-left: 6px; font-style: normal; font-size: 11px; line-height: 1; color: var(--fg-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
-        #reportsRoot .rp-legend { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-top: 14px; font-size: 12px; color: var(--fg-muted); }
-        #reportsRoot .rp-legend span { display: inline-flex; align-items: center; gap: 6px; }
-        #reportsRoot .rp-legend i { width: 14px; height: 4px; border-radius: 3px; display: inline-block; }
-        #reportsRoot .rp-v { display: flex; align-items: flex-end; gap: 8px; height: 230px; padding-top: 6px; overflow-x: auto; }
-        #reportsRoot .rp-vcol { flex: 1; min-width: 28px; display: flex; flex-direction: column; align-items: center; gap: 8px; height: 100%; }
-        #reportsRoot .rp-vbars { flex: 1; width: 100%; display: flex; align-items: flex-end; justify-content: center; gap: 3px; }
-        #reportsRoot .rp-vbar { position: relative; width: 100%; max-width: 30px; min-height: 0; border-radius: 7px 7px 3px 3px; transition: opacity .15s ease; }
-        #reportsRoot .rp-vbar:hover { opacity: .8; }
-        #reportsRoot .rp-vbar i { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 4px; font-style: normal; font-size: 10.5px; color: var(--fg-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
-        #reportsRoot .rp-vcol > span { font-size: 11.5px; color: var(--fg-muted); white-space: nowrap; }
-        #reportsRoot .rp-vcol.cur > span { color: var(--fg-panel); font-weight: 700; }
-        #reportsRoot .rp-donut { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 16px; }
-        #reportsRoot .rp-donut svg { width: 128px; height: 128px; flex-shrink: 0; }
-        #reportsRoot .rp-dt1 { font-size: 15px; font-weight: 700; fill: var(--fg-panel); }
-        #reportsRoot .rp-dt2 { font-size: 8.5px; fill: var(--fg-muted); }
-        #reportsRoot .rp-dlegend { flex: 1 1 150px; min-width: 150px; display: flex; flex-direction: column; gap: 8px; max-height: 190px; overflow-y: auto; }
-        #reportsRoot .rp-dlegend > div { display: grid; grid-template-columns: 10px 1fr auto 38px; gap: 8px; align-items: center; font-size: 12.5px; }
-        #reportsRoot .rp-dlegend i { width: 10px; height: 10px; border-radius: 3px; }
-        #reportsRoot .rp-dlegend span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fg-muted); }
-        #reportsRoot .rp-dlegend b { font-weight: 600; font-variant-numeric: tabular-nums; }
-        #reportsRoot .rp-dlegend em { font-style: normal; color: var(--fg-muted); text-align: right; }
-        #reportsRoot .rp-line { width: 100%; height: auto; display: block; }
-        #reportsRoot .rp-grid { stroke: var(--panel-border); stroke-width: 1; }
-        #reportsRoot .rp-ax { font-size: 10px; fill: var(--fg-muted); }
-        #reportsRoot .rp-pl { fill: none; stroke: var(--chart-bar-top, #6FA8FF); stroke-width: 2.4; stroke-linejoin: round; }
-        #reportsRoot .rp-area { fill: var(--chart-bar-top, #6FA8FF); opacity: .14; }
-        #reportsRoot .rp-dot { fill: var(--bg-panel); stroke: var(--chart-bar-top, #6FA8FF); stroke-width: 2; }
-        #reportsRoot .rp-meter { height: 5px; border-radius: 5px; background: var(--hover-bg); overflow: hidden; min-width: 60px; }
-        #reportsRoot .rp-meter i { display: block; height: 100%; border-radius: 5px; background: var(--accent); }
-        #reportsRoot .rp-pc { display: flex; flex-direction: column; gap: 5px; min-width: 76px; }
-        #reportsRoot .rp-pc b { font-size: 12.5px; font-weight: 600; }
-        #reportsRoot .rp-table td small, #reportsRoot .rp-table td .muted { color: var(--fg-muted); font-size: 12px; }
-        #reportsRoot .rp-table td.muted { color: var(--fg-muted); }
-        #reportsRoot .rp-foot td { font-weight: 600; background: var(--hover-bg); border-top: 1px solid var(--panel-border); }
-        #reportsRoot .rp-clip { display: inline-block; max-width: 280px; overflow: hidden; text-overflow: ellipsis; vertical-align: bottom; }
-        #reportsRoot .rp-table td .st-user > div:last-child { line-height: 1.25; }
+        :is(#reportsRoot, #archiveRoot) .rp-h { display: flex; flex-direction: column; gap: 11px; max-height: 420px; overflow-y: auto; padding-right: 4px; }
+        :is(#reportsRoot, #archiveRoot) .rp-hrow { display: grid; grid-template-columns: minmax(80px, 150px) 1fr; gap: 12px; align-items: center; }
+        :is(#reportsRoot, #archiveRoot) .rp-hlab { font-size: 12.5px; color: var(--fg-muted); text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        :is(#reportsRoot, #archiveRoot) .rp-htrack { display: flex; flex-direction: column; gap: 3px; padding-right: 58px; border-left: 1px solid var(--panel-border); }
+        :is(#reportsRoot, #archiveRoot) .rp-hbar { position: relative; height: 13px; border-radius: 0 4px 4px 0; transition: opacity .15s ease; }
+        :is(#reportsRoot, #archiveRoot) .rp-hbar:hover { opacity: .8; }
+        :is(#reportsRoot, #archiveRoot) .rp-hbar i { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); margin-left: 6px; font-style: normal; font-size: 11px; line-height: 1; color: var(--fg-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+        :is(#reportsRoot, #archiveRoot) .rp-legend { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-top: 14px; font-size: 12px; color: var(--fg-muted); }
+        :is(#reportsRoot, #archiveRoot) .rp-legend span { display: inline-flex; align-items: center; gap: 6px; }
+        :is(#reportsRoot, #archiveRoot) .rp-legend i { width: 14px; height: 4px; border-radius: 3px; display: inline-block; }
+        :is(#reportsRoot, #archiveRoot) .rp-v { display: flex; align-items: flex-end; gap: 8px; height: 230px; padding-top: 6px; overflow-x: auto; }
+        :is(#reportsRoot, #archiveRoot) .rp-vcol { flex: 1; min-width: 28px; display: flex; flex-direction: column; align-items: center; gap: 8px; height: 100%; }
+        :is(#reportsRoot, #archiveRoot) .rp-vbars { flex: 1; width: 100%; display: flex; align-items: flex-end; justify-content: center; gap: 3px; }
+        :is(#reportsRoot, #archiveRoot) .rp-vbar { position: relative; width: 100%; max-width: 30px; min-height: 0; border-radius: 7px 7px 3px 3px; transition: opacity .15s ease; }
+        :is(#reportsRoot, #archiveRoot) .rp-vbar:hover { opacity: .8; }
+        :is(#reportsRoot, #archiveRoot) .rp-vbar i { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 4px; font-style: normal; font-size: 10.5px; color: var(--fg-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+        :is(#reportsRoot, #archiveRoot) .rp-vcol > span { font-size: 11.5px; color: var(--fg-muted); white-space: nowrap; }
+        :is(#reportsRoot, #archiveRoot) .rp-vcol.cur > span { color: var(--fg-panel); font-weight: 700; }
+        :is(#reportsRoot, #archiveRoot) .rp-donut { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 16px; }
+        :is(#reportsRoot, #archiveRoot) .rp-donut svg { width: 128px; height: 128px; flex-shrink: 0; }
+        :is(#reportsRoot, #archiveRoot) .rp-dt1 { font-size: 15px; font-weight: 700; fill: var(--fg-panel); }
+        :is(#reportsRoot, #archiveRoot) .rp-dt2 { font-size: 8.5px; fill: var(--fg-muted); }
+        :is(#reportsRoot, #archiveRoot) .rp-dlegend { flex: 1 1 150px; min-width: 150px; display: flex; flex-direction: column; gap: 8px; max-height: 190px; overflow-y: auto; }
+        :is(#reportsRoot, #archiveRoot) .rp-dlegend > div { display: grid; grid-template-columns: 10px 1fr auto 38px; gap: 8px; align-items: center; font-size: 12.5px; }
+        :is(#reportsRoot, #archiveRoot) .rp-dlegend i { width: 10px; height: 10px; border-radius: 3px; }
+        :is(#reportsRoot, #archiveRoot) .rp-dlegend span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fg-muted); }
+        :is(#reportsRoot, #archiveRoot) .rp-dlegend b { font-weight: 600; font-variant-numeric: tabular-nums; }
+        :is(#reportsRoot, #archiveRoot) .rp-dlegend em { font-style: normal; color: var(--fg-muted); text-align: right; }
+        :is(#reportsRoot, #archiveRoot) .rp-line { width: 100%; height: auto; display: block; }
+        :is(#reportsRoot, #archiveRoot) .rp-grid { stroke: var(--panel-border); stroke-width: 1; }
+        :is(#reportsRoot, #archiveRoot) .rp-ax { font-size: 10px; fill: var(--fg-muted); }
+        :is(#reportsRoot, #archiveRoot) .rp-pl { fill: none; stroke: var(--chart-bar-top, #6FA8FF); stroke-width: 2.4; stroke-linejoin: round; }
+        :is(#reportsRoot, #archiveRoot) .rp-area { fill: var(--chart-bar-top, #6FA8FF); opacity: .14; }
+        :is(#reportsRoot, #archiveRoot) .rp-dot { fill: var(--bg-panel); stroke: var(--chart-bar-top, #6FA8FF); stroke-width: 2; }
+        :is(#reportsRoot, #archiveRoot) .rp-meter { height: 5px; border-radius: 5px; background: var(--hover-bg); overflow: hidden; min-width: 60px; }
+        :is(#reportsRoot, #archiveRoot) .rp-meter i { display: block; height: 100%; border-radius: 5px; background: var(--accent); }
+        :is(#reportsRoot, #archiveRoot) .rp-pc { display: flex; flex-direction: column; gap: 5px; min-width: 76px; }
+        :is(#reportsRoot, #archiveRoot) .rp-pc b { font-size: 12.5px; font-weight: 600; }
+        :is(#reportsRoot, #archiveRoot) .rp-table td small, :is(#reportsRoot, #archiveRoot) .rp-table td .muted { color: var(--fg-muted); font-size: 12px; }
+        :is(#reportsRoot, #archiveRoot) .rp-table td.muted { color: var(--fg-muted); }
+        :is(#reportsRoot, #archiveRoot) .rp-foot td { font-weight: 600; background: var(--hover-bg); border-top: 1px solid var(--panel-border); }
+        :is(#reportsRoot, #archiveRoot) .rp-clip { display: inline-block; max-width: 280px; overflow: hidden; text-overflow: ellipsis; vertical-align: bottom; }
+        :is(#reportsRoot, #archiveRoot) .rp-table td .st-user > div:last-child { line-height: 1.25; }
         .st-badge.bad { background: rgba(248, 113, 113, .16); color: #F87171; }
-        #reportsRoot .rp-note { display: flex; gap: 10px; align-items: flex-start; margin: 4px 2px 24px; font-size: 12.5px; line-height: 1.5; color: var(--fg-page-muted); }
-        #reportsRoot .rp-note svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; }
+        :is(#reportsRoot, #archiveRoot) .rp-note { display: flex; gap: 10px; align-items: flex-start; margin: 4px 2px 24px; font-size: 12.5px; line-height: 1.5; color: var(--fg-page-muted); }
+        :is(#reportsRoot, #archiveRoot) .rp-note svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; }
         .rp-modal .clients-modal.rp-wide { max-width: 720px; }
         .rp-modal .rp-info { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); margin: 0 0 16px; }
         .rp-mact { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; margin-top: 18px; }
         .rp-acts { display: flex; gap: 6px; justify-content: flex-end; }
+        /* ARXIV: jadval keng bo'lsa ham "Tiklash / O'chirish" ustuni o'ng chetda doim ko'rinib turadi */
+        @media (min-width: 641px) {
+            #archiveRoot .rp-table th, #archiveRoot .rp-table td { padding-left: 12px; padding-right: 12px; }
+            #archiveRoot .rp-table td.wrap { white-space: normal; min-width: 96px; line-height: 1.3; }
+            #archiveRoot .rp-table th:last-child,
+            #archiveRoot .rp-table td.c-act { position: sticky; right: 0; background: var(--bg-panel); box-shadow: -10px 0 12px -10px rgba(0, 0, 0, .4); }
+            #archiveRoot .rp-table th:last-child { z-index: 3; }
+            #archiveRoot .rp-table td.c-act { z-index: 2; }
+            #archiveRoot .payments-table tbody tr:hover td.c-act { background: linear-gradient(var(--hover-bg), var(--hover-bg)), var(--bg-panel); }
+        }
+        @media (max-width: 640px) {
+            #archiveRoot .rp-table td.c-type { order: -1; }
+            #archiveRoot .rp-table td.c-type::before { display: none; }
+        }
         .rp-modal .rp-mini { max-height: 46vh; }
         .rp-modal .rp-mini td { white-space: nowrap; }
         .rp-modal .rp-sms-text { padding: 14px 16px; border-radius: 12px; background: var(--hover-bg); font-size: 14px; line-height: 1.55; }
         @media print {
             .sidebar, .header, .mobile-bottom-nav, .rp-noprint, .sidebar-backdrop, .ct-stack { display: none !important; }
             body, .main, .content { height: auto !important; overflow: visible !important; }
-            #reportsRoot .rp-h, #reportsRoot .rp-v { max-height: none; overflow: visible; }
+            :is(#reportsRoot, #archiveRoot) .rp-h, :is(#reportsRoot, #archiveRoot) .rp-v { max-height: none; overflow: visible; }
         }
         /* ===== TALABA KABINETI ===== */
         .sc-wrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; max-width: 980px; }
@@ -4564,12 +4578,12 @@
 
             /* Har bir rol qaysi bo'limlarni ko'radi (yagona manba). Kerak bo'lsa shu yerni tahrirlang. */
             var VIEWS = {
-                ceo: ['home', 'clients', 'students', 'groups', 'teachers', 'payments', 'accounts', 'reports', 'archive', 'settings', 'profile'],
-                admin: ['home', 'clients', 'students', 'groups', 'teachers', 'payments', 'accounts', 'profile'],
+                ceo: ['home', 'clients', 'students', 'groups', 'teachers', 'payments', 'reports', 'archive', 'settings', 'profile'],
+                admin: ['home', 'clients', 'students', 'groups', 'teachers', 'payments', 'profile'],
                 student: ['student']
             };
             var HOME = { ceo: 'home', admin: 'home', student: 'student' };
-            var ALL_VIEWS = ['home', 'clients', 'students', 'groups', 'teachers', 'payments', 'accounts', 'reports', 'archive', 'settings', 'profile', 'student'];
+            var ALL_VIEWS = ['home', 'clients', 'students', 'groups', 'teachers', 'payments', 'reports', 'archive', 'settings', 'profile', 'student'];
             var GROUP_SEL = { reports: '#navReports', archive: '#navArchive' };
             var STUDENT_HIDE = ['.search-box', '#scheduleBtn', '#profileScheduleBtn', '#profileSettingsBtn', '#notifDropdown', '.ch-fab', '.ch-panel', '.ct-stack'];
 
@@ -4665,172 +4679,56 @@
         })();
     </script>
     <style id="auth-css">
-        /* ===== LOGIN EKRANI (qayta dizayn) ===== */
-        .lg-screen { --lg-text: var(--fg-page); --lg-muted: var(--fg-page-muted); --lg-card: #FFFFFF; --lg-in-bg: rgba(15, 23, 42, .035); --lg-in-bd: rgba(15, 23, 42, .14); --lg-in-focus: #FFFFFF;
-            --lg-err: #D92D2D; --lg-info: #2F6FE0; --lg-warn: #B7791F; --lg-a: rgba(47, 111, 224, .34); --lg-b: rgba(99, 102, 241, .26); --lg-c: rgba(56, 189, 248, .26);
-            display: none; position: fixed; inset: 0; z-index: 500; overflow: auto; padding: 78px 24px 28px; background: var(--bg-page); isolation: isolate; }
-        html[data-theme="dark"] .lg-screen { --lg-card: #0E1526; --lg-in-bg: rgba(233, 236, 243, .05); --lg-in-bd: rgba(233, 236, 243, .14); --lg-in-focus: rgba(233, 236, 243, .09);
-            --lg-err: #FF8A8A; --lg-info: #9CC2FA; --lg-warn: #FFC857; --lg-a: rgba(79, 140, 240, .30); --lg-b: rgba(99, 102, 241, .28); --lg-c: rgba(56, 189, 248, .16); }
+        /* ===== LOGIN EKRANI ===== */
+        .lg-screen { display: none; position: fixed; inset: 0; z-index: 500; overflow: auto; padding: 18px 24px 24px; flex-direction: column; align-items: center;
+            background: radial-gradient(620px 420px at 14% 8%, rgba(47, 111, 224, .24), transparent 62%), radial-gradient(540px 400px at 92% 96%, rgba(79, 70, 229, .20), transparent 62%), var(--bg-page); }
         html:not([data-auth="in"]) .lg-screen { display: flex; }
         html:not([data-auth="in"]) .sidebar, html:not([data-auth="in"]) .sidebar-backdrop, html:not([data-auth="in"]) .mobile-bottom-nav,
         html:not([data-auth="in"]) .main, html:not([data-auth="in"]) .ch-fab, html:not([data-auth="in"]) .ch-panel, html:not([data-auth="in"]) .ct-stack { display: none !important; }
-
-        /* fon: sekin suzuvchi nurli dog'lar + nozik to'r */
-        .lg-bg { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
-        .lg-blob { position: absolute; border-radius: 50%; filter: blur(70px); will-change: transform; }
-        .lg-blob.b1 { width: 520px; height: 520px; left: -140px; top: -120px; background: var(--lg-a); animation: lg-drift1 22s ease-in-out infinite alternate; }
-        .lg-blob.b2 { width: 460px; height: 460px; right: -120px; bottom: -140px; background: var(--lg-b); animation: lg-drift2 26s ease-in-out infinite alternate; }
-        .lg-blob.b3 { width: 340px; height: 340px; left: 42%; top: 58%; background: var(--lg-c); animation: lg-drift3 30s ease-in-out infinite alternate; }
-        .lg-grid { position: absolute; inset: 0; opacity: .55; background-image: linear-gradient(var(--lg-in-bd) 1px, transparent 1px), linear-gradient(90deg, var(--lg-in-bd) 1px, transparent 1px);
-            background-size: 46px 46px; -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 20%, transparent 78%); mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 20%, transparent 78%); }
-        @keyframes lg-drift1 { to { transform: translate(120px, 90px) scale(1.12); } }
-        @keyframes lg-drift2 { to { transform: translate(-110px, -80px) scale(1.1); } }
-        @keyframes lg-drift3 { to { transform: translate(-160px, -60px) scale(.9); } }
-
-        /* yuqori asboblar */
-        .lg-tools { position: fixed; top: 18px; right: 22px; z-index: 3; display: flex; gap: 8px; align-items: center; }
-        .lg-lang { display: flex; gap: 2px; padding: 4px; border-radius: 14px; background: var(--lg-card); border: 1px solid var(--surface-border); box-shadow: 0 6px 18px rgba(15, 23, 42, .08); }
-        .lg-lang button { border: none; background: transparent; color: var(--lg-muted); font: inherit; font-size: 12.5px; font-weight: 700; padding: 6px 11px; border-radius: 10px; cursor: pointer; transition: background .2s, color .2s; }
-        .lg-lang button:hover { color: var(--lg-text); }
+        .lg-tools { align-self: flex-end; display: flex; gap: 8px; align-items: center; }
+        .lg-lang { display: flex; gap: 4px; padding: 4px; border-radius: 14px; background: var(--bg-panel); border: 1px solid var(--panel-border); }
+        .lg-lang button { border: none; background: transparent; color: var(--fg-muted); font: inherit; font-size: 13px; font-weight: 700; padding: 6px 11px; border-radius: 10px; cursor: pointer; transition: background .2s, color .2s; }
+        .lg-lang button:hover { color: var(--fg-panel); }
         html[lang="uz"] .lg-lang [data-lang="uz"], html[lang="en"] .lg-lang [data-lang="en"], html[lang="ru"] .lg-lang [data-lang="ru"] { background: var(--highlight-bg); color: #fff; }
-        .lg-theme { width: 40px; height: 40px; border-radius: 13px; border: 1px solid var(--surface-border); background: var(--lg-card); color: var(--lg-text); cursor: pointer; display: grid; place-items: center; box-shadow: 0 6px 18px rgba(15, 23, 42, .08); transition: transform .2s; }
-        .lg-theme:hover { transform: translateY(-1px); } .lg-theme svg { width: 19px; height: 19px; }
-
-        /* asosiy qobiq */
-        .lg-shell { position: relative; margin: auto; width: min(1060px, 100%); display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); border-radius: 30px; overflow: hidden;
-            background: var(--lg-card); border: 1px solid var(--surface-border); box-shadow: 0 40px 90px rgba(15, 23, 42, .26), 0 2px 10px rgba(15, 23, 42, .08); animation: lg-rise .75s cubic-bezier(.2, .8, .2, 1) both; }
-        @keyframes lg-rise { from { opacity: 0; transform: translateY(26px) scale(.985); } to { opacity: 1; transform: none; } }
-
-        /* chap tomon: brend paneli */
-        .lg-hero { position: relative; overflow: hidden; color: #EDEBE3; padding: 40px 44px 34px; display: flex; flex-direction: column; min-height: 660px;
-            background: radial-gradient(520px 360px at 88% 0%, rgba(111, 168, 255, .40), transparent 66%), radial-gradient(460px 340px at 0% 100%, rgba(99, 102, 241, .42), transparent 62%), linear-gradient(160deg, #10224d 0%, #0A1129 100%); }
-        .lg-hero::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .5; background-image: radial-gradient(rgba(255, 255, 255, .09) 1px, transparent 1.4px); background-size: 22px 22px;
-            -webkit-mask-image: linear-gradient(135deg, #000, transparent 70%); mask-image: linear-gradient(135deg, #000, transparent 70%); }
-        .lg-ring { position: absolute; border-radius: 50%; pointer-events: none; }
-        .lg-ring.r1 { width: 430px; height: 430px; right: -150px; bottom: -120px; border: 1.5px dashed rgba(156, 194, 250, .30); animation: lg-spin 60s linear infinite; }
-        .lg-ring.r2 { width: 290px; height: 290px; right: -80px; bottom: -50px; border: 1.5px solid rgba(156, 194, 250, .20); animation: lg-spin 44s linear infinite reverse; }
-        .lg-ring.r2::before { content: ""; position: absolute; top: 12px; left: 50%; width: 11px; height: 11px; margin-left: -5px; border-radius: 50%; background: #7DB4FF; box-shadow: 0 0 18px 4px rgba(125, 180, 255, .75); }
-        .lg-orb { position: absolute; border-radius: 50%; pointer-events: none; background: radial-gradient(circle at 30% 28%, rgba(255, 255, 255, .55), rgba(111, 168, 255, .22) 42%, rgba(79, 70, 229, .12) 72%); border: 1px solid rgba(255, 255, 255, .16); backdrop-filter: blur(2px); }
-        .lg-orb.o1 { width: 74px; height: 74px; left: 46%; top: 6%; animation: lg-float 9s ease-in-out infinite; }
-        .lg-orb.o2 { width: 30px; height: 30px; left: 6%; top: 44%; animation: lg-float 7s ease-in-out -2s infinite; }
-        .lg-orb.o3 { width: 46px; height: 46px; right: 9%; top: 46%; animation: lg-float 11s ease-in-out -5s infinite; }
-        @keyframes lg-spin { to { transform: rotate(360deg); } }
-        @keyframes lg-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
-
-        .lg-hero-brand { position: relative; z-index: 2; display: flex; align-items: center; gap: 12px; }
-        .lg-hero-brand img { width: 46px; height: 46px; object-fit: contain; }
-        .lg-hero-brand span { font-size: 27px; font-weight: 700; letter-spacing: .2px; }
-
-        .lg-float { position: absolute; z-index: 2; top: 104px; right: 34px; width: 188px; animation: lg-float 8s ease-in-out infinite; }
-        .lg-glass { border-radius: 18px; padding: 14px 14px 12px; background: linear-gradient(145deg, rgba(255, 255, 255, .16), rgba(255, 255, 255, .05)); border: 1px solid rgba(255, 255, 255, .2);
-            box-shadow: 0 18px 40px rgba(3, 8, 28, .4), inset 0 1px 0 rgba(255, 255, 255, .22); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-        .lg-glass-head { display: flex; align-items: center; gap: 7px; margin-bottom: 12px; }
-        .lg-glass-head i { width: 8px; height: 8px; border-radius: 50%; background: #7DB4FF; box-shadow: 0 0 10px #7DB4FF; }
-        .lg-glass-head b { display: block; height: 6px; width: 54px; border-radius: 4px; background: rgba(255, 255, 255, .35); }
-        .lg-bars { display: flex; align-items: flex-end; gap: 7px; height: 62px; }
-        .lg-bars u { flex: 1; text-decoration: none; border-radius: 6px 6px 3px 3px; background: linear-gradient(to top, #4F46E5, #7DB4FF); transform-origin: bottom; animation: lg-bar 3.6s ease-in-out infinite; }
-        .lg-bars u:nth-child(1) { height: 38%; } .lg-bars u:nth-child(2) { height: 62%; animation-delay: -.5s; } .lg-bars u:nth-child(3) { height: 48%; animation-delay: -1s; }
-        .lg-bars u:nth-child(4) { height: 84%; animation-delay: -1.5s; background: linear-gradient(to top, #F0643C, #FFC857); } .lg-bars u:nth-child(5) { height: 66%; animation-delay: -2s; }
-        @keyframes lg-bar { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(.78); } }
-        .lg-chip-ok { position: absolute; left: -38px; bottom: -26px; width: 46px; height: 46px; border-radius: 15px; display: grid; place-items: center; color: #fff;
-            background: linear-gradient(145deg, #34D399, #059669); box-shadow: 0 12px 26px rgba(5, 150, 105, .5), inset 0 1px 0 rgba(255, 255, 255, .35); animation: lg-float 6s ease-in-out -1s infinite; }
-        .lg-chip-ok svg { width: 22px; height: 22px; }
-
-        .lg-hero-main { position: relative; z-index: 2; margin-top: auto; }
-        .lg-hero h2 { margin: 0 0 12px; max-width: 390px; font-size: 32px; line-height: 1.18; font-weight: 800; letter-spacing: -.4px; }
-        .lg-hero h2 em { font-style: normal; background: linear-gradient(90deg, #7DB4FF, #A5B4FC); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .lg-hero-sub { margin: 0 0 24px; max-width: 380px; font-size: 14.5px; line-height: 1.55; color: rgba(237, 235, 227, .68); }
-        .lg-feats { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; max-width: 390px; }
-        .lg-feats li { display: flex; align-items: center; gap: 13px; padding: 11px 13px; border-radius: 16px; background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .09); transition: background .25s, transform .25s, border-color .25s; }
-        .lg-feats li:hover { background: rgba(255, 255, 255, .09); border-color: rgba(156, 194, 250, .35); transform: translateX(4px); }
-        .lg-feat-ico { width: 38px; height: 38px; flex-shrink: 0; border-radius: 12px; display: grid; place-items: center; color: #BFD6FB; background: linear-gradient(145deg, rgba(79, 140, 240, .34), rgba(99, 102, 241, .22)); border: 1px solid rgba(156, 194, 250, .25); }
-        .lg-feat-ico svg { width: 19px; height: 19px; }
-        .lg-feats b { display: block; font-size: 14px; font-weight: 700; color: #F3F1EA; }
-        .lg-feats small { display: block; margin-top: 1px; font-size: 12.5px; color: rgba(237, 235, 227, .58); }
-        .lg-hero-foot { position: relative; z-index: 2; margin-top: 26px; font-size: 12px; color: rgba(237, 235, 227, .42); }
-
-        /* o'ng tomon: forma */
-        .lg-card { position: relative; box-sizing: border-box; display: grid; align-content: center; gap: 16px; padding: 46px 48px 36px; color: var(--lg-text); background: var(--lg-card); }
-        .lg-card > * { animation: lg-fade .6s cubic-bezier(.2, .8, .2, 1) both; }
-        .lg-card > *:nth-child(1) { animation-delay: .15s; } .lg-card > *:nth-child(2) { animation-delay: .2s; } .lg-card > *:nth-child(3) { animation-delay: .25s; } .lg-card > *:nth-child(4) { animation-delay: .3s; }
-        .lg-card > *:nth-child(5) { animation-delay: .35s; } .lg-card > *:nth-child(6) { animation-delay: .4s; } .lg-card > *:nth-child(7) { animation-delay: .45s; } .lg-card > *:nth-child(8) { animation-delay: .5s; }
-        @keyframes lg-fade { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-        .lg-brand { display: none; align-items: center; gap: 10px; }
-        .lg-brand img { width: 40px; height: 40px; object-fit: contain; } .lg-brand span { font-size: 23px; font-weight: 700; }
-        .lg-welcome { display: inline-flex; align-items: center; gap: 8px; width: fit-content; padding: 6px 12px 6px 10px; border-radius: 999px; font-size: 12.5px; font-weight: 700; color: var(--accent); background: rgba(47, 111, 224, .10); border: 1px solid rgba(47, 111, 224, .22); }
-        .lg-welcome i { width: 7px; height: 7px; border-radius: 50%; background: #22C55E; box-shadow: 0 0 0 0 rgba(34, 197, 94, .6); animation: lg-ping 2s infinite; }
-        @keyframes lg-ping { 70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
-        .lg-card h1 { margin: 2px 0 0; font-size: 31px; font-weight: 800; letter-spacing: -.5px; line-height: 1.15; }
-        .lg-sub { margin: -8px 0 6px; font-size: 14.5px; color: var(--lg-muted); }
-        .lg-field { display: grid; gap: 8px; font-size: 13px; font-weight: 700; color: var(--lg-muted); }
-        .lg-in { position: relative; }
-        .lg-ico { position: absolute; left: 15px; top: 50%; width: 19px; height: 19px; transform: translateY(-50%); color: var(--lg-muted); opacity: .8; pointer-events: none; transition: color .2s, opacity .2s; }
-        .lg-in:focus-within .lg-ico { color: var(--accent); opacity: 1; }
-        .lg-field input { width: 100%; box-sizing: border-box; height: 52px; padding: 0 16px 0 46px; border-radius: 15px; border: 1.5px solid var(--lg-in-bd); background: var(--lg-in-bg); color: var(--lg-text);
-            font: inherit; font-size: 15px; font-weight: 500; outline: none; transition: border-color .2s, box-shadow .25s, background .2s; }
-        .lg-field input:hover:not(:disabled) { border-color: rgba(47, 111, 224, .45); }
-        .lg-field input:focus { border-color: var(--accent); background: var(--lg-in-focus); box-shadow: 0 0 0 4px rgba(47, 111, 224, .18), 0 8px 22px rgba(47, 111, 224, .12); }
+        .lg-theme { width: 40px; height: 40px; border-radius: 13px; border: 1px solid var(--panel-border); background: var(--bg-panel); color: var(--fg-panel); cursor: pointer; display: grid; place-items: center; }
+        .lg-theme:hover { background: var(--menu-hover); } .lg-theme svg { width: 19px; height: 19px; }
+        .lg-card { width: min(100%, 420px); margin: auto; box-sizing: border-box; display: grid; gap: 14px; padding: 34px 32px 28px; border-radius: 26px;
+            background: var(--bg-panel); color: var(--fg-panel); border: 1px solid var(--panel-border); box-shadow: 0 30px 70px rgba(15, 23, 42, .35), inset 0 1px 0 rgba(255, 255, 255, .06); }
+        .lg-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+        .lg-brand img { width: 44px; height: 44px; object-fit: contain; }
+        .lg-brand span { font-size: 26px; font-weight: 700; letter-spacing: .2px; }
+        .lg-card h1 { margin: 6px 0 0; font-size: 22px; font-weight: 700; }
+        .lg-sub { margin: -6px 0 4px; font-size: 14px; color: var(--fg-muted); }
+        .lg-field { display: grid; gap: 7px; font-size: 13px; font-weight: 600; color: var(--fg-muted); }
+        .lg-field input { width: 100%; box-sizing: border-box; height: 48px; padding: 0 14px; border-radius: 14px; border: 1px solid var(--panel-border); background: var(--field-bg); color: var(--field-fg);
+            font: inherit; font-size: 15px; font-weight: 500; outline: none; transition: border-color .2s, box-shadow .2s, background .2s; }
+        .lg-field input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(47, 111, 224, .28); background: rgba(237, 235, 227, .14); }
         .lg-field input:disabled { opacity: .6; }
-        .lg-pw input { padding-right: 52px; }
-        .lg-eye { position: absolute; right: 7px; top: 50%; transform: translateY(-50%); width: 38px; height: 38px; border: none; background: transparent; color: var(--lg-muted); border-radius: 11px; cursor: pointer; display: grid; place-items: center; transition: background .2s, color .2s; }
-        .lg-eye:hover { color: var(--lg-text); background: var(--lg-in-bg); } .lg-eye svg { width: 20px; height: 20px; }
-        .lg-check { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--lg-muted); cursor: pointer; user-select: none; }
-        .lg-check input { appearance: none; -webkit-appearance: none; width: 20px; height: 20px; margin: 0; flex-shrink: 0; border-radius: 7px; border: 1.5px solid var(--lg-in-bd); background: var(--lg-in-bg); display: grid; place-items: center; cursor: pointer; transition: background .2s, border-color .2s, transform .15s; }
-        .lg-check input::after { content: ""; width: 10px; height: 5px; border-left: 2.2px solid #fff; border-bottom: 2.2px solid #fff; transform: rotate(-45deg) scale(0) translateY(-1px); transition: transform .18s cubic-bezier(.34, 1.56, .64, 1); }
-        .lg-check input:checked { background: var(--accent); border-color: var(--accent); } .lg-check input:checked::after { transform: rotate(-45deg) scale(1) translateY(-1px); }
-        .lg-check input:focus-visible { box-shadow: 0 0 0 4px rgba(47, 111, 224, .25); } .lg-check:hover input:not(:checked) { border-color: var(--accent); }
-        .lg-msg { min-height: 20px; font-size: 13.5px; font-weight: 600; line-height: 1.4; color: var(--lg-err); }
-        .lg-msg.info { color: var(--lg-info); } .lg-msg.warn { color: var(--lg-warn); }
-        .lg-btn { position: relative; overflow: hidden; height: 54px; border: none; border-radius: 16px; cursor: pointer; color: #fff; font: inherit; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px;
-            background: linear-gradient(135deg, #5B9BF5 0%, #3366E0 55%, #4F46E5 100%); box-shadow: 0 14px 30px rgba(45, 98, 216, .42), inset 0 1px 0 rgba(255, 255, 255, .32); transition: transform .2s, filter .2s, box-shadow .2s; }
-        .lg-btn::after { content: ""; position: absolute; top: 0; bottom: 0; left: -70%; width: 45%; background: linear-gradient(110deg, transparent, rgba(255, 255, 255, .38), transparent); transform: skewX(-20deg); animation: lg-shine 4.2s ease-in-out infinite; }
-        @keyframes lg-shine { 0%, 55% { left: -70%; } 100% { left: 130%; } }
-        .lg-btn:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.06); box-shadow: 0 18px 36px rgba(45, 98, 216, .5), inset 0 1px 0 rgba(255, 255, 255, .32); }
-        .lg-btn:active:not(:disabled) { transform: scale(.98); }
-        .lg-btn:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(47, 111, 224, .35), 0 14px 30px rgba(45, 98, 216, .42); }
+        .lg-pw { position: relative; } .lg-pw input { padding-right: 50px; }
+        .lg-eye { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border: none; background: transparent; color: var(--fg-muted); border-radius: 10px; cursor: pointer; display: grid; place-items: center; }
+        .lg-eye:hover { color: var(--fg-panel); background: var(--hover-bg); } .lg-eye svg { width: 20px; height: 20px; }
+        .lg-check { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--fg-muted); cursor: pointer; user-select: none; }
+        .lg-check input { width: 18px; height: 18px; accent-color: var(--accent); }
+        .lg-msg { min-height: 20px; font-size: 13.5px; font-weight: 600; line-height: 1.4; color: #FF8A8A; }
+        .lg-msg.info { color: #9CC2FA; } .lg-msg.warn { color: #FFC857; }
+        .lg-btn { height: 50px; border: none; border-radius: 15px; cursor: pointer; color: #fff; font: inherit; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: linear-gradient(145deg, #5B9BF5, #2D62D8); box-shadow: 0 12px 28px rgba(45, 98, 216, .42), inset 0 1px 0 rgba(255, 255, 255, .3); transition: transform .2s, filter .2s; }
+        .lg-btn:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.06); } .lg-btn:active:not(:disabled) { transform: scale(.98); }
         .lg-btn:disabled { cursor: progress; filter: saturate(.7) brightness(.95); }
-        .lg-arrow { width: 19px; height: 19px; transition: transform .25s; } .lg-btn:hover:not(:disabled) .lg-arrow { transform: translateX(4px); }
-        .lg-btn.busy .lg-arrow { display: none; }
         .lg-spin { display: none; width: 18px; height: 18px; border: 2.5px solid rgba(255, 255, 255, .4); border-top-color: #fff; border-radius: 50%; animation: lg-rot .7s linear infinite; }
-        .lg-btn.busy .lg-spin { display: inline-block; } .lg-btn.busy::after { display: none; }
+        .lg-btn.busy .lg-spin { display: inline-block; }
         @keyframes lg-rot { to { transform: rotate(360deg); } }
-        .lg-secure { display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 12.5px; color: var(--lg-muted); }
-        .lg-secure svg { width: 15px; height: 15px; color: #22A06B; }
         .lg-card.shake { animation: lg-shake .4s; }
         @keyframes lg-shake { 20%, 60% { transform: translateX(-7px); } 40%, 80% { transform: translateX(7px); } }
-        .lg-demo { padding: 14px; border-radius: 16px; background: var(--lg-in-bg); border: 1px dashed var(--lg-in-bd); }
+        .lg-demo { margin-top: 2px; padding: 14px; border-radius: 16px; background: rgba(237, 235, 227, .06); border: 1px dashed var(--panel-border); }
         .lg-demo[hidden] { display: none; }
-        .lg-demo h4 { margin: 0 0 9px; font-size: 12.5px; font-weight: 700; color: var(--lg-muted); }
+        .lg-demo h4 { margin: 0 0 9px; font-size: 12.5px; font-weight: 700; color: var(--fg-muted); }
         .lg-chips { display: flex; gap: 8px; flex-wrap: wrap; }
-        .lg-chip { border: 1px solid var(--lg-in-bd); background: var(--lg-card); color: var(--lg-text); font: inherit; font-size: 13px; font-weight: 600; padding: 7px 12px; border-radius: 999px; cursor: pointer; transition: background .2s, color .2s, border-color .2s, transform .15s; }
-        .lg-chip:hover { background: rgba(47, 111, 224, .12); color: var(--accent); border-color: rgba(47, 111, 224, .4); transform: translateY(-1px); }
-        .lg-demo p { margin: 10px 0 0; font-size: 12px; line-height: 1.45; color: var(--lg-muted); }
-
-        @media (max-width: 1020px) { .lg-float { display: none; } .lg-hero { padding: 34px 34px 28px; } .lg-card { padding: 40px 36px 32px; } }
-        @media (max-width: 860px) {
-            .lg-shell { grid-template-columns: 1fr; width: min(100%, 480px); } .lg-hero { display: none; } .lg-brand { display: flex; }
-            .lg-card { padding: 32px 26px 28px; } .lg-card h1 { font-size: 27px; }
-        }
-        @media (max-width: 480px) { .lg-screen { padding: 70px 12px 18px; } .lg-card { padding: 26px 20px 24px; } .lg-shell { border-radius: 24px; } .lg-tools { right: 12px; top: 14px; } }
-        @media (prefers-reduced-motion: reduce) {
-            .lg-blob, .lg-ring, .lg-orb, .lg-float, .lg-chip-ok, .lg-bars u, .lg-btn::after, .lg-welcome i, .lg-shell, .lg-card > *, .lg-card.shake, .lg-spin { animation: none !important; }
-        }
-    </style>
-    <style id="accounts-css">
-        .ac-tabs { display: inline-flex; gap: 4px; padding: 4px; border-radius: 14px; background: var(--field-bg); border: 1px solid var(--panel-border); margin-bottom: 14px; }
-        .ac-tabs button { border: none; background: transparent; color: var(--fg-muted); font: inherit; font-size: 13.5px; font-weight: 700; padding: 8px 16px; border-radius: 10px; cursor: pointer; transition: background .2s, color .2s; }
-        .ac-tabs button:hover { color: var(--fg-panel); } .ac-tabs button.on { background: var(--highlight-bg); color: #fff; }
-        .ac-login { font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; font-size: 13px; padding: 3px 9px; border-radius: 8px; background: var(--field-bg); border: 1px solid var(--panel-border); }
-        .ac-hint { margin: 0 0 14px; font-size: 13px; line-height: 1.5; color: var(--fg-page-muted); max-width: 640px; }
-        .ac-row { display: flex; gap: 8px; } .ac-row input { flex: 1; min-width: 0; }
-        .ac-mini { flex-shrink: 0; border: 1px solid var(--panel-border); background: var(--field-bg); color: var(--fg-panel); border-radius: 12px; padding: 0 14px; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; transition: background .2s, border-color .2s; }
-        .ac-mini:hover { background: var(--menu-hover); border-color: var(--accent); }
-        .ac-err { display: none; margin: 0; font-size: 13px; font-weight: 600; color: #FF8A8A; }
-        .ac-cred { display: grid; gap: 10px; margin: 14px 0 6px; padding: 16px; border-radius: 16px; background: var(--field-bg); border: 1px dashed var(--panel-border); }
-        .ac-cred div { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 14px; color: var(--fg-muted); }
-        .ac-cred b { font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; font-size: 15px; color: var(--fg-panel); word-break: break-all; text-align: right; }
-        .ac-note { margin: 8px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--fg-muted); }
-        .ac-text { margin: 8px 0 0; font-size: 14px; line-height: 1.55; color: var(--fg-muted); }
+        .lg-chip { border: 1px solid var(--panel-border); background: var(--hover-bg); color: var(--fg-panel); font: inherit; font-size: 13px; font-weight: 600; padding: 7px 12px; border-radius: 999px; cursor: pointer; }
+        .lg-chip:hover { background: var(--menu-selected-bg); color: var(--menu-selected-fg); }
+        .lg-demo p { margin: 10px 0 0; font-size: 12px; line-height: 1.45; color: var(--fg-muted); }
+        @media (max-width: 480px) { .lg-screen { padding: 12px 14px 18px; } .lg-card { padding: 26px 20px 22px; border-radius: 22px; } }
+        @media (prefers-reduced-motion: reduce) { .lg-card.shake, .lg-spin { animation: none; } }
     </style>
     <script>
         /* ===== LOGIN / SESSIYA (CRMAuth) =====
@@ -4845,51 +4743,11 @@
             var API_URL = '';                      // masalan: 'https://api.ferdinant-crm.uz/api'
             var ENDPOINTS = { login: '/auth/login/', me: '/auth/me/', logout: '/auth/logout/' };
             var STORE_KEY = 'ferdinant_auth', FLASH_KEY = 'ferdinant_flash';
-            /* Hisoblar: CEO qat'iy (ceo / 112233). Admin va talaba hisoblarini CEO / admin yaratadi.
-               Backend yo'qligi uchun ular shu brauzerning localStorage'ida (parol SHA-256 + tuz bilan) saqlanadi.
-               Bu real xavfsizlik EMAS — backend ulanganda shu funksiyalar serverga o'tkaziladi. */
-            var CEO = { u: 'ceo', p: '112233', name: 'Direktor' };
-            var ACC_KEY = 'ferdinant_accounts';
-            var sha256 = function sha256(ascii) {
-                function rr(v, a) { return (v >>> a) | (v << (32 - a)); }
-                var mp = Math.pow, mw = mp(2, 32), i, j, result = '', words = [], bl = ascii.length * 8;
-                var hash = sha256.h = sha256.h || [], k = sha256.k = sha256.k || [], pc = k.length, comp = {};
-                for (var c = 2; pc < 64; c++) {
-                    if (!comp[c]) { for (i = 0; i < 313; i += c) comp[i] = c; hash[pc] = (mp(c, .5) * mw) | 0; k[pc++] = (mp(c, 1 / 3) * mw) | 0; }
-                }
-                ascii += '\x80';
-                while (ascii.length % 64 - 56) ascii += '\x00';
-                for (i = 0; i < ascii.length; i++) { j = ascii.charCodeAt(i); words[i >> 2] |= j << ((3 - i) % 4) * 8; }
-                words[words.length] = ((bl / mw) | 0); words[words.length] = bl;
-                for (j = 0; j < words.length;) {
-                    var w = words.slice(j, j += 16), old = hash;
-                    hash = hash.slice(0, 8);
-                    for (i = 0; i < 64; i++) {
-                        var w15 = w[i - 15], w2 = w[i - 2], a = hash[0], e = hash[4];
-                        var t1 = hash[7] + (rr(e, 6) ^ rr(e, 11) ^ rr(e, 25)) + ((e & hash[5]) ^ ((~e) & hash[6])) + k[i]
-                            + (w[i] = (i < 16) ? w[i] : (w[i - 16] + (rr(w15, 7) ^ rr(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (rr(w2, 17) ^ rr(w2, 19) ^ (w2 >>> 10))) | 0);
-                        var t2 = (rr(a, 2) ^ rr(a, 13) ^ rr(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
-                        hash = [(t1 + t2) | 0].concat(hash); hash[4] = (hash[4] + t1) | 0;
-                    }
-                    for (i = 0; i < 8; i++) hash[i] = (hash[i] + old[i]) | 0;
-                }
-                for (i = 0; i < 8; i++) for (j = 3; j + 1; j--) { var b = (hash[i] >> (j * 8)) & 255; result += ((b < 16) ? 0 : '') + b.toString(16); }
-                return result;
-            };
-            function hashPw(salt, pw) { return sha256(unescape(encodeURIComponent(salt + ':' + pw))); }
-            function rndStr(n, chars) {
-                var out = '', buf = new Uint32Array(n), c = window.crypto || window.msCrypto;
-                if (c && c.getRandomValues) c.getRandomValues(buf); else for (var i = 0; i < n; i++) buf[i] = Math.floor(Math.random() * 4294967296);
-                for (var j = 0; j < n; j++) out += chars.charAt(buf[j] % chars.length);
-                return out;
-            }
-            function loadAcc() {
-                try {
-                    var r = JSON.parse(window.localStorage.getItem(ACC_KEY) || '[]');
-                    return Array.isArray(r) ? r.filter(function (a) { return a && typeof a.u === 'string' && (a.role === 'admin' || a.role === 'student') && a.salt && a.h; }) : [];
-                } catch (e) { return []; }
-            }
-            function saveAcc(l) { try { window.localStorage.setItem(ACC_KEY, JSON.stringify(l)); return true; } catch (e) { return false; } }
+            var DEMO = [
+                { u: 'ceo', p: 'ceo12345', role: 'ceo', name: 'Direktor', studentId: null },
+                { u: 'admin', p: 'admin123', role: 'admin', name: 'Administrator', studentId: null },
+                { u: 'student', p: 'student123', role: 'student', name: 'Azizbek Karimov', studentId: 1 }
+            ];
             var ROLES = ['ceo', 'admin', 'student'];
             var MAX_FAILS = 5, LOCK_MS = 30000, TIMEOUT_MS = 12000;
             var isDemo = !API_URL;
@@ -4918,14 +4776,8 @@
                 return { name: String(o.name || o.username || '').slice(0, 80), role: role, studentId: sid };
             }
             function apply(u) { user = u; window.CRMRole.setServerAuth({ role: u.role, studentId: u.studentId }); }
-            function findAccount(name) {
-                var n = clean(name);
-                if (n === CEO.u) return { u: CEO.u, role: 'ceo', name: CEO.name, studentId: null, ceo: true };
-                var l = loadAcc(); for (var i = 0; i < l.length; i++) if (l[i].u === n) return l[i];
-                return null;
-            }
-            function verifyPw(a, pw) { return a.ceo ? pw === CEO.p : hashPw(a.salt, pw) === a.h; }
-            function demoUser(a) { return { name: a.name, role: a.role, studentId: a.role === 'student' ? a.studentId : null }; }
+            function findDemo(name) { var n = clean(name); for (var i = 0; i < DEMO.length; i++) if (DEMO[i].u === n) return DEMO[i]; return null; }
+            function demoUser(a) { return { name: a.name, role: a.role, studentId: a.studentId }; }
 
             function request(path, o) {
                 o = o || {};
@@ -4942,8 +4794,8 @@
             function demoLogin(username, password) {
                 return new Promise(function (resolve, reject) {
                     setTimeout(function () {
-                        var a = findAccount(username);
-                        if (a && verifyPw(a, password)) resolve({ user: demoUser(a), session: { demo: true, u: a.u } });
+                        var a = findDemo(username);
+                        if (a && a.p === password) resolve({ user: demoUser(a), session: { demo: true, u: a.u } });
                         else reject({ code: 'invalid' });
                     }, 450);
                 });
@@ -4985,7 +4837,7 @@
                 var s = readSession();
                 if (!s) { setState('out'); return; }
                 if (isDemo) {
-                    var a = s.data.demo === true ? findAccount(s.data.u) : null;       // rol saqlangan qiymatdan emas, ro'yxatdan qayta olinadi
+                    var a = s.data.demo === true ? findDemo(s.data.u) : null;       // rol saqlangan qiymatdan emas, ro'yxatdan qayta olinadi
                     if (!a) { clearSession(); setState('out'); return; }
                     apply(demoUser(a)); setState('in'); return;
                 }
@@ -5003,50 +4855,6 @@
                 }).catch(function (e) { bootError = e && e.code ? e.code : 'network'; setState('out'); });
             }
 
-            /* ===== Hisoblarni boshqarish (CEO -> admin va talaba; admin -> talaba) ===== */
-            var accounts = Object.freeze({
-                canManage: function (role) { return !!user && ((user.role === 'ceo' && (role === 'admin' || role === 'student')) || (user.role === 'admin' && role === 'student')); },
-                list: function (role) {
-                    if (!accounts.canManage(role)) return [];
-                    return loadAcc().filter(function (a) { return a.role === role; }).map(function (a) { return { id: a.id, u: a.u, role: a.role, name: a.name, studentId: a.studentId, created: a.created }; });
-                },
-                usedStudentIds: function () { return loadAcc().filter(function (a) { return a.role === 'student'; }).map(function (a) { return a.studentId; }); },
-                suggestPassword: function () { return rndStr(9, 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'); },
-                create: function (o) {
-                    o = o || {};
-                    var role = clean(o.role), u = clean(o.u), pw = String(o.p == null ? '' : o.p), name = String(o.name || '').trim().slice(0, 80);
-                    if (!accounts.canManage(role)) return { ok: false, code: 'denied' };
-                    if (!/^[a-z0-9._-]{3,30}$/.test(u)) return { ok: false, code: 'login' };
-                    if (u === CEO.u || findAccount(u)) return { ok: false, code: 'taken' };
-                    if (pw.length < 6 || pw.length > 64) return { ok: false, code: 'pass' };
-                    if (!name) return { ok: false, code: 'name' };
-                    var sid = null;
-                    if (role === 'student') {
-                        sid = o.studentId;
-                        if (sid == null || sid === '') return { ok: false, code: 'student' };
-                        if (loadAcc().some(function (a) { return a.role === 'student' && String(a.studentId) === String(sid); })) return { ok: false, code: 'studentTaken' };
-                    }
-                    var salt = rndStr(16, 'abcdef0123456789'), l = loadAcc();
-                    var rec = { id: 'a' + Date.now().toString(36) + rndStr(4, 'abcdefghijklmnopqrstuvwxyz0123456789'), u: u, role: role, name: name, studentId: sid, salt: salt, h: hashPw(salt, pw), created: new Date().toISOString(), by: user.role };
-                    l.push(rec);
-                    if (!saveAcc(l)) return { ok: false, code: 'storage' };
-                    return { ok: true, account: { id: rec.id, u: rec.u, role: rec.role, name: rec.name } };
-                },
-                resetPassword: function (id, pw) {
-                    var l = loadAcc(), a = l.filter(function (x) { return x.id === id; })[0];
-                    if (!a || !accounts.canManage(a.role)) return { ok: false, code: 'denied' };
-                    pw = String(pw == null ? '' : pw);
-                    if (pw.length < 6 || pw.length > 64) return { ok: false, code: 'pass' };
-                    a.salt = rndStr(16, 'abcdef0123456789'); a.h = hashPw(a.salt, pw);
-                    return saveAcc(l) ? { ok: true, account: { id: a.id, u: a.u, role: a.role, name: a.name } } : { ok: false, code: 'storage' };
-                },
-                remove: function (id) {
-                    var l = loadAcc(), a = l.filter(function (x) { return x.id === id; })[0];
-                    if (!a || !accounts.canManage(a.role)) return { ok: false, code: 'denied' };
-                    return saveAcc(l.filter(function (x) { return x.id !== id; })) ? { ok: true } : { ok: false, code: 'storage' };
-                }
-            });
-
             window.CRMAuth = Object.freeze({
                 get user() { return user; },
                 get state() { return state; },               // 'out' | 'checking' | 'in'
@@ -5055,8 +4863,7 @@
                 login: login, logout: logout,
                 enter: function () { if (user) setState('in'); },
                 onState: function (fn) { if (typeof fn === 'function') listeners.push(fn); },
-                demoHints: function () { return []; },
-                accounts: accounts
+                demoHints: function () { return isDemo ? DEMO.map(function (a) { return { u: a.u, p: a.p, role: a.role }; }) : []; }
             });
             boot();
         })();
@@ -5067,75 +4874,36 @@
 
     <!-- ===== LOGIN EKRANI ===== -->
     <div class="lg-screen" id="loginRoot">
-        <div class="lg-bg" aria-hidden="true"><i class="lg-blob b1"></i><i class="lg-blob b2"></i><i class="lg-blob b3"></i><div class="lg-grid"></div></div>
         <div class="lg-tools">
             <div class="lg-lang"><button type="button" data-lang="uz">UZ</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="ru">RU</button></div>
             <button type="button" class="lg-theme" id="lgTheme" aria-label="Theme">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
             </button>
         </div>
-
-        <div class="lg-shell">
-            <aside class="lg-hero" aria-hidden="false">
-                <i class="lg-ring r1"></i><i class="lg-ring r2"></i>
-                <i class="lg-orb o1"></i><i class="lg-orb o2"></i><i class="lg-orb o3"></i>
-                <div class="lg-hero-brand"><img src="./logo.png" alt=""><span>Ferdinant</span></div>
-
-                <div class="lg-float" aria-hidden="true">
-                    <div class="lg-glass">
-                        <div class="lg-glass-head"><i></i><b></b></div>
-                        <div class="lg-bars"><u></u><u></u><u></u><u></u><u></u></div>
-                    </div>
-                    <div class="lg-chip-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg></div>
+        <form class="lg-card" id="loginForm" novalidate>
+            <div class="lg-brand"><img src="./logo.png" alt=""><span>Ferdinant</span></div>
+            <h1 data-lg="title">Tizimga kirish</h1>
+            <p class="lg-sub" data-lg="sub">Hisobingiz bilan davom eting</p>
+            <label class="lg-field"><span data-lg="user">Login</span>
+                <input id="lgUser" name="username" type="text" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="150">
+            </label>
+            <label class="lg-field"><span data-lg="pass">Parol</span>
+                <div class="lg-pw">
+                    <input id="lgPass" name="password" type="password" autocomplete="current-password" maxlength="256">
+                    <button type="button" class="lg-eye" id="lgEye" aria-label="Parolni ko'rsatish">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" /><line id="lgSlash" x1="3" y1="3" x2="21" y2="21" style="display:none" /></svg>
+                    </button>
                 </div>
-
-                <div class="lg-hero-main">
-                    <h2 data-lg="heroT">O'quv markazingizni bitta joydan boshqaring</h2>
-                    <p class="lg-hero-sub" data-lg="heroS">Talabalar, guruhlar, to'lovlar va hisobotlar — hammasi tartibli va tez.</p>
-                    <ul class="lg-feats">
-                        <li>
-                            <span class="lg-feat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg></span>
-                            <div><b data-lg="f1T">Talabalar va guruhlar</b><small data-lg="f1D">Davomat, baholar va jadval bir joyda</small></div>
-                        </li>
-                        <li>
-                            <span class="lg-feat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3" /><line x1="2" y1="10" x2="22" y2="10" /><line x1="6" y1="15" x2="10" y2="15" /></svg></span>
-                            <div><b data-lg="f2T">To'lovlar nazorati</b><small data-lg="f2D">Tushum va qarzdorlik aniq ko'rinadi</small></div>
-                        </li>
-                        <li>
-                            <span class="lg-feat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" /></svg></span>
-                            <div><b data-lg="f3T">Hisobotlar</b><small data-lg="f3D">Qaror qabul qilish uchun tayyor ko'rsatkichlar</small></div>
-                        </li>
-                    </ul>
-                </div>
-                <div class="lg-hero-foot">&copy; 2026 Ferdinant</div>
-            </aside>
-
-            <form class="lg-card" id="loginForm" novalidate>
-                <div class="lg-brand"><img src="./logo.png" alt=""><span>Ferdinant</span></div>
-                <div class="lg-welcome"><i></i><span data-lg="welcome">Xush kelibsiz</span></div>
-                <h1 data-lg="title">Tizimga kirish</h1>
-                <p class="lg-sub" data-lg="sub">Hisobingiz bilan davom eting</p>
-                <label class="lg-field"><span data-lg="user">Login</span>
-                    <div class="lg-in">
-                        <svg class="lg-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
-                        <input id="lgUser" name="username" type="text" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="150">
-                    </div>
-                </label>
-                <label class="lg-field"><span data-lg="pass">Parol</span>
-                    <div class="lg-in lg-pw">
-                        <svg class="lg-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="3" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
-                        <input id="lgPass" name="password" type="password" autocomplete="current-password" maxlength="256">
-                        <button type="button" class="lg-eye" id="lgEye" aria-label="Parolni ko'rsatish">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" /><line id="lgSlash" x1="3" y1="3" x2="21" y2="21" style="display:none" /></svg>
-                        </button>
-                    </div>
-                </label>
-                <label class="lg-check"><input type="checkbox" id="lgRemember"><span data-lg="remember">Bu qurilmada eslab qol</span></label>
-                <div class="lg-msg" id="lgMsg" role="alert" aria-live="polite"></div>
-                <button type="submit" class="lg-btn" id="lgSubmit"><span data-lg="submit">Kirish</span><svg class="lg-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg><i class="lg-spin"></i></button>
-                <div class="lg-secure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><polyline points="9 12 11 14 15 10" /></svg><span data-lg="secure">Himoyalangan kirish</span></div>
-            </form>
-        </div>
+            </label>
+            <label class="lg-check"><input type="checkbox" id="lgRemember"><span data-lg="remember">Bu qurilmada eslab qol</span></label>
+            <div class="lg-msg" id="lgMsg" role="alert" aria-live="polite"></div>
+            <button type="submit" class="lg-btn" id="lgSubmit"><span data-lg="submit">Kirish</span><i class="lg-spin"></i></button>
+            <div class="lg-demo" id="lgDemo" hidden>
+                <h4 data-lg="demoT">Demo hisoblar</h4>
+                <div class="lg-chips" id="lgChips"></div>
+                <p data-lg="demoNote"></p>
+            </div>
+        </form>
     </div>
 
     <aside class="sidebar expanded" id="sidebar">
@@ -5203,13 +4971,6 @@
                     <path d="M3 10h18M7 15h4" />
                 </svg>
                 <span class="label" data-i18n="nav.payments">To'lovlar</span>
-            </li>
-            <li class="nav-item" data-i18n-label="nav.accounts" data-view="accounts">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="8" cy="15" r="4" />
-                    <path d="M10.85 12.15 19 4M18 5l2 2M15 8l2 2" />
-                </svg>
-                <span class="label" data-i18n="nav.accounts">Hisoblar</span>
             </li>
             <li class="nav-item" data-i18n-label="nav.settings" data-view="settings">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -5865,10 +5626,6 @@
 
             <div class="content-view" data-view="payments">
                 <div id="paymentsRoot"></div>
-            </div>
-
-            <div class="content-view" data-view="accounts">
-                <div id="accountsRoot"></div>
             </div>
 
             <div class="content-view" data-view="settings">
@@ -6758,7 +6515,6 @@
             if (name === 'teachers' && typeof renderTeachers === 'function') { if (window.closeTeacherDetail) window.closeTeacherDetail(); renderTeachers(); }
             if (name === 'payments' && typeof renderPaymentsView === 'function') renderPaymentsView();
             if (name === 'settings' && typeof renderSettings === 'function') renderSettings();
-            if (name === 'accounts' && typeof renderAccounts === 'function') renderAccounts();
             if (name === 'reports' && typeof renderReports === 'function') renderReports();
             if (name === 'archive' && typeof renderArchive === 'function') renderArchive();
             if (name === 'student' && typeof renderStudentCabinet === 'function') renderStudentCabinet();
@@ -7086,7 +6842,6 @@
                 'nav.home': 'Bosh sahifa',
                 'nav.clients': 'Mijozlar',
                 'nav.students': 'Talabalar',
-                'nav.accounts': 'Hisoblar',
                 'nav.groups': 'Guruhlar',
                 'nav.teachers': "O'qituvchilar",
                 'nav.payments': "To'lovlar",
@@ -7236,7 +6991,6 @@
                 'nav.home': 'Home',
                 'nav.clients': 'Clients',
                 'nav.students': 'Students',
-                'nav.accounts': 'Accounts',
                 'nav.groups': 'Groups',
                 'nav.teachers': 'Teachers',
                 'nav.payments': 'Payments',
@@ -7386,7 +7140,6 @@
                 'nav.home': 'Главная',
                 'nav.clients': 'Клиенты',
                 'nav.students': 'Студенты',
-                'nav.accounts': 'Аккаунты',
                 'nav.groups': 'Группы',
                 'nav.teachers': 'Преподаватели',
                 'nav.payments': 'Платежи',
@@ -7583,7 +7336,6 @@
             if (typeof renderTeachers === 'function') renderTeachers();
             if (typeof renderPaymentsView === 'function') renderPaymentsView();
             if (typeof renderSettings === 'function') renderSettings();
-            if (typeof renderAccounts === 'function') renderAccounts();
             if (typeof renderReports === 'function') renderReports();
             if (typeof renderArchive === 'function') renderArchive();
             if (typeof renderStudentCabinet === 'function') renderStudentCabinet();
@@ -9556,7 +9308,7 @@
                 o = o || {}; const fmt = o.fmt || short;
                 if (!items.length || !items.some(i => i.vals.some(v => v > 0))) return emptyHTML();
                 const max = Math.max(1, ...items.flatMap(i => i.vals)), labels = series.length === 1 && items.length <= 12;
-                return `<div class="rp-v">${items.map(it => `<div class="rp-vcol ${it.cur ? 'cur' : ''}"><div class="rp-vbars">${it.vals.map((v, k) => `<div class="rp-vbar" style="height:${v > 0 ? Math.max(2, v / max * 100) : 0}%;background:${series[k].color}" title="${esc(it.label)} · ${esc(series[k].name)}: ${esc(fmt(v))}">${labels ? `<i>${esc(fmt(v))}</i>` : ''}</div>`).join('')}</div><span>${esc(it.label)}</span></div>`).join('')}</div>${legendHTML(series)}`;
+                return `<div class="rp-v">${items.map(it => `<div class="rp-vcol ${it.cur ? 'cur' : ''}"><div class="rp-vbars">${it.vals.map((v, k) => `<div class="rp-vbar" style="height:${v > 0 ? Math.max(2, v / max * 100) : 0}%;background:${series[k].color}" title="${esc(it.label)} · ${esc(series[k].name)}: ${esc(fmt(v))}">${labels && !(o.hideZero && !v) ? `<i>${esc(fmt(v))}</i>` : ''}</div>`).join('')}</div><span>${esc(it.label)}</span></div>`).join('')}</div>${legendHTML(series)}`;
             }
             // doira diagramma
             function donut(items, o) {
@@ -9623,7 +9375,7 @@
                 const pg = rows.slice((st.page - 1) * per, st.page * per);
                 LAST = { tb, rows, sk, dir };
                 const head = tb.cols.map(c => `<th class="${c.num ? 'num' : ''}" ${c.nosort ? '' : `data-sort="${c.k}"`}>${esc(c.label)}${!c.nosort && sk === c.k ? (dir > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('');
-                const body = pg.length ? pg.map(r => `<tr ${tb.row ? `class="pm-row" data-row="${r._i}"` : ''}>${tb.cols.map(c => `<td class="${c.num ? 'num' : ''} ${c.cls || ''}">${cellHTML(c, r)}</td>`).join('')}</tr>`).join('') : `<tr><td colspan="${tb.cols.length}" class="st-empty">${tr("Ma'lumot topilmadi", 'No data found', 'Данные не найдены')}</td></tr>`;
+                const body = pg.length ? pg.map(r => `<tr ${tb.row ? `class="pm-row" data-row="${r._i}"` : ''}>${tb.cols.map(c => `<td class="${c.num ? 'num' : ''} ${c.cls || ''}" data-label="${esc(c.label)}">${cellHTML(c, r)}</td>`).join('')}</tr>`).join('') : `<tr><td colspan="${tb.cols.length}" class="st-empty">${tr("Ma'lumot topilmadi", 'No data found', 'Данные не найдены')}</td></tr>`;
                 const foot = tb.foot && rows.length ? (f => `<tr class="rp-foot">${tb.cols.map((c, i) => `<td class="${c.num ? 'num' : ''}">${i === 0 && f[c.k] === undefined ? esc(tr('Jami', 'Total', 'Итого')) : (f[c.k] !== undefined ? f[c.k] : '')}</td>`).join('')}</tr>`)(tb.foot(rows)) : '';
                 const from = rows.length ? (st.page - 1) * per + 1 : 0, to = Math.min(rows.length, st.page * per);
                 return `<div class="payments-card rp-tcard">
@@ -10246,11 +9998,11 @@
                 const staff = (cat().staff || []).map(s => s.name), by = i => staff[i % (staff.length || 1)] || '—';
                 const rL = cat().reasons.leave.length ? cat().reasons.leave : ['—'], rLost = cat().reasons.lost.length ? cat().reasons.lost : ['—'];
                 const maxAgo = Math.max(10, Math.floor((now - new Date(now.getFullYear(), 0, 1)) / 864e5));
-                const ago = seed => { const d = new Date(now); d.setDate(d.getDate() - (2 + hash(seed) % maxAgo)); return iso(d); };
+                const ago = (seed, recent) => { const d = new Date(now); d.setDate(d.getDate() - (recent != null ? Math.min(recent, now.getDate() - 1) : 2 + hash(seed) % maxAgo)); return iso(d); };
                 const G = groups(), T = teachers(), mo = Math.max(1, now.getMonth());
                 ['Rahim Karimov', 'Zarnigor Ahmedova', 'Otabek Nurmatov', 'Madinabonu Sobirova', 'Jahongir Aliyev', 'Nigora Xudoyberdiyeva', 'Sunnat Mamarasulov', 'Lola Qosimova'].forEach((nm, i) => {
                     if (!G.length) return;
-                    mkAdd('student', { name: nm, group: G[i % G.length].name, status: 'active', balance: -(i % 3) * 150000, phone: '+998 9' + (i % 9 + 1) + ' ' + (200 + i * 17) + ' ' + pad(10 + (i * 7) % 90) + ' ' + pad(20 + (i * 11) % 80), date: dkey(now.getFullYear(), i % mo, 3 + i * 2) }, rL[hash('as' + nm) % rL.length], ago('as' + nm), by(i));
+                    mkAdd('student', { name: nm, group: G[i % G.length].name, status: 'active', balance: -(i % 3) * 150000, phone: '+998 9' + (i % 9 + 1) + ' ' + (200 + i * 17) + ' ' + pad(10 + (i * 7) % 90) + ' ' + pad(20 + (i * 11) % 80), date: dkey(now.getFullYear(), i % mo, 3 + i * 2) }, rL[hash('as' + nm) % rL.length], ago('as' + nm, i === 0 ? 3 : null), by(i));
                 });
                 if (T.length) [['Matematika 2025', [1, 3], '14:00', '15:30', 450000, 10], ['SAT tayyorlov', [0, 2, 4], '17:00', '18:30', 700000, 8]].forEach((g, i) => {
                     mkAdd('group', { name: g[0], teacher: T[i % T.length].name, room: 2 + i, days: g[1], start: g[2], end: g[3], cap: g[5], price: g[4], status: 'finished' }, [tr('Kurs yakunlandi', 'Course completed', 'Курс завершён'), tr("Talaba yetarli emas", 'Not enough students', 'Недостаточно студентов')][i], ago('ag' + i), by(i + 1));
@@ -10260,7 +10012,7 @@
                 });
                 const stages = leadCourses();
                 ['Sherzod Normurodov', 'Dilorom Hamidova', 'Akbar Yo\'ldoshev', 'Mohinur Tursunova', 'Behruz Aminov', 'Shaxlo Raximova'].forEach((nm, i) => {
-                    mkAdd('lead', { name: nm, phone: '+998 9' + (i % 9 + 1) + ' ' + (310 + i * 23) + '-' + pad(10 + i * 9) + '-' + pad(30 + i * 7), date: dkey(now.getFullYear(), i % mo, 5 + i * 3), course: stages.length ? stages[i % stages.length].id : '', flagged: false }, rLost[hash('al' + nm) % rLost.length], ago('al' + nm), by(i + 3));
+                    mkAdd('lead', { name: nm, phone: '+998 9' + (i % 9 + 1) + ' ' + (310 + i * 23) + '-' + pad(10 + i * 9) + '-' + pad(30 + i * 7), date: dkey(now.getFullYear(), i % mo, 5 + i * 3), course: stages.length ? stages[i % stages.length].id : '', flagged: false }, rLost[hash('al' + nm) % rLost.length], ago('al' + nm, i === 0 ? 6 : null), by(i + 3));
                 });
             }
             function mkAdd(type, data, reason, date, by) { ARCH.push(mkArch(type, data, reason, date, by)); }
@@ -10349,17 +10101,17 @@
                 ];
                 const donutItems = type ? Object.keys(byReason).map((k, i) => ({ label: k, value: byReason[k], color: PALETTE[i % PALETTE.length] })) : ARCH_TYPES.map(k => ({ label: archTypePlural(k), value: per.filter(x => x.type === k).length, color: ARCH_COLOR[k] }));
                 const cols = [];
-                if (!type) cols.push({ k: 'typeName', label: tr('Turi', 'Type', 'Тип'), render: r => `<span class="st-badge" style="background:${ARCH_COLOR[r.type]}26;color:${ARCH_COLOR[r.type]}">${esc(r.typeName)}</span>` });
-                cols.push({ k: 'name', label: type === 'group' ? tr('Guruh', 'Group', 'Группа') : tr('Nomi', 'Name', 'Название'), render: r => type === 'group' || (!type && r.type === 'group') ? `<b>${esc(r.name)}</b>` : userCell(r.name, !type ? r.sub : '') });
-                if (type === 'student') cols.push({ k: 'phone', label: tr('Telefon', 'Phone', 'Телефон') }, { k: 'group', label: tr('Guruh', 'Group', 'Группа') }, { k: 'debt', label: tr('Qarz', 'Debt', 'Долг'), num: true, render: r => r.debt ? `<span class="st-neg">${money(r.debt)}</span>` : '—' });
-                if (type === 'group') cols.push({ k: 'teacher', label: tr("O'qituvchi", 'Teacher', 'Преподаватель') }, { k: 'sched', label: tr('Jadval', 'Schedule', 'Расписание'), cls: 'muted' }, { k: 'price', label: tr('Narx', 'Price', 'Цена'), num: true }, { k: 'cap', label: tr("Sig'im", 'Capacity', 'Вместимость'), num: true });
-                if (type === 'teacher') cols.push({ k: 'subject', label: tr("Yo'nalish", 'Subject', 'Направление') }, { k: 'phone', label: tr('Telefon', 'Phone', 'Телефон') }, { k: 'exp', label: tr('Tajriba', 'Experience', 'Опыт'), num: true, render: r => r.exp + ' ' + tr('yil', 'yrs', 'лет') }, { k: 'salary', label: tr('Oylik', 'Salary', 'Зарплата'), num: true });
-                if (type === 'lead') cols.push({ k: 'phone', label: tr('Telefon', 'Phone', 'Телефон') }, { k: 'stage', label: tr('Bosqich', 'Stage', 'Этап') });
-                cols.push({ k: 'date', label: tr('Arxivlangan', 'Archived', 'В архиве с'), render: r => fmtDate(r.date) }, { k: 'reason', label: tr('Sabab', 'Reason', 'Причина') }, { k: 'by', label: tr('Kim tomonidan', 'By', 'Кем'), cls: 'muted' }, { k: 'act', label: '', nosort: true, render: actCell });
+                if (!type) cols.push({ k: 'typeName', cls: 'c-type', label: tr('Turi', 'Type', 'Тип'), render: r => `<span class="st-badge" style="background:${ARCH_COLOR[r.type]}26;color:${ARCH_COLOR[r.type]}">${esc(r.typeName)}</span>` });
+                cols.push({ k: 'name', cls: 'c-user', label: type === 'group' ? tr('Guruh', 'Group', 'Группа') : tr('Nomi', 'Name', 'Название'), render: r => type === 'group' || (!type && r.type === 'group') ? `<b>${esc(r.name)}</b>` : userCell(r.name, !type ? r.sub : '') });
+                if (type === 'student') cols.push({ k: 'phone', label: tr('Telefon', 'Phone', 'Телефон') }, { k: 'group', cls: 'wrap', label: tr('Guruh', 'Group', 'Группа') }, { k: 'debt', label: tr('Qarz', 'Debt', 'Долг'), num: true, render: r => r.debt ? `<span class="st-neg">${money(r.debt)}</span>` : '—' });
+                if (type === 'group') cols.push({ k: 'teacher', cls: 'wrap', label: tr("O'qituvchi", 'Teacher', 'Преподаватель') }, { k: 'sched', label: tr('Jadval', 'Schedule', 'Расписание'), cls: 'muted wrap' }, { k: 'price', label: tr('Narx', 'Price', 'Цена'), num: true }, { k: 'cap', label: tr("Sig'im", 'Capacity', 'Вместимость'), num: true });
+                if (type === 'teacher') cols.push({ k: 'subject', cls: 'wrap', label: tr("Yo'nalish", 'Subject', 'Направление') }, { k: 'phone', label: tr('Telefon', 'Phone', 'Телефон') }, { k: 'exp', label: tr('Tajriba', 'Experience', 'Опыт'), num: true, render: r => r.exp + ' ' + tr('yil', 'yrs', 'лет') }, { k: 'salary', label: tr('Oylik', 'Salary', 'Зарплата'), num: true });
+                if (type === 'lead') cols.push({ k: 'phone', label: tr('Telefon', 'Phone', 'Телефон') }, { k: 'stage', cls: 'wrap', label: tr('Bosqich', 'Stage', 'Этап') });
+                cols.push({ k: 'date', label: tr('Arxivlangan', 'Archived', 'В архиве с'), render: r => fmtDate(r.date) }, { k: 'reason', cls: 'wrap', label: tr('Sabab', 'Reason', 'Причина') }, { k: 'by', label: tr('Kim tomonidan', 'By', 'Кем'), cls: 'muted wrap' }, { k: 'act', label: '', nosort: true, cls: 'c-act', render: actCell });
                 return {
                     kpis,
                     charts: [
-                        { title: tr('Oylar bo\'yicha arxivlanganlar', 'Archived by month', 'Архивация по месяцам'), sub: String(yr), wide: true, html: vbars(monthly, series, { fmt: v => String(v) }) },
+                        { title: tr('Oylar bo\'yicha arxivlanganlar', 'Archived by month', 'Архивация по месяцам'), sub: String(yr), wide: true, html: vbars(monthly, series, { fmt: v => String(v), hideZero: true }) },
                         { title: type ? tr('Sabablar', 'Reasons', 'Причины') : tr('Turlar bo\'yicha', 'By type', 'По типам'), html: donut(donutItems, { fmt: v => String(v), centerSub: tr('ta', '', '') }) }
                     ],
                     table: { title: type ? archTypePlural(type) : tr('Barcha arxivlanganlar', 'All archived', 'Всё в архиве'), sort: { k: 'date', dir: -1 }, rows, cols, row: true },
@@ -11447,172 +11199,6 @@
     </script>
 
     <script>
-    /* ===== HISOBLAR BO'LIMI: CEO -> admin va talaba loginlari; admin -> talaba loginlari ===== */
-    (function initAccounts() {
-        const A = window.CRMAuth, root = document.getElementById('accountsRoot');
-        if (!A || !root) return;
-        const tr = (u, e, r) => (window.toast && window.toast.t ? window.toast.t(u, e, r) : u);
-        const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-        const ic = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
-        const $ = id => document.getElementById(id);
-        const T = () => ({
-            title: tr('Kirish hisoblari', 'Login accounts', 'Учётные записи'),
-            hintCeo: tr("Admin va talabalar tizimga shu yerda yaratilgan login va parol bilan kiradi. Parolni yaratgandan keyin egasiga o'zingiz bering.", 'Admins and students sign in with the login and password created here. Give the password to its owner after creating it.', 'Админы и студенты входят по логину и паролю, созданным здесь. После создания передайте пароль владельцу.'),
-            hintAdmin: tr("Talabalar tizimga shu yerda yaratilgan login va parol bilan kiradi. Parolni yaratgandan keyin talabaga o'zingiz bering.", 'Students sign in with the login and password created here. Give the password to the student after creating it.', 'Студенты входят по логину и паролю, созданным здесь. После создания передайте пароль студенту.'),
-            add: tr('Hisob yaratish', 'Create account', 'Создать аккаунт'),
-            tabAdmin: tr('Adminlar', 'Admins', 'Админы'), tabStudent: tr('Talabalar', 'Students', 'Студенты'),
-            search: tr('Ism yoki login bo‘yicha qidirish…', 'Search by name or login…', 'Поиск по имени или логину…'),
-            name: tr('Ism', 'Name', 'Имя'), login: tr('Login', 'Login', 'Логин'), password: tr('Parol', 'Password', 'Пароль'), role: tr('Rol', 'Role', 'Роль'), created: tr('Yaratilgan', 'Created', 'Создан'),
-            rAdmin: 'Admin', rStudent: tr('Talaba', 'Student', 'Студент'),
-            empty: tr("Hozircha hisoblar yo'q", 'No accounts yet', 'Аккаунтов пока нет'),
-            reset: tr('Yangi parol berish', 'Set new password', 'Новый пароль'), del: tr("O'chirish", 'Delete', 'Удалить'),
-            newT: tr('Yangi hisob', 'New account', 'Новый аккаунт'),
-            student: tr('Talaba', 'Student', 'Студент'), pickStudent: tr('Talabani tanlang', 'Choose a student', 'Выберите студента'), noStudents: tr("Hisobsiz talaba qolmagan", 'Every student already has an account', 'У всех студентов уже есть аккаунт'),
-            fullName: tr('To‘liq ism', 'Full name', 'Полное имя'), gen: tr('Yaratish', 'Generate', 'Сгенерировать'),
-            cancel: tr('Bekor qilish', 'Cancel', 'Отмена'), save: tr('Yaratish', 'Create', 'Создать'), ok: tr('Tayyor', 'Done', 'Готово'),
-            copy: tr('Nusxa olish', 'Copy', 'Копировать'),
-            doneT: tr('Hisob tayyor', 'Account is ready', 'Аккаунт готов'),
-            doneNote: tr("Parol faqat hozir ko'rinadi — keyin uni qayta ko'rib bo'lmaydi (faqat yangisini berish mumkin). Login va parolni egasiga bering.", 'The password is shown only now and cannot be viewed again (only replaced). Hand the login and password to its owner.', 'Пароль виден только сейчас и позже недоступен (можно лишь задать новый). Передайте логин и пароль владельцу.'),
-            resetT: tr('Yangi parol berilsinmi?', 'Set a new password?', 'Задать новый пароль?'), resetQ: n => tr(`«${n}» uchun yangi parol yaratiladi. Eski parol ishlamay qoladi.`, `A new password will be created for «${n}». The old password will stop working.`, `Для «${n}» будет создан новый пароль. Старый перестанет работать.`),
-            delT: tr("Hisob o'chirilsinmi?", 'Delete this account?', 'Удалить аккаунт?'), delQ: n => tr(`«${n}» endi tizimga kira olmaydi.`, `«${n}» will no longer be able to sign in.`, `«${n}» больше не сможет войти.`),
-            confirm: tr('Ha, davom etish', 'Yes, continue', 'Да, продолжить'),
-            copied: tr('Nusxa olindi', 'Copied', 'Скопировано'),
-            created_ok: n => tr(`«${n}» uchun hisob yaratildi`, `Account created for «${n}»`, `Аккаунт для «${n}» создан`),
-            deleted_ok: n => tr(`«${n}» hisobi o'chirildi`, `Account «${n}» was deleted`, `Аккаунт «${n}» удалён`),
-            err: {
-                login: tr("Login 3–30 belgi: kichik lotin harflari, raqam, nuqta, chiziq", 'Login must be 3–30 characters: lowercase letters, digits, dot, dash', 'Логин: 3–30 символов, строчные латинские буквы, цифры, точка, дефис'),
-                taken: tr('Bu login band', 'This login is already taken', 'Этот логин уже занят'),
-                pass: tr("Parol kamida 6 ta belgi bo'lsin", 'Password must be at least 6 characters', 'Пароль — минимум 6 символов'),
-                name: tr('Ismni kiriting', 'Enter the name', 'Введите имя'),
-                student: tr('Talabani tanlang', 'Choose a student', 'Выберите студента'),
-                studentTaken: tr('Bu talabada hisob bor', 'This student already has an account', 'У этого студента уже есть аккаунт'),
-                denied: tr("Bu amal uchun ruxsat yo'q", 'You are not allowed to do this', 'Нет прав на это действие'),
-                storage: tr("Saqlab bo'lmadi (brauzer xotirasi)", 'Could not save (browser storage)', 'Не удалось сохранить (хранилище браузера)')
-            }
-        });
-
-        let tab = 'student', q = '', modalRole = 'student';
-        const myRole = () => (A.user ? A.user.role : '');
-        const slug = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[‘’ʻʼ'`]/g, '').replace(/[^a-z0-9]+/g, '.').replace(/^\.+|\.+$/g, '').slice(0, 30);
-        const initials = n => String(n || '?').trim().split(/\s+/).slice(0, 2).map(w => w.charAt(0).toUpperCase()).join('');
-        const fmtDate = iso => { try { return new Date(iso).toLocaleDateString(document.documentElement.lang === 'ru' ? 'ru-RU' : document.documentElement.lang === 'en' ? 'en-GB' : 'uz-UZ'); } catch (e) { return ''; } };
-        const students = () => (typeof window.allStudents === 'function' ? window.allStudents() : []);
-
-        function render() {
-            const role = myRole();
-            if (role !== 'ceo' && role !== 'admin') { root.innerHTML = ''; return; }
-            if (role === 'admin') tab = 'student';
-            const t = T();
-            root.innerHTML = `
-            <div class="clients-head"><div class="clients-head-text"><h1>${t.title}</h1></div>
-                <div class="clients-head-actions-top"><button class="clients-add-btn" id="acAdd" type="button">${ic('<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>')}<span>${t.add}</span></button></div></div>
-            <p class="ac-hint">${role === 'ceo' ? t.hintCeo : t.hintAdmin}</p>
-            ${role === 'ceo' ? `<div class="ac-tabs"><button type="button" data-tab="admin" class="${tab === 'admin' ? 'on' : ''}">${t.tabAdmin}</button><button type="button" data-tab="student" class="${tab === 'student' ? 'on' : ''}">${t.tabStudent}</button></div>` : ''}
-            <div class="st-toolbar"><div class="clients-search">${ic('<circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>')}<input id="acSearch" type="text" placeholder="${esc(t.search)}" value="${esc(q)}" autocomplete="off"></div></div>
-            <div class="payments-card" style="margin-top:0"><div id="acTable"></div></div>
-            <div class="clients-modal-backdrop" id="acModal"><div class="clients-modal" id="acBox"></div></div>`;
-            rows();
-            $('acAdd').addEventListener('click', openCreate);
-            $('acSearch').addEventListener('input', e => { q = e.target.value; rows(); });
-            root.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => { tab = b.dataset.tab; render(); }));
-            $('acModal').addEventListener('mousedown', e => { if (e.target === $('acModal')) closeModal(); });
-        }
-
-        function rows() {
-            const t = T(), s = q.trim().toLowerCase();
-            const list = A.accounts.list(tab).filter(a => !s || a.name.toLowerCase().includes(s) || a.u.includes(s));
-            $('acTable').innerHTML = `<div class="payments-table-wrap"><table class="payments-table"><thead><tr><th>${t.name}</th><th>${t.login}</th><th class="col-hide-sm">${t.role}</th><th class="col-hide-sm">${t.created}</th><th></th></tr></thead><tbody>
-                ${list.map(a => `<tr><td><div class="st-user"><div class="st-avatar">${esc(initials(a.name))}</div>${esc(a.name)}</div></td>
-                    <td><span class="ac-login">${esc(a.u)}</span></td>
-                    <td class="col-hide-sm"><span class="st-badge ${a.role === 'admin' ? 'grad' : 'active'}">${a.role === 'admin' ? t.rAdmin : t.rStudent}</span></td>
-                    <td class="muted col-hide-sm">${esc(fmtDate(a.created))}</td>
-                    <td style="text-align:right"><button class="st-act" data-act="reset" data-id="${esc(a.id)}" title="${esc(t.reset)}">${ic('<circle cx="8" cy="15" r="4"/><path d="M10.85 12.15 19 4M18 5l2 2M15 8l2 2"/>')}</button>
-                    <button class="st-act del" data-act="del" data-id="${esc(a.id)}" title="${esc(t.del)}">${ic('<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>')}</button></td></tr>`).join('')}
-                </tbody></table>${list.length ? '' : `<div class="st-empty">${t.empty}</div>`}</div>`;
-            $('acTable').querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => {
-                const a = A.accounts.list(tab).find(x => x.id === b.dataset.id); if (!a) return;
-                if (b.dataset.act === 'reset') askConfirm(t.resetT, t.resetQ(a.name), () => {
-                    const pw = A.accounts.suggestPassword(), r = A.accounts.resetPassword(a.id, pw);
-                    if (r.ok) showCred(a.name, a.u, pw); else window.toast.error(t.err[r.code] || t.err.denied);
-                });
-                else askConfirm(t.delT, t.delQ(a.name), () => {
-                    const r = A.accounts.remove(a.id);
-                    if (r.ok) { rows(); window.toast.success(t.deleted_ok(a.name)); } else window.toast.error(t.err[r.code] || t.err.denied);
-                });
-            }));
-        }
-
-        const openModal = html => { $('acBox').innerHTML = html; $('acModal').classList.add('open'); };
-        const closeModal = () => $('acModal').classList.remove('open');
-
-        function askConfirm(title, text, onOk) {
-            const t = T();
-            openModal(`<h2>${esc(title)}</h2><p class="ac-text">${esc(text)}</p>
-                <div class="clients-modal-actions"><button type="button" class="clients-modal-cancel" id="acNo">${t.cancel}</button><button type="button" class="clients-modal-save" id="acYes">${t.confirm}</button></div>`);
-            $('acNo').addEventListener('click', closeModal);
-            $('acYes').addEventListener('click', () => { closeModal(); onOk(); });
-            $('acYes').focus();
-        }
-
-        function showCred(name, login, pw) {
-            const t = T(), text = `${t.login}: ${login}\n${t.password}: ${pw}`;
-            openModal(`<h2>${t.doneT}</h2><p class="ac-text">${esc(name)}</p>
-                <div class="ac-cred"><div><span>${t.login}</span><b>${esc(login)}</b></div><div><span>${t.password}</span><b>${esc(pw)}</b></div></div>
-                <p class="ac-note">${t.doneNote}</p>
-                <div class="clients-modal-actions"><button type="button" class="clients-modal-cancel" id="acCopy">${t.copy}</button><button type="button" class="clients-modal-save" id="acDone">${t.ok}</button></div>`);
-            $('acCopy').addEventListener('click', () => {
-                const done = () => window.toast.success(t.copied);
-                if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, () => {});
-                else { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch (e) {} ta.remove(); }
-            });
-            $('acDone').addEventListener('click', () => { closeModal(); rows(); });
-        }
-
-        function openCreate() {
-            const t = T(), role = myRole();
-            modalRole = role === 'ceo' ? tab : 'student';
-            const used = new Set(A.accounts.usedStudentIds().map(String));
-            const free = students().filter(s => !used.has(String(s.id)));
-            openModal(`<h2>${t.newT}</h2>
-                ${role === 'ceo' ? `<div class="clients-modal-field"><label>${t.role}</label><select id="acRole"><option value="student" ${modalRole === 'student' ? 'selected' : ''}>${t.rStudent}</option><option value="admin" ${modalRole === 'admin' ? 'selected' : ''}>${t.rAdmin}</option></select></div>` : ''}
-                <div class="clients-modal-field" id="acStWrap"><label>${t.student}</label><select id="acStudent">${free.length ? `<option value="">${t.pickStudent}</option>` + free.map(s => `<option value="${esc(s.id)}">${esc(s.name)}${s.group ? ' — ' + esc(s.group) : ''}</option>`).join('') : `<option value="">${t.noStudents}</option>`}</select></div>
-                <div class="clients-modal-field" id="acNameWrap"><label>${t.fullName}</label><input id="acName" autocomplete="off" maxlength="80"></div>
-                <div class="clients-modal-row">
-                    <div class="clients-modal-field"><label>${t.login}</label><input id="acLogin" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="30"></div>
-                    <div class="clients-modal-field"><label>${t.password}</label><div class="ac-row"><input id="acPass" autocomplete="off" spellcheck="false" maxlength="64" value="${esc(A.accounts.suggestPassword())}"><button type="button" class="ac-mini" id="acGen" title="${t.gen}">${ic('<path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/>')}</button></div></div>
-                </div>
-                <p class="ac-err" id="acErr"></p>
-                <div class="clients-modal-actions"><button type="button" class="clients-modal-cancel" id="acCancel">${t.cancel}</button><button type="button" class="clients-modal-save" id="acSave">${t.save}</button></div>`);
-            let loginTouched = false;
-            const sync = () => { const adm = modalRole === 'admin'; $('acStWrap').style.display = adm ? 'none' : ''; $('acNameWrap').style.display = adm ? '' : 'none'; };
-            sync();
-            if ($('acRole')) $('acRole').addEventListener('change', e => { modalRole = e.target.value; sync(); });
-            $('acLogin').addEventListener('input', () => { loginTouched = true; });
-            $('acName').addEventListener('input', e => { if (!loginTouched) $('acLogin').value = slug(e.target.value); });
-            $('acStudent').addEventListener('change', e => { const s = students().find(x => String(x.id) === e.target.value); if (!loginTouched) $('acLogin').value = s ? slug(s.name) : ''; });
-            $('acGen').addEventListener('click', () => { $('acPass').value = A.accounts.suggestPassword(); });
-            $('acCancel').addEventListener('click', closeModal);
-            $('acSave').addEventListener('click', () => {
-                const err = m => { $('acErr').textContent = m; $('acErr').style.display = 'block'; };
-                const login = $('acLogin').value.trim().toLowerCase(), pw = $('acPass').value;
-                let name = '', sid = null;
-                if (modalRole === 'admin') name = $('acName').value.trim();
-                else { sid = $('acStudent').value; const s = students().find(x => String(x.id) === sid); if (!s) return err(t.err.student); name = s.name; sid = s.id; }
-                const r = A.accounts.create({ role: modalRole, u: login, p: pw, name: name, studentId: sid });
-                if (!r.ok) return err(t.err[r.code] || t.err.denied);
-                window.toast.success(t.created_ok(name));
-                showCred(name, r.account.u, pw);
-            });
-            ($('acRole') || $('acStudent')).focus();
-        }
-
-        window.renderAccounts = render;
-        A.onState(s => { if (s === 'in') render(); });
-        render();
-    })();
-    </script>
-
-    <script>
     /* ===== LOGIN EKRANI (UI) ===== */
     (function initLogin() {
         const A = window.CRMAuth, root = document.getElementById('loginRoot');
@@ -11622,13 +11208,6 @@
         const lang = () => document.documentElement.getAttribute('lang') || 'uz';
         const L = {
             title: ['Tizimga kirish', 'Sign in', 'Вход в систему'],
-            welcome: ['Xush kelibsiz', 'Welcome back', 'Добро пожаловать'],
-            heroT: ["O'quv markazingizni bitta joydan boshqaring", 'Run your learning center from one place', 'Управляйте учебным центром в одном месте'],
-            heroS: ["Talabalar, guruhlar, to'lovlar va hisobotlar — hammasi tartibli va tez.", 'Students, groups, payments and reports — all organized and fast.', 'Студенты, группы, платежи и отчёты — всё чётко и быстро.'],
-            f1T: ['Talabalar va guruhlar', 'Students and groups', 'Студенты и группы'], f1D: ['Davomat, baholar va jadval bir joyda', 'Attendance, grades and schedule together', 'Посещаемость, оценки и расписание вместе'],
-            f2T: ["To'lovlar nazorati", 'Payment control', 'Контроль платежей'], f2D: ["Tushum va qarzdorlik aniq ko'rinadi", 'Income and debts at a glance', 'Доходы и долги как на ладони'],
-            f3T: ['Hisobotlar', 'Reports', 'Отчёты'], f3D: ["Qaror qabul qilish uchun tayyor ko'rsatkichlar", 'Ready-made metrics for decisions', 'Готовые показатели для решений'],
-            secure: ['Himoyalangan kirish', 'Secure sign-in', 'Защищённый вход'],
             sub: ['Hisobingiz bilan davom eting', 'Continue with your account', 'Войдите в свою учётную запись'],
             user: ['Login', 'Username', 'Логин'], pass: ['Parol', 'Password', 'Пароль'],
             remember: ['Bu qurilmada eslab qol', 'Keep me signed in on this device', 'Запомнить на этом устройстве'],
@@ -11658,6 +11237,17 @@
             root.querySelectorAll('[data-lg]').forEach(el => { el.textContent = t(el.dataset.lg); });
             btn.querySelector('[data-lg]').textContent = t(busy ? 'busy' : 'submit');
             eye.setAttribute('aria-label', t(pEl.type === 'password' ? 'show' : 'hide'));
+            const box = $('lgDemo');
+            box.hidden = !A.demo;
+            if (A.demo) {
+                const chips = $('lgChips'); chips.textContent = '';
+                A.demoHints().forEach(h => {
+                    const b = document.createElement('button'); b.type = 'button'; b.className = 'lg-chip';
+                    b.textContent = roleLabel(h.role) + ' · ' + h.u;
+                    b.addEventListener('click', () => { uEl.value = h.u; pEl.value = h.p; setMsg('', ''); btn.focus(); });
+                    chips.appendChild(b);
+                });
+            }
             renderMsg();
         }
         window.paintLogin = paint;
