@@ -4060,16 +4060,45 @@
             body:has(.sidebar.mobile-open) .ct-stack { display: none; }
 
             /* ---------- TOAST (bildirishnomalar) ---------- */
+            /* Pastdan keladigan bildirishnomalar: ekran eni bo'yicha to'liq, bir nechta bo'lsa shu joyning o'zida scroll */
             .ct-stack {
                 left: 10px;
-                right: 82px;
+                right: 10px;
                 width: auto;
                 bottom: calc(88px + env(safe-area-inset-bottom, 0px));
             }
-            .ct-list .ct-wrap:not(:last-child) { display: none; }
+            .ct-list {
+                max-height: min(34vh, 230px);
+                overflow-y: auto;
+                overflow-x: hidden;
+                overscroll-behavior: contain;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                pointer-events: auto;
+                touch-action: pan-y;
+            }
+            .ct-list::-webkit-scrollbar { display: none; }
+            .ct-list:empty { pointer-events: none; }
             .ct-all-btn { padding: 8px 12px; font-size: 12.5px; }
             .ct-body { padding: 8px 12px 10px; font-size: 13px; -webkit-line-clamp: 2; }
-            .tt-stack { bottom: calc(92px + env(safe-area-inset-bottom, 0px)); left: 10px; right: 10px; }
+            .ct, .tt { touch-action: pan-y; will-change: transform; user-select: none; -webkit-user-select: none; }
+            .ct.swiping, .tt.swiping { transition: none !important; }
+            .tt-stack {
+                bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+                left: 10px;
+                right: 10px;
+                width: auto;
+                max-height: min(34vh, 230px);
+                overflow-y: auto;
+                overflow-x: hidden;
+                overscroll-behavior: contain;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                pointer-events: auto;
+                touch-action: pan-y;
+            }
+            .tt-stack::-webkit-scrollbar { display: none; }
+            .tt-stack:empty { pointer-events: none; }
             body.ct-on .tt-stack {
                 right: 10px;
                 bottom: calc(100px + var(--ct-h, 0px) + env(safe-area-inset-bottom, 0px));
@@ -6254,6 +6283,7 @@
                 el.querySelector('.tt-x').addEventListener('click', close);
                 el.addEventListener('mouseenter', () => { hovered = true; hold(); });
                 el.addEventListener('mouseleave', () => { hovered = false; arm(); });
+                window.attachSwipeDismiss(el, { onHold: () => { hovered = true; hold(); }, onRelease: () => { hovered = false; arm(); }, onDismiss: close });
                 if (bar) bar.style.animationDuration = duration + 'ms';
 
                 wrap.appendChild(el); stack.appendChild(wrap); live.push(entry);
@@ -6261,6 +6291,54 @@
                 arm();
                 return entry.api;
             }
+            // iPhone kabi: bildirishnomani barmoq bilan o'ngga surib yopish (telefon / sensorli ekran)
+            window.attachSwipeDismiss = function (el, o) {
+                o = o || {};
+                let id = null, sx = 0, sy = 0, st = 0, dx = 0, lock = '', moved = false;
+                const reset = () => { id = null; lock = ''; dx = 0; };
+                el.addEventListener('pointerdown', e => {
+                    if (e.pointerType === 'mouse' || id !== null || e.target.closest('button')) return;
+                    id = e.pointerId; sx = e.clientX; sy = e.clientY; st = e.timeStamp; dx = 0; lock = ''; moved = false;
+                    if (o.onHold) o.onHold();
+                });
+                el.addEventListener('pointermove', e => {
+                    if (e.pointerId !== id) return;
+                    const mx = e.clientX - sx, my = e.clientY - sy;
+                    if (!lock) {
+                        if (Math.abs(mx) < 7 && Math.abs(my) < 7) return;
+                        lock = Math.abs(mx) > Math.abs(my) ? 'x' : 'y';
+                        if (lock === 'x') { try { el.setPointerCapture(id); } catch (_) { } el.classList.add('swiping'); }
+                    }
+                    if (lock !== 'x') return;
+                    moved = true;
+                    dx = mx > 0 ? mx : mx * 0.18;
+                    el.style.transform = 'translateX(' + dx + 'px)';
+                    el.style.opacity = String(Math.max(0.25, 1 - Math.abs(dx) / (el.offsetWidth * 0.95)));
+                });
+                const end = e => {
+                    if (e.pointerId !== id) return;
+                    const wasX = lock === 'x', v = dx / Math.max(1, e.timeStamp - st), w = el.offsetWidth;
+                    const dismiss = wasX && e.type === 'pointerup' && (dx > w * 0.32 || (dx > 40 && v > 0.55));
+                    reset();
+                    el.classList.remove('swiping');
+                    if (!wasX) { if (o.onRelease) o.onRelease(); return; }
+                    if (dismiss) {
+                        el.style.transition = 'transform .24s cubic-bezier(.4,0,1,1), opacity .24s ease';
+                        el.style.transform = 'translateX(' + (w + 40) + 'px)';
+                        el.style.opacity = '0';
+                        if (o.onDismiss) o.onDismiss();
+                    } else {
+                        el.style.transition = 'transform .32s cubic-bezier(.22,1,.36,1), opacity .2s ease';
+                        el.style.transform = ''; el.style.opacity = '';
+                        setTimeout(() => { el.style.transition = ''; }, 340);
+                        if (o.onRelease) o.onRelease();
+                    }
+                };
+                el.addEventListener('pointerup', end);
+                el.addEventListener('pointercancel', end);
+                // surishdan keyin tasodifiy "click" ishlamasin
+                el.addEventListener('click', e => { if (moved) { e.stopImmediatePropagation(); e.preventDefault(); moved = false; } }, true);
+            };
             ['success', 'error', 'warning', 'info'].forEach(k => { show[k] = (m, o) => show(k, m, o); });
             show.t = (uz, en, ru) => ({ uz, en, ru });
             show.clear = () => live.slice().forEach(x => x.close());
@@ -11876,7 +11954,9 @@
                 el.addEventListener('mouseenter', () => clearTimeout(it.timer));
                 el.addEventListener('mouseleave', () => arm(4000));
                 el.addEventListener('click', e => { if (e.target.closest('.ct-x')) ctRemove(it); else openConv(c.id); });
+                if (window.attachSwipeDismiss) window.attachSwipeDismiss(el, { onHold: () => clearTimeout(it.timer), onRelease: () => arm(4000), onDismiss: () => ctRemove(it) });
                 wrap.appendChild(el); ctList.appendChild(wrap); ctItems.push(it); ctSync();
+                ctList.scrollTo({ top: ctList.scrollHeight, behavior: 'smooth' });
                 requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('in')));
                 arm(CT_AUTO);
             }
