@@ -428,56 +428,7 @@
             height: 20px;
         }
 
-        /* ===== LANGUAGE DROPDOWN ===== */
-        .lang-dropdown {
-            position: relative;
-        }
-
-        .lang-btn {
-            background: var(--field-bg);
-            color: var(--fg-panel);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        .lang-btn svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        .lang-menu {
-            position: absolute;
-            top: calc(100% + 10px);
-            right: 0;
-            background: var(--menu-bg);
-            border: 1px solid var(--panel-border);
-            border-radius: 12px;
-            box-shadow: var(--menu-shadow);
-            padding: 6px;
-            min-width: 150px;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-6px);
-            transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
-            z-index: 20;
-        }
-
-        .lang-dropdown.open .lang-menu {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
+        /* ===== LANGUAGE OPTIONS (profil menyusi ichida) ===== */
         .lang-option {
             display: flex;
             align-items: center;
@@ -933,6 +884,15 @@
         .profile-menu-item:hover {
             background: var(--menu-hover);
         }
+
+        /* ===== PROFIL MENYUSIDAGI TIL BANDI ===== */
+        .pm-lang .pm-lang-cur { margin-left: auto; font-size: 12.5px; font-weight: 600; opacity: .75; white-space: nowrap; }
+        .pm-lang .pm-chev { width: 14px; height: 14px; margin-left: 2px; opacity: .6; transition: transform .22s ease; }
+        .pm-lang-group.open .pm-chev { transform: rotate(180deg); }
+        .pm-lang-list { display: grid; grid-template-rows: 0fr; visibility: hidden; transition: grid-template-rows .24s cubic-bezier(.22, 1, .36, 1), visibility 0s linear .24s; }
+        .pm-lang-group.open .pm-lang-list { grid-template-rows: 1fr; visibility: visible; transition-delay: 0s; }
+        .pm-lang-list-in { min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 2px; padding: 2px 0 2px 10px; }
+        @media (prefers-reduced-motion: reduce) { .pm-lang-list, .pm-lang .pm-chev { transition: none; } }
 
         /* ===== CONTENT VIEWS ===== */
         .content-view {
@@ -3809,13 +3769,13 @@
             .search-box { height: 38px; border-radius: 11px; gap: 6px; }
             .search-box .search-icon { width: 16px; height: 16px; }
             .header-icons { gap: 2px; margin-left: 0; }
-            .icon-btn, .lang-btn { width: 38px; height: 38px; }
-            .icon-btn svg, .lang-btn svg { width: 19px; height: 19px; }
+            .icon-btn { width: 38px; height: 38px; }
+            .icon-btn svg { width: 19px; height: 19px; }
             .notif-badge { top: 2px; right: 2px; }
 
             /* dropdown'lar sarlavhaga nisbatan joylashadi — ekrandan chiqib ketmaydi */
-            .lang-dropdown, .notif-dropdown, .profile-dropdown { position: static; }
-            .lang-menu, .profile-menu {
+            .notif-dropdown, .profile-dropdown { position: static; }
+            .profile-menu {
                 top: calc(100% + 8px);
                 right: 0;
                 left: auto;
@@ -5614,40 +5574,6 @@
                     placeholder="Qidiruv" />
             </div>
             <div class="header-icons">
-                <div class="lang-dropdown" id="langDropdown">
-                    <button class="lang-btn" id="langBtn" type="button" data-i18n-title="lang.select"
-                        title="Tilni tanlash">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="9" />
-                            <line x1="3" y1="12" x2="21" y2="12" />
-                            <path
-                                d="M12 3c2.5 2.5 3.8 5.6 3.8 9s-1.3 6.5-3.8 9c-2.5-2.5-3.8-5.6-3.8-9s1.3-6.5 3.8-9z" />
-                        </svg>
-                    </button>
-                    <div class="lang-menu" id="langMenu">
-                        <div class="lang-option selected" data-lang="uz">
-                            <span class="flag">🇺🇿</span>
-                            <span>O'zbekcha</span>
-                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
-                                <polyline points="20 6 9 17 4 12" />
-                            </svg>
-                        </div>
-                        <div class="lang-option" data-lang="en">
-                            <span class="flag">🇬🇧</span>
-                            <span>English</span>
-                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
-                                <polyline points="20 6 9 17 4 12" />
-                            </svg>
-                        </div>
-                        <div class="lang-option" data-lang="ru">
-                            <span class="flag">🇷🇺</span>
-                            <span>Русский</span>
-                            <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
-                                <polyline points="20 6 9 17 4 12" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
                 <button class="icon-btn" id="headerThemeBtn" type="button" data-i18n-title="theme.toggle"
                     title="Kunduzgi/tungi rejim">
                     <svg id="headerThemeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -5748,6 +5674,43 @@
                                 <line x1="3" y1="10" x2="21" y2="10" />
                             </svg>
                             <span data-i18n="schedule.button">Dars jadvali</span>
+                        </div>
+                        <div class="pm-lang-group" id="profileLangGroup">
+                            <div class="profile-menu-item pm-lang" id="profileLangBtn" role="button" tabindex="0" aria-expanded="false" aria-controls="profileLangList">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="9" />
+                                    <line x1="3" y1="12" x2="21" y2="12" />
+                                    <path d="M12 3c2.5 2.5 3.8 5.6 3.8 9s-1.3 6.5-3.8 9c-2.5-2.5-3.8-5.6-3.8-9s1.3-6.5 3.8-9z" />
+                                </svg>
+                                <span data-i18n="lang.select">Tilni tanlash</span>
+                                <span class="pm-lang-cur" id="profileLangCur">🇺🇿 UZ</span>
+                                <svg class="pm-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
+                            </div>
+                            <div class="pm-lang-list" id="profileLangList">
+                                <div class="pm-lang-list-in">
+                                <div class="lang-option selected" data-lang="uz">
+                                    <span class="flag">🇺🇿</span>
+                                    <span>O'zbekcha</span>
+                                    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>
+                                </div>
+                                <div class="lang-option" data-lang="en">
+                                    <span class="flag">🇬🇧</span>
+                                    <span>English</span>
+                                    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>
+                                </div>
+                                <div class="lang-option" data-lang="ru">
+                                    <span class="flag">🇷🇺</span>
+                                    <span>Русский</span>
+                                    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>
+                                </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="profile-menu-item" id="profileSettingsBtn">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -7231,7 +7194,6 @@
         notifBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             notifDropdown.classList.toggle('open');
-            langDropdown && langDropdown.classList.remove('open');
             profileDropdown && profileDropdown.classList.remove('open');
         });
 
@@ -7281,7 +7243,7 @@
         profileBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             profileDropdown.classList.toggle('open');
-            langDropdown && langDropdown.classList.remove('open');
+            if (typeof setLangList === 'function') setLangList(false);
             notifDropdown && notifDropdown.classList.remove('open');
         });
 
@@ -7906,6 +7868,11 @@
                 opt.classList.toggle('selected', opt.dataset.lang === lang);
             });
 
+            // profil menyusidagi joriy til belgisi
+            const curFlag = document.querySelector('.lang-option[data-lang="' + lang + '"] .flag');
+            const curEl = document.getElementById('profileLangCur');
+            if (curEl && curFlag) curEl.textContent = curFlag.textContent + ' ' + lang.toUpperCase();
+
             // profil formasidagi til bayrog'ini ham yangilash
             if (typeof profileLangFlag !== 'undefined' && profileLangFlag && LANG_FLAGS[lang]) {
                 profileLangFlag.textContent = LANG_FLAGS[lang];
@@ -7924,29 +7891,36 @@
             if (typeof renderScheduleModal === 'function' && document.getElementById('scheduleModalBackdrop').classList.contains('open')) renderScheduleModal();
         }
 
-        // ===== LANGUAGE DROPDOWN UI LOGIKASI =====
-        const langDropdown = document.getElementById('langDropdown');
-        const langBtn = document.getElementById('langBtn');
+        // ===== TIL TANLASH (profil menyusi ichida) =====
+        const profileLangGroup = document.getElementById('profileLangGroup');
+        const profileLangBtn = document.getElementById('profileLangBtn');
         const langOptions = document.querySelectorAll('.lang-option');
 
-        langBtn.addEventListener('click', (e) => {
+        function setLangList(open) {
+            if (!profileLangGroup) return;
+            profileLangGroup.classList.toggle('open', open);
+            profileLangBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+
+        profileLangBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            langDropdown.classList.toggle('open');
-            notifDropdown && notifDropdown.classList.remove('open');
-            profileDropdown && profileDropdown.classList.remove('open');
+            setLangList(!profileLangGroup.classList.contains('open'));
+        });
+        profileLangBtn.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); profileLangBtn.click(); }
         });
 
         langOptions.forEach(option => {
-            option.addEventListener('click', () => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
                 applyLanguage(option.dataset.lang);
-                langDropdown.classList.remove('open');
+                setLangList(false);
+                profileDropdown.classList.remove('open');
             });
         });
 
         document.addEventListener('click', (e) => {
-            if (!langDropdown.contains(e.target)) {
-                langDropdown.classList.remove('open');
-            }
+            if (!profileDropdown.contains(e.target)) setLangList(false);
         });
 
         // sahifa ochilganda: agar foydalanuvchi oldin til tanlagan bo'lsa o'shani,
