@@ -7191,6 +7191,31 @@
             notifList.classList.toggle('is-empty', notifList.querySelectorAll('.notif-item').length === 0);
         }
 
+        // ----- CHAT <-> BILDIRISHNOMALAR -----
+        // Chatdagi har bir o'qilmagan suhbat bildirishnomalar ro'yxatida ham ko'rinadi.
+        // Chat o'qilsa — bildirishnomadan yo'qoladi; bildirishnomada "barchasini o'qish" bosilsa — chat ham o'qiladi.
+        function renderChatNotifs() {
+            if (!window.chatBridge) return;
+            const escN = (v) => String(v).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+            notifList.querySelectorAll('.notif-item[data-chat]').forEach((n) => n.remove());
+            const frag = document.createDocumentFragment();
+            window.chatBridge.unread().forEach((c) => {
+                const d = new Date(c.t);
+                const hm = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+                const txt = String(c.text).replace(/\s+/g, ' ').trim();
+                const el = document.createElement('div');
+                el.className = 'notif-item unread';
+                el.dataset.chat = c.id;
+                el.innerHTML = '<span class="notif-dot"></span><div class="notif-body"><p class="notif-text"><b>' + escN(c.name) + '</b>: ' +
+                    (c.who ? escN(c.who) + ': ' : '') + escN(txt.length > 70 ? txt.slice(0, 70) + '…' : txt) +
+                    '</p><span class="notif-time">💬 ' + hm + (c.count > 1 ? ' · ' + c.count : '') + '</span></div>';
+                frag.appendChild(el);
+            });
+            notifList.insertBefore(frag, notifList.firstChild);
+            updateNotifBadge();
+        }
+        window.addEventListener('chat:unread', renderChatNotifs);
+
         notifBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             notifDropdown.classList.toggle('open');
@@ -7200,6 +7225,11 @@
         notifList.addEventListener('click', (e) => {
             const item = e.target.closest('.notif-item');
             if (!item) return;
+            if (item.dataset.chat && window.chatBridge) {
+                notifDropdown.classList.remove('open');
+                window.chatBridge.open(item.dataset.chat);
+                return;
+            }
             item.classList.remove('unread');
             updateNotifBadge();
         });
@@ -7218,7 +7248,10 @@
                     item.classList.add('reading');
                     setTimeout(() => {
                         item.classList.remove('unread', 'reading');
-                        if (i === items.length - 1) updateNotifBadge();
+                        if (i === items.length - 1) {
+                            updateNotifBadge();
+                            if (window.chatBridge) window.chatBridge.readAll();
+                        }
                     }, 380);
                 }, i * 60);
             });
@@ -11589,7 +11622,7 @@
             const $ = id => document.getElementById(id);
             const unreadOf = k => (people()[k] || []).reduce((s, c) => s + c.unread, 0);
             const unreadAll = () => Object.values(CH).reduce((s, c) => s + c.unread, 0);
-            function badge() { const b = $('chBadge'), n = unreadAll(); b.textContent = n > 99 ? '99+' : n; b.classList.toggle('show', n > 0); fab.classList.toggle('pulse', n > 0 && !panel.classList.contains('open')); const s = $('chSub'); if (s) s.textContent = T().sub(n); }
+            function badge() { const b = $('chBadge'), n = unreadAll(); b.textContent = n > 99 ? '99+' : n; b.classList.toggle('show', n > 0); fab.classList.toggle('pulse', n > 0 && !panel.classList.contains('open')); const s = $('chSub'); if (s) s.textContent = T().sub(n); window.dispatchEvent(new CustomEvent('chat:unread')); }
             function shell() {
                 const t = T();
                 panel.innerHTML = `<div class="ch-scr listv"><div class="ch-hero"><button class="ch-x" data-a="close" aria-label="Close">${ic('<path d="M6 6l12 12M18 6L6 18"/>')}</button><h2>${t.title}</h2><p id="chSub"></p><div class="ch-sbox">${ic('<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>')}<input class="ch-search" id="chQ" placeholder="${t.search}" value="${esc(q)}" autocomplete="off"></div></div>
@@ -11962,6 +11995,16 @@
                     const last = c.msgs[c.msgs.length - 1]; if (!panel.classList.contains('open')) ctNotify(c, last.text, c.type === 'groups' ? last.who : '');
                 }, i * 500));
             }, 1500);
+            // ===== BILDIRISHNOMALAR BILAN ULASH =====
+            // Bildirishnomalar paneli shu ko'prik orqali o'qilmagan chatlarni oladi va "hammasini o'qish"ni chatga uzatadi.
+            window.chatBridge = {
+                unread: () => Object.values(CH).filter(c => c.unread > 0 && c.msgs.length).sort((a, b) => b.t - a.t).map(c => {
+                    const last = c.msgs[c.msgs.length - 1];
+                    return { id: c.id, name: c.name, count: c.unread, text: last.text, who: c.type === 'groups' ? last.who : '', t: c.t };
+                }),
+                readAll: readAll,
+                open: openConv
+            };
             badge();
         })();
     </script>
