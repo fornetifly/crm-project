@@ -4433,82 +4433,82 @@
         .rp-fly-item:hover, .rp-fly-item:focus-visible { background: var(--menu-hover); }
         .rp-fly-item.active { background: var(--highlight-bg); color: var(--highlight-fg); font-weight: 600; }
         .rp-fly-item.active svg { opacity: 1; }
-        @media (max-width: 900px) { .rp-fly { display: none; } }
+        @media (max-width: 768px) { .rp-fly { display: none; } }
         .nav-list { scrollbar-width: thin; }
 
-        #reportsRoot .rp-crumb { margin-top: 6px; font-size: 13px; color: var(--fg-page-muted); }
-        #reportsRoot .rp-crumb span { opacity: .6; margin: 0 3px; }
-        #reportsRoot .rp-desc { margin: 8px 0 0; font-size: 14px; color: var(--fg-page-muted); max-width: 640px; }
-        #reportsRoot .clients-head-text { max-width: 720px; }
-        #reportsRoot .rp-switch { width: 100%; }
-        #reportsRoot .rp-kpis { margin: 0 0 18px; }
-        #reportsRoot .stat-card { text-align: left; padding: 18px 18px; }
-        #reportsRoot .stat-icon { margin: 0 0 12px; }
-        #reportsRoot .stat-value { font-size: 22px; font-weight: 700; word-break: break-word; }
-        #reportsRoot .stat-value .pm-sub { font-size: 12px; font-weight: 500; }
-        #reportsRoot .stat-value .pm-sub small { font-size: 11px; opacity: .75; }
-        #reportsRoot .rp-charts { display: grid; gap: 16px; margin-bottom: 16px; grid-template-columns: 1fr; }
-        #reportsRoot .rp-charts.n2 { grid-template-columns: 1fr 1fr; }
-        #reportsRoot .rp-charts.n2.fw { grid-template-columns: 2fr 1fr; }
-        #reportsRoot .rp-charts.n3 { grid-template-columns: 1fr 1fr 1fr; }
-        #reportsRoot .rp-charts.n3.fw { grid-template-columns: 1.7fr 1fr 1fr; }
-        #reportsRoot .rp-ccard, #reportsRoot .rp-tcard { margin-top: 0; min-width: 0; }
-        #reportsRoot .rp-tcard { margin-bottom: 14px; }
+        :is(#reportsRoot, #archiveRoot) .rp-crumb { margin-top: 6px; font-size: 13px; color: var(--fg-page-muted); }
+        :is(#reportsRoot, #archiveRoot) .rp-crumb span { opacity: .6; margin: 0 3px; }
+        :is(#reportsRoot, #archiveRoot) .rp-desc { margin: 8px 0 0; font-size: 14px; color: var(--fg-page-muted); max-width: 640px; }
+        :is(#reportsRoot, #archiveRoot) .clients-head-text { max-width: 720px; }
+        :is(#reportsRoot, #archiveRoot) .rp-switch { width: 100%; }
+        :is(#reportsRoot, #archiveRoot) .rp-kpis { margin: 0 0 18px; }
+        :is(#reportsRoot, #archiveRoot) .stat-card { text-align: left; padding: 18px 18px; }
+        :is(#reportsRoot, #archiveRoot) .stat-icon { margin: 0 0 12px; }
+        :is(#reportsRoot, #archiveRoot) .stat-value { font-size: 22px; font-weight: 700; word-break: break-word; }
+        :is(#reportsRoot, #archiveRoot) .stat-value .pm-sub { font-size: 12px; font-weight: 500; }
+        :is(#reportsRoot, #archiveRoot) .stat-value .pm-sub small { font-size: 11px; opacity: .75; }
+        :is(#reportsRoot, #archiveRoot) .rp-charts { display: grid; gap: 16px; margin-bottom: 16px; grid-template-columns: 1fr; }
+        :is(#reportsRoot, #archiveRoot) .rp-charts.n2 { grid-template-columns: 1fr 1fr; }
+        :is(#reportsRoot, #archiveRoot) .rp-charts.n2.fw { grid-template-columns: 2fr 1fr; }
+        :is(#reportsRoot, #archiveRoot) .rp-charts.n3 { grid-template-columns: 1fr 1fr 1fr; }
+        :is(#reportsRoot, #archiveRoot) .rp-charts.n3.fw { grid-template-columns: 1.7fr 1fr 1fr; }
+        :is(#reportsRoot, #archiveRoot) .rp-ccard, :is(#reportsRoot, #archiveRoot) .rp-tcard { margin-top: 0; min-width: 0; }
+        :is(#reportsRoot, #archiveRoot) .rp-tcard { margin-bottom: 14px; }
         @media (max-width: 1100px) {
-            #reportsRoot .rp-charts.n3, #reportsRoot .rp-charts.n3.fw { grid-template-columns: 1fr 1fr; }
-            #reportsRoot .rp-charts.n3.fw .rp-ccard:first-child { grid-column: 1 / -1; }
+            :is(#reportsRoot, #archiveRoot) .rp-charts.n3, :is(#reportsRoot, #archiveRoot) .rp-charts.n3.fw { grid-template-columns: 1fr 1fr; }
+            :is(#reportsRoot, #archiveRoot) .rp-charts.n3.fw .rp-ccard:first-child { grid-column: 1 / -1; }
         }
         @media (max-width: 760px) {
-            #reportsRoot .rp-charts, #reportsRoot .rp-charts.n2, #reportsRoot .rp-charts.n3, #reportsRoot .rp-charts.n2.fw, #reportsRoot .rp-charts.n3.fw { grid-template-columns: 1fr; }
-            #reportsRoot .rp-search { flex: 1 1 100%; max-width: none; }
-            #reportsRoot .stat-value { font-size: 19px; }
+            :is(#reportsRoot, #archiveRoot) .rp-charts, :is(#reportsRoot, #archiveRoot) .rp-charts.n2, :is(#reportsRoot, #archiveRoot) .rp-charts.n3, :is(#reportsRoot, #archiveRoot) .rp-charts.n2.fw, :is(#reportsRoot, #archiveRoot) .rp-charts.n3.fw { grid-template-columns: 1fr; }
+            :is(#reportsRoot, #archiveRoot) .rp-search { flex: 1 1 100%; max-width: none; }
+            :is(#reportsRoot, #archiveRoot) .stat-value { font-size: 19px; }
         }
-        #reportsRoot .rp-h { display: flex; flex-direction: column; gap: 11px; max-height: 420px; overflow-y: auto; padding-right: 4px; }
-        #reportsRoot .rp-hrow { display: grid; grid-template-columns: minmax(80px, 150px) 1fr; gap: 12px; align-items: center; }
-        #reportsRoot .rp-hlab { font-size: 12.5px; color: var(--fg-muted); text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        #reportsRoot .rp-htrack { display: flex; flex-direction: column; gap: 3px; padding-right: 58px; border-left: 1px solid var(--panel-border); }
-        #reportsRoot .rp-hbar { position: relative; height: 13px; border-radius: 0 4px 4px 0; transition: opacity .15s ease; }
-        #reportsRoot .rp-hbar:hover { opacity: .8; }
-        #reportsRoot .rp-hbar i { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); margin-left: 6px; font-style: normal; font-size: 11px; line-height: 1; color: var(--fg-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
-        #reportsRoot .rp-legend { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-top: 14px; font-size: 12px; color: var(--fg-muted); }
-        #reportsRoot .rp-legend span { display: inline-flex; align-items: center; gap: 6px; }
-        #reportsRoot .rp-legend i { width: 14px; height: 4px; border-radius: 3px; display: inline-block; }
-        #reportsRoot .rp-v { display: flex; align-items: flex-end; gap: 8px; height: 230px; padding-top: 6px; overflow-x: auto; }
-        #reportsRoot .rp-vcol { flex: 1; min-width: 28px; display: flex; flex-direction: column; align-items: center; gap: 8px; height: 100%; }
-        #reportsRoot .rp-vbars { flex: 1; width: 100%; display: flex; align-items: flex-end; justify-content: center; gap: 3px; }
-        #reportsRoot .rp-vbar { position: relative; width: 100%; max-width: 30px; min-height: 0; border-radius: 7px 7px 3px 3px; transition: opacity .15s ease; }
-        #reportsRoot .rp-vbar:hover { opacity: .8; }
-        #reportsRoot .rp-vbar i { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 4px; font-style: normal; font-size: 10.5px; color: var(--fg-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
-        #reportsRoot .rp-vcol > span { font-size: 11.5px; color: var(--fg-muted); white-space: nowrap; }
-        #reportsRoot .rp-vcol.cur > span { color: var(--fg-panel); font-weight: 700; }
-        #reportsRoot .rp-donut { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 16px; }
-        #reportsRoot .rp-donut svg { width: 128px; height: 128px; flex-shrink: 0; }
-        #reportsRoot .rp-dt1 { font-size: 15px; font-weight: 700; fill: var(--fg-panel); }
-        #reportsRoot .rp-dt2 { font-size: 8.5px; fill: var(--fg-muted); }
-        #reportsRoot .rp-dlegend { flex: 1 1 150px; min-width: 150px; display: flex; flex-direction: column; gap: 8px; max-height: 190px; overflow-y: auto; }
-        #reportsRoot .rp-dlegend > div { display: grid; grid-template-columns: 10px 1fr auto 38px; gap: 8px; align-items: center; font-size: 12.5px; }
-        #reportsRoot .rp-dlegend i { width: 10px; height: 10px; border-radius: 3px; }
-        #reportsRoot .rp-dlegend span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fg-muted); }
-        #reportsRoot .rp-dlegend b { font-weight: 600; font-variant-numeric: tabular-nums; }
-        #reportsRoot .rp-dlegend em { font-style: normal; color: var(--fg-muted); text-align: right; }
-        #reportsRoot .rp-line { width: 100%; height: auto; display: block; }
-        #reportsRoot .rp-grid { stroke: var(--panel-border); stroke-width: 1; }
-        #reportsRoot .rp-ax { font-size: 10px; fill: var(--fg-muted); }
-        #reportsRoot .rp-pl { fill: none; stroke: var(--chart-bar-top, #6FA8FF); stroke-width: 2.4; stroke-linejoin: round; }
-        #reportsRoot .rp-area { fill: var(--chart-bar-top, #6FA8FF); opacity: .14; }
-        #reportsRoot .rp-dot { fill: var(--bg-panel); stroke: var(--chart-bar-top, #6FA8FF); stroke-width: 2; }
-        #reportsRoot .rp-meter { height: 5px; border-radius: 5px; background: var(--hover-bg); overflow: hidden; min-width: 60px; }
-        #reportsRoot .rp-meter i { display: block; height: 100%; border-radius: 5px; background: var(--accent); }
-        #reportsRoot .rp-pc { display: flex; flex-direction: column; gap: 5px; min-width: 76px; }
-        #reportsRoot .rp-pc b { font-size: 12.5px; font-weight: 600; }
-        #reportsRoot .rp-table td small, #reportsRoot .rp-table td .muted { color: var(--fg-muted); font-size: 12px; }
-        #reportsRoot .rp-table td.muted { color: var(--fg-muted); }
-        #reportsRoot .rp-foot td { font-weight: 600; background: var(--hover-bg); border-top: 1px solid var(--panel-border); }
-        #reportsRoot .rp-clip { display: inline-block; max-width: 280px; overflow: hidden; text-overflow: ellipsis; vertical-align: bottom; }
-        #reportsRoot .rp-table td .st-user > div:last-child { line-height: 1.25; }
+        :is(#reportsRoot, #archiveRoot) .rp-h { display: flex; flex-direction: column; gap: 11px; max-height: 420px; overflow-y: auto; padding-right: 4px; }
+        :is(#reportsRoot, #archiveRoot) .rp-hrow { display: grid; grid-template-columns: minmax(80px, 150px) 1fr; gap: 12px; align-items: center; }
+        :is(#reportsRoot, #archiveRoot) .rp-hlab { font-size: 12.5px; color: var(--fg-muted); text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        :is(#reportsRoot, #archiveRoot) .rp-htrack { display: flex; flex-direction: column; gap: 3px; padding-right: 58px; border-left: 1px solid var(--panel-border); }
+        :is(#reportsRoot, #archiveRoot) .rp-hbar { position: relative; height: 13px; border-radius: 0 4px 4px 0; transition: opacity .15s ease; }
+        :is(#reportsRoot, #archiveRoot) .rp-hbar:hover { opacity: .8; }
+        :is(#reportsRoot, #archiveRoot) .rp-hbar i { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); margin-left: 6px; font-style: normal; font-size: 11px; line-height: 1; color: var(--fg-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+        :is(#reportsRoot, #archiveRoot) .rp-legend { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-top: 14px; font-size: 12px; color: var(--fg-muted); }
+        :is(#reportsRoot, #archiveRoot) .rp-legend span { display: inline-flex; align-items: center; gap: 6px; }
+        :is(#reportsRoot, #archiveRoot) .rp-legend i { width: 14px; height: 4px; border-radius: 3px; display: inline-block; }
+        :is(#reportsRoot, #archiveRoot) .rp-v { display: flex; align-items: flex-end; gap: 8px; height: 230px; padding-top: 6px; overflow-x: auto; }
+        :is(#reportsRoot, #archiveRoot) .rp-vcol { flex: 1; min-width: 28px; display: flex; flex-direction: column; align-items: center; gap: 8px; height: 100%; }
+        :is(#reportsRoot, #archiveRoot) .rp-vbars { flex: 1; width: 100%; display: flex; align-items: flex-end; justify-content: center; gap: 3px; }
+        :is(#reportsRoot, #archiveRoot) .rp-vbar { position: relative; width: 100%; max-width: 30px; min-height: 0; border-radius: 7px 7px 3px 3px; transition: opacity .15s ease; }
+        :is(#reportsRoot, #archiveRoot) .rp-vbar:hover { opacity: .8; }
+        :is(#reportsRoot, #archiveRoot) .rp-vbar i { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 4px; font-style: normal; font-size: 10.5px; color: var(--fg-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+        :is(#reportsRoot, #archiveRoot) .rp-vcol > span { font-size: 11.5px; color: var(--fg-muted); white-space: nowrap; }
+        :is(#reportsRoot, #archiveRoot) .rp-vcol.cur > span { color: var(--fg-panel); font-weight: 700; }
+        :is(#reportsRoot, #archiveRoot) .rp-donut { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 16px; }
+        :is(#reportsRoot, #archiveRoot) .rp-donut svg { width: 128px; height: 128px; flex-shrink: 0; }
+        :is(#reportsRoot, #archiveRoot) .rp-dt1 { font-size: 15px; font-weight: 700; fill: var(--fg-panel); }
+        :is(#reportsRoot, #archiveRoot) .rp-dt2 { font-size: 8.5px; fill: var(--fg-muted); }
+        :is(#reportsRoot, #archiveRoot) .rp-dlegend { flex: 1 1 150px; min-width: 150px; display: flex; flex-direction: column; gap: 8px; max-height: 190px; overflow-y: auto; }
+        :is(#reportsRoot, #archiveRoot) .rp-dlegend > div { display: grid; grid-template-columns: 10px 1fr auto 38px; gap: 8px; align-items: center; font-size: 12.5px; }
+        :is(#reportsRoot, #archiveRoot) .rp-dlegend i { width: 10px; height: 10px; border-radius: 3px; }
+        :is(#reportsRoot, #archiveRoot) .rp-dlegend span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fg-muted); }
+        :is(#reportsRoot, #archiveRoot) .rp-dlegend b { font-weight: 600; font-variant-numeric: tabular-nums; }
+        :is(#reportsRoot, #archiveRoot) .rp-dlegend em { font-style: normal; color: var(--fg-muted); text-align: right; }
+        :is(#reportsRoot, #archiveRoot) .rp-line { width: 100%; height: auto; display: block; }
+        :is(#reportsRoot, #archiveRoot) .rp-grid { stroke: var(--panel-border); stroke-width: 1; }
+        :is(#reportsRoot, #archiveRoot) .rp-ax { font-size: 10px; fill: var(--fg-muted); }
+        :is(#reportsRoot, #archiveRoot) .rp-pl { fill: none; stroke: var(--chart-bar-top, #6FA8FF); stroke-width: 2.4; stroke-linejoin: round; }
+        :is(#reportsRoot, #archiveRoot) .rp-area { fill: var(--chart-bar-top, #6FA8FF); opacity: .14; }
+        :is(#reportsRoot, #archiveRoot) .rp-dot { fill: var(--bg-panel); stroke: var(--chart-bar-top, #6FA8FF); stroke-width: 2; }
+        :is(#reportsRoot, #archiveRoot) .rp-meter { height: 5px; border-radius: 5px; background: var(--hover-bg); overflow: hidden; min-width: 60px; }
+        :is(#reportsRoot, #archiveRoot) .rp-meter i { display: block; height: 100%; border-radius: 5px; background: var(--accent); }
+        :is(#reportsRoot, #archiveRoot) .rp-pc { display: flex; flex-direction: column; gap: 5px; min-width: 76px; }
+        :is(#reportsRoot, #archiveRoot) .rp-pc b { font-size: 12.5px; font-weight: 600; }
+        :is(#reportsRoot, #archiveRoot) .rp-table td small, :is(#reportsRoot, #archiveRoot) .rp-table td .muted { color: var(--fg-muted); font-size: 12px; }
+        :is(#reportsRoot, #archiveRoot) .rp-table td.muted { color: var(--fg-muted); }
+        :is(#reportsRoot, #archiveRoot) .rp-foot td { font-weight: 600; background: var(--hover-bg); border-top: 1px solid var(--panel-border); }
+        :is(#reportsRoot, #archiveRoot) .rp-clip { display: inline-block; max-width: 280px; overflow: hidden; text-overflow: ellipsis; vertical-align: bottom; }
+        :is(#reportsRoot, #archiveRoot) .rp-table td .st-user > div:last-child { line-height: 1.25; }
         .st-badge.bad { background: rgba(248, 113, 113, .16); color: #F87171; }
-        #reportsRoot .rp-note { display: flex; gap: 10px; align-items: flex-start; margin: 4px 2px 24px; font-size: 12.5px; line-height: 1.5; color: var(--fg-page-muted); }
-        #reportsRoot .rp-note svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; }
+        :is(#reportsRoot, #archiveRoot) .rp-note { display: flex; gap: 10px; align-items: flex-start; margin: 4px 2px 24px; font-size: 12.5px; line-height: 1.5; color: var(--fg-page-muted); }
+        :is(#reportsRoot, #archiveRoot) .rp-note svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; }
         .rp-modal .clients-modal.rp-wide { max-width: 720px; }
         .rp-modal .rp-info { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); margin: 0 0 16px; }
         .rp-mact { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; margin-top: 18px; }
@@ -4519,7 +4519,31 @@
         @media print {
             .sidebar, .header, .mobile-bottom-nav, .rp-noprint, .sidebar-backdrop, .ct-stack { display: none !important; }
             body, .main, .content { height: auto !important; overflow: visible !important; }
-            #reportsRoot .rp-h, #reportsRoot .rp-v { max-height: none; overflow: visible; }
+            :is(#reportsRoot, #archiveRoot) .rp-h, :is(#reportsRoot, #archiveRoot) .rp-v { max-height: none; overflow: visible; }
+        }
+
+        /* ===== GURUH CHIPI (talabalar jadvali) + TALABA SAHIFASI + JADVALDAGI BOSILADIGAN KARTALAR ===== */
+        .st-gchip { display: inline-flex; align-items: center; gap: 7px; max-width: 100%; padding: 5px 11px 5px 9px; border-radius: 999px; border: 1px solid rgba(111, 163, 245, .30); background: var(--menu-selected-bg); color: var(--menu-selected-fg); font: inherit; font-size: 12.5px; font-weight: 600; line-height: 1.2; cursor: pointer; white-space: nowrap; transition: background .15s ease, color .15s ease, border-color .15s ease, transform .15s ease, box-shadow .15s ease; }
+        .st-gchip > svg { width: 14px; height: 14px; flex-shrink: 0; }
+        .st-gchip .st-gchip-name { overflow: hidden; text-overflow: ellipsis; }
+        .st-gchip .st-gchip-arrow { width: 12px; height: 12px; opacity: .6; transition: transform .15s ease, opacity .15s ease; }
+        .st-gchip:hover, .st-gchip:focus-visible { background: var(--highlight-bg); color: var(--highlight-fg); border-color: var(--highlight-bg); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(47, 111, 224, .35); outline: none; }
+        .st-gchip:hover .st-gchip-arrow, .st-gchip:focus-visible .st-gchip-arrow { opacity: 1; transform: translateX(2px); }
+        .st-gchip:active { transform: translateY(0) scale(.97); }
+        .st-gchip.is-static { cursor: default; background: var(--hover-bg); color: var(--fg-muted); border-color: transparent; }
+        .st-gchip.is-static:hover { transform: none; box-shadow: none; background: var(--hover-bg); color: var(--fg-muted); }
+        .st-name { cursor: pointer; border-radius: 4px; transition: color .15s ease; }
+        .st-name:hover, .st-name:focus-visible { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; outline: none; }
+        .gr-info dd .st-gchip { margin-top: 2px; }
+        .sd-avatar-lg { width: 56px; height: 56px; font-size: 18px; flex-shrink: 0; }
+        .sd-sec { font-size: 15px; font-weight: 700; margin: 26px 0 0; color: var(--fg-page); }
+        .sd-sec + .gr-info { margin-top: 12px; }
+        .sd-empty-dd { color: var(--fg-muted); font-weight: 500; }
+        .sch-card[data-gid] { cursor: pointer; }
+        .sch-card[data-gid]:focus-visible { outline: 2px solid var(--cat-color); outline-offset: 2px; z-index: 6; }
+        .sch-card[data-gid]:active { transform: translateY(0) scale(.99); }
+        @media (max-width: 768px) {
+            #studentsRoot .payments-table td > .st-gchip { align-self: flex-start; }
         }
         /* ===== TALABA KABINETI ===== */
         .sc-wrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; max-width: 980px; }
@@ -6662,7 +6686,7 @@
                 renderChart(dashYearSelect.value, dashMonthSelect.value, !prefersReducedMotion());
             }
             if (name === 'groups' && typeof renderGroups === 'function') { if (window.closeGroupDetail) window.closeGroupDetail(); renderGroups(); }
-            if (name === 'students' && typeof renderStudents === 'function') renderStudents();
+            if (name === 'students' && typeof renderStudents === 'function') { if (window.closeStudentDetail) window.closeStudentDetail(); renderStudents(); }
             if (name === 'teachers' && typeof renderTeachers === 'function') { if (window.closeTeacherDetail) window.closeTeacherDetail(); renderTeachers(); }
             if (name === 'payments' && typeof renderPaymentsView === 'function') renderPaymentsView();
             if (name === 'settings' && typeof renderSettings === 'function') renderSettings();
@@ -7664,6 +7688,43 @@
             return l.students != null ? `<span class="sch-card-badge">${SCH_PERSON_ICON}${l.students}</span>` : '';
         }
 
+
+        // Jadval kartalari haqiqiy guruhlardan quriladi; karta bosilsa shu guruh sahifasi ochiladi
+        function schCatOf(name) {
+            const n = String(name || '').toLowerCase();
+            if (/kids|bolalar/.test(n)) return 'kids';
+            if (/korey|korean|한/.test(n)) return 'korean';
+            if (/rus/.test(n)) return 'russian';
+            if (/html|css|javascript|front|dastur|\bit\b|web/.test(n)) return 'itfront';
+            if (/individual/.test(n)) return 'individual';
+            if (/ielts|cefr/.test(n)) return 'ielts';
+            if (/intensive|intensiv/.test(n)) return 'intensive';
+            return 'beginner';
+        }
+
+        function schLessons(key) {
+            const groups = typeof window.allGroups === 'function' ? window.allGroups() : null;
+            if (!groups) return SCH_DATA[key] || [];
+            const TOQ = [0, 2, 4], JUFT = [1, 3, 5];
+            return groups
+                .filter(g => g.status === 'active' && Array.isArray(g.days))
+                .filter(g => {
+                    const t = g.days.some(d => TOQ.includes(d)), j = g.days.some(d => JUFT.includes(d));
+                    return key === 'toq' ? t : key === 'juft' ? j : (t && j);
+                })
+                .map(g => ({
+                    gid: g.id, room: g.room, start: g.start, end: g.end, title: g.name, teacher: g.teacher,
+                    cat: schCatOf(g.name),
+                    students: typeof window.studentCountByGroup === 'function' ? window.studentCountByGroup(g.name) : null
+                }));
+        }
+
+        function schCardAttrs(l) {
+            const base = `${escapeHtml(l.title)} — ${escapeHtml(l.teacher)}, ${l.start}–${l.end}`;
+            if (!l.gid) return ` title="${base}"`;
+            return ` title="${base}" data-gid="${l.gid}" role="button" tabindex="0" aria-label="${base}"`;
+        }
+
         function schBuildHorizontalHTML(lessons) {
             const timeLabels = [];
             for (let h = 8; h <= 19; h++) timeLabels.push(`<span>${String(h).padStart(2, '0')}:00</span>`);
@@ -7675,7 +7736,7 @@
                     const left = ((start - SCH_DAY_START) / SCH_DAY_RANGE * 100).toFixed(3);
                     const width = ((end - start) / SCH_DAY_RANGE * 100).toFixed(3);
                     const cat = SCH_CATS[l.cat] || SCH_CATS.beginner;
-                    return `<div class="sch-card sch-h-card" style="left:${left}%;width:${width}%;--cat-color:${cat.color};--cat-border:${cat.border};--cat-bg:${cat.bg}" title="${escapeHtml(l.title)} — ${escapeHtml(l.teacher)}, ${l.start}–${l.end}">
+                    return `<div class="sch-card sch-h-card" style="left:${left}%;width:${width}%;--cat-color:${cat.color};--cat-border:${cat.border};--cat-bg:${cat.bg}" ${schCardAttrs(l)}>
                         <div class="sch-card-head">
                             <span class="sch-card-time">${l.start}–${l.end}</span>
                             ${schCardBadge(l)}
@@ -7710,7 +7771,7 @@
                     const top = ((start - SCH_DAY_START) / SCH_DAY_RANGE * 100).toFixed(3);
                     const height = ((end - start) / SCH_DAY_RANGE * 100).toFixed(3);
                     const cat = SCH_CATS[l.cat] || SCH_CATS.beginner;
-                    return `<div class="sch-card sch-v-card" style="top:${top}%;height:${height}%;--cat-color:${cat.color};--cat-border:${cat.border};--cat-bg:${cat.bg}" title="${escapeHtml(l.title)} — ${escapeHtml(l.teacher)}, ${l.start}–${l.end}">
+                    return `<div class="sch-card sch-v-card" style="top:${top}%;height:${height}%;--cat-color:${cat.color};--cat-border:${cat.border};--cat-bg:${cat.bg}" ${schCardAttrs(l)}>
                         <div class="sch-card-head">
                             <span class="sch-card-time">${l.start}–${l.end}</span>
                             ${schCardBadge(l)}
@@ -7731,7 +7792,7 @@
                 btn.classList.toggle('active', btn.dataset.mode === schViewMode);
             });
             const groupKey = schGroupKey(schActiveTab);
-            const lessons = SCH_DATA[groupKey] || [];
+            const lessons = schLessons(groupKey);
             const grid = document.getElementById('scheduleGridBody');
             grid.innerHTML = schViewMode === 'horizontal' ? schBuildHorizontalHTML(lessons) : schBuildVerticalHTML(lessons);
             grid.style.display = lessons.length ? '' : 'none';
@@ -7763,6 +7824,24 @@
         });
         document.getElementById('scheduleViewH').addEventListener('click', () => { schViewMode = 'horizontal'; renderScheduleModal(); });
         document.getElementById('scheduleViewV').addEventListener('click', () => { schViewMode = 'vertical'; renderScheduleModal(); });
+
+
+        (function initScheduleCardLinks() {
+            const grid = document.getElementById('scheduleGridBody');
+            if (!grid) return;
+            const go = card => {
+                const gid = +card.dataset.gid;
+                if (!gid || typeof window.openGroup !== 'function') return;
+                closeScheduleModal();
+                window.openGroup(gid);
+            };
+            grid.addEventListener('click', e => { const c = e.target.closest('.sch-card[data-gid]'); if (c) go(c); });
+            grid.addEventListener('keydown', e => {
+                if (e.key !== 'Enter' && e.key !== ' ') return;
+                const c = e.target.closest('.sch-card[data-gid]');
+                if (c) { e.preventDefault(); go(c); }
+            });
+        })();
 
         const scheduleScrollLeftBtn = document.getElementById('scheduleScrollLeft');
         const scheduleScrollRightBtn = document.getElementById('scheduleScrollRight');
@@ -7940,7 +8019,7 @@
                 const rows = studentsOf(g).filter(s => !q || s.name.toLowerCase().includes(q) || (qd && s.phone.replace(/\D/g, '').includes(qd)));
                 $('grStudTable').innerHTML = `<div class="payments-table-wrap" style="max-height:none"><table class="payments-table"><thead><tr>
                     <th>${t.cName}</th><th class="col-hide-sm">${t.cPhone}</th><th>${t.cStatus}</th><th class="num">${t.cBalance}</th><th>${t.cMove}</th></tr></thead><tbody>
-                    ${rows.map(s => `<tr><td><div class="st-user"><div class="st-avatar">${escapeHtml(clientInitials(s.name))}</div>${escapeHtml(s.name)}</div></td>
+                    ${rows.map(s => `<tr class="pm-row" data-sid="${s.id}"><td><div class="st-user"><div class="st-avatar">${escapeHtml(clientInitials(s.name))}</div><span class="st-name" role="link" tabindex="0">${escapeHtml(s.name)}</span></div></td>
                         <td class="muted col-hide-sm">${escapeHtml(s.phone)}</td>
                         <td><span class="st-badge ${s.status}">${t['s_' + s.status]}</span></td>
                         <td class="num ${s.balance < 0 ? 'st-neg' : s.balance > 0 ? 'st-pos' : ''}">${s.balance < 0 ? '−' : ''}${money(Math.abs(s.balance))} <span class="pay-cur">${t.cur}</span></td>
@@ -8069,6 +8148,19 @@
                     const card = e.target.closest('.gr-card');
                     if (card) { openId = +card.dataset.id; f.sq = ''; shell(); window.scrollTo(0, 0); if (window.motionEnter) window.motionEnter('groups'); }
                 });
+                on('grStudTable', 'click', e => {
+                    const td = e.target.closest('td');
+                    if (e.target.closest('select') || (td && td.querySelector('select'))) return;
+                    const row = e.target.closest('tr[data-sid]');
+                    if (row && typeof window.openStudent === 'function') window.openStudent(+row.dataset.sid, { group: openId });
+                });
+                on('grStudTable', 'keydown', e => {
+                    if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('st-name')) {
+                        e.preventDefault();
+                        const row = e.target.closest('tr[data-sid]');
+                        if (row && typeof window.openStudent === 'function') window.openStudent(+row.dataset.sid, { group: openId });
+                    }
+                });
                 on('grStudTable', 'change', e => {
                     const sel = e.target.closest('.gr-move'); if (!sel) return;
                     const target = GR.find(x => x.name === sel.value), s = window.allStudents().find(x => x.id === +sel.dataset.sid);
@@ -8088,6 +8180,9 @@
                 document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active-view'));
                 document.querySelector('.content-view[data-view="groups"]').classList.add('active-view');
                 document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active', i.getAttribute('data-view') === 'groups'));
+                if (typeof window.rpOnView === 'function') window.rpOnView('groups');
+                if (typeof window.arOnView === 'function') window.arOnView('groups');
+                if (typeof closeMobileSidebar === 'function') closeMobileSidebar();
                 shell(); window.scrollTo(0, 0);
                 if (window.motionEnter) window.motionEnter('groups');
             };
@@ -8109,21 +8204,36 @@
                     name: 'Ism familiya', phone: 'Telefon', group: 'Guruh', status: 'Holat', balance: 'Balans', joined: "Qo'shilgan sana", actions: '',
                     s_active: 'Faol', s_frozen: 'Muzlatilgan', s_grad: 'Bitirgan', empty: 'Talaba topilmadi', cur: "so'm",
                     edit: 'Tahrirlash', del: "O'chirish", delConfirm: "Talabani o'chirmoqchimisiz?", newT: 'Yangi talaba', editT: 'Talabani tahrirlash',
-                    first: 'Ism', last: 'Familya', save: 'Saqlash', cancel: 'Bekor qilish', prev: 'Oldingi', next: 'Keyingi' },
+                    first: 'Ism', last: 'Familya', save: 'Saqlash', cancel: 'Bekor qilish', prev: 'Oldingi', next: 'Keyingi',
+                    openGroup: 'Guruhni ochish', sdBack: 'Talabalar', sdPersonal: "Shaxsiy ma'lumotlar", sdGroupSec: "Guruh ma'lumotlari", sdFin: 'Moliyaviy holat', sdPays: "To'lovlar tarixi",
+                    sdTeacher: "O'qituvchi", sdRoom: 'Xona', sdTime: 'Dars vaqti', sdDays: 'Dars kunlari', sdPrice: 'Oylik narx', sdTotalPaid: "Jami to'langan", sdPayCount: "To'lovlar soni", sdLastPay: "Oxirgi to'lov",
+                    sdNoPay: "Hozircha to'lovlar yo'q", sdNoGroup: 'Guruh topilmadi', sdDate: 'Sana', sdFor: 'Qaysi oy uchun', sdAmount: 'Summa', sdMethod: "To'lov usuli", sdDebt: 'Qarzdor', sdClear: "Qarzi yo'q",
+                    dayN: ['Du', 'Se', 'Chor', 'Pay', 'Ju', 'Sha', 'Yak'], months: ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'],
+                    m: { cash: 'Naqd', card: 'Karta', click: 'Click', payme: 'Payme', bank: "Bank o'tkazma" } },
                 en: { title: 'Students', search: 'Search by name or phone', add: 'Add student', export: 'Export CSV',
                     total: 'Total students', active: 'Active', debt: 'In debt', other: 'Frozen / graduated',
                     allStatus: 'All statuses', allGroups: 'All groups', debtOnly: 'Debtors only',
                     name: 'Full name', phone: 'Phone', group: 'Group', status: 'Status', balance: 'Balance', joined: 'Joined', actions: '',
                     s_active: 'Active', s_frozen: 'Frozen', s_grad: 'Graduated', empty: 'No students found', cur: 'UZS',
                     edit: 'Edit', del: 'Delete', delConfirm: 'Delete this student?', newT: 'New student', editT: 'Edit student',
-                    first: 'First name', last: 'Last name', save: 'Save', cancel: 'Cancel', prev: 'Prev', next: 'Next' },
+                    first: 'First name', last: 'Last name', save: 'Save', cancel: 'Cancel', prev: 'Prev', next: 'Next',
+                    openGroup: 'Open group', sdBack: 'Students', sdPersonal: 'Personal details', sdGroupSec: 'Group details', sdFin: 'Financial status', sdPays: 'Payment history',
+                    sdTeacher: 'Teacher', sdRoom: 'Room', sdTime: 'Class time', sdDays: 'Class days', sdPrice: 'Monthly price', sdTotalPaid: 'Total paid', sdPayCount: 'Payments', sdLastPay: 'Last payment',
+                    sdNoPay: 'No payments yet', sdNoGroup: 'Group not found', sdDate: 'Date', sdFor: 'Paid for', sdAmount: 'Amount', sdMethod: 'Method', sdDebt: 'In debt', sdClear: 'No debt',
+                    dayN: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                    m: { cash: 'Cash', card: 'Card', click: 'Click', payme: 'Payme', bank: 'Bank transfer' } },
                 ru: { title: 'Студенты', search: 'Поиск по имени или телефону', add: 'Добавить студента', export: 'Скачать CSV',
                     total: 'Всего студентов', active: 'Активные', debt: 'Должники', other: 'Заморожены / выпущены',
                     allStatus: 'Все статусы', allGroups: 'Все группы', debtOnly: 'Только должники',
                     name: 'Имя и фамилия', phone: 'Телефон', group: 'Группа', status: 'Статус', balance: 'Баланс', joined: 'Дата', actions: '',
                     s_active: 'Активен', s_frozen: 'Заморожен', s_grad: 'Выпускник', empty: 'Студенты не найдены', cur: 'сум',
                     edit: 'Изменить', del: 'Удалить', delConfirm: 'Удалить студента?', newT: 'Новый студент', editT: 'Изменить студента',
-                    first: 'Имя', last: 'Фамилия', save: 'Сохранить', cancel: 'Отмена', prev: 'Назад', next: 'Далее' }
+                    first: 'Имя', last: 'Фамилия', save: 'Сохранить', cancel: 'Отмена', prev: 'Назад', next: 'Далее',
+                    openGroup: 'Открыть группу', sdBack: 'Студенты', sdPersonal: 'Личные данные', sdGroupSec: 'Данные группы', sdFin: 'Финансовое состояние', sdPays: 'История платежей',
+                    sdTeacher: 'Преподаватель', sdRoom: 'Кабинет', sdTime: 'Время занятий', sdDays: 'Дни занятий', sdPrice: 'Цена в месяц', sdTotalPaid: 'Всего оплачено', sdPayCount: 'Платежей', sdLastPay: 'Последний платёж',
+                    sdNoPay: 'Платежей пока нет', sdNoGroup: 'Группа не найдена', sdDate: 'Дата', sdFor: 'За месяц', sdAmount: 'Сумма', sdMethod: 'Способ', sdDebt: 'Долг', sdClear: 'Нет долга',
+                    dayN: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'], months: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+                    m: { cash: 'Наличные', card: 'Карта', click: 'Click', payme: 'Payme', bank: 'Банковский перевод' } }
             };
             const T = () => S[document.documentElement.getAttribute('lang')] || S.uz;
             let GROUPS = typeof window.groupNames === 'function' ? window.groupNames() : ['Beginner English', 'IELTS 6.0+', 'Intensive kurs', 'Kids English', 'HTML/CSS asoslari', 'Koreys tili', 'Rus tili'];
@@ -8142,15 +8252,37 @@
                 date: '2026-0' + (1 + (i % 9)) + '-' + String(1 + (i * 3) % 28).padStart(2, '0')
             }));
             let ST = seed, nextId = seed.length + 1;
+            let openId = null, backGroup = null;
             const f = { q: '', status: '', group: '', debt: false, sort: 'name', dir: 1, page: 1 };
             const PER = 8;
             const root = document.getElementById('studentsRoot');
             const money = n => Math.abs(n).toLocaleString('ru-RU');
             const ic = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
 
+            const modalHTML = t => `<div class="clients-modal-backdrop" id="stModalBackdrop"><div class="clients-modal">
+                    <h2 id="stModalTitle"></h2>
+                    <div class="clients-modal-row">
+                        <div class="clients-modal-field"><label>${t.first}</label><input id="stFirst" autocomplete="off"></div>
+                        <div class="clients-modal-field"><label>${t.last}</label><input id="stLast" autocomplete="off"></div></div>
+                    <div class="clients-modal-field"><label>${t.phone}</label><input id="stPhone" type="tel" placeholder="+998 __ ___ __ __" autocomplete="off"></div>
+                    <div class="clients-modal-row">
+                        <div class="clients-modal-field"><label>${t.group}</label><select id="stMGroup">${GROUPS.map(g => `<option>${g}</option>`).join('')}</select></div>
+                        <div class="clients-modal-field"><label>${t.status}</label><select id="stMStatus">${['active', 'frozen', 'grad'].map(s => `<option value="${s}">${t['s_' + s]}</option>`).join('')}</select></div></div>
+                    <div class="clients-modal-field"><label>${t.balance} (${t.cur})</label><input id="stMBalance" type="number" step="10000" value="0"></div>
+                    <div class="clients-modal-actions"><button type="button" class="clients-modal-cancel" id="stCancel">${t.cancel}</button>
+                        <button type="button" class="clients-modal-save" id="stSave">${t.save}</button></div>
+                </div></div>`;
+
             function shell() {
                 const t = T();
                 if (typeof window.groupNames === 'function') GROUPS = window.groupNames();
+                if (openId && !ST.find(x => x.id === openId)) { openId = null; backGroup = null; }
+                if (openId) {
+                    root.innerHTML = detailHTML(ST.find(x => x.id === openId), t) + modalHTML(t);
+                    attachUzPhoneMask(document.getElementById('stPhone'));
+                    bindDetail();
+                    return;
+                }
                 root.innerHTML = `
                 <div class="clients-head"><div class="clients-head-text"><h1>${t.title}</h1></div>
                     <div class="clients-head-actions-top">
@@ -8167,19 +8299,7 @@
                     <label class="st-ghost-btn"><input type="checkbox" id="stDebt" ${f.debt ? 'checked' : ''}> ${t.debtOnly}</label>
                 </div>
                 <div class="payments-card" style="margin-top:0"><div id="stTable"></div><div class="st-pager" id="stPager"></div></div>
-                <div class="clients-modal-backdrop" id="stModalBackdrop"><div class="clients-modal">
-                    <h2 id="stModalTitle"></h2>
-                    <div class="clients-modal-row">
-                        <div class="clients-modal-field"><label>${t.first}</label><input id="stFirst" autocomplete="off"></div>
-                        <div class="clients-modal-field"><label>${t.last}</label><input id="stLast" autocomplete="off"></div></div>
-                    <div class="clients-modal-field"><label>${t.phone}</label><input id="stPhone" type="tel" placeholder="+998 __ ___ __ __" autocomplete="off"></div>
-                    <div class="clients-modal-row">
-                        <div class="clients-modal-field"><label>${t.group}</label><select id="stMGroup">${GROUPS.map(g => `<option>${g}</option>`).join('')}</select></div>
-                        <div class="clients-modal-field"><label>${t.status}</label><select id="stMStatus">${['active', 'frozen', 'grad'].map(s => `<option value="${s}">${t['s_' + s]}</option>`).join('')}</select></div></div>
-                    <div class="clients-modal-field"><label>${t.balance} (${t.cur})</label><input id="stMBalance" type="number" step="10000" value="0"></div>
-                    <div class="clients-modal-actions"><button type="button" class="clients-modal-cancel" id="stCancel">${t.cancel}</button>
-                        <button type="button" class="clients-modal-save" id="stSave">${t.save}</button></div>
-                </div></div>`;
+                ${modalHTML(t)}`;
                 attachUzPhoneMask(document.getElementById('stPhone'));
                 bind(); table();
             }
@@ -8209,8 +8329,8 @@
                 const th = (k, label, cls) => `<th ${k ? `data-sort="${k}"` : ''} class="${cls || ''}">${label}${f.sort === k ? (f.dir > 0 ? ' ▲' : ' ▼') : ''}</th>`;
                 document.getElementById('stTable').innerHTML = `<div class="payments-table-wrap"><table class="payments-table"><thead><tr>
                     ${th('name', t.name)}${th('phone', t.phone, 'col-hide-sm')}${th('group', t.group)}${th('status', t.status)}${th('balance', t.balance, 'num')}${th('date', t.joined, 'col-hide-sm')}<th></th></tr></thead><tbody>
-                    ${cur.map(s => `<tr><td><div class="st-user"><div class="st-avatar">${escapeHtml(clientInitials(s.name))}</div>${escapeHtml(s.name)}</div></td>
-                        <td class="muted col-hide-sm">${escapeHtml(s.phone)}</td><td>${escapeHtml(s.group)}</td>
+                    ${cur.map(s => `<tr class="pm-row" data-sid="${s.id}"><td><div class="st-user"><div class="st-avatar">${escapeHtml(clientInitials(s.name))}</div><span class="st-name" role="link" tabindex="0">${escapeHtml(s.name)}</span></div></td>
+                        <td class="muted col-hide-sm">${escapeHtml(s.phone)}</td><td>${groupChip(s.group, t)}</td>
                         <td><span class="st-badge ${s.status}">${t['s_' + s.status]}</span></td>
                         <td class="num ${s.balance < 0 ? 'st-neg' : s.balance > 0 ? 'st-pos' : ''}">${s.balance < 0 ? '−' : ''}${money(s.balance)} <span class="pay-cur">${t.cur}</span></td>
                         <td class="muted col-hide-sm">${s.date}</td>
@@ -8251,7 +8371,7 @@
                 const isEdit = !!editId;
                 if (editId) Object.assign(ST.find(x => x.id === editId), data);
                 else ST.push({ id: nextId++, date: new Date().toISOString().slice(0, 10), ...data });
-                closeModal(); table();
+                closeModal(); if (openId) shell(); else table();
                 window.toast.success(isEdit
                     ? window.toast.t(`${data.name} ma'lumotlari yangilandi`, `${data.name} was updated`, `Данные студента ${data.name} обновлены`)
                     : window.toast.t(`${data.name} talabalar ro'yxatiga qo'shildi`, `${data.name} was added to students`, `${data.name} добавлен в список студентов`));
@@ -8281,16 +8401,120 @@
                 $('stTable').addEventListener('click', e => {
                     const th = e.target.closest('th[data-sort]');
                     if (th) { f.dir = f.sort === th.dataset.sort ? -f.dir : 1; f.sort = th.dataset.sort; table(); return; }
-                    const b = e.target.closest('[data-act]'); if (!b) return;
+                    const chip = e.target.closest('.st-gchip[data-gid]');
+                    if (chip) { if (typeof window.openGroup === 'function') window.openGroup(+chip.dataset.gid); return; }
+                    const b = e.target.closest('[data-act]');
+                    if (!b) { const row = e.target.closest('tr[data-sid]'); if (row) openStudent(+row.dataset.sid); return; }
                     const id = +b.dataset.id;
                     if (b.dataset.act === 'edit') openModal(id);
                     else if (confirm(T().delConfirm)) { const gone = ST.find(x => x.id === id); ST = ST.filter(x => x.id !== id); if (gone && typeof window.logGroupRemoval === 'function') window.logGroupRemoval(gone, gone.group); if (gone && typeof window.archiveItem === 'function') window.archiveItem('student', gone); table(); if (gone) window.toast.success(window.toast.t(`${gone.name} o'chirildi`, `${gone.name} was deleted`, `${gone.name} удалён`)); }
+                });
+                $('stTable').addEventListener('keydown', e => {
+                    if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('st-name')) {
+                        e.preventDefault();
+                        const row = e.target.closest('tr[data-sid]'); if (row) openStudent(+row.dataset.sid);
+                    }
                 });
                 $('stPager').addEventListener('click', e => {
                     if (e.target.id === 'stPrev') { f.page--; table(); }
                     if (e.target.id === 'stNext') { f.page++; table(); }
                 });
             }
+
+            // ----- guruh chipi, talaba sahifasi -----
+            const GICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 8l9 5 9-5-9-5z"/><path d="M3 12l9 5 9-5"/><path d="M3 16l9 5 9-5"/></svg>';
+            const GARROW = '<svg class="st-gchip-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>';
+            const groupList = () => (typeof window.allGroups === 'function' ? window.allGroups() : []);
+            const groupByName = name => groupList().find(x => x.name === name) || null;
+            function groupChip(name, t) {
+                const g = groupByName(name), label = escapeHtml(name || '—');
+                if (!g) return `<span class="st-gchip is-static">${GICON}<span class="st-gchip-name">${label}</span></span>`;
+                return `<button type="button" class="st-gchip" data-gid="${g.id}" title="${escapeHtml(t.openGroup)}: ${label}">${GICON}<span class="st-gchip-name">${label}</span>${GARROW}</button>`;
+            }
+
+            function detailHTML(s, t) {
+                const g = groupByName(s.group);
+                const pays = (typeof window.allPayments === 'function' ? window.allPayments() : []).filter(p => p.sid === s.id)
+                    .sort((a, b) => String(b.date).localeCompare(String(a.date)));
+                const paid = pays.reduce((a, p) => a + p.amount, 0), last = pays[0];
+                const mLabel = k => k && String(k).length >= 7 ? (t.months[+String(k).slice(5, 7) - 1] || '') + ' ' + String(k).slice(0, 4) : '—';
+                const info = (k, v) => `<div><dt>${k}</dt><dd>${v}</dd></div>`;
+                const stat = (label, val, path, cls) => `<div class="stat-card"><div class="stat-icon">${ic(path)}</div><div class="stat-label">${label}</div><div class="stat-value ${cls || ''}">${val}</div></div>`;
+                const dash = '<span class="sd-empty-dd">—</span>';
+                const backG = backGroup ? groupList().find(x => x.id === backGroup) : null;
+                const balCls = s.balance < 0 ? 'st-neg' : s.balance > 0 ? 'st-pos' : '';
+                const balTxt = `${s.balance < 0 ? '−' : ''}${money(s.balance)} <span class="pay-cur">${t.cur}</span>`;
+                return `
+                <div class="gr-topbar">
+                    <button class="st-ghost-btn" id="sdBack" type="button">${ic('<polyline points="15 6 9 12 15 18"/>')}${backG ? escapeHtml(backG.name) : t.sdBack}</button>
+                    <div class="clients-head-actions-top">
+                        <button class="st-ghost-btn" id="sdEdit" type="button">${ic('<path d="M4 20h4L19 9l-4-4L4 16v4z"/>')}${t.edit}</button>
+                        ${g ? `<button class="clients-add-btn" id="sdGroupGo" type="button" data-gid="${g.id}">${ic('<path d="M12 3 3 8l9 5 9-5-9-5z"/><path d="M3 12l9 5 9-5"/><path d="M3 16l9 5 9-5"/>')}<span>${t.openGroup}</span></button>` : ''}
+                    </div></div>
+                <div class="gr-title"><div class="st-avatar sd-avatar-lg">${escapeHtml(clientInitials(s.name))}</div><h1>${escapeHtml(s.name)}</h1><span class="st-badge ${s.status}">${t['s_' + s.status]}</span></div>
+                <h3 class="sd-sec">${t.sdPersonal}</h3>
+                <dl class="gr-info">
+                    ${info(t.phone, escapeHtml(s.phone))}
+                    ${info(t.joined, escapeHtml(s.date))}
+                    ${info(t.status, `<span class="st-badge ${s.status}">${t['s_' + s.status]}</span>`)}
+                    ${info('ID', '#' + s.id)}
+                </dl>
+                <h3 class="sd-sec">${t.sdGroupSec}</h3>
+                <dl class="gr-info">
+                    ${info(t.group, groupChip(s.group, t))}
+                    ${info(t.sdTeacher, g ? escapeHtml(g.teacher) : dash)}
+                    ${info(t.sdRoom, g ? `${t.sdRoom} ${g.room}` : dash)}
+                    ${info(t.sdTime, g ? `${g.start} – ${g.end}` : dash)}
+                    ${info(t.sdDays, g ? g.days.map(i => t.dayN[i]).join(' · ') : dash)}
+                    ${info(t.sdPrice, g ? `${Number(g.price).toLocaleString('ru-RU')} ${t.cur}` : dash)}
+                </dl>
+                <h3 class="sd-sec">${t.sdFin}</h3>
+                <div class="stat-cards" style="margin-top:12px">
+                    ${stat(t.balance, balTxt, '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/>', balCls)}
+                    ${stat(t.sdTotalPaid, `${money(paid)} <span class="pay-cur">${t.cur}</span>`, '<path d="M5 12l5 5 9-10"/>', 'st-pos')}
+                    ${stat(t.sdPayCount, pays.length, '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16"/>')}
+                    ${stat(t.sdLastPay, last ? escapeHtml(last.date) : '—', '<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>')}
+                </div>
+                <h3 class="sd-sec">${t.sdPays}</h3>
+                <div class="payments-card" style="margin-top:12px"><div class="payments-table-wrap" style="max-height:none"><table class="payments-table"><thead><tr>
+                    <th>${t.sdDate}</th><th>${t.sdFor}</th><th class="num">${t.sdAmount}</th><th>${t.sdMethod}</th></tr></thead><tbody>
+                    ${pays.map(p => `<tr><td>${escapeHtml(p.date)}</td><td class="muted">${escapeHtml(mLabel(p.forMonth))}</td><td class="num">${money(p.amount)} <span class="pay-cur">${t.cur}</span></td><td>${escapeHtml(t.m[p.method] || p.method || '—')}</td></tr>`).join('')}
+                    </tbody></table>${pays.length ? '' : `<div class="st-empty">${t.sdNoPay}</div>`}</div></div>`;
+            }
+
+            function bindDetail() {
+                const $ = id => document.getElementById(id);
+                $('sdBack').addEventListener('click', () => {
+                    const gid = backGroup; openId = null; backGroup = null;
+                    if (gid && typeof window.openGroup === 'function') { window.openGroup(gid); return; }
+                    shell(); window.scrollTo(0, 0);
+                    if (window.motionEnter) window.motionEnter('students');
+                });
+                $('sdEdit').addEventListener('click', () => openModal(openId));
+                root.querySelectorAll('.st-gchip[data-gid], #sdGroupGo[data-gid]').forEach(el => el.addEventListener('click', () => {
+                    if (typeof window.openGroup === 'function') window.openGroup(+el.dataset.gid);
+                }));
+                $('stCancel').addEventListener('click', closeModal);
+                $('stSave').addEventListener('click', save);
+                $('stModalBackdrop').addEventListener('click', e => { if (e.target.id === 'stModalBackdrop') closeModal(); });
+            }
+
+            function openStudent(id, from) {
+                if (!ST.find(x => x.id === id)) return;
+                openId = id; backGroup = from && from.group ? from.group : null;
+                document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active-view'));
+                const view = document.querySelector('.content-view[data-view="students"]');
+                if (view) view.classList.add('active-view');
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active', i.getAttribute('data-view') === 'students'));
+                if (typeof window.rpOnView === 'function') window.rpOnView('students');
+                if (typeof window.arOnView === 'function') window.arOnView('students');
+                if (typeof closeMobileSidebar === 'function') closeMobileSidebar();
+                shell(); window.scrollTo(0, 0);
+                if (window.motionEnter) window.motionEnter('students');
+            }
+            window.openStudent = openStudent;
+            window.closeStudentDetail = () => { openId = null; backGroup = null; };
+            window.getOpenStudentId = () => openId;
 
             window.studentCountByGroup = name => ST.filter(x => x.group === name && x.status === 'active').length;
             window.studentsOfGroup = name => ST.filter(x => x.group === name);
@@ -10474,7 +10698,8 @@
                     sessionStorage.setItem(NAV_KEY, JSON.stringify({
                         view: view,
                         groupId: view === 'groups' && window.getOpenGroupId ? window.getOpenGroupId() : null,
-                        teacherId: view === 'teachers' && window.getOpenTeacherId ? window.getOpenTeacherId() : null
+                        teacherId: view === 'teachers' && window.getOpenTeacherId ? window.getOpenTeacherId() : null,
+                        studentId: view === 'students' && window.getOpenStudentId ? window.getOpenStudentId() : null
                     }));
                 } catch (e) { /* storage mavjud emas — e'tiborsiz */ }
             }
@@ -10498,6 +10723,7 @@
             showView(st.view);
             if (st.view === 'groups' && st.groupId && typeof window.openGroup === 'function') window.openGroup(st.groupId);
             if (st.view === 'teachers' && st.teacherId && typeof window.openTeacher === 'function') window.openTeacher(st.teacherId);
+            if (st.view === 'students' && st.studentId && typeof window.openStudent === 'function') window.openStudent(st.studentId);
         })();
         // ===== SOZLAMALAR =====
         (function initSettings() {
@@ -11402,9 +11628,10 @@
             btn.querySelector('[data-lg]').textContent = t(busy ? 'busy' : 'submit');
             eye.setAttribute('aria-label', t(pEl.type === 'password' ? 'show' : 'hide'));
             const box = $('lgDemo');
-            box.hidden = !A.demo;
-            if (A.demo) {
-                const chips = $('lgChips'); chips.textContent = '';
+            if (box) box.hidden = !A.demo;
+            const chips = $('lgChips');
+            if (A.demo && box && chips) {
+                chips.textContent = '';
                 A.demoHints().forEach(h => {
                     const b = document.createElement('button'); b.type = 'button'; b.className = 'lg-chip';
                     b.innerHTML = ICON[h.role] || '';
