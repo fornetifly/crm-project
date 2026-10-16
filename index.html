@@ -8,50 +8,48 @@
     <style>
         :root {
             color-scheme: light;
-            /* ===== LIGHT MODE =====
-               Logotip ko'k-sapfir rangiga moslab qurilgan lyuks palitra:
-               navy #0F172A (asos) · sapphire #2F6FE0 (aksent, logo rangi) ·
-               ivory #F4EFE6 (fon) · platinum #C9CFD6 (neytral) */
-            --bg-page: linear-gradient(to top, #aeccfa8b, #ffffff);
-            --bg-panel: #0F172A;
-            --fg-panel: #EDEBE3;
-            --fg-muted: rgba(237, 235, 227, 0.58);
+            /* ===== LIGHT MODE — Sky Blue (Light Glass) =====
+               background gradient #F8FAFF → #EAF2FF · kartalar #FFFFFF ·
+               accent #2F6FE0 · matn #0F172A · yumshoq ko'k soyalar, nozik chegaralar */
+            --bg-page: linear-gradient(to bottom, #F8FAFF, #EAF2FF);
+            --bg-panel: #FFFFFF;
+            --fg-panel: #0F172A;
+            --fg-muted: rgba(15, 23, 42, 0.60);
             --fg-page: #0F172A;
             --fg-page-muted: rgba(15, 23, 42, 0.62);
             --highlight-bg: #2F6FE0;
-            --highlight-fg: #F4EFE6;
-            --panel-border: rgba(237, 235, 227, 0.10);
-            --hover-bg: rgba(237, 235, 227, 0.08);
+            --highlight-fg: #FFFFFF;
+            --panel-border: rgba(47, 111, 224, 0.14);
+            --hover-bg: rgba(47, 111, 224, 0.08);
             --accent: #2F6FE0;
 
-            /* qidiruv maydoni — jimgina, aksent emas */
-            --field-bg: rgba(237, 235, 227, 0.10);
-            --field-fg: #EDEBE3;
+            /* qidiruv maydoni */
+            --field-bg: rgba(47, 111, 224, 0.06);
+            --field-fg: #0F172A;
 
-            /* dropdown / menyu — headerdek doim to'q panel rangida (bg-panel bilan bir xil) */
-            --menu-bg: #0F172A;
-            --menu-fg: #EDEBE3;
-            --menu-hover: rgba(237, 235, 227, 0.08);
-            --menu-selected-bg: rgba(47, 111, 224, 0.20);
-            --menu-selected-fg: #9CC2FA;
-            --menu-shadow: 0 16px 40px rgba(0, 0, 0, .45);
-            --block-shadow: 0 12px 32px rgba(15, 23, 42, .14), 0 2px 8px rgba(15, 23, 42, .08);
-            --stat-icon-bg: rgba(244, 239, 230, 0.10);
+            /* dropdown / menyu */
+            --menu-bg: #FFFFFF;
+            --menu-fg: #0F172A;
+            --menu-hover: rgba(47, 111, 224, 0.08);
+            --menu-selected-bg: rgba(47, 111, 224, 0.12);
+            --menu-selected-fg: #1F5BC4;
+            --menu-shadow: 0 16px 40px rgba(47, 111, 224, .18), 0 2px 8px rgba(47, 111, 224, .08);
+            --block-shadow: 0 12px 32px rgba(47, 111, 224, .12), 0 2px 8px rgba(47, 111, 224, .06);
+            --stat-icon-bg: rgba(47, 111, 224, 0.10);
             --chart-bar-top: #6FA8FF;
-            --chart-bar-bottom: #4F46E5;
+            --chart-bar-bottom: #2F6FE0;
             --chart-bar-peak-top: #FFC857;
             --chart-bar-peak-bottom: #F0643C;
 
-            /* dars jadvali (schedule) — och, hashamatli sirt; menu-bg dan mustaqil,
-               shunda u dark/light almashganda ham to'g'ri moslashadi */
+            /* dars jadvali (schedule) sirti */
             --surface-bg: #FFFFFF;
-            --surface-alt-bg: #FAF7F0;
-            --surface-border: rgba(15, 23, 42, .08);
-            --surface-shadow: 0 10px 28px rgba(15, 23, 42, .07);
+            --surface-alt-bg: #F5F9FF;
+            --surface-border: rgba(47, 111, 224, 0.12);
+            --surface-shadow: 0 10px 28px rgba(47, 111, 224, .10);
 
-            /* mijozlar bo'limi — kurslar orqasidagi umumiy och blok */
-            --clients-wrap-bg: rgba(15, 23, 42, 0.065);
-            --clients-wrap-border: rgba(15, 23, 42, 0.12);
+            /* mijozlar bo'limi — kurslar orqasidagi umumiy blok */
+            --clients-wrap-bg: rgba(47, 111, 224, 0.06);
+            --clients-wrap-border: rgba(47, 111, 224, 0.14);
 
             --radius: 14px;
         }
@@ -1231,7 +1229,7 @@
         }
 
         html:not([data-theme="dark"]) .client-card {
-            background: rgba(255, 255, 255, 0.04);
+            background: #F5F9FF;
         }
 
         .client-card:hover {
@@ -4712,7 +4710,185 @@
         .sc-table th { text-align: left; font-weight: 600; font-size: 12.5px; color: var(--fg-page-muted); padding: 8px 10px; }
         .sc-table td { padding: 10px; border-top: 1px solid var(--surface-border); white-space: nowrap; }
         .sc-empty { padding: 28px 20px; text-align: center; color: var(--fg-page-muted); font-size: 14.5px; }
+
+        /* ===== SKY BLUE (LIGHT GLASS) — faqat Light Mode =====
+           Panellar oq bo'lgani uchun avvalgi to'q panelga mo'ljallangan qattiq yozilgan
+           ranglar (chat, toast, kanban) shu yerda yengil ko'k ranglarga almashtirilgan.
+           Hammasi html:not([data-theme="dark"]) ostida — Dark Mode ga ta'sir qilmaydi. */
+        html:where(:not([data-theme="dark"])) .clients-column-count { background: rgba(47, 111, 224, 0.1); }
+        html:where(:not([data-theme="dark"])) .clients-column-add { background: rgba(47, 111, 224, 0.1); }
+        html:where(:not([data-theme="dark"])) .clients-column-add:hover { background: rgba(47, 111, 224, 0.22); }
+        html:where(:not([data-theme="dark"])) .client-card { background: rgba(47, 111, 224, 0.06); }
+        html:where(:not([data-theme="dark"])) .client-card-flag:hover, html:where(:not([data-theme="dark"])) .client-card-del:hover { background: rgba(47, 111, 224, 0.12); }
+        html:where(:not([data-theme="dark"])) .tt { border: 1px solid rgba(47, 111, 224, .16); }
+        html:where(:not([data-theme="dark"])) .tt-msg { color: rgba(15, 23, 42, 0.72); }
+        html:where(:not([data-theme="dark"])) .tt-x { color: rgba(15, 23, 42, 0.5); }
+        html:where(:not([data-theme="dark"])) .tt-x:hover { background: rgba(47, 111, 224, 0.12); }
+        html:where(:not([data-theme="dark"])) .ct-all-btn { border: 1px solid rgba(47, 111, 224, .16); }
+        html:where(:not([data-theme="dark"])) .ct-all-btn em { background: rgba(47, 111, 224, 0.12); }
+        html:where(:not([data-theme="dark"])) .ct { border: 1px solid rgba(47, 111, 224, .16); }
+        html:where(:not([data-theme="dark"])) .ct-head { background: rgba(47, 111, 224, 0.06); border-bottom: 1px solid rgba(47, 111, 224, .16); }
+        html:where(:not([data-theme="dark"])) .ct-x { color: rgba(15, 23, 42, 0.55); }
+        html:where(:not([data-theme="dark"])) .ct-x:hover { background: rgba(47, 111, 224, 0.14); }
+        html:where(:not([data-theme="dark"])) .ct-body { color: rgba(15, 23, 42, 0.85); }
+        html:where(:not([data-theme="dark"])) .ch-panel { border: 1px solid rgba(47, 111, 224, .16); box-shadow: 0 30px 70px rgba(47, 111, 224, .22), 0 4px 14px rgba(47, 111, 224, .10); }
+        html:where(:not([data-theme="dark"])) .ch-hero p { color: rgba(15, 23, 42, 0.65); }
+        html:where(:not([data-theme="dark"])) .ch-sbox svg { stroke: rgba(15, 23, 42, 0.5); }
+        html:where(:not([data-theme="dark"])) .ch-search { border: 1px solid rgba(47, 111, 224, .16); background: rgba(47, 111, 224, .06); }
+        html:where(:not([data-theme="dark"])) .ch-tab { border: 1px solid rgba(47, 111, 224, .16); color: rgba(15, 23, 42, 0.65); }
+        html:where(:not([data-theme="dark"])) .ch-tab.on { color: #1F5BC4; }
+        html:where(:not([data-theme="dark"])) .ch-chip { border: 1px solid rgba(47, 111, 224, .16); color: rgba(15, 23, 42, 0.7); }
+        html:where(:not([data-theme="dark"])) .ch-newbtn { color: #1F5BC4; }
+        html:where(:not([data-theme="dark"])) .ch-sec { color: rgba(15, 23, 42, 0.42); }
+        html:where(:not([data-theme="dark"])) .ch-item:hover { background: rgba(47, 111, 224, 0.08); }
+        html:where(:not([data-theme="dark"])) .ch-mid small { color: rgba(15, 23, 42, 0.55); }
+        html:where(:not([data-theme="dark"])) .ch-meta { color: rgba(15, 23, 42, 0.5); }
+        html:where(:not([data-theme="dark"])) .ch-empty { color: rgba(15, 23, 42, 0.5); }
+        html:where(:not([data-theme="dark"])) .ch-top { border-bottom: 1px solid rgba(47, 111, 224, .16); }
+        html:where(:not([data-theme="dark"])) .ch-bk { background: rgba(47, 111, 224, 0.1); }
+        html:where(:not([data-theme="dark"])) .ch-bk:hover { background: rgba(47, 111, 224, 0.19); }
+        html:where(:not([data-theme="dark"])) .ch-day { background: rgba(47, 111, 224, 0.1); color: rgba(15, 23, 42, 0.6); }
+        html:where(:not([data-theme="dark"])) .ch-m { background: rgba(47, 111, 224, 0.13); }
+        html:where(:not([data-theme="dark"])) .ch-m .who { color: #1F5BC4; }
+        html:where(:not([data-theme="dark"])) .ch-typing { background: rgba(47, 111, 224, 0.13); }
+        html:where(:not([data-theme="dark"])) .ch-typing i { background: rgba(15, 23, 42, .45); }
+        html:where(:not([data-theme="dark"])) .ch-quick button { color: #1F5BC4; }
+        html:where(:not([data-theme="dark"])) .ch-emo button:hover { background: rgba(47, 111, 224, 0.14); }
+        html:where(:not([data-theme="dark"])) .ch-comp { border: 1px solid rgba(47, 111, 224, .16); background: rgba(47, 111, 224, .06); }
+        html:where(:not([data-theme="dark"])) .ch-ib { color: rgba(15, 23, 42, 0.7); }
+        html:where(:not([data-theme="dark"])) .ch-ib:hover { background: rgba(47, 111, 224, 0.12); }
+        html:where(:not([data-theme="dark"])) .ch-mb { background: rgba(47, 111, 224, 0.12); color: rgba(15, 23, 42, 0.75); }
+        html:where(:not([data-theme="dark"])) .ch-mb:hover { background: rgba(47, 111, 224, 0.22); color: var(--fg-panel); }
+        html:where(:not([data-theme="dark"])) .ch-q { border-left: 3px solid #2F6FE0; background: rgba(47, 111, 224, .08); }
+        html:where(:not([data-theme="dark"])) .ch-q b { color: #1F5BC4; }
+        html:where(:not([data-theme="dark"])) .ch-menu { border: 1px solid rgba(47, 111, 224, .16); box-shadow: var(--menu-shadow); }
+        html:where(:not([data-theme="dark"])) .ch-rb-ic { color: #1F5BC4; }
+        html:where(:not([data-theme="dark"])) .ch-rb-t b { color: #1F5BC4; }
+        html:where(:not([data-theme="dark"])) .ch-rb-x:hover { background: rgba(47, 111, 224, 0.14); }
+        html:where(:not([data-theme="dark"])) .ch-sc { border: 2px solid rgba(47, 111, 224, .35); }
+        html:where(:not([data-theme="dark"])) .ch-selbar { border-bottom: 1px solid rgba(47, 111, 224, .16); }
+        html:where(:not([data-theme="dark"])) .chatv.selmode .ch-row:hover { background: rgba(47, 111, 224, 0.06); }
+        html:where(:not([data-theme="dark"])) .ch-x { background: rgba(47, 111, 224, 0.12); }
+        @media (max-width: 768px) {
+            html:where(:not([data-theme="dark"])) .client-card-flag, html:where(:not([data-theme="dark"])) .client-card-del, html:where(:not([data-theme="dark"])) .client-card-move { background: rgba(47, 111, 224, 0.08); }
+        }
+
+        /* ===== TASDIQLASH / OGOHLANTIRISH MODALI (alert/confirm o'rniga) =====
+           Faqat mavjud CSS o'zgaruvchilaridan foydalanadi — Light va Dark da avtomatik moslashadi. */
+        .uic-backdrop { position: fixed; inset: 0; z-index: 450; display: flex; align-items: center; justify-content: center; padding: 20px;
+            background: rgba(9, 13, 22, .55); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); opacity: 0; transition: opacity .18s ease; }
+        .uic-backdrop.in { opacity: 1; }
+        .uic { width: 100%; max-width: 400px; background: var(--menu-bg); color: var(--menu-fg); border: 1px solid var(--panel-border);
+            border-radius: 22px; padding: 26px 24px 22px; box-shadow: var(--menu-shadow); text-align: center;
+            transform: translateY(10px) scale(.96); transition: transform .22s cubic-bezier(.22, 1, .36, 1); }
+        .uic-backdrop.in .uic { transform: none; }
+        .uic-ic { width: 56px; height: 56px; margin: 0 auto 14px; border-radius: 18px; display: grid; place-items: center;
+            background: rgba(47, 111, 224, .12); color: var(--accent); }
+        .uic-ic.danger { background: rgba(229, 72, 77, .12); color: #E5484D; }
+        .uic-ic svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .uic h2 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+        .uic p { font-size: 14px; line-height: 1.55; color: var(--fg-muted); white-space: pre-line; word-break: break-word; margin-bottom: 22px; }
+        .uic-actions { display: flex; gap: 10px; }
+        .uic-actions button { flex: 1; padding: 13px 12px; border: none; border-radius: 13px; font-family: inherit; font-size: 14px; font-weight: 700;
+            cursor: pointer; transition: transform .12s ease, background .15s ease, filter .15s ease, box-shadow .15s ease; }
+        .uic-actions button:active { transform: scale(.97); }
+        .uic-actions button:focus-visible { outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent); }
+        .uic-cancel { background: var(--menu-hover); color: var(--menu-fg); }
+        .uic-cancel:hover { background: var(--menu-selected-bg); }
+        .uic-ok { background: var(--highlight-bg); color: var(--highlight-fg); }
+        .uic-ok.danger { background: #E5484D; color: #fff; }
+        .uic-ok:hover { filter: brightness(1.06); }
+        @media (prefers-reduced-motion: reduce) { .uic-backdrop, .uic { transition: none; } }
+
+        /* ===== CHAT TUGMASI: telefonda suzuvchi tugma o'rniga sarlavhadagi ikonka ===== */
+        .hdr-chat { display: none; position: relative; border: none; outline: none; padding: 0; font: inherit; appearance: none; -webkit-appearance: none; }
+        .hdr-chat:focus-visible { box-shadow: 0 0 0 2px var(--accent); }
+        .hdr-chat-badge { display: none; position: absolute; top: 2px; right: 2px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px;
+            background: #F87171; color: #fff; font-size: 10px; font-weight: 700; line-height: 16px; text-align: center; box-shadow: 0 0 0 2px var(--bg-panel); }
+        .hdr-chat-badge.show { display: block; }
+        .hdr-chat.has-unread svg { animation: bell-wiggle 3.2s ease-in-out infinite; }
+        @media (prefers-reduced-motion: reduce) { .hdr-chat.has-unread svg { animation: none; } }
+        @media (max-width: 768px) {
+            .hdr-chat { display: flex; }
+            .ch-fab { display: none !important; }
+            /* chat paneli yangi tugma joyidan (tepa-o'ng) ochiladi */
+            .ch-panel { --ox: calc(100% - 120px); --oy: 40px; }
+        }
     </style>
+    <script>
+        /* ===== uiConfirm / uiAlert — brauzerning alert()/confirm() oynalari o'rniga dizayngа moslangan modal ===== */
+        (function () {
+            if (window.uiConfirm) return;
+            const L = () => document.documentElement.getAttribute('lang') || 'uz';
+            const tr = (uz, en, ru) => ({ uz, en, ru }[L()] || uz);
+            const ICON = {
+                trash: '<svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>',
+                logout: '<svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>',
+                warn: '<svg viewBox="0 0 24 24"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>',
+                info: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>'
+            };
+            const KIND = {
+                delete: { danger: true, icon: 'trash', title: () => tr("O'chirish", 'Delete', 'Удаление'), ok: () => tr("O'chirish", 'Delete', 'Удалить') },
+                logout: { danger: false, icon: 'logout', title: () => tr('Chiqish', 'Log out', 'Выход'), ok: () => tr('Chiqish', 'Log out', 'Выйти') },
+                reset: { danger: true, icon: 'warn', title: () => tr('Tiklash', 'Reset', 'Сброс'), ok: () => tr('Tiklash', 'Reset', 'Сбросить') },
+                confirm: { danger: false, icon: 'info', title: () => tr('Tasdiqlash', 'Confirmation', 'Подтверждение'), ok: () => tr('Tasdiqlash', 'Confirm', 'Подтвердить') },
+                alert: { danger: false, icon: 'info', title: () => tr('Xabar', 'Notice', 'Сообщение'), ok: () => tr('Tushunarli', 'OK', 'Понятно') }
+            };
+            const queue = []; let busy = false;
+
+            function show(job) {
+                const k = KIND[job.opts.kind] || KIND[job.type === 'alert' ? 'alert' : 'confirm'];
+                const danger = job.opts.danger != null ? !!job.opts.danger : k.danger;
+                const isAlert = job.type === 'alert';
+                const prev = document.activeElement;
+                const bd = document.createElement('div');
+                bd.className = 'uic-backdrop';
+                bd.innerHTML = '<div class="uic" role="alertdialog" aria-modal="true" aria-labelledby="uicT" aria-describedby="uicM">' +
+                    '<div class="uic-ic' + (danger ? ' danger' : '') + '">' + ICON[job.opts.icon || k.icon] + '</div>' +
+                    '<h2 id="uicT"></h2><p id="uicM"></p>' +
+                    '<div class="uic-actions">' + (isAlert ? '' : '<button type="button" class="uic-cancel"></button>') +
+                    '<button type="button" class="uic-ok' + (danger ? ' danger' : '') + '"></button></div></div>';
+                bd.querySelector('#uicT').textContent = job.opts.title || k.title();
+                bd.querySelector('#uicM').textContent = job.message == null ? '' : String(job.message);
+                bd.querySelector('.uic-ok').textContent = job.opts.okText || k.ok();
+                const cancelBtn = bd.querySelector('.uic-cancel');
+                if (cancelBtn) cancelBtn.textContent = job.opts.cancelText || tr('Bekor qilish', 'Cancel', 'Отмена');
+                const okBtn = bd.querySelector('.uic-ok');
+                let done = false;
+                function finish(val) {
+                    if (done) return; done = true;
+                    document.removeEventListener('keydown', onKey, true);
+                    bd.classList.remove('in');
+                    job.res(val);
+                    setTimeout(() => {
+                        bd.remove();
+                        if (prev && prev.focus && document.contains(prev)) { try { prev.focus({ preventScroll: true }); } catch (e) { } }
+                        busy = false; run();
+                    }, 170);
+                }
+                function onKey(e) {
+                    if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); finish(isAlert); }
+                    else if (e.key === 'Tab') {
+                        const f = [cancelBtn, okBtn].filter(Boolean), i = f.indexOf(document.activeElement);
+                        e.preventDefault();
+                        f[(i + (e.shiftKey ? -1 : 1) + f.length) % f.length].focus();
+                    }
+                }
+                document.addEventListener('keydown', onKey, true);
+                okBtn.addEventListener('click', () => finish(true));
+                if (cancelBtn) cancelBtn.addEventListener('click', () => finish(false));
+                bd.addEventListener('mousedown', e => { if (e.target === bd) finish(isAlert); });
+                document.body.appendChild(bd);
+                requestAnimationFrame(() => requestAnimationFrame(() => bd.classList.add('in')));
+                // xavfli amalda tasodifan Enter bosilmasligi uchun fokus "Bekor qilish"da
+                (danger && cancelBtn ? cancelBtn : okBtn).focus({ preventScroll: true });
+            }
+            function run() { if (busy || !queue.length) return; busy = true; show(queue.shift()); }
+            window.uiConfirm = (message, opts) => new Promise(res => { queue.push({ type: 'confirm', message, opts: opts || {}, res }); run(); });
+            window.uiAlert = (message, opts) => new Promise(res => { queue.push({ type: 'alert', message, opts: opts || {}, res }); run(); });
+            window.alert = m => { window.uiAlert(m); };
+        })();
+    </script>
     <script>
         /* ===== ROLE TIZIMI: URL ?role=ceo | admin | student  ->  INTERFEYS REJIMI =====
            DIQQAT: URL'dagi role faqat KO'RINISHNI tanlaydi, hech qanday huquq bermaydi.
@@ -4739,7 +4915,7 @@
             var HOME = { ceo: 'home', admin: 'home', student: 'student' };
             var ALL_VIEWS = ['home', 'clients', 'students', 'groups', 'teachers', 'payments', 'reports', 'archive', 'settings', 'profile', 'student'];
             var GROUP_SEL = { reports: '#navReports', archive: '#navArchive' };
-            var STUDENT_HIDE = ['.search-box', '#scheduleBtn', '#profileScheduleBtn', '#profileSettingsBtn', '#notifDropdown', '.ch-fab', '.ch-panel', '.ct-stack'];
+            var STUDENT_HIDE = ['.search-box', '#scheduleBtn', '#profileScheduleBtn', '#profileSettingsBtn', '#notifDropdown', '#headerChatBtn', '.ch-fab', '.ch-panel', '.ct-stack'];
 
             var listeners = [], updaters = [];
             var state = { role: DEFAULT_ROLE, mode: 'demo' };
@@ -5459,6 +5635,14 @@
                         <line x1="8" y1="2" x2="8" y2="6" />
                         <line x1="3" y1="10" x2="21" y2="10" />
                     </svg></div>
+                <button class="icon-btn hdr-chat" id="headerChatBtn" type="button" aria-label="Chat" title="Chat">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.2-4.8A8 8 0 1 1 21 12z" />
+                        <path d="M9 11.5h6M9 14.5h3.5" />
+                    </svg>
+                    <span class="hdr-chat-badge" id="hdrChatBadge"></span>
+                </button>
                 <div class="notif-dropdown" id="notifDropdown">
                     <button class="icon-btn notif-btn" id="notifBtn" type="button" data-i18n-title="notif.button"
                         title="Bildirishnomalar">
@@ -6665,8 +6849,8 @@
                 btn.addEventListener('click', (e) => { e.stopPropagation(); openClientMoveSheet(btn.dataset.id); });
             });
             document.querySelectorAll('.client-card-del').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    if (confirm(ct('clients.deleteConfirm', "Mijozni o'chirmoqchimisiz?"))) {
+                btn.addEventListener('click', async () => {
+                    if (await uiConfirm(ct('clients.deleteConfirm', "Mijozni o'chirmoqchimisiz?"), { kind: 'delete' })) {
                         const gone = CLIENTS.find(x => x.id == btn.dataset.id);
                         if (gone && typeof window.archiveItem === 'function') window.archiveItem('lead', gone);
                         CLIENTS = CLIENTS.filter(x => x.id != btn.dataset.id);
@@ -6854,12 +7038,12 @@
             if (navItem) navItem.classList.add('active');
         }
 
-        function handleLogout() {
+        async function handleLogout() {
             const lang = document.documentElement.getAttribute('lang') || 'uz';
             const dict = TRANSLATIONS[lang] || TRANSLATIONS.uz;
             // HAQIQIY LOYIHADA: shu yerga backend session/token'ni tozalash
             // va login sahifasiga yo'naltirish logikasi qo'shiladi.
-            if (window.confirm(dict['profile.logoutConfirm'])) {
+            if (await uiConfirm(dict['profile.logoutConfirm'], { kind: 'logout' })) {
                 // LOGIN: sessiya o'chiriladi va sahifa qayta yuklanadi (oldingi foydalanuvchi ma'lumoti xotirada qolmasligi uchun)
                 if (window.CRMAuth) { window.CRMAuth.logout(); return; }
                 window.toast.success(dict['profile.loggedOut']);
@@ -8286,7 +8470,7 @@
                         const g = GR.find(x => x.id === +b.dataset.id);
                         if (b.dataset.act === 'edit') openModal(g.id);
                         else if (count(g) > 0 || studentsOf(g).length > 0) window.toast.warning(t.delBlocked);
-                        else if (confirm(t.delConfirm)) { if (typeof window.archiveItem === 'function') window.archiveItem('group', g); GR = GR.filter(x => x.id !== g.id); shell(); if (window.renderStudents) window.renderStudents(); window.toast.success(window.toast.t(`«${g.name}» guruhi o'chirildi`, `Group «${g.name}» was deleted`, `Группа «${g.name}» удалена`)); }
+                        else uiConfirm(t.delConfirm, { kind: 'delete' }).then(ok => { if (!ok) return; if (typeof window.archiveItem === 'function') window.archiveItem('group', g); GR = GR.filter(x => x.id !== g.id); shell(); if (window.renderStudents) window.renderStudents(); window.toast.success(window.toast.t(`«${g.name}» guruhi o'chirildi`, `Group «${g.name}» was deleted`, `Группа «${g.name}» удалена`)); });
                         return;
                     }
                     const card = e.target.closest('.gr-card');
@@ -8553,7 +8737,7 @@
                     const id = +b.dataset.id;
                     if (b.dataset.act === 'pay') { if (typeof window.openPaymentFor === 'function') window.openPaymentFor(id); }
                     else if (b.dataset.act === 'edit') openModal(id);
-                    else if (confirm(T().delConfirm)) { const gone = ST.find(x => x.id === id); ST = ST.filter(x => x.id !== id); if (gone && typeof window.logGroupRemoval === 'function') window.logGroupRemoval(gone, gone.group); if (gone && typeof window.archiveItem === 'function') window.archiveItem('student', gone); table(); if (gone) window.toast.success(window.toast.t(`${gone.name} o'chirildi`, `${gone.name} was deleted`, `${gone.name} удалён`)); }
+                    else uiConfirm(T().delConfirm, { kind: 'delete' }).then(ok => { if (!ok) return; const gone = ST.find(x => x.id === id); ST = ST.filter(x => x.id !== id); if (gone && typeof window.logGroupRemoval === 'function') window.logGroupRemoval(gone, gone.group); if (gone && typeof window.archiveItem === 'function') window.archiveItem('student', gone); table(); if (gone) window.toast.success(window.toast.t(`${gone.name} o'chirildi`, `${gone.name} was deleted`, `${gone.name} удалён`)); });
                 });
                 $('stTable').addEventListener('keydown', e => {
                     if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('st-name')) {
@@ -8913,7 +9097,7 @@
                         const x = TH.find(y => y.id === +b.dataset.id);
                         if (b.dataset.act === 'edit') openModal(x.id);
                         else if (gOf(x).length) window.toast.warning(T().delBlocked);
-                        else if (confirm(T().delConfirm)) { if (typeof window.archiveItem === 'function') window.archiveItem('teacher', x); TH = TH.filter(y => y.id !== x.id); shell(); if (window.renderGroups) window.renderGroups(); window.toast.success(window.toast.t(`O'qituvchi ${x.name} o'chirildi`, `Teacher ${x.name} was deleted`, `Преподаватель ${x.name} удалён`)); }
+                        else uiConfirm(T().delConfirm, { kind: 'delete' }).then(ok => { if (!ok) return; if (typeof window.archiveItem === 'function') window.archiveItem('teacher', x); TH = TH.filter(y => y.id !== x.id); shell(); if (window.renderGroups) window.renderGroups(); window.toast.success(window.toast.t(`O'qituvchi ${x.name} o'chirildi`, `Teacher ${x.name} was deleted`, `Преподаватель ${x.name} удалён`)); });
                         return;
                     }
                     const card = e.target.closest('tr[data-id]');
@@ -11280,7 +11464,7 @@
                     pane(); toast('success', x('pOk'));
                 } else if (k === 'outAll') toast('info', x('outOk'));
                 else if (k === 'backup') { download('crm-backup-' + new Date().toISOString().slice(0, 10) + '.json', { settings: S, students: call('allStudents'), groups: call('allGroups'), teachers: call('allTeachers'), payments: call('allPayments'), catalog: window.appCatalog() }); toast('success', x('bkOk')); }
-                else if (k === 'reset') { if (confirm(x('rsQ'))) { S = clone(D); persist(); apply(); shell(); toast('success', x('rsOk')); } }
+                else if (k === 'reset') { uiConfirm(x('rsQ'), { kind: 'reset' }).then(ok => { if (ok) { S = clone(D); persist(); apply(); shell(); toast('success', x('rsOk')); } }); }
             });
             root.addEventListener('change', e => {
                 const el = e.target, k = el.dataset.k; if (!k) return;
@@ -11487,7 +11671,7 @@
                 if (row) row.classList.toggle('sel', sel.has(id));
                 selUpdate();
             }
-            function selAction(k) {
+            async function selAction(k) {
                 const c = CH[cur]; if (!c) return;
                 if (k === 'selcancel') return selExit();
                 if (k === 'selreply' || k === 'seledit') {
@@ -11499,7 +11683,7 @@
                 const picked = c.msgs.filter(x => sel.has(x.id)); if (!picked.length) return;
                 if (k === 'selcopy') { copyText(picked.map(x => x.text).join('\n')); selExit(); }
                 else if (k === 'seldel') {
-                    if (!picked.every(x => x.me) || !confirm(ml().delMany(picked.length))) return;
+                    if (!picked.every(x => x.me) || !(await uiConfirm(ml().delMany(picked.length), { kind: 'delete' }))) return;
                     const ids = new Set(picked.map(x => x.id)), ta = $('chTxt');
                     c.msgs = c.msgs.filter(x => !ids.has(x.id));
                     if (ids.has(c.editId)) { c.editId = null; if (ta) { ta.value = ''; ta.style.height = ''; } }
@@ -11514,7 +11698,7 @@
                 const fb = () => { const ta = document.createElement('textarea'); ta.value = txt; ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (err) { /* nusxalash mavjud emas */ } ta.remove(); done(); };
                 if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, fb); else fb();
             }
-            function msgAction(k, id) {
+            async function msgAction(k, id) {
                 const c = CH[cur], x = c && c.msgs.find(y => y.id === id), ta = $('chTxt'); closeMenu();
                 if (k === 'cancel') { if (c.editId && ta) { ta.value = ''; ta.style.height = ''; } c.editId = null; c.replyTo = null; bar(); return; }
                 if (!x) return;
@@ -11522,7 +11706,7 @@
                 else if (k === 'select') selStart(id);
                 else if (k === 'reply') { c.editId = null; c.replyTo = { id: x.id, who: x.me ? T().you : (x.who || c.name), text: short(x.text) }; bar(); if (ta) ta.focus(); }
                 else if (k === 'edit') { c.replyTo = null; c.editId = x.id; bar(); if (ta) { ta.value = x.text; ta.style.height = 'auto'; ta.style.height = Math.min(120, ta.scrollHeight) + 'px'; ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); } }
-                else if (k === 'del' && confirm(ml().delConfirm)) {
+                else if (k === 'del' && await uiConfirm(ml().delConfirm, { kind: 'delete' })) {
                     c.msgs = c.msgs.filter(y => y.id !== id);
                     if (c.editId === id) { c.editId = null; if (ta) { ta.value = ''; ta.style.height = ''; } }
                     if (c.replyTo && c.replyTo.id === id) c.replyTo = null;
@@ -12153,6 +12337,25 @@
     })();
     </script>
 
+    <script>
+        /* Sarlavhadagi chat tugmasi: mavjud chat mantig'ini (ochish/yopish, o'qilmagan soni) qayta ishlatadi */
+        (function () {
+            var btn = document.getElementById('headerChatBtn'), badge = document.getElementById('hdrChatBadge');
+            if (!btn || !badge) return;
+            btn.addEventListener('click', function () { var f = document.querySelector('.ch-fab'); if (f) f.click(); });
+            function sync() {
+                var src = document.getElementById('chBadge'); if (!src) return;
+                var n = (src.textContent || '').trim(), on = src.classList.contains('show') && !!n;
+                badge.textContent = n; badge.classList.toggle('show', on); btn.classList.toggle('has-unread', on);
+            }
+            function bind() {
+                var src = document.getElementById('chBadge'); if (!src) return false;
+                new MutationObserver(sync).observe(src, { childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+                sync(); return true;
+            }
+            if (!bind()) { var t = setInterval(function () { if (bind()) clearInterval(t); }, 300); setTimeout(function () { clearInterval(t); }, 10000); }
+        })();
+    </script>
 </body>
 
 </html>
