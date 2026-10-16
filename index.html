@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
     <title>Ferdinant - Sidebar & Header</title>
     <style>
         :root {
@@ -4997,6 +4997,34 @@
             }
         })();
     </script>
+    <style id="keyboard-css">
+        /* ===== KLAVIATURA / VISUAL VIEWPORT (mobil) =====
+           --vv-h / --vv-top qiymatlarini skript (keyboardViewport) yangilab turadi:
+           klaviatura ochilganda panel faqat ko'rinib turgan qismga sig'adi, sarlavha tepada qoladi. */
+        :root { --vv-h: 100dvh; --vv-top: 0px; }
+        @media (max-width: 768px) {
+            .ch-panel { top: var(--vv-top, 0px); bottom: auto; height: var(--vv-h, 100dvh); max-height: var(--vv-h, 100dvh); }
+            .ch-msgs { overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+            .ch-comp { margin-bottom: calc(14px + env(safe-area-inset-bottom, 0px)); }
+            html.kb-open .ch-comp { margin-bottom: 8px; }
+            html.kb-open .ch-fab, html.kb-open .mobile-bottom-nav, html.kb-open .ct-stack { display: none !important; }
+
+            /* modal oynalar ham faqat ko'rinadigan qismga sig'sin */
+            .clients-modal-backdrop, .sch-modal-backdrop, .cm-backdrop, .uic-backdrop {
+                top: var(--vv-top, 0px); bottom: auto; height: var(--vv-h, 100dvh);
+            }
+            .clients-modal, .pm-modal .clients-modal, .pm-modal .clients-modal.pm-rc-modal,
+            .pm-modal .clients-modal.pm-cf-modal, .gr-modal-wide .clients-modal {
+                max-height: calc(var(--vv-h, 100dvh) * .94);
+                overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+            }
+        }
+        /* iOS maydon ustiga bosilganda sahifani zoom qilib yubormasligi uchun */
+        @media (pointer: coarse) {
+            input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]):not([type=file]),
+            textarea, select { font-size: 16px !important; }
+        }
+    </style>
     <style id="auth-css">
         /* ===== LOGIN EKRANI (split layout: brend paneli + forma) ===== */
         .lg-screen { display: none; position: fixed; inset: 0; z-index: 500; overflow: auto; background: var(--bg-page); color: var(--fg-page); }
@@ -6673,7 +6701,7 @@
         dashMonthSelect.addEventListener('change', () => renderChart(dashYearSelect.value, dashMonthSelect.value));
 
         renderStatCards();
-        renderChart(dashYearSelect.value, dashMonthSelect.value, !prefersReducedMotion());
+        renderChart(dashYearSelect.value, dashMonthSelect.value, document.documentElement.getAttribute('data-auth') === 'in' && !prefersReducedMotion());
         renderPayments();
 
         // ======================================================
@@ -11989,12 +12017,19 @@
             };
 
             // sahifa ochilganda o'qilmagan xabarlar toast bo'lib chiqadi
-            setTimeout(() => {
+            // faqat login'dan keyin (data-auth="in") boshlanadi
+            const startChatToasts = () => setTimeout(() => {
                 if (panel.classList.contains('open')) return;
                 Object.values(CH).filter(c => c.unread && c.msgs.length).forEach((c, i) => setTimeout(() => {
                     const last = c.msgs[c.msgs.length - 1]; if (!panel.classList.contains('open')) ctNotify(c, last.text, c.type === 'groups' ? last.who : '');
                 }, i * 500));
             }, 1500);
+            (function () {
+                const A = window.CRMAuth; let done = false;
+                const go = () => { if (done) return; done = true; startChatToasts(); };
+                if (!A || A.state === 'in') go();
+                else A.onState(s => { if (s === 'in') go(); });
+            })();
             // ===== BILDIRISHNOMALAR BILAN ULASH =====
             // Bildirishnomalar paneli shu ko'prik orqali o'qilmagan chatlarni oladi va "hammasini o'qish"ni chatga uzatadi.
             window.chatBridge = {
@@ -12372,8 +12407,8 @@
             window.CRMRole.refresh();
             const home = window.CRMRole.home();
             document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active', i.getAttribute('data-view') === home));
-            showView(home);
-            A.enter();
+            A.enter();          // avval dashboard ko'rinadi (display:none ketadi)
+            showView(home);     // so'ng animatsiyalar o'lchamlar bilan to'g'ri boshlanadi
             const h = document.documentElement; h.classList.add('lg-welcome'); setTimeout(() => h.classList.remove('lg-welcome'), 800);
         }
 
@@ -12451,6 +12486,43 @@
                 sync(); return true;
             }
             if (!bind()) { var t = setInterval(function () { if (bind()) clearInterval(t); }, 300); setTimeout(function () { clearInterval(t); }, 10000); }
+        })();
+    </script>
+
+    <script>
+        /* ===== KLAVIATURA: visualViewport bilan chat va modal oynalarni moslash ===== */
+        (function keyboardViewport() {
+            var vv = window.visualViewport, root = document.documentElement;
+            if (!vv) return;
+            var coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+            var base = Math.max(window.innerHeight, vv.height), raf = 0, was = false;
+            function isField(el) { return !!el && (/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || el.isContentEditable); }
+            function apply() {
+                raf = 0;
+                var field = isField(document.activeElement);
+                if (!field) base = Math.max(window.innerHeight, vv.height);
+                root.style.setProperty('--vv-h', Math.round(vv.height) + 'px');
+                root.style.setProperty('--vv-top', Math.round(vv.offsetTop) + 'px');
+                var kb = coarse && field && (base - vv.height) > 120;
+                root.classList.toggle('kb-open', kb);
+                if (kb || vv.offsetTop > 0) { if (window.scrollY || window.pageYOffset) window.scrollTo(0, 0); }
+                if (kb && !was) {
+                    var m = document.querySelector('.ch-panel.open .ch-msgs');
+                    if (m && document.activeElement && document.activeElement.id === 'chTxt') setTimeout(function () { m.scrollTop = m.scrollHeight; }, 60);
+                }
+                was = kb;
+            }
+            function sched() { if (!raf) raf = requestAnimationFrame(apply); }
+            vv.addEventListener('resize', sched);
+            vv.addEventListener('scroll', sched);
+            window.addEventListener('orientationchange', function () { setTimeout(function () { base = 0; sched(); }, 350); });
+            document.addEventListener('focusin', function (e) {
+                sched();
+                if (!coarse || !isField(e.target) || e.target.id === 'chTxt') return;
+                setTimeout(function () { try { e.target.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (x) {} }, 320);
+            });
+            document.addEventListener('focusout', function () { setTimeout(sched, 120); });
+            apply();
         })();
     </script>
 </body>
