@@ -2535,6 +2535,10 @@
         .st-act { width: 30px; height: 30px; border: none; border-radius: 8px; background: transparent; color: var(--fg-muted); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
         .st-act:hover { background: var(--hover-bg); color: var(--fg-panel); }
         .st-act.del:hover { color: #F87171; }
+        .st-act.pay:hover { color: #4ADE80; }
+        /* to'lovlar bo'limi yashirin, lekin ichidagi ochiq modal ko'rinadi (talabalar bo'limidan to'lov) */
+        .content-view.pm-ghost { display: block !important; height: 0 !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; visibility: hidden !important; }
+        .content-view.pm-ghost .pm-modal.open { visibility: visible; }
         .st-act svg { width: 16px; height: 16px; }
         .st-pager { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 14px; font-size: 12.5px; color: var(--fg-muted); }
         .st-pager button { padding: 7px 14px; border-radius: 10px; border: 1px solid var(--panel-border); background: transparent; color: var(--fg-panel); font-family: inherit; cursor: pointer; }
@@ -3602,6 +3606,60 @@
         .ch-ib:hover { background: rgba(237, 235, 227, .1); }
         .ch-ib.send { background: linear-gradient(140deg, #5B9BF5, #2D62D8); color: #fff; }
         .ch-ib svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+        /* xabar amallari: reply / nusxa / tahrirlash / o'chirish */
+        .ch-mb { flex: none; align-self: center; width: 28px; height: 28px; margin: 0 6px; border: none; border-radius: 50%; display: grid; place-items: center; background: rgba(237, 235, 227, .10); color: rgba(233, 236, 243, .75); cursor: pointer; opacity: 0; transition: opacity .15s ease, background .15s ease; }
+        .ch-mb svg { width: 14px; height: 14px; stroke: none; fill: currentColor; }
+        .ch-mb:hover { background: rgba(237, 235, 227, .22); color: #fff; }
+        .ch-row.me .ch-mb { order: -1; }
+        .ch-row .ch-m { max-width: min(80%, calc(100% - 46px)); }
+        .ch-row:hover .ch-mb, .ch-row.menu-open .ch-mb, .ch-mb:focus-visible { opacity: 1; }
+        @media (hover: none) { .ch-mb { opacity: .6; } }
+        .ch-q { margin: 0 0 6px; padding: 5px 9px; border-left: 3px solid #9CC2FA; border-radius: 8px; background: rgba(0, 0, 0, .18); font-size: 12.5px; line-height: 1.3; cursor: pointer; }
+        .ch-q b { display: block; font-size: 12px; color: #9CC2FA; }
+        .ch-q span { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; opacity: .85; }
+        .ch-m.me .ch-q { border-left-color: #fff; background: rgba(255, 255, 255, .18); }
+        .ch-m.me .ch-q b { color: #fff; }
+        .ch-m.flash { animation: ch-flash 1.4s ease; }
+        @keyframes ch-flash { 0%, 55% { box-shadow: 0 0 0 3px rgba(156, 194, 250, .7); } 100% { box-shadow: 0 0 0 3px rgba(156, 194, 250, 0); } }
+        .ch-menu { position: absolute; z-index: 30; min-width: 176px; padding: 6px; border-radius: 14px; background: var(--menu-bg); border: 1px solid rgba(237, 235, 227, .14); box-shadow: 0 16px 40px rgba(0, 0, 0, .5); display: flex; flex-direction: column; gap: 2px; animation: ch-pop .16s ease both; }
+        @keyframes ch-pop { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
+        .ch-menu button { display: flex; align-items: center; gap: 10px; padding: 9px 11px; border: none; border-radius: 9px; background: transparent; color: var(--menu-fg); font-family: inherit; font-size: 13.5px; font-weight: 600; text-align: left; cursor: pointer; }
+        .ch-menu button:hover { background: var(--menu-hover); }
+        .ch-menu button.danger { color: #F87171; }
+        .ch-menu svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; opacity: .9; }
+        .ch-rbar { display: none; align-items: center; gap: 10px; margin: 8px 14px 0; padding: 8px 8px 8px 12px; border-left: 3px solid #5B9BF5; border-radius: 14px; background: rgba(91, 155, 245, .12); }
+        .ch-rbar.show { display: flex; }
+        .ch-rb-ic { display: grid; place-items: center; color: #9CC2FA; flex-shrink: 0; }
+        .ch-rb-ic svg, .ch-rb-x svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+        .ch-rb-t { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+        .ch-rb-t b { font-size: 12px; color: #9CC2FA; }
+        .ch-rb-t span { font-size: 13px; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .ch-rb-x { flex: none; width: 28px; height: 28px; border: none; border-radius: 50%; background: transparent; color: inherit; cursor: pointer; display: grid; place-items: center; }
+        .ch-rb-x:hover { background: rgba(237, 235, 227, .12); }
+        /* belgilash (ko'p xabar tanlash) */
+        .ch-row { position: relative; display: flex; align-items: flex-end; border-radius: 14px; transition: background .15s ease; }
+        .ch-row.me { justify-content: flex-end; }
+        .ch-sc { display: none; position: absolute; left: 6px; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(237, 235, 227, .35); align-items: center; justify-content: center; color: transparent; transition: background .15s ease, border-color .15s ease, color .15s ease; }
+        .ch-sc svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+        .ch-selbar { display: none; align-items: center; gap: 6px; padding: 12px 14px; border-bottom: 1px solid rgba(237, 235, 227, .10); }
+        .ch-selbar b { margin-left: 4px; font-size: 15px; }
+        .ch-selbar .grow { flex: 1; }
+        .ch-ib.danger { color: #F87171; }
+        .ch-ib:disabled { opacity: .35; cursor: not-allowed; background: transparent; }
+        .chatv.selmode .ch-top { display: none; }
+        .chatv.selmode .ch-selbar { display: flex; }
+        .chatv.selmode :is(.ch-quick, .ch-emo, .ch-rbar, .ch-comp) { display: none !important; }
+        .chatv.selmode .ch-row { padding-left: 38px; cursor: pointer; }
+        .chatv.selmode .ch-row:hover { background: rgba(237, 235, 227, .05); }
+        .chatv.selmode .ch-row.sel { background: rgba(91, 155, 245, .16); }
+        .chatv.selmode .ch-sc { display: flex; }
+        .chatv.selmode .ch-row.sel .ch-sc { background: #5B9BF5; border-color: #5B9BF5; color: #fff; }
+        .chatv.selmode .ch-m { pointer-events: none; }
+        .chatv.selmode .ch-mb { display: none; }
+        .ch-msgs.dragsel, .ch-msgs.dragsel * { -webkit-user-select: none; user-select: none; }
+        .chatv.selmode .ch-m { -webkit-user-select: none; user-select: none; }
+        .ch-ib[hidden] { display: none; }
+        @media (hover: none) { .ch-m { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; } }
         .ch-mem { max-height: 240px; overflow-y: auto; }
         .ch-mem label { display: flex; align-items: center; gap: 10px; padding: 8px 4px; font-size: 14px; cursor: pointer; }
         .ch-mem input { width: auto; }
@@ -4539,6 +4597,92 @@
         .sd-sec { font-size: 15px; font-weight: 700; margin: 26px 0 0; color: var(--fg-page); }
         .sd-sec + .gr-info { margin-top: 12px; }
         .sd-empty-dd { color: var(--fg-muted); font-weight: 500; }
+
+        /* ===== TALABA SAHIFASI — blokli dizayn ===== */
+        .sd-page { display: flex; flex-direction: column; gap: 14px; }
+        .sd-layout { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 14px; align-items: start; }
+        .sd-side, .sd-main { background: var(--bg-panel); color: var(--fg-panel); border: 1px solid var(--panel-border); border-radius: 20px; box-shadow: var(--block-shadow); }
+        .sd-side { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+        .sd-main { padding: 14px 20px 22px; min-height: 280px; }
+        .sd-prof { display: flex; align-items: center; gap: 12px; }
+        .sd-avatar { width: 44px; height: 44px; font-size: 15px; }
+        .sd-prof-t { min-width: 0; }
+        .sd-prof-t h1 { font-size: 16px; font-weight: 700; overflow-wrap: anywhere; }
+        .sd-prof-t span { display: flex; align-items: center; gap: 6px; margin-top: 2px; font-size: 12.5px; color: var(--fg-muted); }
+        .sd-prof-t svg { width: 13px; height: 13px; }
+        .sd-side .st-badge { align-self: flex-start; }
+        .sd-rows { margin: 0; padding-top: 4px; border-top: 1px solid var(--panel-border); }
+        .sd-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--panel-border); }
+        .sd-row:last-child { border-bottom: none; }
+        .sd-row dt { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--fg-muted); }
+        .sd-row dt svg { width: 15px; height: 15px; }
+        .sd-row dd { margin: 0; font-size: 13.5px; font-weight: 600; text-align: right; overflow-wrap: anywhere; }
+        .sd-row b { font-weight: 700; }
+        .sd-tabs { display: flex; gap: 24px; border-bottom: 1px solid var(--panel-border); margin-bottom: 18px; overflow-x: auto; }
+        .sd-tab { display: inline-flex; align-items: center; gap: 7px; padding: 12px 2px; margin-bottom: -1px; background: none; border: none; border-bottom: 2px solid transparent; color: var(--fg-muted); font-family: inherit; font-size: 13.5px; font-weight: 600; white-space: nowrap; cursor: pointer; transition: color .15s ease, border-color .15s ease; }
+        .sd-tab:hover { color: var(--fg-panel); }
+        .sd-tab.active { color: var(--fg-panel); border-bottom-color: var(--highlight-bg); }
+        .sd-tab-n { font-style: normal; min-width: 18px; padding: 1px 6px; border-radius: 9px; font-size: 11px; font-weight: 700; text-align: center; background: var(--highlight-bg); color: var(--highlight-fg); }
+        .sd-pane { display: none; }
+        .sd-pane.active { display: block; }
+        .sd-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 16px; }
+        .sd-field label { display: block; margin-bottom: 6px; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--fg-muted); }
+        .sd-box { display: flex; align-items: center; min-height: 44px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--panel-border); background: var(--field-bg); font-size: 14px; font-weight: 500; overflow-wrap: anywhere; }
+        .sd-save { margin-top: 18px; }
+        .sd-days { display: inline-flex; flex-wrap: wrap; gap: 5px; }
+        .sd-days span { padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: var(--menu-selected-bg); color: var(--menu-selected-fg); }
+        .sd-tbl-wrap { overflow-x: auto; }
+        .sd-tbl { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+        .sd-tbl th { text-align: left; padding: 8px 12px; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--fg-muted); border-bottom: 1px solid var(--panel-border); }
+        .sd-tbl td { padding: 13px 12px; border-bottom: 1px solid var(--panel-border); white-space: nowrap; }
+        .sd-tbl tbody tr:hover { background: var(--hover-bg); }
+        .sd-tbl .num { text-align: right; font-weight: 700; }
+        .sd-payb { width: 100%; justify-content: center; margin-top: 2px; }
+        .sd-none { padding: 40px 12px; text-align: center; color: var(--fg-muted); font-size: 14px; }
+        @media (max-width: 900px) { .sd-layout { grid-template-columns: minmax(0, 1fr); } }
+        @media (max-width: 560px) { .sd-fields { grid-template-columns: minmax(0, 1fr); } .sd-main { padding: 10px 14px 18px; } }
+        /* katta ekranlar: talaba sahifasi kattaroq */
+        @media (min-width: 1400px) {
+            .sd-page { gap: 18px; }
+            .sd-layout { grid-template-columns: 360px minmax(0, 1fr); gap: 18px; }
+            .sd-side, .sd-main { border-radius: 24px; }
+            .sd-side { padding: 24px; gap: 18px; }
+            .sd-main { padding: 18px 28px 30px; min-height: 380px; }
+            .sd-avatar { width: 56px; height: 56px; font-size: 18px; }
+            .sd-prof { gap: 14px; }
+            .sd-prof-t h1 { font-size: 19px; }
+            .sd-prof-t span { font-size: 14px; }
+            .sd-side .st-badge { font-size: 13.5px; padding: 4px 12px; }
+            .sd-row { padding: 14px 0; }
+            .sd-row dt { font-size: 14.5px; }
+            .sd-row dt svg { width: 17px; height: 17px; }
+            .sd-row dd { font-size: 15.5px; }
+            .sd-tabs { gap: 32px; margin-bottom: 24px; }
+            .sd-tab { font-size: 15.5px; padding: 14px 2px; }
+            .sd-tab-n { font-size: 12px; min-width: 20px; }
+            .sd-fields { gap: 20px 24px; }
+            .sd-field label { font-size: 12px; margin-bottom: 8px; }
+            .sd-box { min-height: 54px; padding: 13px 18px; font-size: 16px; border-radius: 14px; }
+            .sd-save { margin-top: 26px; }
+            .sd-payb { font-size: 15.5px; padding-top: 14px; padding-bottom: 14px; }
+            .sd-days span { font-size: 13.5px; padding: 4px 12px; }
+            .sd-tbl { font-size: 15.5px; }
+            .sd-tbl th { font-size: 12px; padding: 10px 16px; }
+            .sd-tbl td { padding: 17px 16px; }
+            .sd-none { font-size: 16px; padding: 56px 12px; }
+        }
+        @media (min-width: 1800px) {
+            .sd-layout { grid-template-columns: 420px minmax(0, 1fr); }
+            .sd-side { padding: 28px; }
+            .sd-main { padding: 20px 34px 36px; }
+            .sd-avatar { width: 64px; height: 64px; font-size: 21px; }
+            .sd-prof-t h1 { font-size: 22px; }
+            .sd-row dt { font-size: 16px; }
+            .sd-row dd { font-size: 17px; }
+            .sd-tab { font-size: 17px; }
+            .sd-box { min-height: 60px; font-size: 17.5px; }
+            .sd-tbl { font-size: 17px; }
+        }
         .sch-card[data-gid] { cursor: pointer; }
         .sch-card[data-gid]:focus-visible { outline: 2px solid var(--cat-color); outline-offset: 2px; z-index: 6; }
         .sch-card[data-gid]:active { transform: translateY(0) scale(.99); }
@@ -8205,7 +8349,7 @@
                     s_active: 'Faol', s_frozen: 'Muzlatilgan', s_grad: 'Bitirgan', empty: 'Talaba topilmadi', cur: "so'm",
                     edit: 'Tahrirlash', del: "O'chirish", delConfirm: "Talabani o'chirmoqchimisiz?", newT: 'Yangi talaba', editT: 'Talabani tahrirlash',
                     first: 'Ism', last: 'Familya', save: 'Saqlash', cancel: 'Bekor qilish', prev: 'Oldingi', next: 'Keyingi',
-                    openGroup: 'Guruhni ochish', sdBack: 'Talabalar', sdPersonal: "Shaxsiy ma'lumotlar", sdGroupSec: "Guruh ma'lumotlari", sdFin: 'Moliyaviy holat', sdPays: "To'lovlar tarixi",
+                    openGroup: 'Guruhni ochish', sdTabInfo: "Ma'lumotlar", sdPayBtn: "To'lov qilish", sdBack: 'Talabalar', sdPersonal: "Shaxsiy ma'lumotlar", sdGroupSec: "Guruh ma'lumotlari", sdFin: 'Moliyaviy holat', sdPays: "To'lovlar tarixi",
                     sdTeacher: "O'qituvchi", sdRoom: 'Xona', sdTime: 'Dars vaqti', sdDays: 'Dars kunlari', sdPrice: 'Oylik narx', sdTotalPaid: "Jami to'langan", sdPayCount: "To'lovlar soni", sdLastPay: "Oxirgi to'lov",
                     sdNoPay: "Hozircha to'lovlar yo'q", sdNoGroup: 'Guruh topilmadi', sdDate: 'Sana', sdFor: 'Qaysi oy uchun', sdAmount: 'Summa', sdMethod: "To'lov usuli", sdDebt: 'Qarzdor', sdClear: "Qarzi yo'q",
                     dayN: ['Du', 'Se', 'Chor', 'Pay', 'Ju', 'Sha', 'Yak'], months: ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'],
@@ -8217,7 +8361,7 @@
                     s_active: 'Active', s_frozen: 'Frozen', s_grad: 'Graduated', empty: 'No students found', cur: 'UZS',
                     edit: 'Edit', del: 'Delete', delConfirm: 'Delete this student?', newT: 'New student', editT: 'Edit student',
                     first: 'First name', last: 'Last name', save: 'Save', cancel: 'Cancel', prev: 'Prev', next: 'Next',
-                    openGroup: 'Open group', sdBack: 'Students', sdPersonal: 'Personal details', sdGroupSec: 'Group details', sdFin: 'Financial status', sdPays: 'Payment history',
+                    openGroup: 'Open group', sdTabInfo: 'Details', sdPayBtn: 'Make payment', sdBack: 'Students', sdPersonal: 'Personal details', sdGroupSec: 'Group details', sdFin: 'Financial status', sdPays: 'Payment history',
                     sdTeacher: 'Teacher', sdRoom: 'Room', sdTime: 'Class time', sdDays: 'Class days', sdPrice: 'Monthly price', sdTotalPaid: 'Total paid', sdPayCount: 'Payments', sdLastPay: 'Last payment',
                     sdNoPay: 'No payments yet', sdNoGroup: 'Group not found', sdDate: 'Date', sdFor: 'Paid for', sdAmount: 'Amount', sdMethod: 'Method', sdDebt: 'In debt', sdClear: 'No debt',
                     dayN: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
@@ -8229,7 +8373,7 @@
                     s_active: 'Активен', s_frozen: 'Заморожен', s_grad: 'Выпускник', empty: 'Студенты не найдены', cur: 'сум',
                     edit: 'Изменить', del: 'Удалить', delConfirm: 'Удалить студента?', newT: 'Новый студент', editT: 'Изменить студента',
                     first: 'Имя', last: 'Фамилия', save: 'Сохранить', cancel: 'Отмена', prev: 'Назад', next: 'Далее',
-                    openGroup: 'Открыть группу', sdBack: 'Студенты', sdPersonal: 'Личные данные', sdGroupSec: 'Данные группы', sdFin: 'Финансовое состояние', sdPays: 'История платежей',
+                    openGroup: 'Открыть группу', sdTabInfo: 'Данные', sdPayBtn: 'Принять платёж', sdBack: 'Студенты', sdPersonal: 'Личные данные', sdGroupSec: 'Данные группы', sdFin: 'Финансовое состояние', sdPays: 'История платежей',
                     sdTeacher: 'Преподаватель', sdRoom: 'Кабинет', sdTime: 'Время занятий', sdDays: 'Дни занятий', sdPrice: 'Цена в месяц', sdTotalPaid: 'Всего оплачено', sdPayCount: 'Платежей', sdLastPay: 'Последний платёж',
                     sdNoPay: 'Платежей пока нет', sdNoGroup: 'Группа не найдена', sdDate: 'Дата', sdFor: 'За месяц', sdAmount: 'Сумма', sdMethod: 'Способ', sdDebt: 'Долг', sdClear: 'Нет долга',
                     dayN: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'], months: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
@@ -8252,7 +8396,7 @@
                 date: '2026-0' + (1 + (i % 9)) + '-' + String(1 + (i * 3) % 28).padStart(2, '0')
             }));
             let ST = seed, nextId = seed.length + 1;
-            let openId = null, backGroup = null;
+            let openId = null, backGroup = null, sdTab = 'info';
             const f = { q: '', status: '', group: '', debt: false, sort: 'name', dir: 1, page: 1 };
             const PER = 8;
             const root = document.getElementById('studentsRoot');
@@ -8334,7 +8478,8 @@
                         <td><span class="st-badge ${s.status}">${t['s_' + s.status]}</span></td>
                         <td class="num ${s.balance < 0 ? 'st-neg' : s.balance > 0 ? 'st-pos' : ''}">${s.balance < 0 ? '−' : ''}${money(s.balance)} <span class="pay-cur">${t.cur}</span></td>
                         <td class="muted col-hide-sm">${s.date}</td>
-                        <td style="text-align:right"><button class="st-act" data-act="edit" data-id="${s.id}" title="${t.edit}">${ic('<path d="M4 20h4L19 9l-4-4L4 16v4z"/>')}</button>
+                        <td style="text-align:right"><button class="st-act pay" data-act="pay" data-id="${s.id}" title="${t.sdPayBtn}">${ic('<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>')}</button>
+                        <button class="st-act" data-act="edit" data-id="${s.id}" title="${t.edit}">${ic('<path d="M4 20h4L19 9l-4-4L4 16v4z"/>')}</button>
                         <button class="st-act del" data-act="del" data-id="${s.id}" title="${t.del}">${ic('<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>')}</button></td></tr>`).join('')}
                     </tbody></table>${cur.length ? '' : `<div class="st-empty">${t.empty}</div>`}</div>`;
                 document.getElementById('stPager').innerHTML = `<span>${rows.length ? (f.page - 1) * PER + 1 : 0}–${Math.min(f.page * PER, rows.length)} / ${rows.length}</span>
@@ -8406,7 +8551,8 @@
                     const b = e.target.closest('[data-act]');
                     if (!b) { const row = e.target.closest('tr[data-sid]'); if (row) openStudent(+row.dataset.sid); return; }
                     const id = +b.dataset.id;
-                    if (b.dataset.act === 'edit') openModal(id);
+                    if (b.dataset.act === 'pay') { if (typeof window.openPaymentFor === 'function') window.openPaymentFor(id); }
+                    else if (b.dataset.act === 'edit') openModal(id);
                     else if (confirm(T().delConfirm)) { const gone = ST.find(x => x.id === id); ST = ST.filter(x => x.id !== id); if (gone && typeof window.logGroupRemoval === 'function') window.logGroupRemoval(gone, gone.group); if (gone && typeof window.archiveItem === 'function') window.archiveItem('student', gone); table(); if (gone) window.toast.success(window.toast.t(`${gone.name} o'chirildi`, `${gone.name} was deleted`, `${gone.name} удалён`)); }
                 });
                 $('stTable').addEventListener('keydown', e => {
@@ -8438,48 +8584,76 @@
                     .sort((a, b) => String(b.date).localeCompare(String(a.date)));
                 const paid = pays.reduce((a, p) => a + p.amount, 0), last = pays[0];
                 const mLabel = k => k && String(k).length >= 7 ? (t.months[+String(k).slice(5, 7) - 1] || '') + ' ' + String(k).slice(0, 4) : '—';
-                const info = (k, v) => `<div><dt>${k}</dt><dd>${v}</dd></div>`;
-                const stat = (label, val, path, cls) => `<div class="stat-card"><div class="stat-icon">${ic(path)}</div><div class="stat-label">${label}</div><div class="stat-value ${cls || ''}">${val}</div></div>`;
-                const dash = '<span class="sd-empty-dd">—</span>';
                 const backG = backGroup ? groupList().find(x => x.id === backGroup) : null;
-                const balCls = s.balance < 0 ? 'st-neg' : s.balance > 0 ? 'st-pos' : '';
-                const balTxt = `${s.balance < 0 ? '−' : ''}${money(s.balance)} <span class="pay-cur">${t.cur}</span>`;
+                const debt = s.balance < 0, balCls = debt ? 'st-neg' : s.balance > 0 ? 'st-pos' : '';
+                const dash = '—';
+                const row = (icon, k, v) => `<div class="sd-row"><dt>${icon ? ic(icon) : ''}${k}</dt><dd>${v}</dd></div>`;
+                const field = (k, v) => `<div class="sd-field"><label>${k}</label><div class="sd-box">${v}</div></div>`;
+                const tab = (id, label, badge) => `<button type="button" class="sd-tab ${sdTab === id ? 'active' : ''}" data-tab="${id}">${label}${badge ? `<i class="sd-tab-n">${badge}</i>` : ''}</button>`;
+                const pane = (id, html) => `<div class="sd-pane ${sdTab === id ? 'active' : ''}" data-pane="${id}">${html}</div>`;
+                const I = {
+                    clock: '<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>',
+                    book: '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5z"/><path d="M4 21h15"/>',
+                    user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/>',
+                    pay: '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>',
+                    check: '<path d="M5 12l5 5 9-10"/>',
+                    lock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'
+                };
+                const cur = ` <span class="pay-cur">${t.cur}</span>`;
+                const info = `<div class="sd-fields">
+                        ${field(t.name, escapeHtml(s.name))}
+                        ${field(t.phone, escapeHtml(s.phone))}
+                        ${field(t.group, groupChip(s.group, t))}
+                        ${field(t.status, `<span class="st-badge ${s.status}">${t['s_' + s.status]}</span>`)}
+                        ${field(t.joined, escapeHtml(s.date))}
+                        ${field('ID', '#' + s.id)}
+                    </div>
+                    <button class="clients-add-btn sd-save" id="sdEdit2" type="button">${ic('<path d="M4 20h4L19 9l-4-4L4 16v4z"/>')}<span>${t.edit}</span></button>`;
+                const paysHtml = pays.length ? `<div class="sd-tbl-wrap"><table class="sd-tbl"><thead><tr><th>${t.sdDate}</th><th>${t.sdFor}</th><th>${t.sdMethod}</th><th class="num">${t.sdAmount}</th></tr></thead><tbody>
+                        ${pays.map(p => `<tr><td>${escapeHtml(p.date)}</td><td>${escapeHtml(mLabel(p.forMonth))}</td><td>${escapeHtml(t.m[p.method] || p.method || '—')}</td><td class="num st-pos">${money(p.amount)}${cur}</td></tr>`).join('')}
+                        </tbody></table></div>` : `<div class="sd-none">${t.sdNoPay}</div>`;
+                const grp = g ? `<div class="sd-fields">
+                        ${field(t.group, groupChip(s.group, t))}
+                        ${field(t.sdTeacher, escapeHtml(g.teacher))}
+                        ${field(t.sdRoom, `${t.sdRoom} ${escapeHtml(String(g.room))}`)}
+                        ${field(t.sdTime, `${escapeHtml(g.start)} – ${escapeHtml(g.end)}`)}
+                        ${field(t.sdDays, `<span class="sd-days">${g.days.map(i => `<span>${t.dayN[i]}</span>`).join('')}</span>`)}
+                        ${field(t.sdPrice, `${Number(g.price).toLocaleString('ru-RU')}${cur}`)}
+                    </div>` : `<div class="sd-none">${t.sdNoGroup}</div>`;
                 return `
-                <div class="gr-topbar">
+                <div class="sd-page">
+                <div class="gr-topbar" style="margin-bottom:0">
                     <button class="st-ghost-btn" id="sdBack" type="button">${ic('<polyline points="15 6 9 12 15 18"/>')}${backG ? escapeHtml(backG.name) : t.sdBack}</button>
                     <div class="clients-head-actions-top">
                         <button class="st-ghost-btn" id="sdEdit" type="button">${ic('<path d="M4 20h4L19 9l-4-4L4 16v4z"/>')}${t.edit}</button>
                         ${g ? `<button class="clients-add-btn" id="sdGroupGo" type="button" data-gid="${g.id}">${ic('<path d="M12 3 3 8l9 5 9-5-9-5z"/><path d="M3 12l9 5 9-5"/><path d="M3 16l9 5 9-5"/>')}<span>${t.openGroup}</span></button>` : ''}
                     </div></div>
-                <div class="gr-title"><div class="st-avatar sd-avatar-lg">${escapeHtml(clientInitials(s.name))}</div><h1>${escapeHtml(s.name)}</h1><span class="st-badge ${s.status}">${t['s_' + s.status]}</span></div>
-                <h3 class="sd-sec">${t.sdPersonal}</h3>
-                <dl class="gr-info">
-                    ${info(t.phone, escapeHtml(s.phone))}
-                    ${info(t.joined, escapeHtml(s.date))}
-                    ${info(t.status, `<span class="st-badge ${s.status}">${t['s_' + s.status]}</span>`)}
-                    ${info('ID', '#' + s.id)}
-                </dl>
-                <h3 class="sd-sec">${t.sdGroupSec}</h3>
-                <dl class="gr-info">
-                    ${info(t.group, groupChip(s.group, t))}
-                    ${info(t.sdTeacher, g ? escapeHtml(g.teacher) : dash)}
-                    ${info(t.sdRoom, g ? `${t.sdRoom} ${g.room}` : dash)}
-                    ${info(t.sdTime, g ? `${g.start} – ${g.end}` : dash)}
-                    ${info(t.sdDays, g ? g.days.map(i => t.dayN[i]).join(' · ') : dash)}
-                    ${info(t.sdPrice, g ? `${Number(g.price).toLocaleString('ru-RU')} ${t.cur}` : dash)}
-                </dl>
-                <h3 class="sd-sec">${t.sdFin}</h3>
-                <div class="stat-cards" style="margin-top:12px">
-                    ${stat(t.balance, balTxt, '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/>', balCls)}
-                    ${stat(t.sdTotalPaid, `${money(paid)} <span class="pay-cur">${t.cur}</span>`, '<path d="M5 12l5 5 9-10"/>', 'st-pos')}
-                    ${stat(t.sdPayCount, pays.length, '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16"/>')}
-                    ${stat(t.sdLastPay, last ? escapeHtml(last.date) : '—', '<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>')}
+                <div class="sd-layout">
+                    <aside class="sd-side">
+                        <div class="sd-prof">
+                            <div class="st-avatar sd-avatar">${escapeHtml(clientInitials(s.name))}</div>
+                            <div class="sd-prof-t"><h1>${escapeHtml(s.name)}</h1><span>${ic(I.lock)}${escapeHtml(s.phone)}</span></div>
+                        </div>
+                        <span class="st-badge ${s.status}">${t['s_' + s.status]}</span>
+                        <dl class="sd-rows">
+                            ${row('', t.balance, `<b class="${balCls}">${debt ? '−' : ''}${money(s.balance)}${cur}</b>`)}
+                            ${row('', t.sdTotalPaid, `<b class="st-pos">${money(paid)}${cur}</b>`)}
+                            ${row('', t.sdPrice, g ? `${Number(g.price).toLocaleString('ru-RU')}${cur}` : dash)}
+                        </dl>
+                        <dl class="sd-rows">
+                            ${row(I.clock, t.sdLastPay, last ? escapeHtml(last.date) : dash)}
+                            ${row(I.pay, t.sdPayCount, pays.length)}
+                            ${row(I.book, t.group, g ? escapeHtml(g.name) : dash)}
+                            ${row(I.user, t.sdTeacher, g ? escapeHtml(g.teacher) : dash)}
+                        </dl>
+                        <button class="clients-add-btn sd-payb" id="sdPay" type="button">${ic('<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>')}<span>${t.sdPayBtn}</span></button>
+                    </aside>
+                    <section class="sd-main">
+                        <div class="sd-tabs">${tab('info', t.sdTabInfo)}${tab('pays', t.sdPays, pays.length)}${tab('group', t.sdGroupSec)}</div>
+                        ${pane('info', info)}${pane('pays', paysHtml)}${pane('group', grp)}
+                    </section>
                 </div>
-                <h3 class="sd-sec">${t.sdPays}</h3>
-                <div class="payments-card" style="margin-top:12px"><div class="payments-table-wrap" style="max-height:none"><table class="payments-table"><thead><tr>
-                    <th>${t.sdDate}</th><th>${t.sdFor}</th><th class="num">${t.sdAmount}</th><th>${t.sdMethod}</th></tr></thead><tbody>
-                    ${pays.map(p => `<tr><td>${escapeHtml(p.date)}</td><td class="muted">${escapeHtml(mLabel(p.forMonth))}</td><td class="num">${money(p.amount)} <span class="pay-cur">${t.cur}</span></td><td>${escapeHtml(t.m[p.method] || p.method || '—')}</td></tr>`).join('')}
-                    </tbody></table>${pays.length ? '' : `<div class="st-empty">${t.sdNoPay}</div>`}</div></div>`;
+                </div>`;
             }
 
             function bindDetail() {
@@ -8491,6 +8665,13 @@
                     if (window.motionEnter) window.motionEnter('students');
                 });
                 $('sdEdit').addEventListener('click', () => openModal(openId));
+                const pb = $('sdPay'); if (pb) pb.addEventListener('click', () => { if (typeof window.openPaymentFor === 'function') window.openPaymentFor(openId); });
+                const e2 = $('sdEdit2'); if (e2) e2.addEventListener('click', () => openModal(openId));
+                root.querySelectorAll('.sd-tab').forEach(b => b.addEventListener('click', () => {
+                    sdTab = b.dataset.tab;
+                    root.querySelectorAll('.sd-tab').forEach(x => x.classList.toggle('active', x === b));
+                    root.querySelectorAll('.sd-pane').forEach(x => x.classList.toggle('active', x.dataset.pane === sdTab));
+                }));
                 root.querySelectorAll('.st-gchip[data-gid], #sdGroupGo[data-gid]').forEach(el => el.addEventListener('click', () => {
                     if (typeof window.openGroup === 'function') window.openGroup(+el.dataset.gid);
                 }));
@@ -8501,7 +8682,7 @@
 
             function openStudent(id, from) {
                 if (!ST.find(x => x.id === id)) return;
-                openId = id; backGroup = from && from.group ? from.group : null;
+                openId = id; sdTab = 'info'; backGroup = from && from.group ? from.group : null;
                 document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active-view'));
                 const view = document.querySelector('.content-view[data-view="students"]');
                 if (view) view.classList.add('active-view');
@@ -9338,6 +9519,20 @@
             document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModals(); cfAction = null; } });
 
             window.allPayments = () => PAY.slice();
+            window.openPaymentFor = sid => {
+                const view = document.querySelector('.content-view[data-view="payments"]');
+                const hidden = view && !view.classList.contains('active-view');
+                shell();
+                if (hidden) {
+                    // to'lovlar bo'limi ko'rinmaydi, faqat modal joyida (talabalar bo'limi ustida) ochiladi
+                    view.classList.add('pm-ghost');
+                    const mo = new MutationObserver(() => {
+                        if (!view.querySelector('.pm-modal.open')) { view.classList.remove('pm-ghost'); mo.disconnect(); }
+                    });
+                    mo.observe(view, { subtree: true, attributes: true, attributeFilter: ['class'], childList: true });
+                }
+                openPay(null, sid);
+            };
             window.renderPaymentsView = shell;
             shell();
         })();
@@ -11119,6 +11314,25 @@
             const TABI = { staff: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/>', teachers: '<path d="M3 9l9-4 9 4-9 4z"/><path d="M7 11v5c2.5 2 7.5 2 10 0v-5"/>', groups: '<circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.4"/><path d="M3 19c0-3 2.5-5 6-5s6 2 6 5M15 15c3 0 6 1.5 6 4"/>' };
             const EMO = ['😀', '😂', '😍', '👍', '🙏', '🎉', '🔥', '❤️', '😊', '🤝', '✅', '👏'];
             const REPLY = ["Xo'p, tushundim 👍", "Rahmat, hozir ko'rib chiqaman", 'Yaxshi, kelishdik!', 'Bir ozdan keyin javob beraman', 'Albatta, yordam beraman 🙂'];
+            const ML = {
+                uz: { reply: 'Javob berish', copy: 'Nusxa olish', edit: 'Tahrirlash', del: "O'chirish", edited: 'tahrirlangan', editing: 'Xabarni tahrirlash', copied: 'Nusxa olindi', delConfirm: "Xabarni o'chirmoqchimisiz?", deleted: "Xabar o'chirildi", cancel: 'Bekor qilish', more: 'Amallar', select: 'Belgilash', selected: n => `${n} ta tanlandi`, delMany: n => `${n} ta xabarni o'chirmoqchimisiz?`, deletedN: n => `${n} ta xabar o'chirildi`, onlyOwn: "Faqat o'zingiz yozgan xabarlarni o'chirish mumkin" },
+                en: { reply: 'Reply', copy: 'Copy', edit: 'Edit', del: 'Delete', edited: 'edited', editing: 'Editing message', copied: 'Copied', delConfirm: 'Delete this message?', deleted: 'Message deleted', cancel: 'Cancel', more: 'Actions', select: 'Select', selected: n => `${n} selected`, delMany: n => `Delete ${n} messages?`, deletedN: n => `${n} messages deleted`, onlyOwn: 'You can only delete your own messages' },
+                ru: { reply: 'Ответить', copy: 'Копировать', edit: 'Изменить', del: 'Удалить', edited: 'изменено', editing: 'Редактирование', copied: 'Скопировано', delConfirm: 'Удалить сообщение?', deleted: 'Сообщение удалено', cancel: 'Отмена', more: 'Действия', select: 'Выбрать', selected: n => `Выбрано: ${n}`, delMany: n => `Удалить сообщений: ${n}?`, deletedN: n => `Удалено сообщений: ${n}`, onlyOwn: 'Можно удалить только свои сообщения' }
+            };
+            const ml = () => ML[document.documentElement.getAttribute('lang')] || ML.uz;
+            let mid = 0, menuEl = null, selMode = false, sel = new Set();
+            let lastTouch = 0, swallowUntil = 0, drag = null, autoRaf = 0;
+            const MI = {
+                reply: '<path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 6 6v3"/>',
+                copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>',
+                edit: '<path d="M4 20h4L19 9l-4-4L4 16v4z"/>',
+                del: '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
+                dots: '<circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/>',
+                x: '<path d="M6 6l12 12M18 6L6 18"/>',
+                select: '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>',
+                tick: '<path d="M5 12.5l4.5 4.5L19 7.5"/>'
+            };
+            const short = x => { x = String(x).replace(/\s+/g, ' ').trim(); return x.length > 90 ? x.slice(0, 90) + '…' : x; };
             const now = Date.now();
             const STAFF_DEF = [['Foziljon', 'Admin'], ['Fozilova Halimaxon', 'Administrator'], ['SEO', 'Markaz rahbari'], ['Xoldarova Zuhra', 'Administrator']];
             const staffList = () => { const c = window.appCatalog && window.appCatalog(); return c ? c.staff.filter(z => z.status === 'active').map(z => [z.name, z.position]) : STAFF_DEF; };
@@ -11165,23 +11379,169 @@
                 el.innerHTML = all.length || tab === 'groups' ? h : `<div class="ch-empty">${t.pick}</div>`;
             }
             function conv() {
-                const t = T(), m = $('chMain'), c = CH[cur]; if (!m) return;
+                const t = T(), m = $('chMain'), c = CH[cur]; closeMenu(); selMode = false; sel.clear(); if (!m) return;
                 if (!c) { m.innerHTML = ''; return; }
                 const grp = c.type === 'groups';
                 m.innerHTML = `<div class="ch-top"><button class="ch-bk" data-a="back">${ic('<path d="M15 6l-6 6 6 6"/>')}</button><div class="ch-av ${grp ? '' : 'pr'}" style="background:${col(c.name)}">${esc(ini(c.name))}</div><div class="ch-mid"><b>${esc(c.name)}</b><small class="${grp ? '' : 'ok'}">${grp ? esc(c.sub) : '● ' + t.online}</small></div><button class="ch-x" data-a="close" aria-label="Close">${ic('<path d="M6 6l12 12M18 6L6 18"/>')}</button></div>
-                    <div class="ch-msgs" id="chMsgs"></div><div class="ch-quick">${t.quick.map(x => `<button data-q="${esc(x)}">${esc(x)}</button>`).join('')}</div><div class="ch-emo" id="chEmo">${EMO.map(e => `<button data-emo="${e}">${e}</button>`).join('')}</div>
-                    <div class="ch-comp"><button class="ch-ib" data-a="emo">😊</button><textarea id="chTxt" rows="1" placeholder="${t.ph}"></textarea><button class="ch-ib send" data-a="send">${ic('<path d="M5 12l14-7-5 14-2.5-5.500z"/>')}</button></div>`;
-                msgs();
+                    <div class="ch-selbar" id="chSel"><button type="button" class="ch-ib" data-mact="selcancel" aria-label="${ml().cancel}">${ic(MI.x)}</button><b id="chSelN"></b><span class="grow"></span><button type="button" class="ch-ib" id="chSelReply" data-mact="selreply" aria-label="${ml().reply}" hidden>${ic(MI.reply)}</button><button type="button" class="ch-ib" id="chSelEdit" data-mact="seledit" aria-label="${ml().edit}" hidden>${ic(MI.edit)}</button><button type="button" class="ch-ib" id="chSelCopy" data-mact="selcopy" aria-label="${ml().copy}">${ic(MI.copy)}</button><button type="button" class="ch-ib danger" id="chSelDel" data-mact="seldel" aria-label="${ml().del}">${ic(MI.del)}</button></div><div class="ch-msgs" id="chMsgs"></div><div class="ch-quick">${t.quick.map(x => `<button data-q="${esc(x)}">${esc(x)}</button>`).join('')}</div><div class="ch-emo" id="chEmo">${EMO.map(e => `<button data-emo="${e}">${e}</button>`).join('')}</div>
+                    <div class="ch-rbar" id="chRbar"></div><div class="ch-comp"><button class="ch-ib" data-a="emo">😊</button><textarea id="chTxt" rows="1" placeholder="${t.ph}"></textarea><button class="ch-ib send" data-a="send">${ic('<path d="M5 12l14-7-5 14-2.5-5.500z"/>')}</button></div>`;
+                msgs(); bar();
             }
-            function msgs() {
+            function msgs(stay) {
                 const c = CH[cur], box = $('chMsgs'); if (!c || !box) return;
-                box.innerHTML = (c.msgs.length ? `<div class="ch-day">${T().today}</div>` : '') + c.msgs.map(x => `<div class="ch-m ${x.me ? 'me' : ''}">${!x.me && c.type === 'groups' ? `<span class="who">${esc(x.who)}</span>` : ''}${esc(x.text).replace(/\n/g, '<br>')}<time>${hm(new Date(x.t))}${x.me ? ' ✓✓' : ''}</time></div>`).join('') + (c.typing ? '<div class="ch-typing"><i></i><i></i><i></i></div>' : '');
-                box.scrollTop = box.scrollHeight;
+                const m = ml(), keep = box.scrollTop;
+                c.msgs.forEach(x => { if (!x.id) x.id = ++mid; });
+                box.innerHTML = (c.msgs.length ? `<div class="ch-day">${T().today}</div>` : '') + c.msgs.map(x => `<div class="ch-row ${x.me ? 'me' : ''}${selMode && sel.has(x.id) ? ' sel' : ''}" data-mid="${x.id}"><span class="ch-sc">${ic(MI.tick)}</span><div class="ch-m ${x.me ? 'me' : ''}" data-mid="${x.id}">${!x.me && c.type === 'groups' ? `<span class="who">${esc(x.who)}</span>` : ''}${x.reply ? `<div class="ch-q" data-qid="${x.reply.id}"><b>${esc(x.reply.who)}</b><span>${esc(x.reply.text)}</span></div>` : ''}${esc(x.text).replace(/\n/g, '<br>')}<time>${x.edited ? m.edited + ' · ' : ''}${hm(new Date(x.t))}${x.me ? ' ✓✓' : ''}</time></div><button type="button" class="ch-mb" data-mid="${x.id}" aria-label="${m.more}">${ic(MI.dots)}</button></div>`).join('') + (c.typing ? '<div class="ch-typing"><i></i><i></i><i></i></div>' : '');
+                box.scrollTop = stay ? keep : box.scrollHeight;
+            }
+            function bar() {
+                const b = $('chRbar'), c = CH[cur]; if (!b) return;
+                const m = ml(), found = id => c && c.msgs.find(y => y.id === id);
+                if (c && c.editId && !found(c.editId)) c.editId = null;
+                const mode = c && c.editId ? 'edit' : c && c.replyTo ? 'reply' : '';
+                if (!mode) { b.className = 'ch-rbar'; b.innerHTML = ''; return; }
+                const label = mode === 'edit' ? m.editing : c.replyTo.who, text = mode === 'edit' ? found(c.editId).text : c.replyTo.text;
+                b.className = 'ch-rbar show';
+                b.innerHTML = `<span class="ch-rb-ic">${ic(MI[mode])}</span><div class="ch-rb-t"><b>${esc(label)}</b><span>${esc(short(text))}</span></div><button type="button" class="ch-rb-x" data-mact="cancel" aria-label="${m.cancel}">${ic(MI.x)}</button>`;
+            }
+            function closeMenu() {
+                if (menuEl) { menuEl.remove(); menuEl = null; }
+                panel.querySelectorAll('.menu-open').forEach(x => x.classList.remove('menu-open'));
+            }
+            function openMenu(id, bubble) {
+                if (menuEl && +menuEl.dataset.mid === id) return closeMenu();
+                closeMenu();
+                const c = CH[cur], x = c && c.msgs.find(y => y.id === id); if (!x) return;
+                const m = ml(), items = [['reply', m.reply], ['copy', m.copy], ['select', m.select]];
+                if (x.me) items.push(['edit', m.edit], ['del', m.del, 'danger']);
+                menuEl = document.createElement('div'); menuEl.className = 'ch-menu'; menuEl.dataset.mid = id;
+                menuEl.innerHTML = items.map(([k, l, cls]) => `<button type="button" class="${cls || ''}" data-mact="${k}">${ic(MI[k])}<span>${l}</span></button>`).join('');
+                panel.appendChild(menuEl); bubble.classList.add('menu-open'); bubble.closest('.ch-row').classList.add('menu-open');
+                const pr = panel.getBoundingClientRect(), ar = bubble.getBoundingClientRect(), w = menuEl.offsetWidth, h = menuEl.offsetHeight;
+                let left = x.me ? ar.right - pr.left - w : ar.left - pr.left, top = ar.bottom - pr.top + 6;
+                if (top + h > pr.height - 8) top = ar.top - pr.top - h - 6;
+                menuEl.style.left = Math.max(8, Math.min(left, pr.width - w - 8)) + 'px';
+                menuEl.style.top = Math.max(8, top) + 'px';
+            }
+            function selUpdate() {
+                const mn = $('chMain'); if (!mn) return;
+                const c = CH[cur], m = ml(), n = sel.size, nEl = $('chSelN'), cp = $('chSelCopy'), dl = $('chSelDel'), rp = $('chSelReply'), ed = $('chSelEdit');
+                mn.classList.toggle('selmode', selMode);
+                if (nEl) nEl.textContent = m.selected(n);
+                if (cp) cp.disabled = !n;
+                const own = !!c && n > 0 && c.msgs.filter(x => sel.has(x.id)).every(x => x.me);
+                if (dl) { dl.disabled = !n || !own; dl.title = own ? m.del : m.onlyOwn; }
+                if (rp) rp.hidden = n !== 1;
+                if (ed) ed.hidden = !(n === 1 && own);
+            }
+            function paintSel() {
+                const box = $('chMsgs');
+                if (box) box.querySelectorAll('.ch-row[data-mid]').forEach(r => r.classList.toggle('sel', sel.has(+r.dataset.mid)));
+                selUpdate();
+            }
+            function rowAt(x, y) {
+                const box = $('chMsgs'); if (!box) return null;
+                const r = box.getBoundingClientRect();
+                const el = document.elementFromPoint(Math.min(Math.max(x, r.left + 4), r.right - 4), Math.min(Math.max(y, r.top + 4), r.bottom - 4));
+                return el && el.closest ? el.closest('.ch-row[data-mid]') : null;
+            }
+            function applyRange(endId) {
+                const c = CH[cur]; if (!c || !drag) return;
+                const a = c.msgs.findIndex(x => x.id === drag.startId), b = c.msgs.findIndex(x => x.id === endId); if (a < 0 || b < 0) return;
+                const next = new Set(drag.base);
+                for (let i = Math.min(a, b); i <= Math.max(a, b); i++) { if (drag.mode === 'add') next.add(c.msgs[i].id); else next.delete(c.msgs[i].id); }
+                sel = next; paintSel();
+            }
+            function dragActivate() {
+                drag.active = true; selMode = true;
+                const box = $('chMsgs'); if (box) box.classList.add('dragsel');
+                if (window.getSelection) window.getSelection().removeAllRanges();
+                autoScroll();
+            }
+            function autoScroll() {
+                cancelAnimationFrame(autoRaf);
+                const tick = () => {
+                    if (!drag || !drag.active) return;
+                    const box = $('chMsgs');
+                    if (box && drag.y != null) {
+                        const r = box.getBoundingClientRect(); let d = 0;
+                        if (drag.y < r.top + 48) d = -Math.ceil((r.top + 48 - drag.y) / 4); else if (drag.y > r.bottom - 48) d = Math.ceil((drag.y - (r.bottom - 48)) / 4);
+                        if (d) { box.scrollTop += Math.max(-18, Math.min(18, d)); const row = rowAt(drag.x, drag.y); if (row) applyRange(+row.dataset.mid); }
+                    }
+                    autoRaf = requestAnimationFrame(tick);
+                };
+                autoRaf = requestAnimationFrame(tick);
+            }
+            function endDrag() {
+                if (!drag) return;
+                const was = drag.active; clearTimeout(drag.timer); cancelAnimationFrame(autoRaf); drag = null;
+                const box = $('chMsgs'); if (box) box.classList.remove('dragsel');
+                if (was) { swallowUntil = Date.now() + 450; if (!sel.size) selExit(); else selUpdate(); }
+            }
+            function selStart(id) { selMode = true; sel = new Set([id]); msgs(true); selUpdate(); }
+            function selExit() { selMode = false; sel.clear(); msgs(true); selUpdate(); }
+            function selToggle(id) {
+                if (sel.has(id)) sel.delete(id); else sel.add(id);
+                if (!sel.size) return selExit();
+                const row = $('chMsgs') && $('chMsgs').querySelector(`.ch-row[data-mid="${id}"]`);
+                if (row) row.classList.toggle('sel', sel.has(id));
+                selUpdate();
+            }
+            function selAction(k) {
+                const c = CH[cur]; if (!c) return;
+                if (k === 'selcancel') return selExit();
+                if (k === 'selreply' || k === 'seledit') {
+                    if (sel.size !== 1) return;
+                    const id = [...sel][0], x = c.msgs.find(y => y.id === id);
+                    if (!x || (k === 'seledit' && !x.me)) return;
+                    selExit(); msgAction(k === 'selreply' ? 'reply' : 'edit', id); return;
+                }
+                const picked = c.msgs.filter(x => sel.has(x.id)); if (!picked.length) return;
+                if (k === 'selcopy') { copyText(picked.map(x => x.text).join('\n')); selExit(); }
+                else if (k === 'seldel') {
+                    if (!picked.every(x => x.me) || !confirm(ml().delMany(picked.length))) return;
+                    const ids = new Set(picked.map(x => x.id)), ta = $('chTxt');
+                    c.msgs = c.msgs.filter(x => !ids.has(x.id));
+                    if (ids.has(c.editId)) { c.editId = null; if (ta) { ta.value = ''; ta.style.height = ''; } }
+                    if (c.replyTo && ids.has(c.replyTo.id)) c.replyTo = null;
+                    const last = c.msgs[c.msgs.length - 1]; c.t = last ? last.t : 0;
+                    selMode = false; sel.clear(); selUpdate(); bar(); msgs(true); list();
+                    if (window.toast) window.toast.success(ml().deletedN(picked.length));
+                }
+            }
+            function copyText(txt) {
+                const done = () => { if (window.toast) window.toast.success(ml().copied); };
+                const fb = () => { const ta = document.createElement('textarea'); ta.value = txt; ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (err) { /* nusxalash mavjud emas */ } ta.remove(); done(); };
+                if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, fb); else fb();
+            }
+            function msgAction(k, id) {
+                const c = CH[cur], x = c && c.msgs.find(y => y.id === id), ta = $('chTxt'); closeMenu();
+                if (k === 'cancel') { if (c.editId && ta) { ta.value = ''; ta.style.height = ''; } c.editId = null; c.replyTo = null; bar(); return; }
+                if (!x) return;
+                if (k === 'copy') copyText(x.text);
+                else if (k === 'select') selStart(id);
+                else if (k === 'reply') { c.editId = null; c.replyTo = { id: x.id, who: x.me ? T().you : (x.who || c.name), text: short(x.text) }; bar(); if (ta) ta.focus(); }
+                else if (k === 'edit') { c.replyTo = null; c.editId = x.id; bar(); if (ta) { ta.value = x.text; ta.style.height = 'auto'; ta.style.height = Math.min(120, ta.scrollHeight) + 'px'; ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); } }
+                else if (k === 'del' && confirm(ml().delConfirm)) {
+                    c.msgs = c.msgs.filter(y => y.id !== id);
+                    if (c.editId === id) { c.editId = null; if (ta) { ta.value = ''; ta.style.height = ''; } }
+                    if (c.replyTo && c.replyTo.id === id) c.replyTo = null;
+                    const last = c.msgs[c.msgs.length - 1]; c.t = last ? last.t : 0;
+                    bar(); msgs(true); list(); if (window.toast) window.toast.success(ml().deleted);
+                }
             }
             function send(text) {
-                const ta = $('chTxt'), c = CH[cur]; text = (text || (ta && ta.value) || '').trim(); if (!c || !text) return;
-                c.msgs.push({ me: true, text, t: Date.now() }); c.t = Date.now(); if (ta) { ta.value = ''; ta.style.height = ''; }
-                msgs(); list();
+                const ta = $('chTxt'), c = CH[cur], quick = !!text; text = (text || (ta && ta.value) || '').trim(); if (!c || !text) return;
+                if (c.editId && !quick) {
+                    const x = c.msgs.find(y => y.id === c.editId);
+                    if (x && x.text !== text) { x.text = text; x.edited = true; }
+                    c.editId = null; if (ta) { ta.value = ''; ta.style.height = ''; }
+                    bar(); msgs(true); list(); return;
+                }
+                const msg = { me: true, text, t: Date.now() };
+                if (c.replyTo && !quick) { msg.reply = c.replyTo; c.replyTo = null; }
+                c.msgs.push(msg); c.t = Date.now(); if (ta && !c.editId) { ta.value = ''; ta.style.height = ''; }
+                bar(); msgs(); list();
                 clearTimeout(c.rt); c.rt = setTimeout(() => { c.typing = true; if (cur === c.id) msgs(); setTimeout(() => {
                     c.typing = false; const th = typeof window.allTeachers === 'function' ? window.allTeachers() : [], who = c.type === 'groups' ? (th[0] ? th[0].name : 'Ustoz') : c.name;
                     c.msgs.push({ me: false, who, text: REPLY[Math.floor(Math.random() * REPLY.length)], t: Date.now() }); c.t = Date.now();
@@ -11220,6 +11580,74 @@
             });
             panel.addEventListener('keydown', e => { if (e.target.id === 'chTxt' && e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
             document.addEventListener('keydown', e => { if (e.key === 'Escape' && panel.classList.contains('open') && !document.querySelector('.clients-modal-backdrop.open')) { if (panel.classList.contains('inchat')) { panel.classList.remove('inchat'); cur = null; list(); } else close(); } });
+            panel.addEventListener('click', e => {
+                if (Date.now() < swallowUntil) return;
+                const mb = e.target.closest('.ch-mb'), ma = e.target.closest('[data-mact]'), qt = e.target.closest('.ch-q');
+                if (selMode) { if (ma && /^sel/.test(ma.dataset.mact)) selAction(ma.dataset.mact); else { const row = e.target.closest('.ch-row[data-mid]'); if (row) selToggle(+row.dataset.mid); } return; }
+                if (mb) { openMenu(+mb.dataset.mid, mb.closest('.ch-row').querySelector('.ch-m')); return; }
+                if (ma) { msgAction(ma.dataset.mact, menuEl ? +menuEl.dataset.mid : 0); return; }
+                if (qt) {
+                    const el = $('chMsgs') && $('chMsgs').querySelector(`.ch-m[data-mid="${qt.dataset.qid}"]`);
+                    if (el) { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1400); }
+                    return;
+                }
+                if (menuEl && !menuEl.contains(e.target)) closeMenu();
+            });
+            panel.addEventListener('contextmenu', e => { if (Date.now() - lastTouch < 800 && e.target.closest('.ch-row')) { e.preventDefault(); return; } const b = e.target.closest('.ch-m[data-mid]'); if (b && !selMode) { e.preventDefault(); openMenu(+b.dataset.mid, b); } });
+            // sichqoncha: xabarni bosib turib boshqa xabarlar ustidan sudrash
+            panel.addEventListener('pointerdown', e => {
+                if (e.pointerType !== 'mouse' || e.button !== 0) return;
+                const row = e.target.closest('.ch-row[data-mid]'); if (!row || e.target.closest('.ch-mb')) return;
+                const id = +row.dataset.mid;
+                drag = { startId: id, active: false, kind: 'mouse', x: e.clientX, y: e.clientY, mode: selMode && sel.has(id) ? 'remove' : 'add', base: new Set(sel) };
+            });
+            document.addEventListener('pointermove', e => {
+                if (!drag || drag.kind !== 'mouse') return;
+                if (!(e.buttons & 1)) return endDrag();
+                drag.x = e.clientX; drag.y = e.clientY;
+                const row = rowAt(e.clientX, e.clientY);
+                if (!drag.active) { if (!row || +row.dataset.mid === drag.startId) return; dragActivate(); }
+                if (row) applyRange(+row.dataset.mid);
+            });
+            document.addEventListener('pointerup', () => { if (drag && drag.kind === 'mouse') endDrag(); });
+            document.addEventListener('pointercancel', () => { if (drag && drag.kind === 'mouse') endDrag(); });
+            // telefon: xabarni bosib turish -> belgilash, so'ng barmoqni sudrab ko'proq belgilash
+            panel.addEventListener('touchstart', e => {
+                lastTouch = Date.now();
+                endDrag();
+                if (e.touches.length !== 1) return;
+                const row = e.target.closest('.ch-row[data-mid]'); if (!row || e.target.closest('.ch-mb')) return;
+                const t = e.touches[0], id = +row.dataset.mid;
+                drag = { startId: id, active: false, kind: 'touch', x: t.clientX, y: t.clientY, sx: t.clientX, sy: t.clientY, mode: selMode && sel.has(id) ? 'remove' : 'add', base: new Set(sel) };
+                drag.timer = setTimeout(() => {
+                    if (!drag) return;
+                    dragActivate(); applyRange(id);
+                    if (navigator.vibrate) { try { navigator.vibrate(12); } catch (err) { /* vibratsiya mavjud emas */ } }
+                }, 420);
+            }, { passive: true });
+            panel.addEventListener('touchmove', e => {
+                if (!drag || drag.kind !== 'touch') return;
+                const t = e.touches[0]; drag.x = t.clientX; drag.y = t.clientY;
+                if (!drag.active) { if (Math.abs(t.clientX - drag.sx) > 10 || Math.abs(t.clientY - drag.sy) > 10) endDrag(); return; }
+                e.preventDefault();
+                const row = rowAt(t.clientX, t.clientY); if (row) applyRange(+row.dataset.mid);
+            }, { passive: false });
+            panel.addEventListener('touchend', e => {
+                lastTouch = Date.now();
+                if (drag && drag.kind === 'touch') { if (drag.active && e.cancelable) e.preventDefault(); endDrag(); }
+            }, { passive: false });
+            panel.addEventListener('touchcancel', () => { lastTouch = Date.now(); if (drag && drag.kind === 'touch') endDrag(); });
+            panel.addEventListener('scroll', closeMenu, true);
+            panel.addEventListener('keydown', e => {
+                if (e.key !== 'Escape' || e.target.id !== 'chTxt') return;
+                const c = CH[cur]; if (c && (c.editId || c.replyTo)) { e.stopPropagation(); msgAction('cancel', 0); }
+            });
+            document.addEventListener('keydown', e => {
+                if (e.key !== 'Escape') return;
+                if (menuEl) { closeMenu(); e.stopImmediatePropagation(); }
+                else if (selMode && CH[cur] && panel.classList.contains('open')) { selExit(); e.stopImmediatePropagation(); }
+            }, true);
+            document.addEventListener('click', e => { if (menuEl && !panel.contains(e.target)) closeMenu(); });
             window.openChat = open; window.renderChat = () => { if (panel.classList.contains('open')) shell(); };
 
             // ===== CHAT TOASTLARI: kelgan xabar -> pastki o'ng burchakda toast =====
