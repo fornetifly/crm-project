@@ -3618,6 +3618,19 @@
         .chatv.selmode .ch-m { -webkit-user-select: none; user-select: none; }
         .ch-ib[hidden] { display: none; }
         @media (hover: none) { .ch-m { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; } }
+        /* ===== CHAT RO'YXATI: o'ng tugma / bosib turish menyusi + o'ngga surish; XABAR: chapga surib javob berish ===== */
+        .ch-item { touch-action: pan-y; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; transition: background .15s ease, transform .22s cubic-bezier(.22, 1, .36, 1); }
+        .ch-list.sl-l { animation: ch-sll .28s cubic-bezier(.22, 1, .36, 1); }
+        .ch-list.sl-r { animation: ch-slr .28s cubic-bezier(.22, 1, .36, 1); }
+        @keyframes ch-sll { from { opacity: 0; transform: translateX(42px); } }
+        @keyframes ch-slr { from { opacity: 0; transform: translateX(-42px); } }
+        .ch-item.ctx { background: rgba(91, 155, 245, .14); }
+        .ch-row { touch-action: pan-y; }
+        .ch-m.swp { transition: none; }
+        .ch-m.swb { transition: transform .22s cubic-bezier(.22, 1, .36, 1); }
+        .ch-swi { position: absolute; right: 12px; top: 50%; width: 32px; height: 32px; margin-top: -16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(91, 155, 245, .25); color: #5B9BF5; opacity: 0; pointer-events: none; }
+        .ch-swi svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+        .ch-swi.on { background: #5B9BF5; color: #fff; }
         .ch-mem { max-height: 240px; overflow-y: auto; }
         .ch-mem label { display: flex; align-items: center; gap: 10px; padding: 8px 4px; font-size: 14px; cursor: pointer; }
         .ch-mem input { width: auto; }
@@ -4805,6 +4818,50 @@
         }
     </style>
     <script>
+    /* ===== LOGIN EKRANIDA ALERT / TOAST / DIALOGLARNI BLOKLASH =====
+       Faqat tizimga kirilgan holatda (html[data-auth="in"]) toast, alert() va uiAlert/uiConfirm oynalari ishlaydi.
+       Login ekranida (va sessiya tekshirilayotganda) ular chiqmaydi. Qolgan skriptlardan oldin o'rnatiladi. */
+    (function authAlertGuard() {
+        var de = document.documentElement;
+        var inApp = function () { return de.getAttribute('data-auth') === 'in'; };
+        var dead = new Proxy(function () { }, { get: function (t, k) { return k === 'then' ? undefined : function () { return dead; }; }, apply: function () { return dead; } });
+        function trap(name, wrap) {
+            var orig;
+            try {
+                Object.defineProperty(window, name, {
+                    configurable: true, enumerable: true,
+                    get: function () { return orig === undefined ? undefined : wrap(orig); },
+                    set: function (v) { orig = v; }
+                });
+            } catch (e) { /* brauzer ruxsat bermasa — oddiy holat */ }
+        }
+        var cache = new WeakMap();
+        function once(fn, make) { if (typeof fn !== 'function') return fn; if (!cache.has(fn)) cache.set(fn, make(fn)); return cache.get(fn); }
+
+        trap('toast', function (orig) {
+            return once(orig, function (o) {
+                var w = function () { return inApp() ? o.apply(this, arguments) : dead; };
+                Object.keys(o).forEach(function (k) {
+                    w[k] = (['success', 'error', 'warning', 'info'].indexOf(k) !== -1 && typeof o[k] === 'function')
+                        ? function () { return inApp() ? o[k].apply(o, arguments) : dead; }
+                        : o[k];
+                });
+                return w;
+            });
+        });
+        trap('uiAlert', function (orig) { return once(orig, function (o) { return function () { return inApp() ? o.apply(this, arguments) : Promise.resolve(); }; }); });
+        trap('uiConfirm', function (orig) { return once(orig, function (o) { return function () { return inApp() ? o.apply(this, arguments) : Promise.resolve(false); }; }); });
+        trap('alert', function (orig) { return once(orig, function (o) { return function () { if (inApp()) return o.apply(this, arguments); }; }); });
+
+        /* Chiqib ketganda (yoki sessiya tugaganda) ekranda qolib ketgan toastlar yig'ishtiriladi */
+        new MutationObserver(function () {
+            if (inApp()) return;
+            try { if (window.toast && typeof window.toast.clear === 'function') window.toast.clear(); } catch (e) { /* hech narsa */ }
+            document.querySelectorAll('.bg-bd[role="dialog"]').forEach(function (n) { n.remove(); });
+        }).observe(de, { attributes: true, attributeFilter: ['data-auth'] });
+    })();
+    </script>
+    <script>
         /* ===== uiConfirm / uiAlert — brauzerning alert()/confirm() oynalari o'rniga dizayngа moslangan modal ===== */
         (function () {
             if (window.uiConfirm) return;
@@ -4897,7 +4954,7 @@
 
             /* Har bir rol qaysi bo'limlarni ko'radi (yagona manba). Kerak bo'lsa shu yerni tahrirlang. */
             var VIEWS = {
-                admin: ['accounts', 'home', 'clients', 'students', 'groups', 'teachers', 'payments', 'reports', 'archive', 'settings', 'profile'],
+                admin: ['accounts'],
                 ceo: ['home', 'clients', 'students', 'groups', 'teachers', 'payments', 'reports', 'archive', 'settings', 'profile'],
                 teacher: ['teacher'],
                 student: ['student']
@@ -4967,7 +5024,10 @@
                     if (GROUP_SEL[v]) css.push(base + GROUP_SEL[v] + '{display:none!important}');
                 });
             });
-            ['student', 'teacher'].forEach(function (r) { STUDENT_HIDE.forEach(function (s) { css.push('html[data-role="' + r + '"] ' + s + '{display:none!important}'); }); });
+            ['student', 'teacher', 'admin'].forEach(function (r) { STUDENT_HIDE.forEach(function (s) { css.push('html[data-role="' + r + '"] ' + s + '{display:none!important}'); }); });
+            /* ADMIN: sidebar (va mobil pastki panel) umuman ko'rinmaydi; chiqish/parol sarlavhadagi profil menyusida */
+            css.push('html[data-role="admin"] .sidebar,html[data-role="admin"] .sidebar-backdrop,html[data-role="admin"] .mobile-bottom-nav{display:none!important}');
+            css.push('html[data-role="admin"] .content{padding-bottom:24px!important}');
             var st = document.createElement('style');
             st.id = 'role-style';
             st.textContent = css.join('\n');
@@ -5198,7 +5258,7 @@
             var ROLES = ['admin', 'ceo', 'teacher', 'student'];
             var MAX_FAILS = 5, LOCK_MS = 30000, TIMEOUT_MS = 12000;
             var isDemo = !API_URL;
-            var user = null, state = 'out', bootError = null, fails = 0, lockUntil = 0, listeners = [];
+            var user = null, state = 'out', bootError = null, bootBlocked = null, fails = 0, lockUntil = 0, listeners = [];
 
             function clean(v) { return String(v == null ? '' : v).trim().toLowerCase(); }
             function setState(s) { state = s; document.documentElement.setAttribute('data-auth', s); listeners.slice().forEach(function (fn) { try { fn(s); } catch (e) { console.error(e); } }); }
@@ -5253,7 +5313,81 @@
             function byId(id) { for (var i = 0; i < cache.length; i++) if (cache[i].id === id) return cache[i]; return null; }
             function byName(n) { n = clean(n); for (var i = 0; i < cache.length; i++) if (cache[i].username === n) return cache[i]; return null; }
             function accUser(a) { return { id: a.id, name: a.name, role: a.role, studentId: a.studentId, teacherId: a.teacherId }; }
-            function pub(a) { return { id: a.id, username: a.username, role: a.role, name: a.name, studentId: a.studentId, teacherId: a.teacherId, active: a.active, createdAt: a.createdAt }; }
+            function pub(a) { return { id: a.id, username: a.username, role: a.role, name: a.name, studentId: a.studentId, teacherId: a.teacherId, active: a.active, createdAt: a.createdAt, billing: a.role === 'ceo' ? bsum(a, Date.now()) : null }; }
+
+            /* ---- OBUNA / TO'LOV (faqat CEO akkauntlari) ----
+               Mantiq: hisob-kitob "daftar" (ledger) asosida.
+                 • billing.anchor  — to'lov majburiyati boshlanadigan sana (sinov muddati tugashi).
+                 • Har oy anchor + N oy sanasida billing.fee miqdorida "hisoblash" (charge) yoziladi (oldindan to'lov).
+                 • Admin kiritgan to'lovlar (payments) hisoblashlarni yopadi. Qoldiq = to'lovlar − hisoblashlar.
+                 • Qoldiq < 0 (qarz) bo'lsa va muhlat (graceUntil) o'tgan bo'lsa — akkaunt AVTOMATIK bloklanadi
+                   (CEO ham, uning o'qituvchi/o'quvchi loginlari ham).
+                 • Admin qarzni yopuvchi to'lovni kiritgan zahoti blok avtomatik olinadi.
+               DIQQAT: demo rejimda vaqt brauzer soatidan olinadi (xavfsizlik emas). Haqiqiy loyihada server tekshiradi (402). */
+            var DAY = 86400000, FEE_MIN = 1000, FEE_MAX = 10000000000;
+            function addDays(t, n) { var d = new Date(t); return new Date(d.getFullYear(), d.getMonth(), d.getDate() + n, d.getHours(), d.getMinutes()).getTime(); }
+            function sod(t) { var d = new Date(t); return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(); }
+            function addMonths(t, n) {
+                var d = new Date(t), x = new Date(d.getFullYear(), d.getMonth() + n, 1, d.getHours(), d.getMinutes());
+                x.setDate(Math.min(d.getDate(), new Date(x.getFullYear(), x.getMonth() + 1, 0).getDate()));
+                return x.getTime();
+            }
+            function numOf(v) { var n = Math.round(Number(String(v == null ? '' : v).replace(/[\s ,_]/g, ''))); return isFinite(n) ? n : NaN; }
+            function anchorFor(mode, date, now) {
+                if (mode === 'trial3') return addDays(sod(now), 3);
+                if (mode === 'trial30') return addMonths(sod(now), 1);
+                if (mode === 'now') return now;
+                if (mode === 'custom') {
+                    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(date || '')); if (!m) return NaN;
+                    var d = new Date(+m[1], +m[2] - 1, +m[3]); if (isNaN(d.getTime()) || d.getDate() !== +m[3]) return NaN;
+                    return d.getTime() < sod(now) || d.getFullYear() > new Date(now).getFullYear() + 5 ? NaN : d.getTime();
+                }
+                return NaN;
+            }
+            function sumOf(arr) { var s = 0; for (var i = 0; i < arr.length; i++) s += arr[i].amount; return s; }
+            function balanceOf(b) { return sumOf(b.payments) - sumOf(b.charges); }
+            function newBilling(fee, mode, anchor) { return { fee: fee, mode: mode, anchor: anchor, cycles: 0, charges: [], payments: [], graceUntil: 0, blocked: false, blockedAt: 0 }; }
+            /* Vaqt o'tgani sari hisoblashlarni yozadi va blok holatini yangilaydi. O'zgargan bo'lsa true. */
+            function tick(b, now) {
+                var ch = false, n = 0, at;
+                while (b.fee > 0 && (at = addMonths(b.anchor, b.cycles)) <= now && n++ < 600) { b.charges.push({ at: at, amount: b.fee }); b.cycles++; ch = true; }
+                var bl = balanceOf(b) < 0 && !(b.graceUntil > now);
+                if (bl !== !!b.blocked) { b.blocked = bl; b.blockedAt = bl ? now : 0; ch = true; }
+                return ch;
+            }
+            function evalAll(now) {
+                load(); var ch = false;
+                cache.forEach(function (a) { if (a.role === 'ceo' && a.billing && tick(a.billing, now)) ch = true; });
+                if (ch) { try { save(); } catch (e) { /* xotira yo'q */ } }
+            }
+            function bsum(a, now) {
+                var b = a.billing; if (!b) return null;
+                var bal = balanceOf(b), debt = bal < 0 ? -bal : 0, paid = sumOf(b.payments), credit = bal > 0 ? Math.floor(bal / b.fee) : 0, dueAt = 0, acc = 0, state, i;
+                if (debt > 0) { for (i = 0; i < b.charges.length; i++) { acc += b.charges[i].amount; if (acc > paid) { dueAt = b.charges[i].at; break; } } }
+                state = debt > 0 ? (b.graceUntil > now ? 'grace' : 'debt') : (b.cycles === 0 ? 'trial' : 'active');
+                return { fee: b.fee, mode: b.mode, anchor: b.anchor, state: state, debt: debt, months: debt > 0 ? Math.ceil(debt / b.fee) : 0, balance: bal, credit: credit,
+                    nextAt: addMonths(b.anchor, b.cycles), paidUntil: debt > 0 ? 0 : addMonths(b.anchor, b.cycles + credit), dueAt: dueAt, graceUntil: b.graceUntil > now ? b.graceUntil : 0,
+                    blocked: !!b.blocked, totalPaid: paid, totalCharged: sumOf(b.charges), payCount: b.payments.length, lastPayAt: b.payments.length ? b.payments[b.payments.length - 1].at : 0,
+                    trialLeft: state === 'trial' ? Math.max(0, Math.ceil((b.anchor - now) / DAY)) : 0, started: b.cycles > 0 };
+            }
+            function tenantOf(a) {
+                if (!a || a.role === 'admin') return null;
+                if (a.role === 'ceo') return a;
+                var c = a.createdBy ? byId(a.createdBy) : null; return c && c.role === 'ceo' ? c : null;
+            }
+            /* Akkaunt kira olmasligi sababi (yoki null). Faqat to'g'ri parol kiritilgandan KEYIN foydalanuvchiga ko'rsatiladi. */
+            function blockInfo(a, now) {
+                if (!a) return { reason: 'missing' };
+                var t = tenantOf(a), own = t === a;
+                if (!a.active) return { reason: 'manual', role: a.role };
+                if (t) {
+                    if (!own && !t.active) return { reason: 'tenant-manual', role: a.role };
+                    if (t.billing && t.billing.blocked) { var s = bsum(t, now); return { reason: own ? 'debt' : 'tenant-debt', role: a.role, fee: s.fee, debt: s.debt, months: s.months, dueAt: s.dueAt }; }
+                }
+                return null;
+            }
+            function commit(a) { try { save(); } catch (e) { return Promise.reject(e); } return Promise.resolve(pub(a)); }
+            function adminOf(id) { var m = me(), a = byId(id); return m && m.role === 'admin' && a && a.role === 'ceo' ? a : null; }
             function me() { load(); var a = user && user.id ? byId(user.id) : null; return a && a.active ? a : null; }
             function manages(m, a) { return !!m && !!a && (CAN[m.role] || []).indexOf(a.role) !== -1; }
             function rej(code) { return Promise.reject({ code: code }); }
@@ -5266,7 +5400,7 @@
                 ready = ready.catch(function (e) { try { console.error('[CRMAuth] ombor tayyorlanmadi', e); } catch (x) {} });
             }
             var accounts = {
-                list: function () { var m = me(); return m ? cache.filter(function (a) { return manages(m, a); }).map(pub) : []; },
+                list: function () { evalAll(Date.now()); var m = me(); return m ? cache.filter(function (a) { return manages(m, a); }).map(pub) : []; },
                 linked: function (role) { load(); return cache.filter(function (a) { return a.role === role; }).map(function (a) { return String(role === 'student' ? a.studentId : a.teacherId); }); },
                 create: function (o) {
                     o = o || {}; var m = me();
@@ -5279,8 +5413,19 @@
                     if (role === 'student') { sidv = o.studentId; if (sidv == null || accounts.linked('student').indexOf(String(sidv)) !== -1) return rej('link'); }
                     if (role === 'teacher') { tidv = o.teacherId; if (tidv == null || accounts.linked('teacher').indexOf(String(tidv)) !== -1) return rej('link'); }
                     if (!name) return rej('name');
+                    var bill = null, now0 = Date.now();
+                    if (role === 'ceo') {
+                        var bo = o.billing || {}, fee = numOf(bo.fee), mode = clean(bo.mode), anc = anchorFor(mode, bo.date, now0);
+                        var fp = bo.firstPayment == null || String(bo.firstPayment).trim() === '' ? 0 : numOf(bo.firstPayment);
+                        if (!(fee >= FEE_MIN && fee <= FEE_MAX)) return rej('fee');
+                        if (isNaN(anc)) return rej('date');
+                        if (isNaN(fp) || fp < 0 || fp > 1e12) return rej('amount');
+                        bill = newBilling(fee, mode, anc);
+                        if (fp > 0) bill.payments.push({ id: rnd(6), at: now0, amount: fp, method: 'cash', note: '', by: m.id });
+                        tick(bill, now0);
+                    }
                     return mk({ username: uname, password: pw, role: role, name: name, studentId: sidv, teacherId: tidv, createdBy: m.id }).then(function (a) {
-                        load(); if (byName(uname)) throw { code: 'exists' }; cache.push(a); save(); return pub(a);
+                        load(); if (byName(uname)) throw { code: 'exists' }; if (bill) a.billing = bill; cache.push(a); save(); return pub(a);
                     });
                 },
                 setPassword: function (id, pw) {
@@ -5291,7 +5436,16 @@
                     return hashPw(pw, salt).then(function (h) { var m2 = me(); a = byId(id); if (!manages(m2, a)) throw { code: 'forbidden' }; a.salt = salt; a.hash = h; a.def = false; save(); return pub(a); });
                 },
                 setActive: function (id, on) { var m = me(), a = byId(id); if (!manages(m, a)) return rej('forbidden'); a.active = !!on; save(); return Promise.resolve(pub(a)); },
-                remove: function (id) { var m = me(), a = byId(id); if (!manages(m, a)) return rej('forbidden'); cache = cache.filter(function (x) { return x.id !== id; }); save(); return Promise.resolve(true); },
+                remove: function (id) { var m = me(), a = byId(id); if (!manages(m, a)) return rej('forbidden'); cache = cache.filter(function (x) { return x.id !== id && !(a.role === 'ceo' && x.createdBy === id); }); save(); return Promise.resolve(true); },   // CEO o'chirilsa uning loginlari ham o'chadi
+                update: function (id, o) {
+                    var m = me(), a = byId(id); o = o || {};
+                    if (!manages(m, a)) return rej('forbidden');
+                    var name = String(o.name == null ? a.name : o.name).trim().slice(0, 80), uname = clean(o.username == null ? a.username : o.username);
+                    if (!name) return rej('name');
+                    if (!/^[a-z0-9._-]{3,32}$/.test(uname)) return rej('username');
+                    var other = byName(uname); if (other && other.id !== id) return rej('exists');
+                    a.name = name; a.username = uname; save(); return Promise.resolve(pub(a));
+                },
                 changeOwn: function (oldPw, newPw) {
                     var a = me(); newPw = String(newPw == null ? '' : newPw);
                     if (!a) return rej('forbidden');
@@ -5302,8 +5456,87 @@
                         return hashPw(newPw, salt).then(function (nh) { var cur = me(); if (!cur || cur.id !== a.id) throw { code: 'forbidden' }; cur.salt = salt; cur.hash = nh; cur.def = false; save(); return true; });
                     });
                 },
-                genPassword: function () { var al = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789', b = new Uint8Array(10), o = ''; crypto.getRandomValues(b); for (var i = 0; i < b.length; i++) o += al[b[i] % al.length]; return o; }
+                genPassword: function () { var b = new Uint32Array(1), lim = 4294967296 - (4294967296 % 900000); do { crypto.getRandomValues(b); } while (b[0] >= lim); return String(100000 + (b[0] % 900000)); }   // 6 xonali tasodifiy son (100000–999999), tekis taqsimlangan
             };
+
+            /* ---- Obuna API: to'lov qabul qilish, muhlat, tarif, tarix, sessiya tekshiruvi ---- */
+            function apiInfo(j) { j = j && typeof j === 'object' ? j : {}; return { reason: j.reason || 'debt', role: j.role || 'ceo', fee: +j.fee || 0, debt: +j.debt || 0, months: +j.months || 0, dueAt: +j.dueAt || 0 }; }
+            var billing = {
+                config: { feeMin: FEE_MIN, feeMax: FEE_MAX },
+                anchor: function (mode, date) { return anchorFor(clean(mode), date, Date.now()); },
+                mine: function () { evalAll(Date.now()); var a = user && user.id ? byId(user.id) : null; return a && a.role === 'ceo' && a.billing ? bsum(a, Date.now()) : null; },
+                history: function (id) {
+                    var a = adminOf(id); if (!a || !a.billing) return [];
+                    var ev = a.billing.charges.map(function (c) { return { type: 'charge', at: c.at, amount: c.amount }; })
+                        .concat(a.billing.payments.map(function (p) { return { type: 'payment', id: p.id, at: p.at, amount: p.amount, method: p.method, note: p.note }; }));
+                    return ev.sort(function (x, y) { return y.at - x.at || (x.type === 'payment' ? -1 : 1); });
+                },
+                /* To'lovdan keyingi natija (kiritishdan oldin ko'rsatish uchun) */
+                simulate: function (id, amount) {
+                    var a = adminOf(id), amt = numOf(amount); if (!a || !a.billing || isNaN(amt) || amt < 0) return null;
+                    var b = a.billing, bal = balanceOf(b) + amt, f = b.fee;
+                    return { debtAfter: bal < 0 ? -bal : 0, monthsAfter: bal < 0 ? Math.ceil(-bal / f) : 0, paidUntil: bal < 0 ? 0 : addMonths(b.anchor, b.cycles + Math.floor(bal / f)), unblock: bal >= 0 || b.graceUntil > Date.now() };
+                },
+                pay: function (id, o) {
+                    var a = adminOf(id); o = o || {};
+                    if (!a || !a.billing) return rej('forbidden');
+                    var amt = numOf(o.amount); if (!(amt >= 1) || amt > 1e12) return rej('amount');
+                    var now = Date.now(), b = a.billing; tick(b, now);
+                    b.payments.push({ id: rnd(6), at: now, amount: amt, method: String(o.method || 'cash').slice(0, 16), note: String(o.note || '').trim().slice(0, 200), by: user && user.id });
+                    tick(b, now);
+                    if (o.activate) a.active = true;
+                    return commit(a);
+                },
+                undoPay: function (id, payId) {
+                    var a = adminOf(id); if (!a || !a.billing) return rej('forbidden');
+                    var b = a.billing, n = b.payments.length; b.payments = b.payments.filter(function (p) { return p.id !== payId; });
+                    if (b.payments.length === n) return rej('forbidden');
+                    tick(b, Date.now()); return commit(a);
+                },
+                /* Muhlat: qarz bo'lsa ham N kun bloklanmaydi. days=0 — muhlatni bekor qilish */
+                grace: function (id, days) {
+                    var a = adminOf(id); days = Math.round(Number(days));
+                    if (!a || !a.billing) return rej('forbidden');
+                    if (!(days >= 0 && days <= 90)) return rej('days');
+                    a.billing.graceUntil = days ? addDays(sod(Date.now()), days + 1) : 0; tick(a.billing, Date.now()); return commit(a);
+                },
+                /* Tarif: oylik summa (kelgusi hisoblashlarga) va (sinov davomida) boshlanish sanasi. mode='keep' — sana o'zgarmaydi */
+                setPlan: function (id, o) {
+                    var a = adminOf(id); o = o || {}; if (!a) return rej('forbidden');
+                    var fee = numOf(o.fee), mode = clean(o.mode || 'keep'), now = Date.now();
+                    if (!(fee >= FEE_MIN && fee <= FEE_MAX)) return rej('fee');
+                    if (!a.billing) {
+                        var anc = anchorFor(mode, o.date, now); if (isNaN(anc)) return rej('date');
+                        a.billing = newBilling(fee, mode, anc);
+                    } else {
+                        if (mode !== 'keep') {
+                            if (a.billing.cycles > 0) return rej('locked');
+                            var an2 = anchorFor(mode, o.date, now); if (isNaN(an2)) return rej('date');
+                            a.billing.anchor = an2; a.billing.mode = mode;
+                        }
+                        a.billing.fee = fee;
+                    }
+                    tick(a.billing, now); return commit(a);
+                },
+                /* Joriy sessiya hali ham ruxsatlimi? -> Promise<{ok, info}> */
+                access: function () {
+                    if (!isDemo) return apiAccess();
+                    return ready.then(function () {
+                        var now = Date.now(); evalAll(now);
+                        var a = user && user.id ? byId(user.id) : null, bl = blockInfo(a, now);
+                        return bl ? { ok: false, info: bl } : { ok: true };
+                    });
+                }
+            };
+            function apiAccess() {
+                var s = readSession(), token = s && s.data && typeof s.data.token === 'string' ? s.data.token : '';
+                if (!token) return Promise.resolve({ ok: false, info: { reason: 'expired' } });
+                return request(ENDPOINTS.me, { token: token }).then(function (r) {
+                    if (r.status === 402) return r.json().catch(function () { return {}; }).then(function (j) { return { ok: false, info: apiInfo(j) }; });
+                    if (r.status === 401 || r.status === 403) return { ok: false, info: { reason: 'expired' } };
+                    return { ok: true };
+                }, function () { return { ok: true }; });          // tarmoq xatosida foydalanuvchini qulflamaymiz
+            }
 
             function request(path, o) {
                 o = o || {};
@@ -5322,13 +5555,17 @@
                     load();
                     var a = byName(username);
                     return hashPw(password, a ? a.salt : '00'.repeat(16)).then(function (h) {
-                        if (!a || !a.active || !safeEq(h, a.hash)) throw { code: 'invalid' };
+                        if (!a || !safeEq(h, a.hash)) throw { code: 'invalid' };
+                        /* Parol to'g'ri — endi blok holati tekshiriladi (qarz/qo'lda blok). Sabab faqat shundan keyin ko'rsatiladi. */
+                        var now = Date.now(); evalAll(now); a = byId(a.id) || a;
+                        var bl = blockInfo(a, now); if (bl) throw { code: 'blocked', info: bl };
                         return { user: accUser(a), session: { local: true, id: a.id } };
                     });
                 });
             }
             function apiLogin(username, password) {
                 return request(ENDPOINTS.login, { method: 'POST', body: { username: username, password: password } }).then(function (r) {
+                    if (r.status === 402) return r.json().catch(function () { return {}; }).then(function (j) { throw { code: 'blocked', info: apiInfo(j) }; });   // to'lov qilinmagan
                     if (r.status === 400 || r.status === 401 || r.status === 403) throw { code: 'invalid' };
                     if (r.status === 429) { var w = parseInt(r.headers.get('Retry-After'), 10); throw { code: 'locked', wait: w > 0 ? w : 30 }; }
                     if (!r.ok) throw { code: 'server' };
@@ -5366,9 +5603,11 @@
                 if (isDemo) {
                     setState('checking');
                     ready.then(function () {
-                        load();
+                        var now = Date.now(); evalAll(now);
                         var a = s.data.local === true ? byId(s.data.id) : null;      // rol saqlangan qiymatdan emas, ombordan qayta olinadi
-                        if (!a || !a.active) { clearSession(); setState('out'); return; }
+                        if (!a) { clearSession(); setState('out'); return; }
+                        var bl = blockInfo(a, now);
+                        if (bl) { clearSession(); bootBlocked = bl; setState('out'); return; }       // bloklangan: kirish ekrani + sabab oynasi
                         apply(accUser(a)); setState('in');
                     });
                     return;
@@ -5377,6 +5616,7 @@
                 if (!token || s.data.demo) { clearSession(); setState('out'); return; }
                 setState('checking');
                 request(ENDPOINTS.me, { token: token }).then(function (r) {
+                    if (r.status === 402) return r.json().catch(function () { return {}; }).then(function (j) { clearSession(); bootBlocked = apiInfo(j); setState('out'); });
                     if (r.status === 401 || r.status === 403) { clearSession(); setState('out'); return; }
                     if (!r.ok) throw { code: 'server' };
                     return r.json().then(function (j) {
@@ -5392,7 +5632,8 @@
                 get state() { return state; },               // 'out' | 'checking' | 'in'
                 get demo() { return isDemo; },
                 get bootError() { return bootError; },
-                login: login, logout: logout, ready: ready, accounts: accounts,
+                login: login, logout: logout, ready: ready, accounts: accounts, billing: billing,
+                takeBootBlocked: function () { var b = bootBlocked; bootBlocked = null; return b; },
                 isDefaultAdmin: function () { load(); return isDemo && cache.some(function (a) { return a.role === 'admin' && a.def; }); },
                 enter: function () { if (user) setState('in'); },
                 onState: function (fn) { if (typeof fn === 'function') listeners.push(fn); },
@@ -11715,6 +11956,18 @@
                 ru: { reply: 'Ответить', copy: 'Копировать', edit: 'Изменить', del: 'Удалить', edited: 'изменено', editing: 'Редактирование', copied: 'Скопировано', delConfirm: 'Удалить сообщение?', deleted: 'Сообщение удалено', cancel: 'Отмена', more: 'Действия', select: 'Выбрать', selected: n => `Выбрано: ${n}`, delMany: n => `Удалить сообщений: ${n}?`, deletedN: n => `Удалено сообщений: ${n}`, onlyOwn: 'Можно удалить только свои сообщения' }
             };
             const ml = () => ML[document.documentElement.getAttribute('lang')] || ML.uz;
+            const CLL = {
+                uz: { open: 'Ochish', read: "O'qilgan deb belgilash", moveTo: s => `«${s}» bo'limiga ko'chirish`, move: "Bo'limga ko'chirish", edit: 'Tahrirlash', delGroup: "Guruhni o'chirish", delChat: "Chatni o'chirish", editT: 'Guruhni tahrirlash', save: 'Saqlash', saved: g => `«${g}» saqlandi`, moved: (g, s) => `«${g}» → ${s}`, delQ: g => `«${g}» o'chirilsinmi?`, delDone: g => `«${g}» o'chirildi`, reply: 'Javob' },
+                en: { open: 'Open', read: 'Mark as read', moveTo: s => `Move to ${s}`, move: 'Move to section', edit: 'Edit', delGroup: 'Delete group', delChat: 'Delete chat', editT: 'Edit group', save: 'Save', saved: g => `“${g}” saved`, moved: (g, s) => `“${g}” → ${s}`, delQ: g => `Delete “${g}”?`, delDone: g => `“${g}” deleted`, reply: 'Reply' },
+                ru: { open: 'Открыть', read: 'Отметить прочитанным', moveTo: s => `Переместить в «${s}»`, move: 'Переместить в раздел', edit: 'Изменить', delGroup: 'Удалить группу', delChat: 'Удалить чат', editT: 'Изменить группу', save: 'Сохранить', saved: g => `«${g}» сохранена`, moved: (g, s) => `«${g}» → ${s}`, delQ: g => `Удалить «${g}»?`, delDone: g => `«${g}» удалён`, reply: 'Ответить' }
+            };
+            const cl = () => CLL[document.documentElement.getAttribute('lang')] || CLL.uz;
+            const CI = { open: '<path d="M5 12h14M13 6l6 6-6 6"/>', move: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M10 13h5M13 11l2 2-2 2"/>' };
+            const roleNow = () => (window.CRMRole && window.CRMRole.current) || 'admin';
+            const isCustom = c => c.id.indexOf('c:') === 0;
+            /* Admin/CEO hamma chatni boshqara oladi; qolganlar (masalan o'quvchi) faqat O'ZI ochgan guruhni tahrirlaydi/o'chiradi */
+            const canManage = c => roleNow() === 'admin' || roleNow() === 'ceo' || (isCustom(c) && c.owner === 'me');
+            const secOf = c => c.sec || c.type;
             let mid = 0, menuEl = null, selMode = false, sel = new Set();
             let lastTouch = 0, swallowUntil = 0, drag = null, autoRaf = 0;
             const MI = {
@@ -11737,8 +11990,11 @@
             staffList().forEach(([n, r], i) => { const c = get('s:' + n, n, r, 'staff'); if (i < 2) seed(c, n, i ? "Bugungi to'lovlar ro'yxatini yubordim" : 'Salom! Yangi guruh jadvali tayyor', 40 + i * 120, 1 + i); });
             const people = () => {
                 const th = typeof window.allTeachers === 'function' ? window.allTeachers() : [], gr = typeof window.allGroups === 'function' ? window.allGroups() : [], st = typeof window.allStudents === 'function' ? window.allStudents() : [];
-                return { staff: staffList().map(([n, r]) => get('s:' + n, n, r, 'staff')), teachers: th.map(x => get('t:' + x.name, x.name, x.subject || "O'qituvchi", 'teachers')),
+                const base = { staff: staffList().map(([n, r]) => get('s:' + n, n, r, 'staff')), teachers: th.map(x => get('t:' + x.name, x.name, x.subject || "O'qituvchi", 'teachers')),
                     groups: gr.map(x => { const c = get('g:' + x.name, x.name, T().mem(st.filter(s => s.group === x.name).length + 1) + ' · ' + x.teacher, 'groups'); c.course = true; return c; }).concat(custom.map(id => CH[id])) };
+                const out = { staff: [], teachers: [], groups: [] };
+                ['staff', 'teachers', 'groups'].forEach(k => base[k].forEach(c => { if (c.hidden) return; out[out[c.sec] ? c.sec : k].push(c); }));
+                return out;
             };
             const fab = document.createElement('button');
             fab.className = 'ch-fab'; fab.type = 'button'; fab.setAttribute('aria-label', 'Chat');
@@ -11801,7 +12057,7 @@
             }
             function closeMenu() {
                 if (menuEl) { menuEl.remove(); menuEl = null; }
-                panel.querySelectorAll('.menu-open').forEach(x => x.classList.remove('menu-open'));
+                panel.querySelectorAll('.menu-open, .ctx').forEach(x => x.classList.remove('menu-open', 'ctx'));
             }
             function openMenu(id, bubble) {
                 if (menuEl && +menuEl.dataset.mid === id) return closeMenu();
@@ -11943,17 +12199,22 @@
                     if (panel.classList.contains('open') && cur === c.id) msgs(); else { c.unread++; if (!panel.classList.contains('open')) ctNotify(c, c.msgs[c.msgs.length - 1].text, c.type === 'groups' ? who : ''); }
                     list(); badge(); }, 1400); }, 700);
             }
-            function newGroup() {
-                const t = T(), all = people(), pool = all.staff.concat(all.teachers);
+            function newGroup(edit) {
+                const t = T(), k = cl(), th = typeof window.allTeachers === 'function' ? window.allTeachers() : [];
+                const pool = [...new Set(staffList().map(z => z[0]).concat(th.map(x => x.name)))], have = new Set(edit && edit.members || []);
                 const el = document.createElement('div'); el.className = 'clients-modal-backdrop open'; el.style.zIndex = 120;
-                el.innerHTML = `<div class="clients-modal" style="max-width:460px;padding:28px"><h2>${t.newT}</h2><div class="clients-modal-field"><label>${t.name}</label><input id="chGn" type="text" autocomplete="off"></div><div class="clients-modal-field"><label>${t.members}</label><div class="ch-mem">${pool.map(c => `<label><input type="checkbox" value="${esc(c.name)}">${esc(c.name)}</label>`).join('')}</div></div><div class="clients-modal-actions"><button class="clients-modal-cancel" data-x>${t.cancel}</button><button class="clients-modal-save" data-ok>${t.create}</button></div></div>`;
+                el.innerHTML = `<div class="clients-modal" style="max-width:460px;padding:28px"><h2>${edit ? k.editT : t.newT}</h2><div class="clients-modal-field"><label>${t.name}</label><input id="chGn" type="text" autocomplete="off" value="${edit ? esc(edit.name) : ''}"></div><div class="clients-modal-field"><label>${t.members}</label><div class="ch-mem">${pool.map(n => `<label><input type="checkbox" value="${esc(n)}"${have.has(n) ? ' checked' : ''}>${esc(n)}</label>`).join('')}</div></div><div class="clients-modal-actions"><button class="clients-modal-cancel" data-x>${t.cancel}</button><button class="clients-modal-save" data-ok>${edit ? k.save : t.create}</button></div></div>`;
                 document.body.appendChild(el);
                 el.addEventListener('click', e => {
                     if (e.target === el || e.target.hasAttribute('data-x')) return el.remove();
                     if (!e.target.hasAttribute('data-ok')) return;
-                    const n = el.querySelector('#chGn').value.trim(), m = el.querySelectorAll('input:checked').length;
+                    const n = el.querySelector('#chGn').value.trim(), names = [...el.querySelectorAll('input:checked')].map(i => i.value), m = names.length;
                     if (!n || !m) return window.toast && window.toast.warning(t.need);
-                    const c = get('c:' + (nid++), n, t.mem(m + 1), 'groups'); c.t = Date.now(); custom.push(c.id); cur = c.id; tab = 'groups'; el.remove(); shell();
+                    if (edit) {
+                        edit.name = n; edit.members = names; edit.sub = t.mem(m + 1); el.remove(); shell();
+                        if (window.toast) window.toast.success(k.saved(n)); return;
+                    }
+                    const c = get('c:' + (nid++), n, t.mem(m + 1), 'groups'); c.t = Date.now(); c.owner = 'me'; c.members = names; custom.push(c.id); cur = c.id; tab = 'groups'; el.remove(); shell();
                     panel.classList.add('inchat'); if (window.toast) window.toast.success(t.made(n));
                 });
             }
@@ -11961,6 +12222,7 @@
             const close = () => { if (!panel.classList.contains('open')) return; clearTimeout(panel._t); panel.classList.remove('open', 'opening'); panel.classList.add('closing'); fab.classList.remove('open'); cur = null; badge(); panel._t = setTimeout(() => panel.classList.remove('closing', 'inchat'), 440); };
             fab.addEventListener('click', () => panel.classList.contains('open') ? close() : open());
             panel.addEventListener('click', e => {
+                if (Date.now() < swallowUntil) return;
                 const o = e.target.closest('[data-open]'), tb = e.target.closest('[data-tab]'), a = e.target.closest('[data-a]'), em = e.target.closest('[data-emo]'), qk = e.target.closest('[data-q]'), f = e.target.closest('[data-f]');
                 if (o) { cur = o.dataset.open; CH[cur].unread = 0; conv(); panel.classList.add('inchat'); list(); badge(); setTimeout(() => { const ta = $('chTxt'); if (ta) ta.focus(); }, 350); }
                 else if (tb) { tab = tb.dataset.tab; shell(); }
@@ -11988,7 +12250,7 @@
                 }
                 if (menuEl && !menuEl.contains(e.target)) closeMenu();
             });
-            panel.addEventListener('contextmenu', e => { if (Date.now() - lastTouch < 800 && e.target.closest('.ch-row')) { e.preventDefault(); return; } const b = e.target.closest('.ch-m[data-mid]'); if (b && !selMode) { e.preventDefault(); openMenu(+b.dataset.mid, b); } });
+            panel.addEventListener('contextmenu', e => { const ci0 = e.target.closest('.ch-item[data-open]'); if (ci0) { e.preventDefault(); if (Date.now() - lastTouch >= 800) openChatMenu(ci0.dataset.open, e.clientX, e.clientY); return; } if (Date.now() - lastTouch < 800 && e.target.closest('.ch-row')) { e.preventDefault(); return; } const b = e.target.closest('.ch-m[data-mid]'); if (b && !selMode) { e.preventDefault(); openMenu(+b.dataset.mid, b); } });
             // sichqoncha: xabarni bosib turib boshqa xabarlar ustidan sudrash
             panel.addEventListener('pointerdown', e => {
                 if (e.pointerType !== 'mouse' || e.button !== 0) return;
@@ -12032,6 +12294,122 @@
                 if (drag && drag.kind === 'touch') { if (drag.active && e.cancelable) e.preventDefault(); endDrag(); }
             }, { passive: false });
             panel.addEventListener('touchcancel', () => { lastTouch = Date.now(); if (drag && drag.kind === 'touch') endDrag(); });
+            // ===== CHAT RO'YXATI AMALLARI: o'ng tugma (kompyuter) / bosib turish (telefon) / o'ngga surish -> bo'limga ko'chirish =====
+            function openChatMenu(id, x, y) {
+                closeMenu();
+                const c = CH[id]; if (!c) return;
+                const k = cl(), t = T(), here = secOf(c), items = [];
+                items.push(['open', k.open, '', CI.open]); if (c.unread) items.push(['read', k.read, '', MI.tick]);
+                if (canManage(c)) { if (isCustom(c)) items.push(['edit', k.edit, '', MI.edit]); items.push(['del', isCustom(c) ? k.delGroup : k.delChat, 'danger', MI.del]); }
+                menuEl = document.createElement('div'); menuEl.className = 'ch-menu'; menuEl.dataset.cid = id;
+                menuEl.innerHTML = items.map(([a, l, cls, icon]) => `<button type="button" class="${cls}" data-cact="${a}">${ic(icon)}<span>${esc(l)}</span></button>`).join('');
+                panel.appendChild(menuEl);
+                const pr = panel.getBoundingClientRect(), w = menuEl.offsetWidth, h = menuEl.offsetHeight;
+                menuEl.style.left = Math.max(8, Math.min(x - pr.left, pr.width - w - 8)) + 'px';
+                menuEl.style.top = Math.max(8, Math.min(y - pr.top, pr.height - h - 8)) + 'px';
+                const it = panel.querySelector(`.ch-item[data-open="${CSS.escape(id)}"]`); if (it) { it.classList.add('ctx'); menuEl.dataset.ctx = '1'; }
+            }
+            function chatAction(a, id) {
+                const c = CH[id]; if (!c) return;
+                const k = cl(), t = T();
+                if (a === 'open') { cur = id; c.unread = 0; conv(); panel.classList.add('inchat'); list(); badge(); }
+                else if (a === 'read') { c.unread = 0; shell(); }
+                else if (a === 'edit') { if (isCustom(c) && canManage(c)) newGroup(c); }
+                else if (a === 'del') {
+                    if (!canManage(c)) return;
+                    uiConfirm(k.delQ(c.name), { kind: 'delete' }).then(ok => {
+                        if (!ok) return;
+                        if (isCustom(c)) { custom = custom.filter(x => x !== id); delete CH[id]; } else { c.hidden = true; c.unread = 0; }
+                        if (cur === id) { cur = null; panel.classList.remove('inchat'); }
+                        shell(); if (window.toast) window.toast.success(k.delDone(c.name));
+                    });
+                }
+            }
+            panel.addEventListener('click', e => {
+                const b = e.target.closest('[data-cact]'); if (!b || !menuEl) return;
+                if (Date.now() < swallowUntil) return;
+                const id = menuEl.dataset.cid; closeMenu(); chatAction(b.dataset.cact, id);
+            });
+            // telefon: chat ustiga bosib turish -> menyu
+            let ci = null;
+            panel.addEventListener('touchstart', e => {
+                if (ci) clearTimeout(ci.timer); ci = null;
+                if (e.touches.length !== 1) return;
+                const it = e.target.closest('.ch-item[data-open]'); if (!it) return;
+                const p0 = e.touches[0];
+                ci = { id: it.dataset.open, sx: p0.clientX, sy: p0.clientY };
+                ci.timer = setTimeout(() => {
+                    if (!ci) return;
+                    swallowUntil = Date.now() + 700;
+                    if (navigator.vibrate) { try { navigator.vibrate(12); } catch (err) { /* vibratsiya mavjud emas */ } }
+                    openChatMenu(ci.id, ci.sx - 40, ci.sy - 8);
+                }, 480);
+            }, { passive: true });
+            panel.addEventListener('touchmove', e => {
+                if (!ci) return;
+                const p0 = e.touches[0];
+                if (Math.abs(p0.clientX - ci.sx) > 10 || Math.abs(p0.clientY - ci.sy) > 10) { clearTimeout(ci.timer); ci = null; }
+            }, { passive: true });
+            const ciEnd = () => { if (ci) clearTimeout(ci.timer); ci = null; };
+            panel.addEventListener('touchend', ciEnd);
+            panel.addEventListener('touchcancel', ciEnd);
+            // Xodimlar / O'qituvchilar / Guruhlar bo'limlari orasida chapga-o'ngga surib almashish
+            const TABS = ['staff', 'teachers', 'groups'];
+            function slideTab(dir) {
+                const n = TABS.indexOf(tab) + dir; if (n < 0 || n >= TABS.length) return;
+                closeMenu(); tab = TABS[n]; shell();
+                const l = $('chList'); if (l) { void l.offsetWidth; l.classList.add(dir > 0 ? 'sl-l' : 'sl-r'); }
+            }
+            let ts = null, wheelAt = 0;
+            const onList = el => !panel.classList.contains('inchat') && el.closest && el.closest('.ch-scr.listv') && !el.closest('.ch-menu, input');
+            panel.addEventListener('touchstart', e => {
+                ts = null; if (e.touches.length !== 1 || !onList(e.target)) return;
+                ts = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            }, { passive: true });
+            panel.addEventListener('touchend', e => {
+                const s0 = ts; ts = null; if (!s0 || !e.changedTouches.length || Date.now() < swallowUntil) return;
+                const dx = e.changedTouches[0].clientX - s0.x, dy = e.changedTouches[0].clientY - s0.y;
+                if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { swallowUntil = Date.now() + 350; slideTab(dx < 0 ? 1 : -1); }
+            });
+            panel.addEventListener('touchcancel', () => { ts = null; });
+            // kompyuter: trackpad / gorizontal g'ildirak bilan ham almashadi
+            panel.addEventListener('wheel', e => {
+                if (!onList(e.target) || Math.abs(e.deltaX) < 40 || Math.abs(e.deltaX) < Math.abs(e.deltaY) * 1.5 || Date.now() - wheelAt < 600) return;
+                wheelAt = Date.now(); e.preventDefault(); slideTab(e.deltaX > 0 ? 1 : -1);
+            }, { passive: false });
+            // telefon: xabarni chapga surib javob berish (Telegram kabi)
+            let sw = null;
+            const swReset = (s0, back) => { if (!s0) return; s0.b.classList.remove('swp'); if (back) s0.b.classList.add('swb'); s0.b.style.transform = ''; if (s0.i) s0.i.remove(); setTimeout(() => s0.b.classList.remove('swb'), 260); };
+            panel.addEventListener('touchstart', e => {
+                swReset(sw, false); sw = null;
+                if (selMode || e.touches.length !== 1) return;
+                const row = e.target.closest('.ch-row[data-mid]'); if (!row || e.target.closest('.ch-mb')) return;
+                const b = row.querySelector('.ch-m'); if (!b) return;
+                sw = { row, b, id: +row.dataset.mid, sx: e.touches[0].clientX, sy: e.touches[0].clientY, dx: 0, on: false, i: null };
+            }, { passive: true });
+            panel.addEventListener('touchmove', e => {
+                if (!sw) return;
+                const p0 = e.touches[0], dx = p0.clientX - sw.sx, dy = p0.clientY - sw.sy;
+                if (!sw.on) {
+                    if (Math.abs(dy) > 12 && Math.abs(dy) > Math.abs(dx)) { sw = null; return; }
+                    if (!(dx < -12 && Math.abs(dx) > Math.abs(dy) * 1.5)) return;
+                    sw.on = true; sw.b.classList.add('swp');
+                    sw.i = document.createElement('span'); sw.i.className = 'ch-swi'; sw.i.innerHTML = ic(MI.reply); sw.row.appendChild(sw.i);
+                }
+                sw.dx = Math.min(0, Math.max(-96, dx));
+                sw.b.style.transform = `translateX(${sw.dx}px)`;
+                const pr = Math.min(1, Math.abs(sw.dx) / 64);
+                sw.i.style.opacity = pr; sw.i.style.transform = `scale(${.6 + .4 * pr})`; sw.i.classList.toggle('on', pr >= 1);
+            }, { passive: true });
+            const swEnd = () => {
+                const s0 = sw; sw = null; if (!s0) return;
+                if (s0.on) swallowUntil = Date.now() + 450;
+                const fire = s0.on && s0.dx <= -64;
+                swReset(s0, true);
+                if (fire) { if (navigator.vibrate) { try { navigator.vibrate(10); } catch (err) { /* vibratsiya mavjud emas */ } } msgAction('reply', s0.id); }
+            };
+            panel.addEventListener('touchend', swEnd);
+            panel.addEventListener('touchcancel', swEnd);
             panel.addEventListener('scroll', closeMenu, true);
             panel.addEventListener('keydown', e => {
                 if (e.key !== 'Escape' || e.target.id !== 'chTxt') return;
@@ -12437,7 +12815,12 @@
             name: tr('Ism kiriting', 'Enter a name', 'Введите имя'),
             forbidden: tr("Bu amalga ruxsat yo'q", 'Not allowed', 'Нет доступа'),
             invalid: tr("Eski parol noto'g'ri", 'Current password is wrong', 'Текущий пароль неверен'),
-            storage: tr("Brauzer xotirasi to'lgan yoki yopiq", 'Browser storage is full or blocked', 'Хранилище браузера недоступно')
+            storage: tr("Brauzer xotirasi to'lgan yoki yopiq", 'Browser storage is full or blocked', 'Хранилище браузера недоступно'),
+            fee: tr("Oylik to'lov summasini kiriting (kamida 1 000 so'm)", 'Enter the monthly fee (at least 1 000 UZS)', 'Введите ежемесячный платёж (не менее 1 000 сум)'),
+            date: tr("Sanani to'g'ri tanlang (bugundan oldin bo'lmasin)", 'Pick a valid date (not in the past)', 'Выберите корректную дату (не в прошлом)'),
+            amount: tr("To'lov summasini to'g'ri kiriting", 'Enter a valid payment amount', 'Введите корректную сумму платежа'),
+            days: tr("Muhlat 0–90 kun bo'lishi kerak", 'Grace period must be 0–90 days', 'Отсрочка должна быть 0–90 дней'),
+            locked: tr("To'lov davri boshlangan, sanani o'zgartirib bo'lmaydi", 'Billing has started, the start date cannot be changed', 'Период оплаты начался, дату изменить нельзя')
         }[c] || tr('Xatolik yuz berdi', 'Something went wrong', 'Произошла ошибка'));
 
         const st = document.createElement('style');
@@ -12458,7 +12841,94 @@
         .acc-row2{display:flex;gap:8px;align-items:flex-end} .acc-row2 .acc-f{flex:1;margin:0}
         .acc-err{min-height:18px;color:#dc2626;font-size:13px;margin:4px 0 8px}
         .acc-cred{padding:14px;border-radius:14px;background:var(--field-bg);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px;line-height:1.8;word-break:break-all}
-        .acc-foot{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+        .acc-foot{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+        /* ---- obuna / to'lov ---- */
+        .bl-wrap{max-width:1240px}
+        .bl-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(170px,100%),1fr));gap:14px}
+        .bl-stats .sc-card{padding:16px 18px} .bl-stats .sc-card b{font-size:20px}
+        .bl-tools{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px}
+        .bl-q{flex:1 1 220px;min-width:0;max-width:340px;height:42px;box-sizing:border-box;padding:0 14px;border-radius:12px;border:1.5px solid var(--panel-border);background:var(--field-bg);color:var(--field-fg);font:inherit;outline:none}
+        .bl-q:focus{border-color:var(--accent)}
+        .bl-filters{display:flex;gap:6px;flex-wrap:wrap}
+        .bl-chip{border:1px solid var(--panel-border);background:var(--field-bg);color:var(--fg-page);border-radius:99px;padding:6px 12px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+        .bl-chip:hover{border-color:var(--accent)} .bl-chip.on{background:var(--highlight-bg);color:var(--highlight-fg);border-color:transparent}
+        .bl-table td{vertical-align:middle} .bl-table td:last-child{overflow:visible}
+        .acc-badge.bl-ok{color:#16a34a;background:rgba(22,163,74,.12)} .acc-badge.bl-trial{color:#2563eb;background:rgba(37,99,235,.12)}
+        .acc-badge.bl-warn{color:#b45309;background:rgba(245,158,11,.16)} .acc-badge.bl-off{color:#dc2626;background:rgba(220,38,38,.1)}
+        .bl-sub{display:block;margin-top:4px;color:var(--fg-page-muted);font-size:12px}
+        .bl-more{position:relative} .bl-more summary{list-style:none;cursor:pointer;user-select:none} .bl-more summary::-webkit-details-marker{display:none}
+        .bl-menu{position:fixed;left:0;top:0;z-index:10040;max-height:calc(100vh - 16px);overflow:auto;min-width:190px;padding:6px;border-radius:14px;background:var(--surface-bg,var(--bg-panel));border:1px solid var(--surface-border,var(--panel-border));box-shadow:0 12px 32px rgba(15,23,42,.22);display:flex;flex-direction:column}
+        .bl-menu button{border:0;background:none;color:var(--fg-page);font:inherit;font-size:14px;text-align:left;padding:9px 12px;border-radius:9px;cursor:pointer;white-space:nowrap}
+        .bl-menu button:hover{background:var(--hover-bg)} .bl-menu button.dng{color:#dc2626}
+        .bl-sec{border-top:1px solid var(--panel-border);margin-top:6px;padding-top:12px} .bl-sec h4{margin:0 0 10px;font-size:14px}
+        .bl-plans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
+        .bl-plan{position:relative;cursor:pointer} .bl-plan input{position:absolute;opacity:0;pointer-events:none}
+        .bl-plan span{display:block;padding:10px 12px;border-radius:12px;border:1.5px solid var(--panel-border);background:var(--field-bg);transition:border-color .15s,box-shadow .15s}
+        .bl-plan b{display:block;font-size:14px} .bl-plan small{display:block;margin-top:2px;font-size:12px;color:var(--fg-page-muted)}
+        .bl-plan input:checked+span{border-color:var(--accent);box-shadow:0 0 0 3px var(--hover-bg)} .bl-plan input:focus-visible+span{outline:2px solid var(--accent)}
+        .bl-date[hidden]{display:none}
+        .bl-note{padding:10px 12px;border-radius:12px;background:var(--field-bg);font-size:13px;line-height:1.5;color:var(--fg-page);margin:8px 0}
+        .bl-note:empty{display:none} .bl-note .bad,.bl-sum .bad{color:#dc2626} .bl-note .good,.bl-sum .good{color:#16a34a}
+        .bl-sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:12px}
+        .bl-sum>div{padding:10px 12px;border-radius:12px;background:var(--field-bg);min-width:0} .bl-sum small{display:block;font-size:12px;color:var(--fg-page-muted)} .bl-sum b{display:block;margin-top:2px;font-size:15px;overflow-wrap:anywhere}
+        .bl-chips{display:flex;gap:6px;flex-wrap:wrap;margin:-4px 0 12px}
+        .bl-check{display:flex;gap:8px;align-items:center;font-size:13px;margin:4px 0 8px;color:var(--fg-page)}
+        .bl-hist{max-height:46vh;overflow:auto;display:flex;flex-direction:column;gap:6px}
+        .bl-ev{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:12px;background:var(--field-bg)}
+        .bl-ev b{font-size:15px} .bl-ev small{display:block;margin-top:2px;font-size:12px;color:var(--fg-page-muted)} .bl-ev.pay b{color:#16a34a} .bl-ev.chg b{color:#dc2626}
+        .acc-modal:has(.bl-plans){width:min(540px,100%)}
+        /* ---- ADMIN PANEL: yangi dizayn ---- */
+        .ad-wrap{max-width:1240px;gap:16px}
+        .ad-hero{background:linear-gradient(120deg,var(--hover-bg),transparent 65%),var(--surface-bg)}
+        .ad-hero h2{font-size:24px;letter-spacing:-.01em}
+        .ad-new{padding:12px 20px;border-radius:14px;white-space:nowrap;box-shadow:0 8px 20px rgba(47,111,224,.28)}
+        .ad-alert{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:14px 18px;border-radius:18px;background:rgba(245,158,11,.13);border:1px solid rgba(245,158,11,.5);color:var(--fg-page)}
+        .ad-alert b{display:block;font-size:14.5px} .ad-alert span{display:block;margin-top:2px;font-size:13.5px;color:var(--fg-page-muted);line-height:1.45}
+        .ad-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:12px}
+        .ad-kpi{display:block;min-width:0;appearance:none;-webkit-appearance:none;text-align:left;font:inherit;cursor:pointer;padding:14px 16px;border-radius:18px;border:1.5px solid var(--surface-border);background:var(--surface-bg);color:var(--fg-page);box-shadow:var(--surface-shadow);transition:border-color .15s,transform .15s,box-shadow .15s}
+        .ad-kpi:hover{border-color:var(--accent);transform:translateY(-1px)} .ad-kpi:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+        .ad-kpi.on{border-color:var(--accent);box-shadow:0 0 0 3px var(--hover-bg)}
+        .ad-kpi small{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--fg-page-muted)}
+        .ad-kpi small::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--dot,var(--accent))}
+        .ad-kpi b{display:block;margin-top:6px;font-size:22px;line-height:1.15;font-weight:700;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+        .ad-kpi.t-ok{--dot:#16a34a} .ad-kpi.t-trial{--dot:#2563eb} .ad-kpi.t-debt{--dot:#dc2626} .ad-kpi.t-off{--dot:#6b7280} .ad-kpi.t-none{--dot:#f59e0b}
+        .ad-kpi.money{cursor:default} .ad-kpi.money:hover{transform:none;border-color:var(--surface-border)} .ad-kpi.money b.bad{color:#dc2626} .ad-kpi.money b.good{color:#16a34a}
+        .ad-card{min-width:0;background:var(--surface-bg);border:1px solid var(--surface-border);box-shadow:var(--surface-shadow);border-radius:22px;padding:18px 20px}
+        .ad-sec-h{display:flex;align-items:center;gap:10px;margin:0 0 12px} .ad-sec-h h3{margin:0;font-size:16px;color:var(--fg-page)}
+        .ad-attn-l{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(290px,100%),1fr));gap:10px}
+        .ad-att{display:flex;align-items:center;gap:12px;min-width:0;padding:11px 12px;border-radius:14px;background:var(--field-bg);border-left:4px solid var(--c,#f59e0b)}
+        .ad-att.p0{--c:#dc2626} .ad-att.p1{--c:#f59e0b} .ad-att.p2{--c:#2563eb} .ad-att.p3{--c:#f59e0b}
+        .ad-mid{flex:1;min-width:0} .ad-att .ad-nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .ad-att small{display:block;margin-top:2px;font-size:12.5px;line-height:1.35;color:var(--fg-page-muted)}
+        .ad-ok{margin:0;padding:4px 0;font-size:14px;color:var(--fg-page-muted)} .ad-more{margin:10px 0 0;font-size:13px;color:var(--fg-page-muted)}
+        .ad-av{flex:none;width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;background:hsl(var(--h,215) 80% 50% / .16);color:hsl(var(--h,215) 62% 50%)}
+        .ad-who{display:flex;align-items:center;gap:12px;min-width:0}
+        .ad-nm{display:block;font-weight:600;font-size:14.5px;color:var(--fg-page)}
+        .ad-lg{display:flex;align-items:center;gap:4px;margin-top:1px;font-size:12.5px;color:var(--fg-page-muted)} .ad-lg code{font-size:12.5px}
+        .ad-copy{display:inline-flex;border:0;background:none;color:var(--fg-page-muted);cursor:pointer;padding:3px;border-radius:6px} .ad-copy:hover{background:var(--hover-bg);color:var(--accent)} .ad-copy svg{width:14px;height:14px}
+        .ad-fee{font-variant-numeric:tabular-nums;font-weight:600}
+        .ad-tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+        .ad-sort{height:42px;box-sizing:border-box;padding:0 12px;border-radius:12px;border:1.5px solid var(--panel-border);background:var(--field-bg);color:var(--field-fg);font:inherit;cursor:pointer;outline:none} .ad-sort:focus{border-color:var(--accent)}
+        .ad-cnt{margin-left:auto;font-size:13px;color:var(--fg-page-muted)}
+        .bl-chip i{font-style:normal;margin-left:6px;font-size:12px;opacity:.7}
+        .ad-r:hover td{background:var(--hover-bg)} .ad-r-debt td:first-child{box-shadow:inset 3px 0 0 #dc2626} .ad-r-blocked td:first-child{box-shadow:inset 3px 0 0 #6b7280} .ad-r-none td:first-child{box-shadow:inset 3px 0 0 #f59e0b}
+        .ad-empty{display:flex;flex-direction:column;align-items:center;gap:12px}
+        .ad-pw{border-radius:22px;background:var(--surface-bg);border:1px solid var(--surface-border);box-shadow:var(--surface-shadow);padding:14px 20px}
+        .ad-pw>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:15px;color:var(--fg-page)} .ad-pw>summary::-webkit-details-marker{display:none}
+        .ad-pw>summary::after{content:"▾";color:var(--fg-page-muted);transition:transform .2s} .ad-pw[open]>summary::after{transform:rotate(180deg)}
+        .ad-pw .acc-pwc.sc-card{border:0;box-shadow:none;background:none;padding:12px 0 0;max-width:420px} .ad-pw .acc-pwc h3{display:none}
+        @media (max-width:760px){
+            .ad-hero{padding:16px} .ad-new{width:100%}
+            .ad-card{padding:14px} .ad-tools .bl-q{max-width:none;flex-basis:100%} .ad-sort{flex:1} .ad-cnt{margin:0}
+            .bl-table td.ad-c1{justify-content:flex-start} .bl-table td.ad-c1::before{content:none}
+            .bl-table td:last-child .acc-act{width:100%;justify-content:flex-end}
+        }
+        @media (max-width:760px){
+            .bl-table thead{display:none} .bl-table,.bl-table tbody{display:block}
+            .bl-table tr{display:block;padding:12px 4px;border-top:1px solid var(--surface-border)} .bl-table td{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:5px 6px;border:0;white-space:normal}
+            .bl-table td::before{content:attr(data-l);color:var(--fg-page-muted);font-size:12px;flex:none} .bl-table td:last-child::before{content:none} .bl-table td:last-child{justify-content:flex-end}
+            .bl-plans{grid-template-columns:1fr}
+        }
         `;
         document.head.appendChild(st);
 
@@ -12513,8 +12983,204 @@
             while (used.indexOf(u) !== -1) u = b + i++;
             return u;
         }
+        /* ================= OBUNA (admin): yordamchilar ================= */
+        const nf = n => String(Math.round(n || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        const money = n => nf(n) + ' ' + tr("so'm", 'UZS', 'сум');
+        const p2 = n => String(n).padStart(2, '0');
+        const dt = t => { if (!t) return '—'; const d = new Date(t); return p2(d.getDate()) + '.' + p2(d.getMonth() + 1) + '.' + d.getFullYear(); };
+        const dtm = t => { const d = new Date(t); return dt(t) + ' ' + p2(d.getHours()) + ':' + p2(d.getMinutes()); };
+        const ymd = t => { const d = new Date(t); return d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate()); };
+        const digits = v => Number(String(v == null ? '' : v).replace(/\D/g, '')) || 0;
+        const monthsWord = n => tr(n + ' oy', n + (n === 1 ? ' month' : ' months'), n + ' мес.');
+        const METHODS = () => ({ cash: tr('Naqd', 'Cash', 'Наличные'), card: tr('Karta', 'Card', 'Карта'), transfer: tr("O'tkazma", 'Transfer', 'Перевод'), other: tr('Boshqa', 'Other', 'Другое') });
+        const BL = window.CRMAuth.billing;
+        const F = { q: '', f: 'all', s: 'status' };
+
+        const moneyInput = (name, val, ph) => '<input name="' + name + '" data-money inputmode="numeric" autocomplete="off" value="' + (val ? esc(nf(val)) : '') + '" placeholder="' + esc(ph || '') + '">';
+        document.addEventListener('input', e => {
+            const i = e.target; if (!i || !i.matches || !i.matches('input[data-money]')) return;
+            const n = digits(i.value); i.value = n ? nf(n) : '';
+        });
+        /* Holat yorlig'i: [klass, matn, ikkinchi qator] */
+        function status(a) {
+            const b = a.billing;
+            if (!a.active) return ['off', tr("Qo'lda bloklangan", 'Blocked manually', 'Заблокирован вручную'), b && b.debt ? tr('Qarz: ', 'Debt: ', 'Долг: ') + money(b.debt) : ''];
+            if (!b) return ['warn', tr('Tarif belgilanmagan', 'No plan set', 'Тариф не задан'), tr("Cheksiz kirish", 'Unlimited access', 'Доступ без ограничений')];
+            if (b.state === 'trial') return ['trial', tr('Sinov', 'Trial', 'Пробный') + ' · ' + tr(b.trialLeft + ' kun qoldi', b.trialLeft + ' d left', 'ещё ' + b.trialLeft + ' дн.'), tr("To'lov boshlanishi: ", 'Billing starts: ', 'Оплата с: ') + dt(b.anchor)];
+            if (b.state === 'active') return ['ok', tr("To'langan", 'Paid', 'Оплачено'), tr('Amal qiladi: ', 'Valid until: ', 'Действует до: ') + dt(b.paidUntil)];
+            if (b.state === 'grace') return ['warn', tr('Muhlat', 'Grace', 'Отсрочка') + ' · ' + dt(b.graceUntil), tr('Qarz: ', 'Debt: ', 'Долг: ') + money(b.debt)];
+            return ['off', tr('Qarzdor · bloklangan', 'Overdue · blocked', 'Долг · заблокирован'), tr('Qarz: ', 'Debt: ', 'Долг: ') + money(b.debt) + ' · ' + monthsWord(b.months)];
+        }
+        const bucket = a => !a.active ? 'blocked' : !a.billing ? 'none' : a.billing.state === 'grace' ? 'debt' : a.billing.state;
+
+        /* Tarif tanlash bloki (yaratish va tahrirlash uchun umumiy) */
+        const PLANS = () => [
+            ['trial3', tr('3 kun sinov', '3-day trial', '3 дня пробный'), tr('keyin oylik to‘lov', 'then monthly fee', 'затем ежемесячно')],
+            ['trial30', tr('1 oy sinov', '1-month trial', '1 месяц пробный'), tr('keyin oylik to‘lov', 'then monthly fee', 'затем ежемесячно')],
+            ['custom', tr('Maxsus sana', 'Custom date', 'Своя дата'), tr('o‘zingiz tanlaysiz', 'you pick', 'выбираете сами')],
+            ['now', tr('Sinovsiz', 'No trial', 'Без пробного'), tr('darhol to‘lov', 'pay right away', 'оплата сразу')]
+        ];
+        const planBlock = keep => '<div class="bl-plans">' + (keep ? '<label class="bl-plan"><input type="radio" name="mode" value="keep" checked><span><b>' + esc(tr('Saqlansin', 'Keep', 'Оставить')) + '</b><small>' + esc(keep) + '</small></span></label>' : '') +
+            PLANS().map((p, i) => '<label class="bl-plan"><input type="radio" name="mode" value="' + p[0] + '"' + (!keep && i === 0 ? ' checked' : '') + '><span><b>' + esc(p[1]) + '</b><small>' + esc(p[2]) + '</small></span></label>').join('') + '</div>' +
+            '<label class="acc-f bl-date" hidden>' + esc(tr("To'lov boshlanadigan sana", 'Billing start date', 'Дата начала оплаты')) + '<input type="date" name="date" min="' + ymd(Date.now()) + '"></label>';
+        function wirePlan(f, onChange) {
+            const sync = () => { const m = f.mode.value; $('.bl-date', f).hidden = m !== 'custom'; if (m === 'custom' && !f.date.value) f.date.value = ymd(Date.now() + 7 * 864e5); onChange && onChange(); };
+            f.querySelectorAll('input[name="mode"]').forEach(r => r.addEventListener('change', sync));
+            f.date.addEventListener('input', () => onChange && onChange());
+            sync();
+        }
+
+        /* ================= Yangi CEO (admin) ================= */
+        function openCreateCeo() {
+            const bd = modal('<h3>' + esc(tr('Yangi CEO akkaunti', 'New CEO account', 'Новый аккаунт CEO')) + '</h3>' +
+                '<form id="accForm" autocomplete="off">' +
+                '<label class="acc-f">' + esc(tr('Ism / markaz nomi', 'Name / center', 'Имя / центр')) + '<input name="name" maxlength="80"></label>' +
+                '<label class="acc-f">' + esc(tr('Login', 'Login', 'Логин')) + '<input name="username" maxlength="32" autocapitalize="off" spellcheck="false"></label>' +
+                '<div class="acc-row2"><label class="acc-f">' + esc(tr('Parol', 'Password', 'Пароль')) + '<input name="password" type="text" maxlength="128" spellcheck="false"></label>' +
+                '<button type="button" class="acc-btn ghost" data-x="gen">' + esc(tr('Yaratish', 'Generate', 'Создать')) + '</button></div>' +
+                '<div class="bl-sec"><h4>' + esc(tr("Obuna va to'lov", 'Subscription & billing', 'Подписка и оплата')) + '</h4>' +
+                '<label class="acc-f">' + esc(tr("Oylik to'lov summasi (so'm)", 'Monthly fee (UZS)', 'Ежемесячный платёж (сум)')) + moneyInput('fee', 0, '500 000') + '</label>' +
+                '<div class="acc-f" style="margin-bottom:6px">' + esc(tr("To'lov qachondan amal qiladi", 'When billing starts', 'Когда начинается оплата')) + '</div>' + planBlock() +
+                '<label class="acc-f">' + esc(tr("Boshlang'ich to'lov (ixtiyoriy)", 'Initial payment (optional)', 'Первый платёж (необязательно)')) + moneyInput('first', 0, '0') + '</label>' +
+                '<div class="bl-note" id="blPrev"></div></div>' +
+                '<div class="acc-err" role="alert"></div>' +
+                '<div class="acc-foot"><button type="button" class="acc-btn ghost" data-x="close">' + esc(tr('Bekor qilish', 'Cancel', 'Отмена')) + '</button><button type="submit" class="acc-btn">' + esc(tr('Yaratish', 'Create', 'Создать')) + '</button></div></form>');
+            const f = $('#accForm', bd), err = $('.acc-err', bd), prev = $('#blPrev', bd);
+            f.password.value = A.accounts.genPassword();
+            const preview = () => {
+                const fee = digits(f.fee.value), first = digits(f.first.value), a = BL.anchor(f.mode.value, f.date.value), now = Date.now();
+                if (isNaN(a)) { prev.innerHTML = esc(tr('Sanani tanlang', 'Pick a date', 'Выберите дату')); return; }
+                const feeTxt = fee ? money(fee) : tr("oylik to'lov", 'the monthly fee', 'ежемесячный платёж');
+                const immediate = a <= now;
+                prev.innerHTML = immediate
+                    ? esc(tr("Sinov yo'q: to'lov darhol talab qilinadi. ", 'No trial: payment is due immediately. ', 'Без пробного периода: оплата сразу. ')) + (fee && first >= fee ? esc(tr("Boshlang'ich to'lov birinchi oyni qoplaydi.", 'The initial payment covers the first month.', 'Первый платёж покрывает первый месяц.')) : '<b>' + esc(tr("Birinchi to'lov kiritilmaguncha akkaunt bloklangan bo'ladi.", 'The account stays blocked until the first payment is recorded.', 'Аккаунт заблокирован до первого платежа.')) + '</b>')
+                    : esc(tr('Sinov: ', 'Trial: ', 'Пробный: ')) + '<b>' + dt(now) + ' – ' + dt(a - 864e5) + '</b>. ' + esc(tr("To'lov ", 'Billing starts ', 'Оплата с ')) + '<b>' + dt(a) + '</b>' + esc(tr(" dan boshlanadi: har oy ", ': every month ', ': каждый месяц ')) + '<b>' + feeTxt + '</b>. ' + esc(tr("To'lanmasa akkaunt avtomatik bloklanadi.", 'If unpaid, the account is blocked automatically.', 'При неоплате аккаунт блокируется автоматически.'));
+            };
+            wirePlan(f, preview); f.fee.addEventListener('input', preview); f.first.addEventListener('input', preview); preview();
+            bd.addEventListener('click', e => {
+                const x = e.target.closest('[data-x]'); if (!x) return;
+                if (x.dataset.x === 'close') closeModal();
+                if (x.dataset.x === 'gen') f.password.value = A.accounts.genPassword();
+            });
+            f.addEventListener('submit', e => {
+                e.preventDefault();
+                const pw = f.password.value, un = f.username.value.trim().toLowerCase();
+                A.accounts.create({ role: 'ceo', name: f.name.value, username: f.username.value, password: pw, billing: { fee: digits(f.fee.value), mode: f.mode.value, date: f.date.value, firstPayment: digits(f.first.value) } })
+                    .then(() => { showCred(tr('Akkaunt yaratildi', 'Account created', 'Аккаунт создан'), un, pw); render(); }, x => { err.textContent = ERR(x && x.code); });
+            });
+            f.name.focus();
+        }
+
+        /* ================= To'lov qabul qilish ================= */
+        function openPay(acc) {
+            const b = acc.billing; if (!b) { openEditCeo(acc); return; }
+            const METH = METHODS();
+            const chips = [];
+            if (b.debt > 0) { chips.push([tr('Qarzni yopish', 'Clear debt', 'Закрыть долг'), b.debt]); chips.push([tr('Qarz + 1 oy', 'Debt + 1 mo', 'Долг + 1 мес.'), b.debt + b.fee]); }
+            [1, 3, 6, 12].forEach(k => chips.push([monthsWord(k), b.fee * k]));
+            const bd = modal('<h3>' + esc(tr("To'lov qabul qilish", 'Record payment', 'Принять платёж')) + '</h3>' +
+                '<div class="bl-sum"><div><small>' + esc(acc.name) + '</small><b>' + esc(status(acc)[1]) + '</b></div><div><small>' + esc(tr("Oylik to'lov", 'Monthly fee', 'Ежемесячно')) + '</small><b>' + esc(money(b.fee)) + '</b></div>' +
+                (b.debt > 0 ? '<div><small>' + esc(tr('Qarz', 'Debt', 'Долг')) + '</small><b class="bad">' + esc(money(b.debt)) + '</b></div>' : '<div><small>' + esc(b.state === 'trial' ? tr("To'lov boshlanishi", 'Billing starts', 'Оплата с') : tr('Amal qiladi', 'Valid until', 'Действует до')) + '</small><b>' + esc(dt(b.state === 'trial' ? b.anchor : b.paidUntil)) + '</b></div>') + '</div>' +
+                '<form id="blPay" autocomplete="off"><label class="acc-f">' + esc(tr("To'lov summasi (so'm)", 'Amount (UZS)', 'Сумма (сум)')) + moneyInput('amount', b.debt > 0 ? b.debt : b.fee) + '</label>' +
+                '<div class="bl-chips">' + chips.map((c, i) => '<button type="button" class="bl-chip" data-amt="' + c[1] + '">' + esc(c[0]) + '</button>').join('') + '</div>' +
+                '<div class="acc-row2"><label class="acc-f">' + esc(tr("To'lov turi", 'Method', 'Способ')) + '<select name="pmethod">' + Object.keys(METH).map(k => '<option value="' + k + '">' + esc(METH[k]) + '</option>').join('') + '</select></label>' +
+                '<label class="acc-f">' + esc(tr('Izoh', 'Note', 'Заметка')) + '<input name="note" maxlength="200"></label></div>' +
+                (acc.active ? '' : '<label class="bl-check"><input type="checkbox" name="activate" checked> ' + esc(tr("Akkauntni ham faollashtirish (qo'lda bloklangan)", 'Also re-activate the account (blocked manually)', 'Также активировать аккаунт (заблокирован вручную)')) + '</label>') +
+                '<div class="bl-note" id="blRes"></div><div class="acc-err" role="alert"></div>' +
+                '<div class="acc-foot"><button type="button" class="acc-btn ghost" data-x="close">' + esc(tr('Bekor qilish', 'Cancel', 'Отмена')) + '</button><button type="submit" class="acc-btn">' + esc(tr("To'lovni saqlash", 'Save payment', 'Сохранить платёж')) + '</button></div></form>');
+            const f = $('#blPay', bd), err = $('.acc-err', bd), res = $('#blRes', bd);
+            const upd = () => {
+                const amt = digits(f.amount.value), s = amt ? BL.simulate(acc.id, amt) : null;
+                if (!s) { res.innerHTML = ''; return; }
+                res.innerHTML = s.debtAfter > 0
+                    ? esc(tr("To'lovdan keyin ham qarz qoladi: ", 'Debt remaining after this payment: ', 'Останется долг: ')) + '<b class="bad">' + esc(money(s.debtAfter)) + '</b> (' + esc(monthsWord(s.monthsAfter)) + ')' + (b.blocked ? ' · ' + esc(tr('akkaunt bloklangan holda qoladi', 'the account stays blocked', 'аккаунт останется заблокированным')) : '')
+                    : (b.blocked ? '<b class="good">' + esc(tr('Qarz yopiladi — akkaunt avtomatik blokdan chiqadi.', 'Debt cleared — the account is unblocked automatically.', 'Долг закрыт — аккаунт автоматически разблокируется.')) + '</b> ' : '') + esc(tr('Amal qilish muddati: ', 'Valid until: ', 'Действует до: ')) + '<b>' + dt(s.paidUntil) + '</b>';
+            };
+            f.amount.addEventListener('input', upd); upd();
+            bd.addEventListener('click', e => {
+                const c = e.target.closest('[data-amt]'); if (c) { f.amount.value = nf(+c.dataset.amt); upd(); return; }
+                const x = e.target.closest('[data-x]'); if (x && x.dataset.x === 'close') closeModal();
+            });
+            f.addEventListener('submit', e => {
+                e.preventDefault();
+                BL.pay(acc.id, { amount: digits(f.amount.value), method: f.pmethod.value, note: f.note.value, activate: f.activate ? f.activate.checked : false }).then(a => {
+                    closeModal(); render();
+                    note(a.billing && !a.billing.blocked && b.blocked ? tr("To'lov qabul qilindi, akkaunt blokdan chiqdi", 'Payment recorded, account unblocked', 'Платёж принят, аккаунт разблокирован') : tr("To'lov qabul qilindi", 'Payment recorded', 'Платёж принят'));
+                }, x => { err.textContent = ERR(x && x.code); });
+            });
+            f.amount.focus(); f.amount.select();
+        }
+
+        /* ================= To'lov tarixi ================= */
+        function openHist(acc) {
+            const b = acc.billing; if (!b) return;
+            const METH = METHODS(), ev = BL.history(acc.id);
+            const bd = modal('<h3>' + esc(tr("To'lovlar tarixi", 'Payment history', 'История платежей')) + ' · ' + esc(acc.name) + '</h3>' +
+                '<div class="bl-sum"><div><small>' + esc(tr('Hisoblangan', 'Charged', 'Начислено')) + '</small><b>' + esc(money(b.totalCharged)) + '</b></div><div><small>' + esc(tr("To'langan", 'Paid', 'Оплачено')) + '</small><b class="good">' + esc(money(b.totalPaid)) + '</b></div><div><small>' + esc(b.debt > 0 ? tr('Qarz', 'Debt', 'Долг') : tr('Zaxira', 'Credit', 'Запас')) + '</small><b class="' + (b.debt > 0 ? 'bad' : '') + '">' + esc(money(b.debt > 0 ? b.debt : Math.max(0, b.balance))) + '</b></div></div>' +
+                (ev.length ? '<div class="bl-hist">' + ev.map(x => x.type === 'payment'
+                    ? '<div class="bl-ev pay"><div><b>+ ' + esc(money(x.amount)) + '</b><small>' + esc(dtm(x.at)) + ' · ' + esc(METH[x.method] || x.method) + (x.note ? ' · ' + esc(x.note) : '') + '</small></div><button class="acc-btn danger sm" data-undo="' + esc(x.id) + '">' + esc(tr('Bekor', 'Undo', 'Отменить')) + '</button></div>'
+                    : '<div class="bl-ev chg"><div><b>− ' + esc(money(x.amount)) + '</b><small>' + esc(dt(x.at)) + ' · ' + esc(tr('Oylik hisoblash', 'Monthly charge', 'Ежемесячное начисление')) + '</small></div></div>').join('') + '</div>'
+                    : '<div class="sc-empty">' + esc(tr("Hozircha yozuv yo'q (sinov davri)", 'No entries yet (trial period)', 'Записей пока нет (пробный период)')) + '</div>') +
+                '<div class="acc-foot"><button type="button" class="acc-btn ghost" data-x="close">' + esc(tr('Yopish', 'Close', 'Закрыть')) + '</button><button type="button" class="acc-btn" data-x="pay">' + esc(tr("To'lov qabul qilish", 'Record payment', 'Принять платёж')) + '</button></div>');
+            bd.addEventListener('click', e => {
+                const u = e.target.closest('[data-undo]');
+                if (u) { if (confirm(tr("Bu to'lov bekor qilinsinmi? Qarz qayta paydo bo'lishi va akkaunt bloklanishi mumkin.", 'Undo this payment? Debt may reappear and the account may be blocked.', 'Отменить этот платёж? Долг может вернуться, аккаунт может быть заблокирован.'))) BL.undoPay(acc.id, u.dataset.undo).then(() => { closeModal(); render(); note(tr("To'lov bekor qilindi", 'Payment undone', 'Платёж отменён')); const fresh = A.accounts.list().find(a => a.id === acc.id); if (fresh) openHist(fresh); }, x => note(ERR(x && x.code), 'error')); return; }
+                const x = e.target.closest('[data-x]'); if (!x) return;
+                if (x.dataset.x === 'close') closeModal();
+                if (x.dataset.x === 'pay') openPay(acc);
+            });
+        }
+
+        /* ================= Muhlat ================= */
+        function openGrace(acc) {
+            const b = acc.billing; if (!b) return;
+            const bd = modal('<h3>' + esc(tr("To'lovsiz muhlat berish", 'Grant a grace period', 'Предоставить отсрочку')) + '</h3>' +
+                '<p class="bl-note" style="margin-top:0">' + esc(tr("Muhlat davomida akkaunt qarzi bo'lsa ham bloklanmaydi. Muhlat tugagach, qarz yopilmagan bo'lsa, akkaunt avtomatik bloklanadi.", 'During the grace period the account is not blocked even with debt. After it ends, an unpaid account is blocked automatically.', 'Во время отсрочки аккаунт не блокируется даже при долге. После её окончания неоплаченный аккаунт блокируется автоматически.')) + '</p>' +
+                (b.graceUntil ? '<p class="bl-note">' + esc(tr('Joriy muhlat: ', 'Current grace: ', 'Текущая отсрочка: ')) + '<b>' + dt(b.graceUntil - 864e5) + '</b></p>' : '') +
+                '<form id="blGr"><label class="acc-f">' + esc(tr('Necha kun?', 'How many days?', 'Сколько дней?')) + '<input name="days" type="number" min="1" max="90" value="3"></label>' +
+                '<div class="bl-chips">' + [1, 3, 7, 14, 30].map(n => '<button type="button" class="bl-chip" data-d="' + n + '">' + esc(tr(n + ' kun', n + ' d', n + ' дн.')) + '</button>').join('') + '</div>' +
+                '<div class="acc-err" role="alert"></div><div class="acc-foot">' + (b.graceUntil ? '<button type="button" class="acc-btn danger" data-x="clear">' + esc(tr('Muhlatni bekor qilish', 'Cancel grace', 'Отменить отсрочку')) + '</button>' : '') +
+                '<button type="button" class="acc-btn ghost" data-x="close">' + esc(tr('Yopish', 'Close', 'Закрыть')) + '</button><button type="submit" class="acc-btn">' + esc(tr('Muhlat berish', 'Grant', 'Предоставить')) + '</button></div></form>');
+            const f = $('#blGr', bd), err = $('.acc-err', bd);
+            const go = d => BL.grace(acc.id, d).then(() => { closeModal(); render(); note(d ? tr('Muhlat berildi', 'Grace granted', 'Отсрочка предоставлена') : tr('Muhlat bekor qilindi', 'Grace cancelled', 'Отсрочка отменена')); }, x => { err.textContent = ERR(x && x.code); });
+            bd.addEventListener('click', e => {
+                const c = e.target.closest('[data-d]'); if (c) { f.days.value = c.dataset.d; return; }
+                const x = e.target.closest('[data-x]'); if (!x) return;
+                if (x.dataset.x === 'close') closeModal(); if (x.dataset.x === 'clear') go(0);
+            });
+            f.addEventListener('submit', e => { e.preventDefault(); go(Number(f.days.value)); });
+        }
+
+        /* ================= CEO tahrirlash (ism, login, tarif) ================= */
+        function openEditCeo(acc) {
+            const b = acc.billing, locked = b && b.started;
+            const bd = modal('<h3>' + esc(tr('Akkauntni tahrirlash', 'Edit account', 'Изменить аккаунт')) + '</h3>' +
+                '<form id="accEditForm" autocomplete="off">' +
+                '<label class="acc-f">' + esc(tr('Ism / markaz nomi', 'Name / center', 'Имя / центр')) + '<input name="name" maxlength="80"></label>' +
+                '<label class="acc-f">' + esc(tr('Login', 'Login', 'Логин')) + '<input name="username" maxlength="32" autocapitalize="off" spellcheck="false"></label>' +
+                '<div class="bl-sec"><h4>' + esc(tr("Obuna va to'lov", 'Subscription & billing', 'Подписка и оплата')) + '</h4>' +
+                '<label class="acc-f">' + esc(tr("Oylik to'lov summasi (so'm)", 'Monthly fee (UZS)', 'Ежемесячный платёж (сум)')) + moneyInput('fee', b ? b.fee : 0, '500 000') + '</label>' +
+                '<p class="bl-note" style="margin:0 0 8px">' + esc(b ? tr("Yangi summa keyingi oylik hisoblashlardan boshlab amal qiladi.", 'The new fee applies from the next monthly charge.', 'Новая сумма применяется со следующего начисления.') : tr("Bu akkauntda hali tarif yo'q — hozir cheksiz kira oladi. Tarif belgilang.", 'This account has no plan yet — it has unlimited access. Set a plan.', 'У аккаунта нет тарифа — доступ не ограничен. Задайте тариф.')) + '</p>' +
+                (locked ? '<p class="bl-note" style="margin:0">' + esc(tr("To'lov davri boshlangan: boshlanish sanasi ", 'Billing has started: start date ', 'Оплата началась: дата начала ')) + '<b>' + dt(b.anchor) + '</b>' + esc(tr(" o'zgarmaydi.", ' cannot be changed.', ' не меняется.')) + '</p>'
+                    : '<div class="acc-f" style="margin-bottom:6px">' + esc(tr("To'lov qachondan amal qiladi", 'When billing starts', 'Когда начинается оплата')) + '</div>' + planBlock(b ? tr('Hozir: ', 'Now: ', 'Сейчас: ') + dt(b.anchor) : '')) +
+                '</div><div class="acc-err" role="alert"></div>' +
+                '<div class="acc-foot"><button type="button" class="acc-btn ghost" data-x="close">' + esc(tr('Bekor qilish', 'Cancel', 'Отмена')) + '</button><button type="submit" class="acc-btn">' + esc(tr('Saqlash', 'Save', 'Сохранить')) + '</button></div></form>');
+            const f = $('#accEditForm', bd), err = $('.acc-err', bd);
+            f.name.value = acc.name; f.username.value = acc.username;
+            if (!locked) wirePlan(f);
+            if (!b && !locked) { /* tarif yo'q: "Saqlansin" varianti yo'q, standart — 3 kun sinov */ }
+            bd.addEventListener('click', e => { const x = e.target.closest('[data-x]'); if (x && x.dataset.x === 'close') closeModal(); });
+            f.addEventListener('submit', e => {
+                e.preventDefault();
+                const plan = { fee: digits(f.fee.value), mode: locked ? 'keep' : f.mode.value, date: f.date ? f.date.value : '' };
+                A.accounts.update(acc.id, { name: f.name.value, username: f.username.value }).then(() => BL.setPlan(acc.id, plan)).then(() => { closeModal(); note(tr('Saqlandi', 'Saved', 'Сохранено')); render(); }, x => { err.textContent = ERR(x && x.code); });
+            });
+            f.name.focus();
+        }
+
         function openCreate(pre) {
             const admin = R.is('admin');
+            if (admin) return openCreateCeo();
             const people = role => {
                 const taken = A.accounts.linked(role);
                 const src = role === 'student' ? (window.allStudents ? window.allStudents() : []) : (window.allTeachers ? window.allTeachers() : []);
@@ -12563,38 +13229,214 @@
             (admin ? f.name : f.person).focus();
         }
 
+        function openEdit(acc) {
+            const bd = modal('<h3>' + esc(tr('Akkauntni tahrirlash', 'Edit account', 'Изменить аккаунт')) + '</h3>' +
+                '<form id="accEditForm" autocomplete="off">' +
+                '<label class="acc-f">' + esc(tr('Ism', 'Name', 'Имя')) + '<input name="name" maxlength="80"></label>' +
+                '<label class="acc-f">' + esc(tr('Login', 'Login', 'Логин')) + '<input name="username" maxlength="32" autocapitalize="off" spellcheck="false"></label>' +
+                '<div class="acc-err" role="alert"></div>' +
+                '<div class="acc-foot"><button type="button" class="acc-btn ghost" data-x="close">' + esc(tr('Bekor qilish', 'Cancel', 'Отмена')) + '</button><button type="submit" class="acc-btn">' + esc(tr('Saqlash', 'Save', 'Сохранить')) + '</button></div></form>');
+            const f = $('#accEditForm', bd), err = $('.acc-err', bd);
+            f.name.value = acc.name; f.username.value = acc.username;
+            bd.addEventListener('click', e => { const x = e.target.closest('[data-x]'); if (x && x.dataset.x === 'close') closeModal(); });
+            f.addEventListener('submit', e => {
+                e.preventDefault();
+                A.accounts.update(acc.id, { name: f.name.value, username: f.username.value }).then(() => { closeModal(); note(tr('Saqlandi', 'Saved', 'Сохранено')); render(); }, x => { err.textContent = ERR(x && x.code); });
+            });
+            f.name.focus();
+        }
+
         /* ---------- Akkauntlar sahifasi ---------- */
-        function render() {
-            const root = $('#accountsRoot'); if (!root) return;
-            if (!R.is('admin') && !R.is('ceo')) { root.innerHTML = ''; return; }
-            const admin = R.is('admin'), list = A.accounts.list().sort((a, b) => b.createdAt - a.createdAt);
-            const title = admin ? tr('CEO akkauntlari', 'CEO accounts', 'Аккаунты CEO') : tr("O'qituvchi va o'quvchi loginlari", 'Teacher and student logins', 'Логины преподавателей и учеников');
-            const sub = admin ? tr("Siz CEO uchun login va parol yaratasiz.", 'You create logins and passwords for CEOs.', 'Вы создаёте логины и пароли для CEO.')
-                : tr("O'qituvchi va o'quvchilar uchun login va parol yarating.", 'Create logins and passwords for teachers and students.', 'Создавайте логины и пароли для преподавателей и учеников.');
-            root.innerHTML = '<div class="sc-wrap">' +
-                (admin && A.isDefaultAdmin() ? '<div class="acc-warn">' + esc(tr("Diqqat: admin paroli hali standart (admin123). Pastdagi “Mening parolim” orqali almashtiring.", 'Warning: the admin password is still the default (admin123). Change it below in “My password”.', 'Внимание: пароль admin всё ещё стандартный (admin123). Смените его ниже в «Мой пароль».')) + '</div>' : '') +
-                '<div class="sc-hero acc-bar"><div><h2>' + esc(title) + '</h2><p>' + esc(sub) + '</p></div><button class="acc-btn" data-a="new">+ ' + esc(tr('Yangi akkaunt', 'New account', 'Новый аккаунт')) + '</button></div>' +
+        /* Admin: obunalar paneli (statistika, filtr, qidiruv, jadval). CEO: o'z obunasi + o'qituvchi/o'quvchi loginlari. */
+        /* ===== ADMIN PANEL (yangi dizayn): KPI-filtrlar · e'tibor talab qiladiganlar · qidiruv/saralash · jadval ===== */
+        const adHue = str => { let h = 0; String(str || '').split('').forEach(c => { h = (h * 31 + c.charCodeAt(0)) % 360; }); return h; };
+        const adInit = n => { const w = String(n || '').trim().split(/\s+/).filter(Boolean); return ((w[0] ? Array.from(w[0])[0] : '?') + (w[1] ? Array.from(w[1])[0] : '')).toUpperCase(); };
+        const ICON_COPY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>';
+        const ORD = { debt: 0, blocked: 1, none: 2, trial: 3, active: 4 };
+        const SORTS = () => [['status', tr("Holat bo'yicha", 'By status', 'По статусу')], ['name', tr('Ism (A–Z)', 'Name (A–Z)', 'Имя (А–Я)')], ['fee', tr("Oylik to'lov (ko'p → kam)", 'Fee (high → low)', 'Платёж (больше → меньше)')], ['new', tr("Yangi qo'shilgan", 'Newest first', 'Сначала новые')]];
+        const SORTERS = {
+            status: (a, b) => (ORD[bucket(a)] - ORD[bucket(b)]) || (b.createdAt - a.createdAt),
+            name: (a, b) => String(a.name || a.username).localeCompare(String(b.name || b.username)),
+            fee: (a, b) => ((b.billing ? b.billing.fee : 0) - (a.billing ? a.billing.fee : 0)) || (b.createdAt - a.createdAt),
+            new: (a, b) => b.createdAt - a.createdAt
+        };
+        const FILTERS = () => [['all', tr('Hammasi', 'All', 'Все')], ['active', tr("To'langan", 'Paid', 'Оплачено')], ['trial', tr('Sinovda', 'Trial', 'Пробный')], ['debt', tr('Qarzdor', 'Overdue', 'Должники')], ['blocked', tr('Bloklangan', 'Blocked', 'Заблокированные')], ['none', tr('Tarifsiz', 'No plan', 'Без тарифа')]];
+        const ceoOnly = list => list.filter(a => a.role === 'ceo');
+
+        function adminStats(list) {
+            const ceo = ceoOnly(list), pay = ceo.filter(a => a.billing);
+            const cnt = k => k === 'all' ? ceo.length : ceo.filter(a => bucket(a) === k).length;
+            const debt = pay.reduce((x, a) => x + a.billing.debt, 0);
+            const mrr = pay.filter(a => a.active && a.billing.state !== 'debt').reduce((x, a) => x + a.billing.fee, 0);
+            const kpi = (k, label, tone) => '<button type="button" class="ad-kpi t-' + tone + (F.f === k ? ' on' : '') + '" data-f="' + k + '" aria-pressed="' + (F.f === k) + '"><small>' + esc(label) + '</small><b>' + cnt(k) + '</b></button>';
+            const money_ = (label, v, cls) => '<div class="ad-kpi money"><small>' + esc(label) + '</small><b class="' + cls + '">' + esc(money(v)) + '</b></div>';
+            return kpi('all', tr('Jami CEO', 'Total CEOs', 'Всего CEO'), 'trial') + kpi('active', tr("To'langan", 'Paid', 'Оплачено'), 'ok') + kpi('trial', tr('Sinovda', 'On trial', 'На пробном'), 'trial') +
+                kpi('debt', tr('Qarzdor', 'Overdue', 'Должники'), 'debt') + kpi('blocked', tr('Bloklangan', 'Blocked', 'Заблокированные'), 'off') + kpi('none', tr('Tarifsiz', 'No plan', 'Без тарифа'), 'none') +
+                money_(tr('Oylik tushum', 'Monthly revenue', 'Доход в месяц'), mrr, 'good') + money_(tr('Jami qarz', 'Total debt', 'Общий долг'), debt, debt ? 'bad' : '');
+        }
+        /* Hozir e'tibor talab qiladigan akkauntlar: qarz → muhlat → sinov tugayapti → to'lov yaqin → tarifsiz */
+        function attention(list) {
+            const now = Date.now(), DAY = 864e5, out = [];
+            ceoOnly(list).forEach(a => {
+                if (!a.active) return;
+                const b = a.billing, nm = a.name || a.username;
+                if (!b) { out.push({ p: 3, a, t: tr('Tarif belgilanmagan', 'No plan set', 'Тариф не задан'), act: 'ed', lbl: tr('Tarif belgilash', 'Set plan', 'Задать тариф') }); return; }
+                if (b.state === 'debt') out.push({ p: 0, a, t: tr('Qarzdor · bloklangan: ', 'Overdue · blocked: ', 'Долг · заблокирован: ') + money(b.debt) + ' (' + monthsWord(b.months) + ')', act: 'pay', lbl: tr("To'lov va blokdan ochish", 'Pay & unblock', 'Оплата и разблокировка') });
+                else if (b.state === 'grace') out.push({ p: 1, a, t: tr('Muhlat ', 'Grace until ', 'Отсрочка до ') + dt(b.graceUntil - DAY) + tr(' gacha · qarz ', ' · debt ', ' · долг ') + money(b.debt), act: 'pay', lbl: tr("To'lov", 'Payment', 'Платёж') });
+                else if (b.state === 'trial' && b.trialLeft <= 3) out.push({ p: 2, a, t: tr('Sinov tugayapti: ' + b.trialLeft + ' kun qoldi', 'Trial ending: ' + b.trialLeft + ' day(s) left', 'Пробный заканчивается: ещё ' + b.trialLeft + ' дн.') + ' · ' + dt(b.anchor), act: 'pay', lbl: tr("To'lov", 'Payment', 'Платёж') });
+                else if (b.state === 'active' && b.paidUntil - now <= 3 * DAY) out.push({ p: 2, a, t: tr("To'lov muddati yaqin: ", 'Payment due soon: ', 'Скоро срок оплаты: ') + dt(b.paidUntil), act: 'pay', lbl: tr("To'lov", 'Payment', 'Платёж') });
+            });
+            out.sort((x, y) => (x.p - y.p) || String(x.a.name).localeCompare(String(y.a.name)));
+            const MAX = 6, show = out.slice(0, MAX);
+            const html = out.length
+                ? '<div class="ad-attn-l">' + show.map(o => '<div class="ad-att p' + o.p + '"><span class="ad-av" style="--h:' + adHue(o.a.username) + '">' + esc(adInit(o.a.name || o.a.username)) + '</span><div class="ad-mid"><span class="ad-nm">' + esc(o.a.name || o.a.username) + '</span><small>' + esc(o.t) + '</small></div>' +
+                    '<button type="button" class="acc-btn sm" data-a="' + o.act + '" data-id="' + esc(o.a.id) + '">' + esc(o.lbl) + '</button></div>').join('') + '</div>' +
+                    (out.length > MAX ? '<p class="ad-more">' + esc(tr('Yana ' + (out.length - MAX) + " ta akkaunt bor — pastdagi jadvaldan ko'ring.", (out.length - MAX) + ' more — see the table below.', 'Ещё ' + (out.length - MAX) + ' — смотрите в таблице ниже.')) + '</p>' : '')
+                : '<p class="ad-ok">' + esc(tr("Hozircha e'tibor talab qiladigan akkaunt yo'q — hammasi joyida.", 'Nothing needs attention right now — all good.', 'Сейчас ничего не требует внимания — всё в порядке.')) + '</p>';
+            return { html, n: out.length };
+        }
+        function filterChips(list) {
+            const ceo = ceoOnly(list), cnt = k => k === 'all' ? ceo.length : ceo.filter(a => bucket(a) === k).length;
+            return FILTERS().map(f => '<button type="button" class="bl-chip' + (F.f === f[0] ? ' on' : '') + '" data-f="' + f[0] + '" aria-pressed="' + (F.f === f[0]) + '">' + esc(f[1]) + '<i>' + cnt(f[0]) + '</i></button>').join('');
+        }
+        function nextCell(a) {
+            const b = a.billing, DAY = 864e5; if (!b) return ['—', ''];
+            if (b.state === 'trial') return [dt(b.anchor), tr('sinov tugashi', 'trial ends', 'конец пробного')];
+            if (b.state === 'active') return [dt(b.paidUntil), tr("keyingi to'lov", 'next payment', 'след. платёж')];
+            if (b.state === 'grace') return [dt(b.graceUntil - DAY), tr('muhlat tugashi', 'grace ends', 'конец отсрочки')];
+            return [dt(b.dueAt), tr("muddati o'tgan", 'overdue since', 'просрочено с')];
+        }
+        function copyText(txt) {
+            const ok = () => note(tr('Login nusxalandi', 'Login copied', 'Логин скопирован'));
+            const bad = () => note(tr("Nusxalab bo'lmadi", 'Could not copy', 'Не удалось скопировать'), 'error');
+            const fb = () => { try { const ta = document.createElement('textarea'); ta.value = txt; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0'; document.body.appendChild(ta); ta.select(); const r = document.execCommand('copy'); ta.remove(); r ? ok() : bad(); } catch (e) { bad(); } };
+            try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(txt).then(ok, fb); return; } } catch (e) { /* zaxira usulga o'tamiz */ }
+            fb();
+        }
+        function rowActions(a) {
+            const id = ' data-id="' + esc(a.id) + '"', b = a.billing, debtBlocked = a.active && b && b.blocked;
+            return '<div class="acc-act">' +
+                (b ? '<button class="acc-btn sm" data-a="pay"' + id + '>' + esc(debtBlocked ? tr("To'lov va blokdan ochish", 'Pay & unblock', 'Оплата и разблокировка') : tr("To'lov", 'Payment', 'Платёж')) + '</button><button class="acc-btn ghost sm" data-a="hist"' + id + '>' + esc(tr('Tarix', 'History', 'История')) + '</button>'
+                    : '<button class="acc-btn sm" data-a="ed"' + id + '>' + esc(tr('Tarif belgilash', 'Set plan', 'Задать тариф')) + '</button>') +
+                '<details class="bl-more"><summary class="acc-btn ghost sm" aria-label="' + esc(tr('Boshqa amallar', 'More', 'Ещё')) + '">⋯</summary><div class="bl-menu">' +
+                '<button data-a="ed"' + id + '>' + esc(tr('Tahrirlash', 'Edit', 'Изменить')) + '</button>' +
+                (b && (b.debt > 0 || b.graceUntil) ? '<button data-a="gr"' + id + '>' + esc(tr('Muhlat berish', 'Grace period', 'Отсрочка')) + '</button>' : '') +
+                '<button data-a="pw"' + id + '>' + esc(tr('Yangi parol', 'New password', 'Новый пароль')) + '</button>' +
+                '<button data-a="tg"' + id + '>' + esc(a.active ? tr("Qo'lda bloklash", 'Block manually', 'Заблокировать вручную') : tr('Faollashtirish', 'Activate', 'Активировать')) + '</button>' +
+                '<button class="dng" data-a="rm"' + id + '>' + esc(tr("O'chirish", 'Delete', 'Удалить')) + '</button></div></details></div>';
+        }
+        function drawAdminList(list) {
+            const box = $('#blList'); if (!box) return;
+            const q = F.q.trim().toLowerCase(), all = ceoOnly(list);
+            const rows = all.filter(a => (F.f === 'all' || bucket(a) === F.f) && (!q || (a.name + ' ' + a.username).toLowerCase().indexOf(q) !== -1)).sort(SORTERS[F.s] || SORTERS.status);
+            const cnt = $('#blCnt'); if (cnt) cnt.textContent = rows.length === all.length ? tr('Jami: ' + all.length, 'Total: ' + all.length, 'Всего: ' + all.length) : tr(rows.length + ' / ' + all.length + ' ta', rows.length + ' of ' + all.length, rows.length + ' из ' + all.length);
+            const H = { who: 'CEO', fee: tr("Oylik to'lov", 'Monthly fee', 'Платёж'), st: tr('Holat', 'Status', 'Статус'), due: tr('Muddat', 'Due', 'Срок') };
+            if (!rows.length) {
+                box.innerHTML = '<div class="sc-empty ad-empty"><span>' + esc(all.length ? tr('Hech narsa topilmadi', 'Nothing found', 'Ничего не найдено') : tr("Hozircha CEO akkaunti yo'q. Birinchisini qo'shing.", 'No CEO accounts yet. Add the first one.', 'Пока нет аккаунтов CEO. Добавьте первый.')) + '</span>' +
+                    (all.length ? '<button type="button" class="acc-btn ghost sm" data-a="reset">' + esc(tr('Filtrni tozalash', 'Clear filters', 'Сбросить фильтры')) + '</button>' : '<button type="button" class="acc-btn" data-a="new">+ ' + esc(tr('Yangi CEO', 'New CEO', 'Новый CEO')) + '</button>') + '</div>';
+                return;
+            }
+            box.innerHTML = '<div class="sc-table-wrap"><table class="sc-table bl-table"><thead><tr><th>' + esc(H.who) + '</th><th>' + esc(H.fee) + '</th><th>' + esc(H.st) + '</th><th>' + esc(H.due) + '</th><th></th></tr></thead><tbody>' +
+                rows.map(a => {
+                    const s = status(a), n = nextCell(a), nm = a.name || a.username;
+                    return '<tr class="ad-r ad-r-' + bucket(a) + '"><td class="ad-c1" data-l="' + esc(H.who) + '"><div class="ad-who"><span class="ad-av" style="--h:' + adHue(a.username) + '">' + esc(adInit(nm)) + '</span><div><span class="ad-nm">' + esc(nm) + '</span>' +
+                        '<span class="ad-lg"><code>' + esc(a.username) + '</code><button type="button" class="ad-copy" data-a="cp" data-id="' + esc(a.id) + '" title="' + esc(tr('Loginni nusxalash', 'Copy login', 'Копировать логин')) + '" aria-label="' + esc(tr('Loginni nusxalash', 'Copy login', 'Копировать логин')) + '">' + ICON_COPY + '</button></span></div></div></td>' +
+                        '<td data-l="' + esc(H.fee) + '"><span class="ad-fee">' + (a.billing ? esc(money(a.billing.fee)) : '—') + '</span></td>' +
+                        '<td data-l="' + esc(H.st) + '"><span class="acc-badge bl-' + s[0] + '">' + esc(s[1]) + '</span>' + (s[2] ? '<small class="bl-sub">' + esc(s[2]) + '</small>' : '') + '</td>' +
+                        '<td data-l="' + esc(H.due) + '"><span class="ad-fee">' + esc(n[0]) + '</span>' + (n[1] ? '<small class="bl-sub">' + esc(n[1]) + '</small>' : '') + '</td>' +
+                        '<td>' + rowActions(a) + '</td></tr>';
+                }).join('') + '</tbody></table></div>';
+        }
+        function paintAdmin() {
+            const st = $('#blStats'); if (!st) return;
+            const list = A.accounts.list(); st.innerHTML = adminStats(list);
+            const at = attention(list), ah = $('#adAttn'); if (ah) ah.innerHTML = at.html;
+            const an = $('#adAttnN'); if (an) { an.textContent = String(at.n); an.className = 'acc-badge' + (at.n ? ' bl-warn' : ' bl-ok'); }
+            const fl = $('#blF'); if (fl) fl.innerHTML = filterChips(list);
+            drawAdminList(list);
+        }
+        function renderAdmin(root) {
+            const defPw = A.isDefaultAdmin();
+            root.innerHTML = '<div class="sc-wrap bl-wrap ad-wrap">' +
+                (defPw ? '<div class="ad-alert" role="alert"><div><b>' + esc(tr('Xavfsizlik ogohlantirishi', 'Security warning', 'Предупреждение безопасности')) + '</b><span>' + esc(tr("Admin paroli hali standart (admin123). Uni hoziroq almashtiring.", 'The admin password is still the default (admin123). Change it now.', 'Пароль admin всё ещё стандартный (admin123). Смените его сейчас.')) + '</span></div>' +
+                    '<button type="button" class="acc-btn sm" data-a="pwfocus">' + esc(tr('Parolni almashtirish', 'Change password', 'Сменить пароль')) + '</button></div>' : '') +
+                '<div class="sc-hero ad-hero"><div><h2>' + esc(tr('Obunalar boshqaruvi', 'Subscription management', 'Управление подписками')) + '</h2><p>' + esc(tr("Markazlar (CEO) obunasi va to'lovlari. To'lamagan akkaunt avtomatik bloklanadi, to'lov qabul qilingach darhol ochiladi.", 'Centers (CEO) subscriptions and payments. Unpaid accounts are blocked automatically and unblocked as soon as a payment is recorded.', 'Подписки и платежи центров (CEO). Неоплаченные аккаунты блокируются автоматически и разблокируются сразу после оплаты.')) + '</p></div>' +
+                    '<button type="button" class="acc-btn ad-new" data-a="new">+ ' + esc(tr('Yangi CEO', 'New CEO', 'Новый CEO')) + '</button></div>' +
+                '<div class="ad-kpis" id="blStats"></div>' +
+                '<div class="ad-card"><div class="ad-sec-h"><h3>' + esc(tr("E'tibor talab qiladi", 'Needs attention', 'Требует внимания')) + '</h3><span class="acc-badge" id="adAttnN">0</span></div><div id="adAttn"></div></div>' +
+                '<div class="ad-card"><div class="ad-tools"><input type="search" id="blQ" class="bl-q" placeholder="' + esc(tr('Qidirish: ism yoki login', 'Search name or login', 'Поиск: имя или логин')) + '" value="' + esc(F.q) + '" aria-label="' + esc(tr('Qidirish', 'Search', 'Поиск')) + '">' +
+                    '<select id="blS" class="ad-sort" aria-label="' + esc(tr('Saralash', 'Sort', 'Сортировка')) + '">' + SORTS().map(o => '<option value="' + o[0] + '"' + (F.s === o[0] ? ' selected' : '') + '>' + esc(o[1]) + '</option>').join('') + '</select><span class="ad-cnt" id="blCnt" aria-live="polite"></span></div>' +
+                    '<div class="bl-filters" id="blF" role="group" aria-label="' + esc(tr('Holat bo\'yicha filtr', 'Filter by status', 'Фильтр по статусу')) + '"></div><div id="blList" style="margin-top:12px"></div></div>' +
+                '<details class="ad-pw" id="adPw"><summary>' + esc(tr('Mening parolim', 'My password', 'Мой пароль')) + '</summary>' + pwCard() + '</details></div>';
+            paintAdmin();
+        }
+        function renderCeo(root) {
+            const list = A.accounts.list().sort((a, b) => b.createdAt - a.createdAt), s = BL.mine();
+            const sub = s ? (() => { const st = ({ trial: [tr('Sinov davri', 'Trial', 'Пробный период'), tr('Sinov tugashi: ', 'Trial ends: ', 'Пробный до: ') + dt(s.anchor)], active: [tr("To'langan", 'Paid', 'Оплачено'), tr('Amal qiladi: ', 'Valid until: ', 'Действует до: ') + dt(s.paidUntil)], grace: [tr('Muhlat', 'Grace period', 'Отсрочка'), tr('Muhlat tugashi: ', 'Grace ends: ', 'Отсрочка до: ') + dt(s.graceUntil - 864e5)], debt: [tr('Qarzdor', 'Overdue', 'Долг'), ''] })[s.state];
+                return '<div class="sc-card bl-mine"><h3>' + esc(tr('Obuna', 'Subscription', 'Подписка')) + '</h3><div class="bl-sum"><div><small>' + esc(tr('Holat', 'Status', 'Статус')) + '</small><b class="' + (s.state === 'debt' ? 'bad' : s.state === 'active' ? 'good' : '') + '">' + esc(st[0]) + '</b></div><div><small>' + esc(tr("Oylik to'lov", 'Monthly fee', 'Ежемесячно')) + '</small><b>' + esc(money(s.fee)) + '</b></div>' +
+                    '<div><small>' + esc(s.debt > 0 ? tr('Qarz', 'Debt', 'Долг') : tr("Keyingi to'lov", 'Next payment', 'Следующий платёж')) + '</small><b class="' + (s.debt > 0 ? 'bad' : '') + '">' + esc(s.debt > 0 ? money(s.debt) : dt(s.state === 'trial' ? s.anchor : s.paidUntil)) + '</b></div></div>' + (st[1] ? '<p class="bl-note" style="margin:10px 0 0">' + esc(st[1]) + '</p>' : '') + '</div>'; })() : '';
+            root.innerHTML = '<div class="sc-wrap">' + sub +
+                '<div class="sc-hero acc-bar"><div><h2>' + esc(tr("O'qituvchi va o'quvchi loginlari", 'Teacher and student logins', 'Логины преподавателей и учеников')) + '</h2><p>' + esc(tr("O'qituvchi va o'quvchilar uchun login va parol yarating.", 'Create logins and passwords for teachers and students.', 'Создавайте логины и пароли для преподавателей и учеников.')) + '</p></div><button class="acc-btn" data-a="new">+ ' + esc(tr('Yangi akkaunt', 'New account', 'Новый аккаунт')) + '</button></div>' +
                 '<div class="sc-card">' + (list.length ? '<div class="sc-table-wrap"><table class="sc-table"><thead><tr><th>' + esc(tr('Ism', 'Name', 'Имя')) + '</th><th>' + esc(tr('Login', 'Login', 'Логин')) + '</th><th>' + esc(tr('Rol', 'Role', 'Роль')) + '</th><th>' + esc(tr('Holat', 'Status', 'Статус')) + '</th><th></th></tr></thead><tbody>' +
                     list.map(a => '<tr><td>' + esc(a.name) + '</td><td><code>' + esc(a.username) + '</code></td><td><span class="acc-badge">' + esc(ROLE(a.role)) + '</span></td>' +
                         '<td><span class="acc-badge' + (a.active ? '' : ' off') + '">' + esc(a.active ? tr('Faol', 'Active', 'Активен') : tr('Bloklangan', 'Blocked', 'Заблокирован')) + '</span></td>' +
-                        '<td><div class="acc-act"><button class="acc-btn ghost sm" data-a="pw" data-id="' + esc(a.id) + '">' + esc(tr('Yangi parol', 'New password', 'Новый пароль')) + '</button>' +
+                        '<td><div class="acc-act"><button class="acc-btn ghost sm" data-a="ed" data-id="' + esc(a.id) + '">' + esc(tr('Tahrirlash', 'Edit', 'Изменить')) + '</button><button class="acc-btn ghost sm" data-a="pw" data-id="' + esc(a.id) + '">' + esc(tr('Yangi parol', 'New password', 'Новый пароль')) + '</button>' +
                         '<button class="acc-btn ghost sm" data-a="tg" data-id="' + esc(a.id) + '">' + esc(a.active ? tr('Bloklash', 'Block', 'Блок') : tr('Faollashtirish', 'Activate', 'Включить')) + '</button>' +
                         '<button class="acc-btn danger sm" data-a="rm" data-id="' + esc(a.id) + '">' + esc(tr("O'chirish", 'Delete', 'Удалить')) + '</button></div></td></tr>').join('') +
                     '</tbody></table></div>' : '<div class="sc-empty">' + esc(tr("Hozircha akkaunt yo'q", 'No accounts yet', 'Пока нет аккаунтов')) + '</div>') + '</div>' + pwCard() + '</div>';
+        }
+        function render() {
+            const root = $('#accountsRoot'); if (!root) return;
+            if (R.is('admin')) renderAdmin(root); else if (R.is('ceo')) renderCeo(root); else { root.innerHTML = ''; return; }
             refreshKeys();
         }
+        /* «⋯» menyusi: position:fixed + qo'lda joylashtirish — jadval o'rami (overflow) kesmaydi, pastda joy bo'lmasa tepaga ochiladi */
+        function closeMenus() { document.querySelectorAll('details.bl-more[open]').forEach(d => d.removeAttribute('open')); }
+        function openMenu(d) {
+            d.setAttribute('open', '');
+            const sm = d.querySelector('summary'), m = d.querySelector('.bl-menu'); if (!sm || !m) return;
+            const r = sm.getBoundingClientRect(); m.style.left = '0px'; m.style.top = '0px';
+            const w = m.offsetWidth, h = m.offsetHeight, vw = document.documentElement.clientWidth, vh = window.innerHeight;
+            const left = Math.max(8, Math.min(r.right - w, vw - w - 8));
+            let top = r.bottom + 6; if (top + h > vh - 8) top = Math.max(8, r.top - h - 6);
+            m.style.left = left + 'px'; m.style.top = top + 'px';
+            const a = m.getBoundingClientRect();       /* transform/filter'li ota-ona bo'lsa, siljishni tuzatamiz */
+            if (Math.abs(a.left - left) > 1 || Math.abs(a.top - top) > 1) { m.style.left = (left * 2 - a.left) + 'px'; m.style.top = (top * 2 - a.top) + 'px'; }
+            const f = m.querySelector('button'); if (f) f.focus({ preventScroll: true });
+        }
+        window.addEventListener('scroll', e => { if (!(e.target && e.target.closest && e.target.closest('.bl-menu'))) closeMenus(); }, true);
+        window.addEventListener('resize', closeMenus);
+        document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.querySelector('details.bl-more[open]')) { const o = document.querySelector('details.bl-more[open] > summary'); closeMenus(); if (o) o.focus(); } });
+        document.addEventListener('input', e => { if (e.target && e.target.id === 'blQ') { F.q = e.target.value; drawAdminList(A.accounts.list()); } });
+        document.addEventListener('change', e => { if (e.target && e.target.id === 'blS') { F.s = SORTERS[e.target.value] ? e.target.value : 'status'; drawAdminList(A.accounts.list()); } });
         document.addEventListener('click', e => {
+            const fb = e.target.closest && e.target.closest('#accountsRoot [data-f]');
+            if (fb) { const k = fb.dataset.f; F.f = (fb.classList.contains('ad-kpi') && F.f === k) ? 'all' : k; paintAdmin(); return; }
+            const sm = e.target.closest && e.target.closest('details.bl-more > summary');
+            if (sm) { e.preventDefault(); const d = sm.parentNode, was = d.hasAttribute('open'); closeMenus(); if (!was) openMenu(d); return; }
+            document.querySelectorAll('details.bl-more[open]').forEach(d => { if (!d.contains(e.target)) d.removeAttribute('open'); });
             const b = e.target.closest && e.target.closest('#accountsRoot [data-a]'); if (!b) return;
+            const dd = b.closest('details'); if (dd) dd.removeAttribute('open');
             const id = b.dataset.id, acc = A.accounts.list().find(a => a.id === id), a = b.dataset.a;
             const fail = x => note(ERR(x && x.code), 'error');
             if (a === 'new') openCreate();
+            if (a === 'cp' && acc) copyText(acc.username);
+            if (a === 'reset') { F.q = ''; F.f = 'all'; const qi = $('#blQ'); if (qi) qi.value = ''; paintAdmin(); }
+            if (a === 'pwfocus') { const d = $('#adPw'); if (d) { d.setAttribute('open', ''); try { d.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (er) { /* eski brauzer */ } const pi = d.querySelector('input[name="o"]'); if (pi) setTimeout(() => pi.focus({ preventScroll: true }), 250); } }
+            if (a === 'ed' && acc) (acc.role === 'ceo' ? openEditCeo : openEdit)(acc);
+            if (a === 'pay' && acc) openPay(acc);
+            if (a === 'hist' && acc) openHist(acc);
+            if (a === 'gr' && acc) openGrace(acc);
             if (a === 'pw' && acc && confirm(tr('"' + acc.username + '" uchun yangi parol yaratilsinmi? Eskisi ishlamay qoladi.', 'Generate a new password for "' + acc.username + '"? The old one stops working.', 'Создать новый пароль для "' + acc.username + '"? Старый перестанет работать.'))) {
                 const pw = A.accounts.genPassword();
                 A.accounts.setPassword(id, pw).then(() => { showCred(tr('Yangi parol', 'New password', 'Новый пароль'), acc.username, pw); render(); }, fail);
             }
-            if (a === 'tg' && acc) A.accounts.setActive(id, !acc.active).then(render, fail);
-            if (a === 'rm' && acc && confirm(tr('"' + acc.username + '" akkaunti o\'chirilsinmi?', 'Delete account "' + acc.username + '"?', 'Удалить аккаунт "' + acc.username + '"?'))) A.accounts.remove(id).then(() => { note(tr("O'chirildi", 'Deleted', 'Удалено')); render(); }, fail);
+            if (a === 'tg' && acc) A.accounts.setActive(id, !acc.active).then(p => { render(); if (!acc.active && p.billing && p.billing.blocked) note(tr("Akkaunt faollashtirildi, lekin qarz sababli to'lovgacha bloklangan", 'Activated, but still blocked until the debt is paid', 'Активирован, но заблокирован до оплаты долга'), 'error'); }, fail);
+            if (a === 'rm' && acc && confirm(tr('"' + acc.username + '" akkaunti o\'chirilsinmi?' + (acc.role === 'ceo' ? " Uning o'qituvchi va o'quvchi loginlari ham o'chadi." : ''), 'Delete account "' + acc.username + '"?' + (acc.role === 'ceo' ? ' Its teacher and student logins will be deleted too.' : ''), 'Удалить аккаунт "' + acc.username + '"?' + (acc.role === 'ceo' ? ' Его логины преподавателей и учеников тоже будут удалены.' : '')))) A.accounts.remove(id).then(() => { note(tr("O'chirildi", 'Deleted', 'Удалено')); render(); }, fail);
         });
+        /* Vaqt o'tishi bilan holatlar o'zgaradi (sinov tugadi, muhlat tugadi) — ochiq sahifa o'zi yangilanadi */
+        setInterval(() => { if (R.is('admin') && !document.hidden && !$('#accBd') && !document.querySelector('details.bl-more[open]') && $('#blStats')) paintAdmin(); }, 30000);
+        window.addEventListener('storage', () => { if (R.is('admin') && $('#blStats') && !$('#accBd') && !document.querySelector('details.bl-more[open]')) paintAdmin(); });
         window.renderAccounts = render;
 
         /* ---------- Talabalar / O'qituvchilar sahifalarida login tugmasi (faqat CEO) ---------- */
@@ -12807,6 +13649,10 @@
         }
         window.renderTeacherCabinet = renderTeacher;
         R.onUpdate(renderTeacher); R.onUpdate(render);
+        /* Sessiya sahifa yuklanishida (skriptlardan oldin) tiklanadi — shuning uchun holatni qo'lda ham tekshiramiz */
+        const kick = () => { render(); renderTeacher(); };
+        A.onState(s => { if (s === 'in') kick(); });
+        if (A.state === 'in') kick();
 
         /* O'quvchi kabinetiga ham parol kartasini qo'shamiz */
         const baseStudent = window.renderStudentCabinet;
@@ -12817,6 +13663,144 @@
         };
     })();
 
+    </script>
+
+    <script>
+    /* ===== OBUNA NAZORATI: bloklangan akkaunt oynasi, sessiyani doimiy tekshirish, to'lov eslatmasi ===== */
+    (function billingGuard() {
+        'use strict';
+        const A = window.CRMAuth, R = window.CRMRole;
+        if (!A || !R) return;
+        const BILLING_CONTACT = '';      // masalan: "+998 90 123 45 67 (Telegram: @ferdinant_admin)" — bloklangan oynada ko'rsatiladi
+        const lang = () => document.documentElement.getAttribute('lang') || 'uz';
+        const tr = (u, e, r) => ({ uz: u, en: e, ru: r }[lang()] || u);
+        const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const nf = n => String(Math.round(n || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        const money = n => nf(n) + ' ' + tr("so'm", 'UZS', 'сум');
+        const p2 = n => String(n).padStart(2, '0');
+        const dt = t => { if (!t) return '—'; const d = new Date(t); return p2(d.getDate()) + '.' + p2(d.getMonth() + 1) + '.' + d.getFullYear(); };
+        const note = (m, k) => { try { const t = window.toast; if (t && t[k || 'success']) t[k || 'success'](m); } catch (e) { /* toast yo'q */ } };
+
+        const st = document.createElement('style');
+        st.textContent = `
+        .bg-bd{position:fixed;inset:0;z-index:10050;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(10,16,32,.62);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);animation:bg-in .25s ease both}
+        @keyframes bg-in{from{opacity:0}to{opacity:1}} @keyframes bg-pop{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+        .bg-card{width:min(440px,100%);max-height:92vh;overflow:auto;box-sizing:border-box;padding:28px 26px 22px;border-radius:24px;text-align:center;background:var(--surface-bg,var(--bg-panel));color:var(--fg-page);border:1px solid var(--surface-border,var(--panel-border));box-shadow:0 30px 80px rgba(0,0,0,.4);animation:bg-pop .32s cubic-bezier(.2,.8,.2,1) both}
+        .bg-ic{width:64px;height:64px;margin:0 auto 14px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(220,38,38,.12);color:#dc2626}
+        .bg-ic.amber{background:rgba(245,158,11,.16);color:#b45309} .bg-ic svg{width:30px;height:30px}
+        .bg-card h2{margin:0 0 8px;font-size:21px;line-height:1.25} .bg-card p{margin:0;color:var(--fg-page-muted);font-size:14.5px;line-height:1.55}
+        .bg-rows{margin:18px 0 4px;border-radius:16px;background:var(--field-bg);padding:4px 14px;text-align:left}
+        .bg-row{display:flex;justify-content:space-between;gap:14px;padding:10px 0;font-size:14px;border-top:1px solid var(--panel-border)} .bg-row:first-child{border-top:0}
+        .bg-row span{color:var(--fg-page-muted)} .bg-row b{text-align:right} .bg-row b.bad{color:#dc2626}
+        .bg-hint{margin-top:14px!important;padding:11px 13px;border-radius:12px;background:rgba(37,99,235,.09);color:var(--fg-page)!important;font-size:13.5px!important;text-align:left}
+        .bg-foot{display:flex;gap:8px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+        .bg-btn{border:0;border-radius:12px;padding:11px 18px;font:inherit;font-weight:600;cursor:pointer;background:var(--highlight-bg);color:var(--highlight-fg)} .bg-btn.ghost{background:var(--field-bg);color:var(--fg-page)} .bg-btn:disabled{opacity:.6;cursor:default}
+        .bg-soon{position:fixed;z-index:9000;left:50%;top:14px;transform:translateX(-50%);width:min(560px,calc(100% - 24px));display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:16px;background:var(--surface-bg,var(--bg-panel));color:var(--fg-page);border:1px solid rgba(245,158,11,.55);box-shadow:0 14px 40px rgba(0,0,0,.25);font-size:14px;line-height:1.45;animation:bg-pop .35s ease both}
+        .bg-soon svg{flex:none;width:22px;height:22px;color:#b45309;margin-top:1px} .bg-soon b{display:block} .bg-soon small{color:var(--fg-page-muted);font-size:13px} .bg-soon button{margin-left:auto;border:0;background:none;color:var(--fg-page-muted);font-size:22px;line-height:1;cursor:pointer;padding:0 4px}
+        @media (prefers-reduced-motion:reduce){.bg-bd,.bg-card,.bg-soon{animation:none}}
+        `;
+        document.head.appendChild(st);
+        const LOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+        const CLOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+
+        let el = null, mode = '', retrying = false;
+        let soonEl = null; const seenMem = {};      /* to'lov eslatmasi modali (bir martalik) */
+        const row = (k, v, bad) => '<div class="bg-row"><span>' + esc(k) + '</span><b' + (bad ? ' class="bad"' : '') + '>' + esc(v) + '</b></div>';
+        function content(i) {
+            const r = i && i.reason;
+            if (r === 'debt') return {
+                t: tr("To'lov muddati o'tgan", 'Payment is overdue', 'Срок оплаты истёк'),
+                p: tr("Obuna to'lovi amalga oshirilmagani uchun hisobingiz avtomatik bloklandi.", 'Your account was blocked automatically because the subscription payment was not made.', 'Ваш аккаунт автоматически заблокирован, так как подписка не оплачена.'),
+                rows: row(tr("Oylik to'lov", 'Monthly fee', 'Ежемесячный платёж'), money(i.fee)) + row(tr('Qarzdorlik', 'Amount due', 'Задолженность'), money(i.debt) + (i.months > 1 ? ' · ' + tr(i.months + ' oy', i.months + ' months', i.months + ' мес.') : ''), true) + (i.dueAt ? row(tr("To'lov muddati", 'Due date', 'Срок оплаты'), dt(i.dueAt)) : ''),
+                h: tr("Administrator to'lovni qabul qilib, akkauntni blokdan ochgach, tizim yana ishlaydi.", 'Once the administrator records your payment and unblocks the account, the system works again.', 'Когда администратор примет платёж и разблокирует аккаунт, система снова заработает.') };
+            if (r === 'tenant-debt') return {
+                t: tr('Markaz hisobi vaqtincha bloklangan', "Your center's account is blocked", 'Аккаунт центра временно заблокирован'),
+                p: tr("Markazingiz obunasi bo'yicha to'lov qilinmagan, shuning uchun tizimga kirish vaqtincha yopilgan.", "The center's subscription has not been paid, so access is temporarily closed.", 'Подписка центра не оплачена, поэтому доступ временно закрыт.'),
+                rows: '', h: tr("Markaz rahbari (CEO) bilan bog'laning. To'lov qilingach kirish avtomatik tiklanadi.", 'Please contact the center head (CEO). Access is restored automatically after payment.', 'Свяжитесь с руководителем центра (CEO). После оплаты доступ восстановится автоматически.') };
+            if (r === 'tenant-manual') return { t: tr('Markaz hisobi bloklangan', "Your center's account is blocked", 'Аккаунт центра заблокирован'), p: tr("Markaz akkaunti administrator tomonidan bloklangan.", "The center's account was blocked by the administrator.", 'Аккаунт центра заблокирован администратором.'), rows: '', h: tr("Markaz rahbari (CEO) bilan bog'laning.", 'Please contact the center head (CEO).', 'Свяжитесь с руководителем центра (CEO).') };
+            return { t: tr('Akkaunt bloklangan', 'Account blocked', 'Аккаунт заблокирован'), p: tr("Hisobingiz administrator tomonidan bloklangan.", 'Your account was blocked by the administrator.', 'Ваш аккаунт заблокирован администратором.'), rows: '', h: tr("Blokdan chiqarish uchun administrator bilan bog'laning.", 'Contact the administrator to get it unblocked.', 'Свяжитесь с администратором для разблокировки.') };
+        }
+        function hide() {
+            closeSoon();
+            if (el) { el.remove(); el = null; }
+            mode = '';
+            ['.main', '.sidebar', '.mobile-bottom-nav'].forEach(s => { const n = document.querySelector(s); if (n) n.inert = false; });
+        }
+        /* m: 'login' — kirish ekranida (yopsa bo'ladi) | 'lock' — tizim ichida (faqat "Qayta tekshirish" / "Chiqish") */
+        function show(info, m) {
+            if (el && mode === m && el.dataset.reason === (info && info.reason)) return;
+            closeSoon();
+            if (el) el.remove();
+            const c = content(info);
+            el = document.createElement('div'); el.className = 'bg-bd'; el.dataset.reason = (info && info.reason) || ''; mode = m;
+            el.setAttribute('role', 'alertdialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-labelledby', 'bgT');
+            el.innerHTML = '<div class="bg-card"><div class="bg-ic">' + LOCK + '</div><h2 id="bgT">' + esc(c.t) + '</h2><p>' + esc(c.p) + '</p>' + (c.rows ? '<div class="bg-rows">' + c.rows + '</div>' : '') +
+                '<p class="bg-hint">' + esc(c.h) + (BILLING_CONTACT && info && (info.reason === 'debt' || info.reason === 'manual') ? '<br><b>' + esc(BILLING_CONTACT) + '</b>' : '') + '</p>' +
+                '<div class="bg-foot">' + (m === 'lock' ? '<button class="bg-btn ghost" data-g="out">' + esc(tr('Chiqish', 'Sign out', 'Выйти')) + '</button><button class="bg-btn" data-g="retry">' + esc(tr('Qayta tekshirish', 'Check again', 'Проверить снова')) + '</button>'
+                    : '<button class="bg-btn" data-g="close">' + esc(tr('Tushunarli', 'OK', 'Понятно')) + '</button>') + '</div></div>';
+            el.addEventListener('click', e => {
+                const b = e.target.closest('[data-g]'); if (!b) return;
+                if (b.dataset.g === 'close') { hide(); const u = document.getElementById('lgUser'); if (u) u.focus(); }
+                if (b.dataset.g === 'out') A.logout();
+                if (b.dataset.g === 'retry') { b.disabled = true; check(true).then(() => { b.disabled = false; }); }
+            });
+            document.body.appendChild(el);
+            if (m === 'lock') ['.main', '.sidebar', '.mobile-bottom-nav'].forEach(s => { const n = document.querySelector(s); if (n) n.inert = true; });
+            const f = el.querySelector('.bg-btn:last-child'); if (f) f.focus();
+        }
+        window.showBlockedModal = show;
+
+        /* Sessiya davomida: har 15 soniyada, oyna qaytganda va boshqa tabda o'zgarish bo'lsa tekshiriladi */
+        function check(manual) {
+            if (A.state !== 'in' || retrying) return Promise.resolve();
+            retrying = true;
+            return A.billing.access().then(r => {
+                retrying = false;
+                if (r.ok) { if (mode === 'lock') { hide(); note(tr("To'lov qabul qilindi — akkaunt faollashtirildi", 'Payment received — your account is active again', 'Платёж получен — аккаунт снова активен')); if (window.showView) window.showView(R.home()); } else if (manual) note(tr('Hammasi joyida', 'All good', 'Всё в порядке')); soon(); return; }
+                const reason = r.info && r.info.reason;
+                if (reason === 'missing' || reason === 'expired') { A.logout(); return; }
+                if (mode !== 'lock' || (el && el.dataset.reason !== reason)) show(r.info, 'lock');
+                if (manual) note(tr("Akkaunt hali ham bloklangan", 'The account is still blocked', 'Аккаунт всё ещё заблокирован'), 'error');
+            }, () => { retrying = false; });
+        }
+        setInterval(() => { if (!document.hidden) check(); }, 15000);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) check(); });
+        window.addEventListener('focus', () => check());
+        window.addEventListener('storage', () => check());
+        A.onState(s => { if (s === 'in') { setTimeout(check, 400); } else if (s === 'out') hide(); });
+        if (A.state === 'in') setTimeout(() => { check(); soon(); }, 400);      // sahifa qayta yuklangan holat
+
+        /* To'lov muddati yaqinlashganda CEO ga yumshoq eslatma (bloklamaydi) */
+        function closeSoon() { if (soonEl) { soonEl.remove(); soonEl = null; } document.removeEventListener('keydown', onSoonKey); }
+        function onSoonKey(e) { if (e.key === 'Escape') closeSoon(); }
+        function soon() {
+            if (soonEl || el) return;          /* allaqachon ochiq yoki bloklangan oyna turibdi */
+            if (!R.is('ceo') || A.state !== 'in') return;
+            const s = A.billing.mine(); if (!s) return;
+            const now = Date.now(), DAY = 864e5; let t = '', d = '', key = '';
+            if (s.state === 'trial' && s.trialLeft <= 3) { t = tr('Sinov muddati tugamoqda', 'Your trial is ending', 'Пробный период заканчивается'); d = tr(s.trialLeft + ' kundan so\'ng (' + dt(s.anchor) + ') oylik to\'lov boshlanadi: ' + money(s.fee), 'Billing starts in ' + s.trialLeft + ' day(s) (' + dt(s.anchor) + '): ' + money(s.fee) + '/month', 'Оплата начнётся через ' + s.trialLeft + ' дн. (' + dt(s.anchor) + '): ' + money(s.fee) + '/мес.'); key = 'trial' + s.anchor; }
+            else if (s.state === 'active' && s.paidUntil - now <= 3 * DAY) { t = tr("To'lov muddati yaqin", 'Payment due soon', 'Скоро срок оплаты'); d = tr(dt(s.paidUntil) + ' gacha ' + money(s.fee) + ' to\'lang, aks holda akkaunt avtomatik bloklanadi.', 'Pay ' + money(s.fee) + ' by ' + dt(s.paidUntil) + ' or the account will be blocked automatically.', 'Оплатите ' + money(s.fee) + ' до ' + dt(s.paidUntil) + ', иначе аккаунт будет заблокирован автоматически.'); key = 'due' + s.paidUntil; }
+            else if (s.state === 'grace') { t = tr('Qarz bor — muhlat berilgan', 'Overdue — grace period active', 'Есть долг — действует отсрочка'); d = tr(money(s.debt) + ' ni ' + dt(s.graceUntil - DAY) + ' gacha to\'lang.', 'Pay ' + money(s.debt) + ' by ' + dt(s.graceUntil - DAY) + '.', 'Оплатите ' + money(s.debt) + ' до ' + dt(s.graceUntil - DAY) + '.'); key = 'grace' + s.graceUntil; }
+            else return;
+            /* har bir muddat uchun faqat BIR MARTA: ko'rsatilgan zahoti belgilanadi (qayta yuklasa ham, boshqa tabda ham chiqmaydi) */
+            const sk = 'ferdinant_bl_seen_' + key;
+            if (seenMem[sk]) return;
+            try { if (localStorage.getItem(sk)) return; } catch (e) { /* storage yo'q — xotiradagi belgi yetadi */ }
+            seenMem[sk] = 1; try { localStorage.setItem(sk, String(Date.now())); } catch (e) { /* storage yo'q */ }
+            const due = s.state === 'trial' ? s.anchor : s.state === 'grace' ? s.graceUntil - DAY : s.paidUntil;
+            const rows = s.state === 'grace'
+                ? row(tr('Qarzdorlik', 'Amount due', 'Задолженность'), money(s.debt), true) + row(tr("Oxirgi muddat", 'Pay by', 'Оплатить до'), dt(due))
+                : row(tr("Oylik to'lov", 'Monthly fee', 'Ежемесячный платёж'), money(s.fee)) + row(s.state === 'trial' ? tr("To'lov boshlanishi", 'Billing starts', 'Оплата с') : tr("To'lov muddati", 'Due date', 'Срок оплаты'), dt(due));
+            soonEl = document.createElement('div'); soonEl.className = 'bg-bd'; soonEl.setAttribute('role', 'dialog'); soonEl.setAttribute('aria-modal', 'true'); soonEl.setAttribute('aria-labelledby', 'bgSoonT');
+            soonEl.innerHTML = '<div class="bg-card"><div class="bg-ic amber">' + CLOCK + '</div><h2 id="bgSoonT">' + esc(t) + '</h2><p>' + esc(d) + '</p><div class="bg-rows">' + rows + '</div>' +
+                '<div class="bg-foot"><button type="button" class="bg-btn" data-g="ok">' + esc(tr('Tushunarli', 'OK', 'Понятно')) + '</button></div></div>';
+            soonEl.addEventListener('click', e => { if (e.target === soonEl || e.target.closest('[data-g="ok"]')) closeSoon(); });
+            document.addEventListener('keydown', onSoonKey);
+            document.body.appendChild(soonEl);
+            const ok = soonEl.querySelector('.bg-btn'); if (ok) ok.focus();
+        }
+        R.onUpdate(() => setTimeout(soon, 50));
+    })();
     </script>
 
     <script>
@@ -12845,6 +13829,7 @@
             demoNote: ["Backend ulanmagan: bu hisoblar faqat brauzerda tekshiriladi va haqiqiy xavfsizlik bermaydi.", 'No backend is connected: these accounts are checked in the browser only and provide no real security.', 'Бэкенд не подключён: эти аккаунты проверяются только в браузере и не дают реальной защиты.'],
             roleStudent: ['Talaba', 'Student', 'Студент'],
             empty: ['Login va parolni kiriting', 'Enter your username and password', 'Введите логин и пароль'],
+            blocked: ['Akkaunt bloklangan', 'Account is blocked', 'Аккаунт заблокирован'],
             invalid: ["Login yoki parol noto'g'ri", 'Incorrect username or password', 'Неверный логин или пароль'],
             locked: ["Urinishlar juda ko'p. {n} soniyadan keyin qayta urinib ko'ring", 'Too many attempts. Try again in {n} s', 'Слишком много попыток. Повторите через {n} с'],
             network: ["Serverga ulanib bo'lmadi. Internetni tekshiring", 'Cannot reach the server. Check your connection', 'Не удалось подключиться к серверу. Проверьте интернет'],
@@ -12957,7 +13942,9 @@
         function onState(s) {
             btn.disabled = busy || s === 'checking';
             if (s === 'checking') setMsg('checking', 'info');
-            else if (s === 'out') { if (msgKey === 'checking') setMsg('', ''); setTimeout(() => { if (A.state === 'out' && !busy) uEl.focus(); }, 60); }
+            else if (s === 'out') {
+                const bb = A.takeBootBlocked && A.takeBootBlocked();       // sessiya tiklanayotganda akkaunt bloklangani aniqlandi
+                if (bb) { setMsg('blocked', 'warn'); } if (msgKey === 'checking') setMsg('', ''); setTimeout(() => { if (A.state === 'out' && !busy) uEl.focus(); }, 60); }
         }
         A.onState(onState);
 
