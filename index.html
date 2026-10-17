@@ -4888,21 +4888,22 @@
            CRM_AUTH bor bo'lsa, URL'dagi role serverdagi huquqdan YUQORI bo'la olmaydi. */
         (function () {
             'use strict';
-            var ROLES = ['ceo', 'admin', 'student'];
-            var RANK = { student: 0, admin: 1, ceo: 2 };
+            var ROLES = ['admin', 'ceo', 'teacher', 'student'];
+            var RANK = { student: 0, teacher: 0, ceo: 2, admin: 3 };
             var DEFAULT_ROLE = 'student';
             var PARAM = 'role';
             /* Production'da true qiling: backend (CRM_AUTH) bo'lmasa har kim faqat student rejimini ko'radi. */
-            var REQUIRE_SERVER_AUTH = false;
+            var REQUIRE_SERVER_AUTH = true;
 
             /* Har bir rol qaysi bo'limlarni ko'radi (yagona manba). Kerak bo'lsa shu yerni tahrirlang. */
             var VIEWS = {
+                admin: ['accounts', 'home', 'clients', 'students', 'groups', 'teachers', 'payments', 'reports', 'archive', 'settings', 'profile'],
                 ceo: ['home', 'clients', 'students', 'groups', 'teachers', 'payments', 'reports', 'archive', 'settings', 'profile'],
-                admin: ['home', 'clients', 'students', 'groups', 'teachers', 'payments', 'profile'],
+                teacher: ['teacher'],
                 student: ['student']
             };
-            var HOME = { ceo: 'home', admin: 'home', student: 'student' };
-            var ALL_VIEWS = ['home', 'clients', 'students', 'groups', 'teachers', 'payments', 'reports', 'archive', 'settings', 'profile', 'student'];
+            var HOME = { admin: 'accounts', ceo: 'home', teacher: 'teacher', student: 'student' };
+            var ALL_VIEWS = ['home', 'clients', 'students', 'groups', 'teachers', 'payments', 'reports', 'archive', 'settings', 'profile', 'student', 'teacher', 'accounts'];
             var GROUP_SEL = { reports: '#navReports', archive: '#navArchive' };
             var STUDENT_HIDE = ['.search-box', '#scheduleBtn', '#profileScheduleBtn', '#profileSettingsBtn', '#notifDropdown', '#headerChatBtn', '.ch-fab', '.ch-panel', '.ct-stack'];
 
@@ -4916,23 +4917,17 @@
             function serverAuth() {
                 var a = window.CRM_AUTH;
                 if (!a || typeof a !== 'object') return null;
-                var list = Array.isArray(a.roles) ? a.roles : [a.role];
-                var max = 0;
-                list.forEach(function (r) { var k = clean(r); if (ROLES.indexOf(k) !== -1 && RANK[k] > max) max = RANK[k]; });
-                return { max: max };
+                var r = clean(a.role);
+                return { role: ROLES.indexOf(r) === -1 ? DEFAULT_ROLE : r };
             }
+            /* Rol FAQAT kirgan akkauntdan olinadi; URL'dagi ?role= endi hech narsani o'zgartirmaydi */
             function resolve(raw) {
-                var want = clean(raw);
-                if (ROLES.indexOf(want) === -1) want = DEFAULT_ROLE;      // noto'g'ri qiymat -> student
                 var auth = serverAuth();
                 if (auth === null) {
-                    return REQUIRE_SERVER_AUTH ? { role: DEFAULT_ROLE, mode: 'locked' } : { role: want, mode: 'demo' };
+                    var want = clean(raw);
+                    return REQUIRE_SERVER_AUTH ? { role: DEFAULT_ROLE, mode: 'locked' } : { role: ROLES.indexOf(want) === -1 ? DEFAULT_ROLE : want, mode: 'demo' };
                 }
-                if (RANK[want] > auth.max) {                               // serverda huquq yo'q -> student
-                    try { console.warn('[CRMRole] "' + want + '" rejimi uchun serverda huquq yo\'q, student ko\'rsatildi.'); } catch (e) {}
-                    return { role: DEFAULT_ROLE, mode: 'server' };
-                }
-                return { role: want, mode: 'server' };
+                return { role: auth.role, mode: 'server' };
             }
             /* URL'ni toza holatga keltirish: noto'g'ri/ruxsatsiz qiymat olib tashlanadi, KATTA-kichik harf tuzatiladi */
             function syncUrl(raw, role) {
@@ -4947,7 +4942,8 @@
             }
             function paint() { document.documentElement.setAttribute('data-role', state.role); }
             function sid() { var a = window.CRM_AUTH; return a && typeof a === 'object' && a.studentId != null ? a.studentId : null; }
-            function sig() { return state.role + '|' + state.mode + '|' + sid(); }
+            function tid() { var a = window.CRM_AUTH; return a && typeof a === 'object' && a.teacherId != null ? a.teacherId : null; }
+            function sig() { return state.role + '|' + state.mode + '|' + sid() + '|' + tid(); }
             function fire(list, a, b) { list.slice().forEach(function (fn) { try { fn(a, b); } catch (e) { console.error(e); } }); }
             var lastSig = '';
             function refresh() {
@@ -4971,7 +4967,7 @@
                     if (GROUP_SEL[v]) css.push(base + GROUP_SEL[v] + '{display:none!important}');
                 });
             });
-            STUDENT_HIDE.forEach(function (s) { css.push('html[data-role="student"] ' + s + '{display:none!important}'); });
+            ['student', 'teacher'].forEach(function (r) { STUDENT_HIDE.forEach(function (s) { css.push('html[data-role="' + r + '"] ' + s + '{display:none!important}'); }); });
             var st = document.createElement('style');
             st.id = 'role-style';
             st.textContent = css.join('\n');
@@ -4983,7 +4979,7 @@
                 is: function (r) { return state.role === r; },
                 canView: function (view) { return VIEWS[state.role].indexOf(view) !== -1; },
                 home: function () { return HOME[state.role]; },
-                studentId: sid,                                   // faqat serverdan (CRM_AUTH), URL'dan EMAS
+                studentId: sid, teacherId: tid,                                   // faqat serverdan (CRM_AUTH), URL'dan EMAS
                 onChange: function (fn) { if (typeof fn === 'function') listeners.push(fn); },
                 onUpdate: function (fn) { if (typeof fn === 'function') updaters.push(fn); },
                 setServerAuth: function (auth) { window.CRM_AUTH = auth; return refresh(); },
@@ -5199,12 +5195,7 @@
             var API_URL = '';                      // masalan: 'https://api.ferdinant-crm.uz/api'
             var ENDPOINTS = { login: '/auth/login/', me: '/auth/me/', logout: '/auth/logout/' };
             var STORE_KEY = 'ferdinant_auth', FLASH_KEY = 'ferdinant_flash';
-            var DEMO = [
-                { u: 'ceo', p: 'ceo12345', role: 'ceo', name: 'Direktor', studentId: null },
-                { u: 'admin', p: 'admin123', role: 'admin', name: 'Administrator', studentId: null },
-                { u: 'student', p: 'student123', role: 'student', name: 'Azizbek Karimov', studentId: 1 }
-            ];
-            var ROLES = ['ceo', 'admin', 'student'];
+            var ROLES = ['admin', 'ceo', 'teacher', 'student'];
             var MAX_FAILS = 5, LOCK_MS = 30000, TIMEOUT_MS = 12000;
             var isDemo = !API_URL;
             var user = null, state = 'out', bootError = null, fails = 0, lockUntil = 0, listeners = [];
@@ -5229,11 +5220,90 @@
                 var role = clean(o.role);
                 if (ROLES.indexOf(role) === -1) return null;
                 var sid = o.studentId != null ? o.studentId : (o.student_id != null ? o.student_id : null);
-                return { name: String(o.name || o.username || '').slice(0, 80), role: role, studentId: sid };
+                var tid = o.teacherId != null ? o.teacherId : (o.teacher_id != null ? o.teacher_id : null);
+                return { id: o.id != null ? o.id : null, name: String(o.name || o.username || '').slice(0, 80), role: role, studentId: sid, teacherId: tid };
             }
-            function apply(u) { user = u; window.CRMRole.setServerAuth({ role: u.role, studentId: u.studentId }); }
-            function findDemo(name) { var n = clean(name); for (var i = 0; i < DEMO.length; i++) if (DEMO[i].u === n) return DEMO[i]; return null; }
-            function demoUser(a) { return { name: a.name, role: a.role, studentId: a.studentId }; }
+            function apply(u) { user = u; window.CRMRole.setServerAuth({ role: u.role, studentId: u.studentId, teacherId: u.teacherId }); }
+
+            /* ---- LOKAL AKKAUNT OMBORI (API_URL bo'sh bo'lganda) ----
+               Parollar PBKDF2-SHA256 (150 000 iteratsiya + tasodifiy salt) bilan xeshlanadi, ochiq holda saqlanmaydi.
+               Kim kimni yaratadi: admin -> CEO;  CEO -> o'qituvchi va o'quvchi.
+               DIQQAT: bu brauzer ichidagi ombor (localStorage). Haqiqiy xavfsizlik uchun backend kerak (API_URL). */
+            var ACC_KEY = 'ferdinant_accounts', ITER = 150000, CAN = { admin: ['ceo'], ceo: ['teacher', 'student'] }, cache = [];
+            function hex(buf) { return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join(''); }
+            function unhex(h) { var o = new Uint8Array(h.length / 2); for (var i = 0; i < o.length; i++) o[i] = parseInt(h.substr(i * 2, 2), 16); return o; }
+            function rnd(n) { var a = new Uint8Array(n); crypto.getRandomValues(a); return hex(a); }
+            function hashPw(pw, salt) {
+                if (!window.crypto || !crypto.subtle) return Promise.reject({ code: 'server' });
+                return crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveBits']).then(function (k) {
+                    return crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: unhex(salt), iterations: ITER }, k, 256);
+                }).then(hex);
+            }
+            function safeEq(a, b) { if (a.length !== b.length) return false; var d = 0; for (var i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i); return d === 0; }
+            function load() { try { var a = JSON.parse(localStorage.getItem(ACC_KEY)); cache = Array.isArray(a) ? a : []; } catch (e) { cache = []; } }
+            function save() { try { localStorage.setItem(ACC_KEY, JSON.stringify(cache)); } catch (e) { throw { code: 'storage' }; } }
+            function mk(o) {
+                var salt = rnd(16);
+                return hashPw(o.password, salt).then(function (h) {
+                    return { id: rnd(8), username: o.username, role: o.role, name: o.name, salt: salt, hash: h,
+                        studentId: o.studentId == null ? null : o.studentId, teacherId: o.teacherId == null ? null : o.teacherId,
+                        active: true, def: !!o.def, createdBy: o.createdBy || null, createdAt: Date.now() };
+                });
+            }
+            function byId(id) { for (var i = 0; i < cache.length; i++) if (cache[i].id === id) return cache[i]; return null; }
+            function byName(n) { n = clean(n); for (var i = 0; i < cache.length; i++) if (cache[i].username === n) return cache[i]; return null; }
+            function accUser(a) { return { id: a.id, name: a.name, role: a.role, studentId: a.studentId, teacherId: a.teacherId }; }
+            function pub(a) { return { id: a.id, username: a.username, role: a.role, name: a.name, studentId: a.studentId, teacherId: a.teacherId, active: a.active, createdAt: a.createdAt }; }
+            function me() { load(); var a = user && user.id ? byId(user.id) : null; return a && a.active ? a : null; }
+            function manages(m, a) { return !!m && !!a && (CAN[m.role] || []).indexOf(a.role) !== -1; }
+            function rej(code) { return Promise.reject({ code: code }); }
+            var ready = Promise.resolve();
+            if (isDemo) {
+                load();
+                if (!cache.some(function (a) { return a.role === 'admin'; })) {
+                    ready = mk({ username: 'admin', password: 'admin123', role: 'admin', name: 'Administrator', def: true }).then(function (a) { load(); cache.push(a); save(); });
+                }
+                ready = ready.catch(function (e) { try { console.error('[CRMAuth] ombor tayyorlanmadi', e); } catch (x) {} });
+            }
+            var accounts = {
+                list: function () { var m = me(); return m ? cache.filter(function (a) { return manages(m, a); }).map(pub) : []; },
+                linked: function (role) { load(); return cache.filter(function (a) { return a.role === role; }).map(function (a) { return String(role === 'student' ? a.studentId : a.teacherId); }); },
+                create: function (o) {
+                    o = o || {}; var m = me();
+                    var role = clean(o.role), uname = clean(o.username), pw = String(o.password == null ? '' : o.password), name = String(o.name || '').trim().slice(0, 80);
+                    if (!m || (CAN[m.role] || []).indexOf(role) === -1) return rej('forbidden');
+                    if (!/^[a-z0-9._-]{3,32}$/.test(uname)) return rej('username');
+                    if (pw.length < 6 || pw.length > 128) return rej('password');
+                    if (byName(uname)) return rej('exists');
+                    var sidv = null, tidv = null;
+                    if (role === 'student') { sidv = o.studentId; if (sidv == null || accounts.linked('student').indexOf(String(sidv)) !== -1) return rej('link'); }
+                    if (role === 'teacher') { tidv = o.teacherId; if (tidv == null || accounts.linked('teacher').indexOf(String(tidv)) !== -1) return rej('link'); }
+                    if (!name) return rej('name');
+                    return mk({ username: uname, password: pw, role: role, name: name, studentId: sidv, teacherId: tidv, createdBy: m.id }).then(function (a) {
+                        load(); if (byName(uname)) throw { code: 'exists' }; cache.push(a); save(); return pub(a);
+                    });
+                },
+                setPassword: function (id, pw) {
+                    var m = me(), a = byId(id); pw = String(pw == null ? '' : pw);
+                    if (!manages(m, a)) return rej('forbidden');
+                    if (pw.length < 6 || pw.length > 128) return rej('password');
+                    var salt = rnd(16);
+                    return hashPw(pw, salt).then(function (h) { var m2 = me(); a = byId(id); if (!manages(m2, a)) throw { code: 'forbidden' }; a.salt = salt; a.hash = h; a.def = false; save(); return pub(a); });
+                },
+                setActive: function (id, on) { var m = me(), a = byId(id); if (!manages(m, a)) return rej('forbidden'); a.active = !!on; save(); return Promise.resolve(pub(a)); },
+                remove: function (id) { var m = me(), a = byId(id); if (!manages(m, a)) return rej('forbidden'); cache = cache.filter(function (x) { return x.id !== id; }); save(); return Promise.resolve(true); },
+                changeOwn: function (oldPw, newPw) {
+                    var a = me(); newPw = String(newPw == null ? '' : newPw);
+                    if (!a) return rej('forbidden');
+                    if (newPw.length < 6 || newPw.length > 128) return rej('password');
+                    return hashPw(String(oldPw == null ? '' : oldPw), a.salt).then(function (h) {
+                        if (!safeEq(h, a.hash)) throw { code: 'invalid' };
+                        var salt = rnd(16);
+                        return hashPw(newPw, salt).then(function (nh) { var cur = me(); if (!cur || cur.id !== a.id) throw { code: 'forbidden' }; cur.salt = salt; cur.hash = nh; cur.def = false; save(); return true; });
+                    });
+                },
+                genPassword: function () { var al = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789', b = new Uint8Array(10), o = ''; crypto.getRandomValues(b); for (var i = 0; i < b.length; i++) o += al[b[i] % al.length]; return o; }
+            };
 
             function request(path, o) {
                 o = o || {};
@@ -5248,12 +5318,13 @@
                 }).then(function (r) { clearTimeout(timer); return r; }, function (e) { clearTimeout(timer); throw e; });
             }
             function demoLogin(username, password) {
-                return new Promise(function (resolve, reject) {
-                    setTimeout(function () {
-                        var a = findDemo(username);
-                        if (a && a.p === password) resolve({ user: demoUser(a), session: { demo: true, u: a.u } });
-                        else reject({ code: 'invalid' });
-                    }, 450);
+                return ready.then(function () {
+                    load();
+                    var a = byName(username);
+                    return hashPw(password, a ? a.salt : '00'.repeat(16)).then(function (h) {
+                        if (!a || !a.active || !safeEq(h, a.hash)) throw { code: 'invalid' };
+                        return { user: accUser(a), session: { local: true, id: a.id } };
+                    });
                 });
             }
             function apiLogin(username, password) {
@@ -5293,9 +5364,14 @@
                 var s = readSession();
                 if (!s) { setState('out'); return; }
                 if (isDemo) {
-                    var a = s.data.demo === true ? findDemo(s.data.u) : null;       // rol saqlangan qiymatdan emas, ro'yxatdan qayta olinadi
-                    if (!a) { clearSession(); setState('out'); return; }
-                    apply(demoUser(a)); setState('in'); return;
+                    setState('checking');
+                    ready.then(function () {
+                        load();
+                        var a = s.data.local === true ? byId(s.data.id) : null;      // rol saqlangan qiymatdan emas, ombordan qayta olinadi
+                        if (!a || !a.active) { clearSession(); setState('out'); return; }
+                        apply(accUser(a)); setState('in');
+                    });
+                    return;
                 }
                 var token = typeof s.data.token === 'string' ? s.data.token : '';
                 if (!token || s.data.demo) { clearSession(); setState('out'); return; }
@@ -5316,10 +5392,11 @@
                 get state() { return state; },               // 'out' | 'checking' | 'in'
                 get demo() { return isDemo; },
                 get bootError() { return bootError; },
-                login: login, logout: logout,
+                login: login, logout: logout, ready: ready, accounts: accounts,
+                isDefaultAdmin: function () { load(); return isDemo && cache.some(function (a) { return a.role === 'admin' && a.def; }); },
                 enter: function () { if (user) setState('in'); },
                 onState: function (fn) { if (typeof fn === 'function') listeners.push(fn); },
-                demoHints: function () { return isDemo ? DEMO.map(function (a) { return { u: a.u, p: a.p, role: a.role }; }) : []; }
+                demoHints: function () { load(); return isDemo && cache.some(function (a) { return a.role === 'admin' && a.def; }) ? [{ u: 'admin', p: 'admin123', role: 'admin' }] : []; }
             });
             boot();
         })();
@@ -5431,6 +5508,8 @@
         </button>
 
         <ul class="nav-list">
+            <li class="nav-item" data-view="accounts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6l8-3z" /><path d="M9 12l2 2 4-4" /></svg><span class="label" data-acc-label="accounts"></span></li>
+            <li class="nav-item" data-view="teacher"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="2" /><path d="M8 20h8M12 16v4" /></svg><span class="label" data-acc-label="teacher"></span></li>
             <li class="nav-item" data-i18n-label="nav.student" data-view="student">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="8" r="4" />
@@ -5540,7 +5619,9 @@
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
     <nav class="mobile-bottom-nav" id="mobileBottomNav">
-        <div class="nav-item" data-i18n-label="nav.student" data-view="student">
+        <div class="nav-item" data-view="accounts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6l8-3z" /><path d="M9 12l2 2 4-4" /></svg><span class="label" data-acc-label="accounts"></span></div>
+            <div class="nav-item" data-view="teacher"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="2" /><path d="M8 20h8M12 16v4" /></svg><span class="label" data-acc-label="teacher"></span></div>
+            <div class="nav-item" data-i18n-label="nav.student" data-view="student">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="8" r="4" />
                 <path d="M4 20c0-3.5 3.5-6 8-6s8 2.5 8 6" />
@@ -5747,6 +5828,13 @@
                                     d="M19.4 15a1.7 1.7 0 0 0 .35 1.9l.05.05a2 2 0 1 1-2.85 2.85l-.05-.05a1.7 1.7 0 0 0-1.9-.35 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.9.35l-.05.05A2 2 0 1 1 4.15 17l.05-.05A1.7 1.7 0 0 0 4.5 15a1.7 1.7 0 0 0-1.55-1H2.9a2 2 0 1 1 0-4H3a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.35-1.9l-.05-.05A2 2 0 1 1 7 4.15l.05.05a1.7 1.7 0 0 0 1.9.35H9a1.7 1.7 0 0 0 1-1.55V2.9a2 2 0 1 1 4 0V3a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.9-.35l.05-.05A2 2 0 1 1 19.85 7l-.05.05a1.7 1.7 0 0 0-.35 1.9V9a1.7 1.7 0 0 0 1.55 1h.1a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.55 1z" />
                             </svg>
                             <span data-i18n="nav.settings">Sozlamalar</span>
+                        </div>
+                        <div class="profile-menu-item" id="profilePwBtn" role="button" tabindex="0">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="4" y="11" width="16" height="9" rx="2" />
+                                <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+                            </svg>
+                            <span data-acc-label="pw">Parolni o'zgartirish</span>
                         </div>
                         <div class="profile-menu-item" id="profileLogoutBtn">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -6165,6 +6253,14 @@
 
             <div class="content-view" data-view="student">
                 <div id="studentRoot"></div>
+            </div>
+
+            <div class="content-view" data-view="teacher">
+                <div id="teacherRoot"></div>
+            </div>
+
+            <div class="content-view" data-view="accounts">
+                <div id="accountsRoot"></div>
             </div>
         </div>
     </div>
@@ -7089,7 +7185,9 @@
             if (name === 'settings' && typeof renderSettings === 'function') renderSettings();
             if (name === 'reports' && typeof renderReports === 'function') renderReports();
             if (name === 'archive' && typeof renderArchive === 'function') renderArchive();
-            if (name === 'student' && typeof renderStudentCabinet === 'function') renderStudentCabinet();
+            if (name === 'student' && typeof window.renderStudentCabinet === 'function') window.renderStudentCabinet();
+            if (name === 'teacher' && typeof window.renderTeacherCabinet === 'function') window.renderTeacherCabinet();
+            if (name === 'accounts' && typeof window.renderAccounts === 'function') window.renderAccounts();
             if (typeof window.rpOnView === 'function') window.rpOnView(name);
             if (typeof window.arOnView === 'function') window.arOnView(name);
             if (name === 'clients' && typeof updateClientsScrollButtons === 'function') {
@@ -12320,6 +12418,408 @@
     </script>
 
     <script>
+    /* ===== AKKAUNTLAR (admin -> CEO, CEO -> o'qituvchi/o'quvchi) + O'QITUVCHI KABINETI ===== */
+    (function accountsModule() {
+        'use strict';
+        const A = window.CRMAuth, R = window.CRMRole;
+        if (!A || !R || !A.accounts) return;
+        const lang = () => document.documentElement.getAttribute('lang') || 'uz';
+        const tr = (u, e, r) => ({ uz: u, en: e, ru: r }[lang()] || u);
+        const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const $ = (s, r) => (r || document).querySelector(s);
+        const note = (m, k) => { try { const t = window.toast; if (t && t[k || 'success']) t[k || 'success'](m); } catch (e) { /* toast yo'q */ } };
+        const ROLE = r => ({ admin: 'Admin', ceo: 'CEO', teacher: tr("O'qituvchi", 'Teacher', 'Преподаватель'), student: tr("O'quvchi", 'Student', 'Ученик') }[r] || r);
+        const ERR = c => ({
+            username: tr("Login 3–32 belgi: lotin harf, raqam, nuqta, chiziq", 'Login: 3–32 chars (latin letters, digits, . _ -)', 'Логин: 3–32 символа (латиница, цифры, . _ -)'),
+            password: tr("Parol kamida 6 belgi bo'lsin", 'Password must be at least 6 characters', 'Пароль не короче 6 символов'),
+            exists: tr('Bu login band', 'This login is taken', 'Этот логин занят'),
+            link: tr("Bu shaxs uchun akkaunt allaqachon bor yoki tanlanmagan", 'Account already exists or no person selected', 'Аккаунт уже есть или человек не выбран'),
+            name: tr('Ism kiriting', 'Enter a name', 'Введите имя'),
+            forbidden: tr("Bu amalga ruxsat yo'q", 'Not allowed', 'Нет доступа'),
+            invalid: tr("Eski parol noto'g'ri", 'Current password is wrong', 'Текущий пароль неверен'),
+            storage: tr("Brauzer xotirasi to'lgan yoki yopiq", 'Browser storage is full or blocked', 'Хранилище браузера недоступно')
+        }[c] || tr('Xatolik yuz berdi', 'Something went wrong', 'Произошла ошибка'));
+
+        const st = document.createElement('style');
+        st.textContent = `
+        .acc-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+        .acc-bar h2{margin:0;font-size:22px;color:var(--fg-page)} .acc-bar p{margin:4px 0 0;color:var(--fg-page-muted);font-size:14px}
+        .acc-btn{border:0;border-radius:12px;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer;background:var(--highlight-bg);color:var(--highlight-fg)}
+        .acc-btn.ghost{background:var(--field-bg);color:var(--fg-page)} .acc-btn.danger{background:rgba(220,38,38,.12);color:#dc2626} .acc-btn.sm{padding:6px 10px;font-size:13px;border-radius:10px}
+        .acc-btn:disabled{opacity:.55;cursor:default}
+        .acc-badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:600;background:var(--field-bg);color:var(--accent)}
+        .acc-badge.off{color:#dc2626;background:rgba(220,38,38,.1)}
+        .acc-act{display:flex;gap:6px;flex-wrap:wrap}
+        .acc-warn{padding:12px 16px;border-radius:14px;background:rgba(245,158,11,.14);color:var(--fg-page);font-size:14px}
+        .acc-bd{position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,.5);display:flex;align-items:center;justify-content:center;padding:16px}
+        .acc-modal{width:min(460px,100%);max-height:92vh;overflow:auto;background:var(--surface-bg,var(--bg-panel));color:var(--fg-page);border:1px solid var(--surface-border,var(--panel-border));border-radius:20px;padding:22px}
+        .acc-modal h3{margin:0 0 14px;font-size:18px} .acc-f{display:block;margin-bottom:12px;font-size:13px;color:var(--fg-page-muted)}
+        .acc-f input,.acc-f select{display:block;width:100%;margin-top:6px;padding:11px 12px;border-radius:12px;border:1px solid var(--panel-border);background:var(--field-bg);color:var(--field-fg);font:inherit}
+        .acc-row2{display:flex;gap:8px;align-items:flex-end} .acc-row2 .acc-f{flex:1;margin:0}
+        .acc-err{min-height:18px;color:#dc2626;font-size:13px;margin:4px 0 8px}
+        .acc-cred{padding:14px;border-radius:14px;background:var(--field-bg);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px;line-height:1.8;word-break:break-all}
+        .acc-foot{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+        `;
+        document.head.appendChild(st);
+
+        /* Menyu yorliqlari (til o'zgarganda yangilanadi) */
+        function labels() {
+            document.querySelectorAll('[data-acc-label]').forEach(el => {
+                const v = el.getAttribute('data-acc-label');
+                el.textContent = v === 'pw' ? tr("Parolni o'zgartirish", 'Change password', 'Сменить пароль') : v === 'accounts' ? (R.is('admin') ? tr('Akkauntlar', 'Accounts', 'Аккаунты') : tr('Loginlar', 'Logins', 'Логины')) : tr('Kabinet', 'Cabinet', 'Кабинет');
+            });
+        }
+        labels(); R.onUpdate(labels);
+        new MutationObserver(labels).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+
+        /* ---------- Parolni o'zgartirish kartasi (hamma rollar uchun) ---------- */
+        const pwCard = () => '<div class="sc-card acc-pwc"><h3>' + esc(tr("Mening parolim", 'My password', 'Мой пароль')) + '</h3>' +
+            '<form class="acc-pw" autocomplete="off"><label class="acc-f">' + esc(tr('Joriy parol', 'Current password', 'Текущий пароль')) + '<input type="password" name="o" autocomplete="current-password"></label>' +
+            '<label class="acc-f">' + esc(tr('Yangi parol', 'New password', 'Новый пароль')) + '<input type="password" name="n" autocomplete="new-password"></label>' +
+            '<div class="acc-err" role="alert"></div><button class="acc-btn" type="submit">' + esc(tr("Parolni yangilash", 'Update password', 'Обновить пароль')) + '</button></form></div>';
+        document.addEventListener('submit', e => {
+            const f = e.target.closest && e.target.closest('form.acc-pw'); if (!f) return;
+            e.preventDefault();
+            const err = $('.acc-err', f);
+            A.accounts.changeOwn(f.o.value, f.n.value).then(() => { f.reset(); err.textContent = ''; note(tr('Parol yangilandi', 'Password updated', 'Пароль обновлён')); render(); },
+                x => { err.textContent = ERR(x && x.code); });
+        });
+
+        /* ---------- Modal yordamchilari ---------- */
+        function modal(html) {
+            closeModal();
+            const bd = document.createElement('div'); bd.className = 'acc-bd'; bd.id = 'accBd';
+            bd.innerHTML = '<div class="acc-modal" role="dialog" aria-modal="true">' + html + '</div>';
+            bd.addEventListener('mousedown', e => { if (e.target === bd) closeModal(); });
+            document.body.appendChild(bd); return bd;
+        }
+        function closeModal() { const b = $('#accBd'); if (b) b.remove(); }
+        function showCred(title, login, pw) {
+            const bd = modal('<h3>' + esc(title) + '</h3><div class="acc-cred">' + esc(tr('Login', 'Login', 'Логин')) + ': <b>' + esc(login) + '</b><br>' + esc(tr('Parol', 'Password', 'Пароль')) + ': <b>' + esc(pw) + '</b></div>' +
+                '<p class="acc-warn" style="margin-top:12px">' + esc(tr("Parol faqat hozir ko'rinadi (saqlanmaydi). Uni egasiga yetkazing.", 'The password is shown only now (it is not stored). Hand it to the owner.', 'Пароль виден только сейчас (не хранится). Передайте его владельцу.')) + '</p>' +
+                '<div class="acc-foot"><button class="acc-btn ghost" data-x="copy">' + esc(tr('Nusxalash', 'Copy', 'Копировать')) + '</button><button class="acc-btn" data-x="close">OK</button></div>');
+            bd.addEventListener('click', e => {
+                const x = e.target.closest('[data-x]'); if (!x) return;
+                if (x.dataset.x === 'close') closeModal();
+                if (x.dataset.x === 'copy') { try { navigator.clipboard.writeText('Login: ' + login + '\nParol: ' + pw).then(() => note(tr('Nusxalandi', 'Copied', 'Скопировано'))); } catch (er) { /* ruxsat yo'q */ } }
+            });
+        }
+
+        /* ---------- Yangi akkaunt oynasi ---------- */
+        function suggest(name, fallback) {
+            let b = String(name || '').toLowerCase().replace(/[^a-z0-9]+/g, '.').replace(/^\.+|\.+$/g, '').slice(0, 24);
+            if (b.length < 3) b = fallback;
+            const used = A.accounts.list().map(a => a.username); let u = b, i = 2;
+            while (used.indexOf(u) !== -1) u = b + i++;
+            return u;
+        }
+        function openCreate(pre) {
+            const admin = R.is('admin');
+            const people = role => {
+                const taken = A.accounts.linked(role);
+                const src = role === 'student' ? (window.allStudents ? window.allStudents() : []) : (window.allTeachers ? window.allTeachers() : []);
+                return src.filter(p => taken.indexOf(String(p.id)) === -1);
+            };
+            const bd = modal('<h3>' + esc(admin ? tr('Yangi CEO akkaunti', 'New CEO account', 'Новый аккаунт CEO') : tr('Yangi akkaunt', 'New account', 'Новый аккаунт')) + '</h3>' +
+                '<form id="accForm" autocomplete="off">' +
+                (admin ? '' : '<label class="acc-f">' + esc(tr('Rol', 'Role', 'Роль')) + '<select name="role"><option value="teacher">' + esc(ROLE('teacher')) + '</option><option value="student">' + esc(ROLE('student')) + '</option></select></label>' +
+                    '<label class="acc-f">' + esc(tr('Kim uchun', 'For whom', 'Для кого')) + '<select name="person"></select></label>') +
+                (admin ? '<label class="acc-f">' + esc(tr('Ism', 'Name', 'Имя')) + '<input name="name" maxlength="80"></label>' : '') +
+                '<label class="acc-f">' + esc(tr('Login', 'Login', 'Логин')) + '<input name="username" maxlength="32" autocapitalize="off" spellcheck="false"></label>' +
+                '<div class="acc-row2"><label class="acc-f">' + esc(tr('Parol', 'Password', 'Пароль')) + '<input name="password" type="text" maxlength="128" spellcheck="false"></label>' +
+                '<button type="button" class="acc-btn ghost" data-x="gen">' + esc(tr('Yaratish', 'Generate', 'Создать')) + '</button></div>' +
+                '<div class="acc-err" role="alert"></div>' +
+                '<div class="acc-foot"><button type="button" class="acc-btn ghost" data-x="close">' + esc(tr('Bekor qilish', 'Cancel', 'Отмена')) + '</button><button type="submit" class="acc-btn">' + esc(tr('Yaratish', 'Create', 'Создать')) + '</button></div></form>');
+            const f = $('#accForm', bd), err = $('.acc-err', bd);
+            f.password.value = A.accounts.genPassword();
+            const fill = () => {
+                if (admin) return;
+                const list = people(f.role.value);
+                f.person.innerHTML = list.length ? list.map(p => '<option value="' + esc(p.id) + '">' + esc(p.name) + '</option>').join('') : '<option value="">' + esc(tr("Barchasida akkaunt bor", 'Everyone has an account', 'У всех есть аккаунт')) + '</option>';
+                const p = list[0]; f.username.value = p ? suggest(p.name, f.role.value + p.id) : '';
+            };
+            fill();
+            if (pre && !admin) { f.role.value = pre.role; fill(); f.person.value = String(pre.id); f.person.dispatchEvent(new Event('change')); }
+            if (!admin) {
+                f.role.addEventListener('change', fill);
+                f.person.addEventListener('change', () => { const p = people(f.role.value).find(x => String(x.id) === f.person.value); if (p) f.username.value = suggest(p.name, f.role.value + p.id); });
+            }
+            bd.addEventListener('click', e => {
+                const x = e.target.closest('[data-x]'); if (!x) return;
+                if (x.dataset.x === 'close') closeModal();
+                if (x.dataset.x === 'gen') f.password.value = A.accounts.genPassword();
+            });
+            f.addEventListener('submit', e => {
+                e.preventDefault();
+                const role = admin ? 'ceo' : f.role.value, o = { role: role, username: f.username.value, password: f.password.value };
+                if (admin) o.name = f.name.value;
+                else {
+                    const p = people(role).find(x => String(x.id) === f.person.value);
+                    if (p) { o.name = p.name; if (role === 'student') o.studentId = p.id; else o.teacherId = p.id; }
+                }
+                const pw = f.password.value, un = f.username.value.trim().toLowerCase();
+                A.accounts.create(o).then(() => { showCred(tr('Akkaunt yaratildi', 'Account created', 'Аккаунт создан'), un, pw); render(); }, x => { err.textContent = ERR(x && x.code); });
+            });
+            (admin ? f.name : f.person).focus();
+        }
+
+        /* ---------- Akkauntlar sahifasi ---------- */
+        function render() {
+            const root = $('#accountsRoot'); if (!root) return;
+            if (!R.is('admin') && !R.is('ceo')) { root.innerHTML = ''; return; }
+            const admin = R.is('admin'), list = A.accounts.list().sort((a, b) => b.createdAt - a.createdAt);
+            const title = admin ? tr('CEO akkauntlari', 'CEO accounts', 'Аккаунты CEO') : tr("O'qituvchi va o'quvchi loginlari", 'Teacher and student logins', 'Логины преподавателей и учеников');
+            const sub = admin ? tr("Siz CEO uchun login va parol yaratasiz.", 'You create logins and passwords for CEOs.', 'Вы создаёте логины и пароли для CEO.')
+                : tr("O'qituvchi va o'quvchilar uchun login va parol yarating.", 'Create logins and passwords for teachers and students.', 'Создавайте логины и пароли для преподавателей и учеников.');
+            root.innerHTML = '<div class="sc-wrap">' +
+                (admin && A.isDefaultAdmin() ? '<div class="acc-warn">' + esc(tr("Diqqat: admin paroli hali standart (admin123). Pastdagi “Mening parolim” orqali almashtiring.", 'Warning: the admin password is still the default (admin123). Change it below in “My password”.', 'Внимание: пароль admin всё ещё стандартный (admin123). Смените его ниже в «Мой пароль».')) + '</div>' : '') +
+                '<div class="sc-hero acc-bar"><div><h2>' + esc(title) + '</h2><p>' + esc(sub) + '</p></div><button class="acc-btn" data-a="new">+ ' + esc(tr('Yangi akkaunt', 'New account', 'Новый аккаунт')) + '</button></div>' +
+                '<div class="sc-card">' + (list.length ? '<div class="sc-table-wrap"><table class="sc-table"><thead><tr><th>' + esc(tr('Ism', 'Name', 'Имя')) + '</th><th>' + esc(tr('Login', 'Login', 'Логин')) + '</th><th>' + esc(tr('Rol', 'Role', 'Роль')) + '</th><th>' + esc(tr('Holat', 'Status', 'Статус')) + '</th><th></th></tr></thead><tbody>' +
+                    list.map(a => '<tr><td>' + esc(a.name) + '</td><td><code>' + esc(a.username) + '</code></td><td><span class="acc-badge">' + esc(ROLE(a.role)) + '</span></td>' +
+                        '<td><span class="acc-badge' + (a.active ? '' : ' off') + '">' + esc(a.active ? tr('Faol', 'Active', 'Активен') : tr('Bloklangan', 'Blocked', 'Заблокирован')) + '</span></td>' +
+                        '<td><div class="acc-act"><button class="acc-btn ghost sm" data-a="pw" data-id="' + esc(a.id) + '">' + esc(tr('Yangi parol', 'New password', 'Новый пароль')) + '</button>' +
+                        '<button class="acc-btn ghost sm" data-a="tg" data-id="' + esc(a.id) + '">' + esc(a.active ? tr('Bloklash', 'Block', 'Блок') : tr('Faollashtirish', 'Activate', 'Включить')) + '</button>' +
+                        '<button class="acc-btn danger sm" data-a="rm" data-id="' + esc(a.id) + '">' + esc(tr("O'chirish", 'Delete', 'Удалить')) + '</button></div></td></tr>').join('') +
+                    '</tbody></table></div>' : '<div class="sc-empty">' + esc(tr("Hozircha akkaunt yo'q", 'No accounts yet', 'Пока нет аккаунтов')) + '</div>') + '</div>' + pwCard() + '</div>';
+            refreshKeys();
+        }
+        document.addEventListener('click', e => {
+            const b = e.target.closest && e.target.closest('#accountsRoot [data-a]'); if (!b) return;
+            const id = b.dataset.id, acc = A.accounts.list().find(a => a.id === id), a = b.dataset.a;
+            const fail = x => note(ERR(x && x.code), 'error');
+            if (a === 'new') openCreate();
+            if (a === 'pw' && acc && confirm(tr('"' + acc.username + '" uchun yangi parol yaratilsinmi? Eskisi ishlamay qoladi.', 'Generate a new password for "' + acc.username + '"? The old one stops working.', 'Создать новый пароль для "' + acc.username + '"? Старый перестанет работать.'))) {
+                const pw = A.accounts.genPassword();
+                A.accounts.setPassword(id, pw).then(() => { showCred(tr('Yangi parol', 'New password', 'Новый пароль'), acc.username, pw); render(); }, fail);
+            }
+            if (a === 'tg' && acc) A.accounts.setActive(id, !acc.active).then(render, fail);
+            if (a === 'rm' && acc && confirm(tr('"' + acc.username + '" akkaunti o\'chirilsinmi?', 'Delete account "' + acc.username + '"?', 'Удалить аккаунт "' + acc.username + '"?'))) A.accounts.remove(id).then(() => { note(tr("O'chirildi", 'Deleted', 'Удалено')); render(); }, fail);
+        });
+        window.renderAccounts = render;
+
+        /* ---------- Talabalar / O'qituvchilar sahifalarida login tugmasi (faqat CEO) ---------- */
+        const KEY = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></svg>';
+        const kst = document.createElement('style');
+        kst.textContent = '.acc-key{position:relative}.acc-key.has{color:#16a34a}.acc-key.has::after{content:"";position:absolute;top:3px;right:3px;width:7px;height:7px;border-radius:50%;background:#16a34a}.sd-payb.acc-key{margin-top:10px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--field-bg);color:var(--fg-page)}';
+        document.head.appendChild(kst);
+        const accOf = (role, id) => A.accounts.list().find(a => a.role === role && String(role === 'student' ? a.studentId : a.teacherId) === String(id));
+        const person = (role, id) => (role === 'student' ? (window.allStudents ? window.allStudents() : []) : (window.allTeachers ? window.allTeachers() : [])).find(x => String(x.id) === String(id));
+        const keyTitle = has => has ? tr('Login / parol (akkaunt bor)', 'Login / password (account exists)', 'Логин / пароль (аккаунт есть)') : tr('Login va parol yaratish', 'Create login & password', 'Создать логин и пароль');
+        function keyBtn(role, id, wide) {
+            const has = !!accOf(role, id), b = document.createElement('button');
+            b.type = 'button'; b.className = (wide ? 'clients-add-btn sd-payb ' : 'st-act ') + 'acc-key' + (has ? ' has' : '');
+            b.dataset.accRole = role; b.dataset.accId = id; b.title = keyTitle(has);
+            b.innerHTML = KEY + (wide ? '<span>' + esc(tr('Login / parol', 'Login / password', 'Логин / пароль')) + '</span>' : '');
+            return b;
+        }
+        let injecting = false;
+        function refreshKeys() {
+            if (injecting || !R.is('ceo')) return;
+            injecting = true;
+            try {
+                [['student', '#studentsRoot tr[data-sid]', r => r.dataset.sid], ['teacher', '#teachersRoot tr[data-id]', r => r.dataset.id]].forEach(([role, sel, idOf]) => {
+                    document.querySelectorAll(sel).forEach(row => {
+                        const td = row.querySelector('td:last-child'); if (!td) return;
+                        const id = idOf(row), old = td.querySelector('.acc-key'), has = !!accOf(role, id);
+                        if (old) { old.classList.toggle('has', has); old.title = keyTitle(has); return; }
+                        td.insertBefore(keyBtn(role, id, false), td.firstChild);
+                    });
+                });
+                const pay = document.getElementById('sdPay'), h1 = document.querySelector('#studentsRoot .sd-prof-t h1');
+                if (pay && h1) {
+                    const st = (window.allStudents ? window.allStudents() : []).find(x => x.name === h1.textContent);
+                    const old = pay.parentNode.querySelector('.acc-key');
+                    if (st && !old) pay.insertAdjacentElement('afterend', keyBtn('student', st.id, true));
+                    else if (st && old) { old.classList.toggle('has', !!accOf('student', st.id)); old.dataset.accId = st.id; }
+                }
+            } finally { injecting = false; }
+        }
+        let raf = 0;
+        const sched = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(refreshKeys); };
+        ['studentsRoot', 'teachersRoot'].forEach(id => { const el = document.getElementById(id); if (el) new MutationObserver(sched).observe(el, { childList: true, subtree: true }); });
+        R.onUpdate(sched);
+
+        /* ---------- Talaba / o'qituvchi login oynasi (yaratish · parol · bloklash · o'chirish) ---------- */
+        const SVGI = d => '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
+        const I_EYE = SVGI('<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'),
+            I_DICE = SVGI('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.2L3 16M3 21v-5h5"/>'),
+            I_COPY = SVGI('<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>'),
+            I_OK = SVGI('<path d="M5 13l4 4L19 7"/>');
+        const cst = document.createElement('style');
+        cst.textContent = `
+        .acc-modal input[type=text],.acc-modal input[type=password]{box-sizing:border-box;width:100%;height:46px;padding:0 14px;border-radius:12px;border:1.5px solid var(--panel-border);background:var(--field-bg);color:var(--field-fg);font:inherit;font-size:15px;outline:none;transition:border-color .15s,box-shadow .15s}
+        .acc-modal input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--hover-bg)}
+        .acc-modal input::placeholder{color:var(--fg-page-muted);opacity:.7}
+        .acc-modal .acc-f input{margin-top:6px}
+        .pm-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+        .pm-av{width:46px;height:46px;border-radius:50%;background:var(--highlight-bg);color:var(--highlight-fg);display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+        .pm-ht{flex:1;min-width:0} .pm-ht b{display:block;font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .pm-ht span{font-size:13px;color:var(--fg-page-muted)}
+        .pm-ic{border:0;background:var(--field-bg);color:var(--fg-page);width:38px;height:38px;border-radius:11px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:20px;flex:none}
+        .pm-ic:hover{background:var(--hover-bg);color:var(--accent)}
+        .pm-pw{display:flex;gap:6px;margin-top:6px;align-items:center} .pm-pw input{flex:1;min-width:0;margin:0!important;font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:.5px}
+        .pm-pw .pm-ic{width:46px;height:46px;border:1.5px solid var(--panel-border)}
+        .pm-sec{border-top:1px solid var(--panel-border);margin-top:16px;padding-top:14px} .pm-sec h4{margin:0 0 8px;font-size:14px}
+        .pm-line{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:var(--field-bg);margin-bottom:8px}
+        .pm-line small{color:var(--fg-page-muted);min-width:54px} .pm-line b{flex:1;min-width:0;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px;word-break:break-all}
+        .pm-line .pm-ic{width:32px;height:32px;border-radius:9px;background:transparent}
+        .pm-st{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:4px 10px;border-radius:99px;background:rgba(22,163,74,.12);color:#16a34a}
+        .pm-st.off{background:rgba(220,38,38,.1);color:#dc2626} .pm-st::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+        .pm-ok{width:52px;height:52px;border-radius:50%;background:rgba(22,163,74,.14);color:#16a34a;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+        .pm-ok svg{width:26px;height:26px} .pm-center{text-align:center;margin-bottom:14px} .pm-center b{font-size:17px}
+        .pm-hint{font-size:12.5px;color:var(--fg-page-muted);margin:8px 0 0}
+        .pm-split{display:flex;gap:8px;flex-wrap:wrap} .pm-split .acc-btn{flex:1;min-width:130px}
+        .pm-conf{padding:12px;border-radius:12px;background:rgba(220,38,38,.08);display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:space-between;font-size:14px}
+        `;
+        document.head.appendChild(cst);
+        const initials = n => String(n || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0] || '').join('').toUpperCase();
+        const copyTxt = t => { try { navigator.clipboard.writeText(t).then(() => note(tr('Nusxalandi', 'Copied', 'Скопировано')), () => note(tr("Nusxalab bo'lmadi", 'Copy failed', 'Не удалось скопировать'), 'error')); } catch (er) { note(tr("Nusxalab bo'lmadi", 'Copy failed', 'Не удалось скопировать'), 'error'); } };
+        const pwField = (val, ph) => '<div class="pm-pw"><input type="text" data-f="pw" value="' + esc(val) + '" placeholder="' + esc(ph || '') + '" autocomplete="new-password" spellcheck="false" maxlength="128">' +
+            '<button type="button" class="pm-ic" data-x="eye" title="' + esc(tr("Ko'rsatish / yashirish", 'Show / hide', 'Показать / скрыть')) + '">' + I_EYE + '</button>' +
+            '<button type="button" class="pm-ic" data-x="gen" title="' + esc(tr('Yangi parol yaratish', 'Generate password', 'Сгенерировать пароль')) + '">' + I_DICE + '</button></div>';
+        const line = (k, v) => '<div class="pm-line"><small>' + esc(k) + '</small><b>' + esc(v) + '</b><button type="button" class="pm-ic" data-copy="' + esc(v) + '" title="' + esc(tr('Nusxalash', 'Copy', 'Копировать')) + '">' + I_COPY + '</button></div>';
+
+        function openPerson(role, id) {
+            const p = person(role, id); if (!p) return;
+            let cred = null, askDel = false, acc = null;
+            const sub = role === 'student' ? (p.group || '') : (p.subject || '');
+            const un0 = suggest(p.name, role + id);
+            const bd = modal('<div id="pmBody"></div>'), body = $('#pmBody', bd);
+            const head = () => '<div class="pm-head"><div class="pm-av">' + esc(initials(p.name)) + '</div><div class="pm-ht"><b>' + esc(p.name) + '</b><span>' + esc(ROLE(role)) + (sub ? ' · ' + esc(sub) : '') + '</span></div><button type="button" class="pm-ic" data-x="close" aria-label="' + esc(tr('Yopish', 'Close', 'Закрыть')) + '">×</button></div>';
+            const L = tr('Login', 'Login', 'Логин'), P = tr('Parol', 'Password', 'Пароль');
+            function draw() {
+                acc = accOf(role, id);
+                if (cred) {
+                    body.innerHTML = head() + '<div class="pm-center"><div class="pm-ok">' + I_OK + '</div><b>' + esc(cred.title) + '</b></div>' + line(L, cred.un) + line(P, cred.pw) +
+                        '<p class="pm-hint">' + esc(tr("Parol faqat hozir ko'rinadi, saqlanmaydi. Nusxalangan matnni login sahifasiga qo'ysangiz, login va parol maydonlari o'zi to'ladi.", 'The password is shown only now. Paste the copied text on the login page and both fields fill in automatically.', 'Пароль виден только сейчас. Вставьте скопированный текст на странице входа — оба поля заполнятся автоматически.')) + '</p>' +
+                        '<div class="acc-foot"><button type="button" class="acc-btn ghost" data-x="close">' + esc(tr('Tayyor', 'Done', 'Готово')) + '</button><button type="button" class="acc-btn" data-x="copyall">' + I_COPY + ' ' + esc(tr('Login va parolni nusxalash', 'Copy login & password', 'Копировать логин и пароль')) + '</button></div>';
+                } else if (!acc) {
+                    body.innerHTML = head() + '<label class="acc-f">' + esc(L) + '<input data-f="un" value="' + esc(un0) + '" maxlength="32" autocapitalize="off" spellcheck="false"></label>' +
+                        '<label class="acc-f" style="margin-bottom:0">' + esc(P) + '</label>' + pwField(A.accounts.genPassword()) +
+                        '<p class="pm-hint">' + esc(tr("Hozircha bu " + ROLE(role).toLowerCase() + " uchun login yo'q. Yaratilgach, kirish ma'lumotlarini unga bering.", 'No login for this person yet. After creating it, hand the credentials over.', 'Для этого человека ещё нет логина. После создания передайте ему данные для входа.')) + '</p><div class="acc-err" role="alert"></div>' +
+                        '<div class="acc-foot"><button type="button" class="acc-btn ghost" data-x="close">' + esc(tr('Bekor qilish', 'Cancel', 'Отмена')) + '</button><button type="button" class="acc-btn" data-x="createcopy">' + I_COPY + ' ' + esc(tr('Yaratish va nusxalash', 'Create & copy', 'Создать и копировать')) + '</button></div>';
+                } else {
+                    body.innerHTML = head() + '<div style="margin-bottom:10px"><span class="pm-st' + (acc.active ? '' : ' off') + '">' + esc(acc.active ? tr('Faol', 'Active', 'Активен') : tr('Bloklangan', 'Blocked', 'Заблокирован')) + '</span></div>' + line(L, acc.username) +
+                        '<div class="pm-sec"><h4>' + esc(tr('Parolni yangilash', 'Update password', 'Обновить пароль')) + '</h4>' + pwField(A.accounts.genPassword()) +
+                        '<p class="pm-hint">' + esc(tr("O'zingiz yozing yoki yaratilganini qoldiring. Eski parol darhol ishlamay qoladi.", 'Type your own or keep the generated one. The old password stops working immediately.', 'Введите свой или оставьте сгенерированный. Старый пароль сразу перестанет работать.')) + '</p><div class="acc-err" role="alert"></div>' +
+                        '<div class="pm-split"><button type="button" class="acc-btn" data-x="setpwcopy">' + I_COPY + ' ' + esc(tr('Saqlash va nusxalash', 'Save & copy', 'Сохранить и копировать')) + '</button></div></div>' +
+                        '<div class="pm-sec"><h4>' + esc(tr('Akkaunt', 'Account', 'Аккаунт')) + '</h4>' + (askDel
+                            ? '<div class="pm-conf"><span>' + esc(tr("Akkaunt o'chirilsinmi?", 'Delete this account?', 'Удалить аккаунт?')) + '</span><span class="pm-split" style="flex:none"><button type="button" class="acc-btn ghost sm" data-x="delno">' + esc(tr("Yo'q", 'No', 'Нет')) + '</button><button type="button" class="acc-btn danger sm" data-x="delyes">' + esc(tr("Ha, o'chirish", 'Yes, delete', 'Да, удалить')) + '</button></span></div>'
+                            : '<div class="pm-split"><button type="button" class="acc-btn ghost" data-x="tg">' + esc(acc.active ? tr('Bloklash', 'Block', 'Заблокировать') : tr('Faollashtirish', 'Activate', 'Активировать')) + '</button><button type="button" class="acc-btn danger" data-x="delask">' + esc(tr("O'chirish", 'Delete', 'Удалить')) + '</button></div>') +
+                        (acc.active ? '' : '<p class="pm-hint">' + esc(tr("Bloklangan akkaunt tizimga kira olmaydi.", 'A blocked account cannot sign in.', 'Заблокированный аккаунт не может войти.')) + '</p>') + '</div>';
+                }
+                const first = $('[data-f]', body); if (first) first.focus();
+            }
+            const val = k => { const el = $('[data-f="' + k + '"]', body); return el ? el.value : ''; };
+            const setErr = x => { const el = $('.acc-err', body); if (el) el.textContent = ERR(x && x.code); };
+            const done = () => { draw(); refreshKeys(); };
+            bd.addEventListener('keydown', e => {
+                if (e.key === 'Enter' && e.target.matches && e.target.matches('[data-f]')) { e.preventDefault(); const b = $('[data-x="createcopy"],[data-x="setpwcopy"]', body); if (b) b.click(); }
+            });
+            bd.addEventListener('click', e => {
+                const c = e.target.closest('[data-copy]'); if (c) { copyTxt(c.dataset.copy); return; }
+                const x = e.target.closest('[data-x]'); if (!x) return;
+                const k = x.dataset.x;
+                if (k === 'close') closeModal();
+                else if (k === 'eye') { const i = $('[data-f="pw"]', body); i.type = i.type === 'text' ? 'password' : 'text'; }
+                else if (k === 'gen') { const i = $('[data-f="pw"]', body); i.value = A.accounts.genPassword(); i.type = 'text'; }
+                else if (k === 'copyall') copyTxt('Login: ' + cred.un + '\nParol: ' + cred.pw);
+                else if (k === 'createcopy') {
+                    const un = val('un').trim().toLowerCase(), pw = val('pw'), o = { role: role, username: un, password: pw, name: p.name };
+                    if (role === 'student') o.studentId = p.id; else o.teacherId = p.id;
+                    A.accounts.create(o).then(() => { cred = { title: tr('Login yaratildi', 'Login created', 'Логин создан'), un: un, pw: pw }; copyTxt('Login: ' + un + '\nParol: ' + pw); done(); }, setErr);
+                }
+                else if (k === 'setpwcopy') { const pw = val('pw'); A.accounts.setPassword(acc.id, pw).then(() => { cred = { title: tr('Parol yangilandi', 'Password updated', 'Пароль обновлён'), un: acc.username, pw: pw }; copyTxt('Login: ' + acc.username + '\nParol: ' + pw); done(); }, setErr); }
+                else if (k === 'tg') A.accounts.setActive(acc.id, !acc.active).then(() => { note(acc.active ? tr('Akkaunt bloklandi', 'Account blocked', 'Аккаунт заблокирован') : tr('Akkaunt faollashtirildi', 'Account activated', 'Аккаунт активирован')); done(); }, setErr);
+                else if (k === 'delask') { askDel = true; draw(); }
+                else if (k === 'delno') { askDel = false; draw(); }
+                else if (k === 'delyes') A.accounts.remove(acc.id).then(() => { note(tr("Akkaunt o'chirildi", 'Account deleted', 'Аккаунт удалён')); closeModal(); refreshKeys(); }, setErr);
+            });
+            draw();
+        }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+        /* Login sahifasi: "Login: ..\nParol: .." matni qo'yilsa, ikkala maydon avtomatik to'ldiriladi */
+        function parseCred(t) {
+            t = String(t || '').trim(); if (!t || t.length > 400) return null;
+            const m = t.match(/(?:login|username|логин)\s*[:：=]\s*(\S+)[\s\S]*?(?:parol|password|пароль)\s*[:：=]\s*(\S+)/i);
+            if (m) return { u: m[1], p: m[2] };
+            const ls = t.split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+            return ls.length === 2 && ls.every(x => !/\s/.test(x)) ? { u: ls[0], p: ls[1] } : null;
+        }
+        document.addEventListener('paste', e => {
+            const t = e.target; if (!t || (t.id !== 'lgUser' && t.id !== 'lgPass')) return;
+            const c = parseCred(e.clipboardData && e.clipboardData.getData('text')); if (!c) return;
+            e.preventDefault();
+            const u = document.getElementById('lgUser'), p = document.getElementById('lgPass');
+            u.value = c.u; p.value = c.p;
+            [u, p].forEach(el => el.dispatchEvent(new Event('input', { bubbles: true })));
+            const b = document.getElementById('lgSubmit'); if (b) b.focus();
+            note(tr('Login va parol joylandi', 'Login and password filled in', 'Логин и пароль подставлены'));
+        }, true);
+
+        /* Profil menyusidan: o'z parolini o'zgartirish (hamma rollar) */
+        function openMyPw() {
+            const bd = modal('<h3>' + esc(tr("Parolni o'zgartirish", 'Change password', 'Сменить пароль')) + '</h3>' +
+                '<label class="acc-f">' + esc(tr('Joriy parol', 'Current password', 'Текущий пароль')) + '<input type="password" data-f="o" autocomplete="current-password"></label>' +
+                '<label class="acc-f" style="margin-bottom:0">' + esc(tr('Yangi parol', 'New password', 'Новый пароль')) + '</label>' + pwField('', tr('Kamida 6 belgi', 'At least 6 characters', 'Не менее 6 символов')) +
+                '<div class="acc-err" role="alert"></div><div class="acc-foot"><button type="button" class="acc-btn ghost" data-x="close">' + esc(tr('Bekor qilish', 'Cancel', 'Отмена')) + '</button><button type="button" class="acc-btn" data-x="save">' + esc(tr('Saqlash', 'Save', 'Сохранить')) + '</button></div>');
+            const pw = $('[data-f="pw"]', bd); pw.type = 'password';
+            const save = () => A.accounts.changeOwn($('[data-f="o"]', bd).value, pw.value).then(() => { closeModal(); note(tr('Parol yangilandi', 'Password updated', 'Пароль обновлён')); render(); }, x => { $('.acc-err', bd).textContent = ERR(x && x.code); });
+            bd.addEventListener('click', e => {
+                const x = e.target.closest('[data-x]'); if (!x) return; const k = x.dataset.x;
+                if (k === 'close') closeModal(); else if (k === 'save') save();
+                else if (k === 'eye') pw.type = pw.type === 'text' ? 'password' : 'text';
+                else if (k === 'gen') { pw.value = A.accounts.genPassword(); pw.type = 'text'; }
+            });
+            bd.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); save(); } });
+            $('[data-f="o"]', bd).focus();
+        }
+        const pwBtn = document.getElementById('profilePwBtn');
+        if (pwBtn) { pwBtn.addEventListener('click', openMyPw); pwBtn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openMyPw(); } }); }
+        document.addEventListener('click', e => {
+            const b = e.target.closest && e.target.closest('.acc-key'); if (!b) return;
+            e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+            openPerson(b.dataset.accRole, b.dataset.accId);
+        }, true);
+
+        /* ---------- O'qituvchi kabineti ---------- */
+        const DAYS = () => ({ uz: ['Du', 'Se', 'Chor', 'Pay', 'Ju', 'Sha', 'Yak'], en: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], ru: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'] }[lang()] || []);
+        function renderTeacher() {
+            const root = $('#teacherRoot'); if (!root) return;
+            if (!R.is('teacher')) { root.innerHTML = ''; return; }
+            const th = (window.allTeachers ? window.allTeachers() : []).find(t => String(t.id) === String(R.teacherId()));
+            if (!th) { root.innerHTML = '<div class="sc-wrap"><div class="sc-card sc-empty">' + esc(tr("Hisobingiz o'qituvchi profiliga bog'lanmagan. CEO ga murojaat qiling.", 'Your account is not linked to a teacher profile. Contact the CEO.', 'Аккаунт не привязан к профилю преподавателя. Обратитесь к CEO.')) + '</div>' + pwCard() + '</div>'; return; }
+            const groups = (window.allGroups ? window.allGroups() : []).filter(g => g.teacher === th.name);
+            const studs = window.allStudents ? window.allStudents() : [];
+            const rooms = (window.appCatalog ? window.appCatalog().rooms : []) || [];
+            const mine = studs.filter(s => groups.some(g => g.name === s.group));
+            root.innerHTML = '<div class="sc-wrap"><div class="sc-hero"><div><h2>' + esc(tr('Salom', 'Hello', 'Здравствуйте')) + ', ' + esc(String(th.name).split(' ')[0]) + '!</h2><p>' + esc(th.name) + ' · ' + esc(th.phone || '') + '</p></div></div>' +
+                '<div class="sc-stats"><div class="sc-card"><small>' + esc(tr('Fan', 'Subject', 'Предмет')) + '</small><b>' + esc(th.subject || '—') + '</b></div>' +
+                '<div class="sc-card"><small>' + esc(tr('Guruhlar', 'Groups', 'Группы')) + '</small><b>' + groups.length + '</b></div>' +
+                '<div class="sc-card"><small>' + esc(tr("O'quvchilar", 'Students', 'Ученики')) + '</small><b>' + mine.length + '</b></div></div>' +
+                (groups.length ? groups.map(g => {
+                    const room = rooms.find(r => r.id === g.room), list = studs.filter(s => s.group === g.name);
+                    return '<div class="sc-card"><h3>' + esc(g.name) + '</h3><div class="sc-days">' + (g.days || []).map(d => '<span>' + esc(DAYS()[d] || d) + '</span>').join('') + '</div>' +
+                        '<div class="sc-row"><span>' + esc(tr('Vaqti', 'Time', 'Время')) + '</span><span>' + esc(g.start) + ' – ' + esc(g.end) + '</span></div>' +
+                        '<div class="sc-row"><span>' + esc(tr('Xona', 'Room', 'Кабинет')) + '</span><span>' + esc(room ? room.name : '—') + '</span></div>' +
+                        (list.length ? '<div class="sc-table-wrap"><table class="sc-table"><tbody>' + list.map(s => '<tr><td>' + esc(s.name) + '</td><td>' + esc(s.phone || '') + '</td></tr>').join('') + '</tbody></table></div>' : '<div class="sc-empty">' + esc(tr("O'quvchilar yo'q", 'No students', 'Нет учеников')) + '</div>') + '</div>';
+                }).join('') : '<div class="sc-card sc-empty">' + esc(tr("Sizga hali guruh biriktirilmagan", 'No groups assigned yet', 'Группы пока не назначены')) + '</div>') + pwCard() + '</div>';
+        }
+        window.renderTeacherCabinet = renderTeacher;
+        R.onUpdate(renderTeacher); R.onUpdate(render);
+
+        /* O'quvchi kabinetiga ham parol kartasini qo'shamiz */
+        const baseStudent = window.renderStudentCabinet;
+        if (typeof baseStudent === 'function') window.renderStudentCabinet = function () {
+            baseStudent.apply(this, arguments);
+            const w = $('#studentRoot .sc-wrap');
+            if (R.is('student') && w && !$('.acc-pwc', w)) w.insertAdjacentHTML('beforeend', pwCard());
+        };
+    })();
+
+    </script>
+
+    <script>
     /* ===== LOGIN EKRANI (UI) ===== */
     (function initLogin() {
         const A = window.CRMAuth, root = document.getElementById('loginRoot');
@@ -12363,16 +12863,17 @@
         const ICON = {
             ceo: SV('<rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/>'),
             admin: SV('<path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/>'),
+            teacher: SV('<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>'),
             student: SV('<path d="M12 3 2 8l10 5 10-5-10-5z"/><path d="M6 10.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-5.5"/>')
         };
-        const roleLabel = r => r === 'student' ? t('roleStudent') : r === 'ceo' ? 'CEO' : 'Admin';
+        const roleLabel = r => r === 'student' ? t('roleStudent') : r === 'teacher' ? ["O'qituvchi", 'Teacher', 'Преподаватель'][IDX[lang()] || 0] : r === 'ceo' ? 'CEO' : 'Admin';
 
         function paint() {
             root.querySelectorAll('[data-lg]').forEach(el => { el.textContent = t(el.dataset.lg); });
             btn.querySelector('[data-lg]').textContent = t(busy ? 'busy' : 'submit');
             eye.setAttribute('aria-label', t(pEl.type === 'password' ? 'show' : 'hide'));
             const box = $('lgDemo');
-            if (box) box.hidden = !A.demo;
+            if (box) box.hidden = !(A.demo && A.demoHints().length);
             const chips = $('lgChips');
             if (A.demo && box && chips) {
                 chips.textContent = '';
@@ -12389,16 +12890,14 @@
             renderMsg();
         }
         window.paintLogin = paint;
+        if (A.ready) A.ready.then(paint);
 
         function setBusy(v) { busy = v; btn.disabled = v || A.state === 'checking'; btn.classList.toggle('busy', v); [uEl, pEl, rEl].forEach(e => { e.disabled = v; }); btn.querySelector('[data-lg]').textContent = t(v ? 'busy' : 'submit'); }
         function fail(el) { form.classList.remove('shake'); void form.offsetWidth; form.classList.add('shake'); el.focus(); }
 
         // Kirgandan so'ng: URL'dagi ruxsat etilgan rejim saqlanadi, aks holda foydalanuvchining o'z roli
         function enterApp(user) {
-            const rank = { student: 0, admin: 1, ceo: 2 };
-            let want = '';
-            try { want = String(new URL(location.href).searchParams.get('role') || '').trim().toLowerCase(); } catch (e) { want = ''; }
-            const target = Object.prototype.hasOwnProperty.call(rank, want) && rank[want] <= rank[user.role] ? want : user.role;
+            const target = user.role;      // rol faqat akkauntdan; URL'dagi ?role= hisobga olinmaydi
             try {
                 const u = new URL(location.href);
                 if (target === 'student') u.searchParams.delete('role'); else u.searchParams.set('role', target);
