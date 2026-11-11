@@ -8865,27 +8865,41 @@
         const SUN_ICON = '<circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />';
         const MOON_ICON = '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />';
 
-        function applyTheme(theme) {
+        /* Tema almashishi: bosilgan tugmadan doira bo'lib yoyiladi (View Transitions). Qo'llab-quvvatlanmasa yumshoq o'tish. */
+        let themeReady = false, themePt = null;
+        document.addEventListener('pointerdown', e => { themePt = { x: e.clientX, y: e.clientY, t: Date.now() }; }, true);
+        function themeOrigin() {
+            if (themePt && Date.now() - themePt.t < 2000) return themePt;
+            const a = document.activeElement && document.activeElement !== document.body ? document.activeElement : themeBtn, r = a.getBoundingClientRect();
+            return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+        }
+        function themeApplyNow(theme) {
             const dark = theme === 'dark';
             document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
             themeIcon.innerHTML = dark ? SUN_ICON : MOON_ICON;
             localStorage.setItem(THEME_STORAGE_KEY, dark ? 'dark' : 'light');
         }
+        function applyTheme(theme) {
+            const dark = theme === 'dark', root = document.documentElement;
+            if (!themeReady || root.getAttribute('data-theme') === (dark ? 'dark' : 'light') || prefersReducedMotion()) { themeApplyNow(theme); return; }
+            if (!document.startViewTransition) {
+                root.classList.add('theme-fade'); clearTimeout(themeBtn._fadeTimer); themeBtn._fadeTimer = setTimeout(() => root.classList.remove('theme-fade'), 450);
+                themeApplyNow(theme); return;
+            }
+            const p = themeOrigin(), r = Math.hypot(Math.max(p.x, innerWidth - p.x), Math.max(p.y, innerHeight - p.y));
+            const t = document.startViewTransition(() => { themeApplyNow(theme); });
+            t.ready.then(() => { root.animate({ clipPath: ['circle(0px at ' + p.x + 'px ' + p.y + 'px)', 'circle(' + r + 'px at ' + p.x + 'px ' + p.y + 'px)'] }, { duration: 720, easing: 'cubic-bezier(.4, 0, .2, 1)', pseudoElement: '::view-transition-new(root)' }); }).catch(() => { });
+        }
 
         themeBtn.addEventListener('click', () => {
             const current = document.documentElement.getAttribute('data-theme');
-            if (!prefersReducedMotion()) {
-                const root = document.documentElement;
-                root.classList.add('theme-fade');
-                clearTimeout(themeBtn._fadeTimer);
-                themeBtn._fadeTimer = setTimeout(() => root.classList.remove('theme-fade'), 450);
-            }
             applyTheme(current === 'dark' ? 'light' : 'dark');
         });
 
         (function initTheme() {
             const saved = localStorage.getItem(THEME_STORAGE_KEY);
             applyTheme(saved === 'dark' ? 'dark' : 'light');
+            themeReady = true;
         })();
 
         // ======================================================
@@ -15531,10 +15545,10 @@
             const carHtml = '<div class="sx-car" tabindex="0" role="region" aria-roledescription="carousel" aria-label="' + esc(tr('Asosiy kartalar', 'Main cards', 'Основные карточки')) + '"><div class="sx-car-stage">' +
                 carSlides.map(x => '<div class="sx-slide"' + (x[0] ? ' data-sp-go="' + x[0] + '" role="button" tabindex="-1"' : '') + '>' + x[1] + '</div>').join('') + '</div>' +
                 '<div class="sx-car-dots">' + carSlides.map((x, i) => '<button type="button" class="sx-cd" data-sx-car="' + i + '" aria-label="' + (i + 1) + '"></button>').join('') + '</div>' +
-                '<div class="sx-car-hint">' + SVG('<path d="M6 15l6-6 6 6"/>') + esc(tr('Yuqoriga suring', 'Swipe up', 'Проведите вверх')) + '</div></div>';
+                '</div>';
             const QA = [['stschedule', '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>', tr('Jadval', 'Schedule', 'Расписание')], ['sthomework', '<path d="M5 4h11l3 3v13H5z"/><path d="M8 11h8M8 15h8"/>', tr('Vazifa', 'Homework', 'Задания')], ['stattendance', '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>', tr('Davomat', 'Attendance', 'Посещ.')], ['stresults', '<path d="M8 21h8M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>', tr('Natija', 'Results', 'Итоги')], ['stpayments', '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h3"/>', tr("To'lov", 'Payments', 'Оплата')]];
             const quickHtml = '<div class="sx-quick">' + QA.map(q => '<button type="button" class="sx-qa" data-sp-go="' + q[0] + '"><span class="sx-qi">' + SVG(q[1]) + '</span><b>' + esc(q[2]) + '</b></button>').join('') + '</div>';
-            return '<div class="sp-wrap sp-dash sx-home">' + carHtml + quickHtml + '<div class="sx-top"><div class="sx-left">' + nextCard + stickers + weekStrip(s, gs, now) + hwSection + '</div><div class="sx-right">' + cardHtml + planHtml + '</div></div><div class="sx-bottom">' + grHtml + mvHtml + '</div></div>';
+            return '<div class="sp-wrap sp-dash sx-home">' + carHtml + '<div class="sx-top"><div class="sx-left">' + nextCard + stickers + weekStrip(s, gs, now) + hwSection + '</div><div class="sx-right">' + cardHtml + planHtml + '</div></div><div class="sx-bottom">' + grHtml + mvHtml + '</div></div>';
         }
 
         /* Hisobni jonli yangilab turish: "tugashiga 40 daqiqa" va hokazo */
@@ -15929,8 +15943,9 @@
             if (!document.getElementById('sxZoomBtn')) { const b = document.createElement('button'); b.type = 'button'; b.className = 'icon-btn'; b.id = 'sxZoomBtn'; b.setAttribute('data-sx', 'zoom'); b.innerHTML = '<b class="sx-aa">Aa</b>'; hi.insertBefore(b, anchor); }
             if (!document.getElementById('sxBell')) { const b = document.createElement('button'); b.type = 'button'; b.className = 'icon-btn'; b.id = 'sxBell'; b.setAttribute('data-sx', 'bell'); b.innerHTML = SVG('<path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/>') + '<span class="sx-bd" hidden></span>'; hi.insertBefore(b, anchor); }
             const sb = document.querySelector('.sidebar-bottom');
-            if (sb && !sb.querySelector('.sx-prefs')) sb.insertAdjacentHTML('afterbegin', '<div class="sx-prefs"><button type="button" data-sx="lang"><span>' + esc(tr('Til', 'Language', 'Язык')) + '</span><b>' + esc(lang().toUpperCase()) + '</b></button><button type="button" data-sx="theme"><span>' + esc(tr('Mavzu', 'Theme', 'Тема')) + '</span><b>' + esc(document.documentElement.getAttribute('data-theme') === 'dark' ? tr('Qorong\'i', 'Dark', 'Тёмная') : tr('Yorug\'', 'Light', 'Светлая')) + '</b></button></div>');
-            else if (sb) { const pb = sb.querySelectorAll('.sx-prefs b'); if (pb[0]) pb[0].textContent = lang().toUpperCase(); if (pb[1]) pb[1].textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? tr('Qorong\'i', 'Dark', 'Тёмная') : tr('Yorug\'', 'Light', 'Светлая'); const sp = sb.querySelectorAll('.sx-prefs span'); if (sp[0]) sp[0].textContent = tr('Til', 'Language', 'Язык'); if (sp[1]) sp[1].textContent = tr('Mavzu', 'Theme', 'Тема'); }
+            const dk = document.documentElement.getAttribute('data-theme') === 'dark', themeTxt = dk ? tr("Qorong'i", 'Dark', 'Тёмная') : tr("Yorug'", 'Light', 'Светлая');
+            const prefsHtml = '<div class="sx-prefs"><button type="button" data-sx="lang">' + SVG('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>') + '<span>' + esc(tr('Til', 'Language', 'Язык')) + '</span><b>' + esc(lang().toUpperCase()) + '</b></button><button type="button" data-sx="theme">' + SVG(dk ? '<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4"/>' : '<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>') + '<span>' + esc(tr('Mavzu', 'Theme', 'Тема')) + '</span><b>' + esc(themeTxt) + '</b></button></div>';
+            if (sb) { const old = sb.querySelector('.sx-prefs'); if (old) old.outerHTML = prefsHtml; else sb.insertAdjacentHTML('afterbegin', prefsHtml); }
             document.getElementById('sxZoomBtn').setAttribute('aria-label', tr("Matn o'lchami", 'Text size', 'Размер текста')); document.getElementById('sxZoomBtn').setAttribute('title', tr("Matn o'lchami", 'Text size', 'Размер текста'));
             document.getElementById('sxBell').setAttribute('aria-label', tr('Bildirishnomalar', 'Notifications', 'Уведомления')); document.getElementById('sxBell').setAttribute('title', tr('Bildirishnomalar', 'Notifications', 'Уведомления'));
         }
@@ -15980,42 +15995,83 @@
         }
 
 
+        /* ---- Telefon: dars jadvali (Bugun/Hafta/Oy, kunlar lentasi, vaqt chizig'i) ---- */
+        const sxSch = { mode: 'day', sel: null, mon: null };
+        const parseD = iso => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso)); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : new Date(); };
+        const addD = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+        const lessonsOn = (gs, d) => gs.filter(g => g.status === 'active' && (g.days || []).indexOf(dayIdx(d)) !== -1).sort((a, b) => mins(a.start) - mins(b.start));
+        function schItem(g, state) {
+            return '<div class="sx-ag ' + state + '"><div class="sx-ag-t"><b>' + esc(g.start) + '</b><small>' + esc(g.end) + '</small></div><div class="sx-ag-r"><i class="sx-ag-line"></i><i class="sx-ag-dot"></i></div><div class="sx-ag-c"><div class="sx-ag-h"><b>' + esc(g.name) + '</b>' +
+                (state === 'now' ? '<span class="sx-ag-now">' + esc(tr('Hozir', 'Now', 'Сейчас')) + '</span>' : '') + '</div>' + (g.teacher ? '<span>' + esc(g.teacher) + '</span>' : '') + '<span>' + esc(roomName(g)) + '</span></div></div>';
+        }
+        function schList(gs, d, now) {
+            const ls = lessonsOn(gs, d), isToday = ymd(d) === ymd(now), nm = now.getHours() * 60 + now.getMinutes();
+            if (!ls.length) return '<div class="sx-ag-empty">' + SVG('<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>') + '<span>' + esc(tr("Bu kunda dars yo'q", 'No classes this day', 'В этот день занятий нет')) + '</span></div>';
+            return '<div class="sx-ag-list">' + ls.map(g => schItem(g, !isToday ? 'next' : mins(g.end) <= nm ? 'done' : mins(g.start) <= nm ? 'now' : 'next')).join('') + '</div>';
+        }
+        function scheduleMobileHTML(s, gs) {
+            const now = new Date(), today = ymd(now);
+            if (!sxSch.sel) sxSch.sel = today;
+            const sel = parseD(sxSch.sel), selIso = ymd(sel), mon0 = addD(sel, -dayIdx(sel)), week = [0, 1, 2, 3, 4, 5, 6].map(i => addD(mon0, i));
+            const mName = d => MONTHS()[d.getMonth()];
+            const seg = '<div class="sx-sg">' + [['day', tr('Bugun', 'Day', 'День')], ['week', tr('Hafta', 'Week', 'Неделя')], ['month', tr('Oy', 'Month', 'Месяц')]].map(x => '<button type="button" class="' + (sxSch.mode === x[0] ? 'on' : '') + '" data-sx-sch="mode:' + x[0] + '">' + esc(x[1]) + '</button>').join('') + '</div>';
+            const arrow = (v, d) => '<button type="button" class="sx-ar" data-sx-sch="' + v + '" aria-label="' + (d < 0 ? '‹' : '›') + '">' + SVG(d < 0 ? '<path d="M15 6l-6 6 6 6"/>' : '<path d="M9 6l6 6-6 6"/>') + '</button>';
+            const weekLbl = week[0].getDate() + (week[0].getMonth() !== week[6].getMonth() ? ' ' + mName(week[0]).slice(0, 3) : '') + ' \u2013 ' + week[6].getDate() + ' ' + mName(week[6]).slice(0, 3);
+            const todayBtn = selIso !== today ? '<button type="button" class="sx-td" data-sx-sch="sel:' + today + '">' + esc(tr('Bugun', 'Today', 'Сегодня')) + '</button>' : '';
+            let body = '';
+            if (sxSch.mode === 'month') {
+                const m0 = sxSch.mon ? parseD(sxSch.mon) : new Date(sel.getFullYear(), sel.getMonth(), 1), first = new Date(m0.getFullYear(), m0.getMonth(), 1), lead = dayIdx(first), dim = new Date(m0.getFullYear(), m0.getMonth() + 1, 0).getDate();
+                const cells = []; for (let i = 0; i < lead; i++) cells.push('<span></span>');
+                for (let d = 1; d <= dim; d++) { const dt = new Date(m0.getFullYear(), m0.getMonth(), d), iso = ymd(dt), has = lessonsOn(gs, dt).length > 0; cells.push('<button type="button" class="sx-md' + (iso === selIso ? ' on' : '') + (iso === today ? ' today' : '') + '" data-sx-sch="sel:' + iso + '"><b>' + d + '</b><i class="' + (has ? 'has' : '') + '"></i></button>'); }
+                body = '<div class="sx-wk">' + arrow('mn:-1', -1) + '<b>' + esc(mName(m0) + ' ' + m0.getFullYear()) + '</b>' + arrow('mn:1', 1) + '</div><div class="sx-mg">' + DAYS().map(x => '<small>' + esc(x) + '</small>').join('') + cells.join('') + '</div>';
+            } else {
+                const chips = '<div class="sx-dcs">' + week.map(d => { const iso = ymd(d), has = lessonsOn(gs, d).length > 0; return '<button type="button" class="sx-dc' + (iso === selIso ? ' on' : '') + (iso === today ? ' today' : '') + '" data-sx-sch="sel:' + iso + '"><small>' + esc(DAYS()[dayIdx(d)]) + '</small><b>' + d.getDate() + '</b><i class="' + (has ? 'has' : '') + '"></i></button>'; }).join('') + '</div>';
+                const nav = '<div class="sx-wk">' + arrow('wk:-1', -1) + '<b>' + esc(weekLbl) + '</b>' + todayBtn + arrow('wk:1', 1) + '</div>';
+                if (sxSch.mode === 'day') body = nav + chips + '<div class="sx-day-t">' + esc(DAYS_FULL()[dayIdx(sel)] + ', ' + sel.getDate() + '-' + mName(sel).toLowerCase()) + '</div>' + schList(gs, sel, now);
+                else body = nav + week.map(d => '<div class="sx-day-t">' + esc(DAYS_FULL()[dayIdx(d)] + ', ' + d.getDate() + '-' + mName(d).toLowerCase()) + (ymd(d) === today ? ' <span class="sx-ag-now">' + esc(tr('Bugun', 'Today', 'Сегодня')) + '</span>' : '') + '</div>' + schList(gs, d, now)).join('');
+            }
+            if (sxSch.mode === 'month') body += '<div class="sx-day-t">' + esc(DAYS_FULL()[dayIdx(sel)] + ', ' + sel.getDate() + '-' + mName(sel).toLowerCase()) + '</div>' + schList(gs, sel, now);
+            return '<div class="sx-sm">' + seg + body + '<button type="button" class="sx-sm-ics" data-sx="ics">' + SVG('<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/>') + esc(tr("Kalendarga qo'shish", 'Add to calendar', 'Добавить в календарь')) + '</button></div>';
+        }
+
         /* ---- 3D vertikal karusel (g'ildirak): kartalar aylanadi, surilgan karta yangi karta ortiga ketadi ---- */
         let sxCarPos = 0;
         function sxCar(car) {
             if (car.__sx) return; car.__sx = 1;
             const stage = car.querySelector('.sx-car-stage'), slides = Array.prototype.slice.call(stage.children), N = slides.length, dots = car.querySelectorAll('.sx-cd');
-            const YS = 108, ZB = 135, AS = 40, PX = 140, reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-            let pos = sxCarPos, target = Math.round(pos), raf = 0, drag = null;
+            const YS = 54, ZB = 115, AS = 38, PX = 120, reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+            let pos = sxCarPos, target = Math.round(pos), raf = 0, drag = null, dir = 1;
             const wrap = d => ((d + N / 2) % N + N) % N - N / 2;
             function layout() {
+                const inc = dir > 0 ? 1 : -1;   // hozir old tomonga kelayotgan karta qaysi tomondan kelmoqda
                 slides.forEach((el, i) => {
-                    const d = wrap(i - pos), a = Math.abs(d), ca = Math.min(a, 1.6), op = a >= 1.6 ? 0 : a <= 1 ? 1 - .3 * a : .7 * (1.6 - a) / .6;
-                    /* g'ildirak: surilgan karta tepaga va ORQAGA ketadi (yuqori chekkasi uzoqlashadi), yangisi pastdan oldinga chiqadi */
-                    el.style.transform = 'translate3d(0,' + (YS * Math.sign(d) * ca).toFixed(1) + 'px,' + (-ZB * ca).toFixed(1) + 'px) rotateX(' + (-Math.sign(d) * Math.min(a, 1.6) * AS).toFixed(1) + 'deg)';
+                    const d = wrap(i - pos), a = Math.abs(d), ca = Math.min(a, 1.6), op = a <= 1.05 ? 1 : Math.max(0, (1.6 - a) / .55);
+                    /* g'ildirak: surilgan karta tepaga va ORQAGA ketadi, yangisi pastdan oldinga chiqadi. Kartalar to'liq to'q, kesishmaydi: qatlam tartibi bo'yicha. */
+                    el.style.transform = 'translate3d(0,' + (YS * Math.sign(d) * ca).toFixed(1) + 'px,' + (-ZB * ca).toFixed(1) + 'px) rotateX(' + (-Math.sign(d) * ca * AS).toFixed(1) + 'deg)';
                     el.style.opacity = op.toFixed(2);
-                    el.style.zIndex = String(100 - Math.round(a * 20));
+                    el.style.zIndex = String(1000 - Math.round(a * 100) + (Math.sign(d) === inc ? 20 : 0));
                     el.style.pointerEvents = a < .35 ? 'auto' : 'none';
-                    el.style.filter = 'brightness(' + (1 - Math.min(a, 1.2) * .1).toFixed(2) + ')';
+                    el.style.filter = 'brightness(' + (1 - Math.min(a, 1) * .14).toFixed(2) + ')';
                     el.style.visibility = a > 1.65 ? 'hidden' : 'visible';
                     el.setAttribute('aria-hidden', a < .5 ? 'false' : 'true');
                 });
                 const cur = ((Math.round(pos) % N) + N) % N; dots.forEach((b, k) => b.classList.toggle('on', k === cur)); sxCarPos = pos;
             }
             function go(t) {
-                target = t; cancelAnimationFrame(raf);
+                target = t; dir = t >= pos ? 1 : -1; cancelAnimationFrame(raf);
                 if (reduce) { pos = t; layout(); return; }
                 const step = () => { const df = target - pos; if (Math.abs(df) < .002) { pos = target; layout(); return; } pos += df * .13; layout(); raf = requestAnimationFrame(step); };
                 raf = requestAnimationFrame(step);
             }
             function seen() { car.classList.add('seen'); try { localStorage.setItem('crm_sx_car', '1'); } catch (e) { } }
             try { if (localStorage.getItem('crm_sx_car')) car.classList.add('seen'); } catch (e) { }
+            ['touchstart', 'touchmove'].forEach(ev => car.addEventListener(ev, e => { e.stopPropagation(); }, { passive: true }));
             car.addEventListener('pointerdown', e => { if (e.button > 0) return; cancelAnimationFrame(raf); drag = { y: e.clientY, p: pos, ly: e.clientY, lt: performance.now(), v: 0, moved: false, id: e.pointerId }; });
             car.addEventListener('pointermove', e => {
                 if (!drag) return; const dy = e.clientY - drag.y;
                 if (!drag.moved) { if (Math.abs(dy) < 6) return; drag.moved = true; car.classList.add('drag'); seen(); try { car.setPointerCapture(drag.id); } catch (x) { } }
                 const now = performance.now(); drag.v = (e.clientY - drag.ly) / Math.max(1, now - drag.lt); drag.ly = e.clientY; drag.lt = now;
-                pos = drag.p - dy / PX; layout();
+                const np = drag.p - dy / PX; if (Math.abs(np - pos) > .002) dir = np > pos ? 1 : -1; pos = np; layout();
             });
             const end = () => {
                 if (!drag) return; const d = drag; drag = null; car.classList.remove('drag');
@@ -16023,7 +16079,8 @@
                 const base = Math.round(d.p), proj = pos - d.v * 240 / PX;
                 go(Math.max(base - 1, Math.min(base + 1, Math.round(proj))));
             };
-            car.addEventListener('pointerup', end); car.addEventListener('pointercancel', end);
+            car.addEventListener('pointerup', end); car.addEventListener('pointercancel', end); car.addEventListener('lostpointercapture', end);
+            window.addEventListener('blur', end);
             car.addEventListener('click', e => {
                 if (car.__dragged) { e.stopPropagation(); e.preventDefault(); return; }
                 const b = e.target.closest && e.target.closest('[data-sx-car]'); if (b) { e.stopPropagation(); seen(); const r = Math.round(pos); go(r + wrap(+b.getAttribute('data-sx-car') - r)); }
@@ -16046,6 +16103,15 @@
             const r = R(); if (!r || !r.is('student')) return;
             const panel = document.getElementById('sxPanel');
             if (panel && !(e.target.closest && (e.target.closest('#sxPanel') || e.target.closest('#sxBell')))) sxClosePanel();
+            const sc = e.target.closest && e.target.closest('[data-sx-sch]');
+            if (sc) {
+                const kv = sc.getAttribute('data-sx-sch').split(':'), k = kv[0], v = kv.slice(1).join(':'), cur = parseD(sxSch.sel || ymd(new Date()));
+                if (k === 'mode') { sxSch.mode = v; if (v === 'month') sxSch.mon = ymd(new Date(cur.getFullYear(), cur.getMonth(), 1)); }
+                else if (k === 'sel') { sxSch.sel = v; if (sxSch.mode === 'month') { sxSch.mode = 'day'; } }
+                else if (k === 'wk') sxSch.sel = ymd(addD(cur, 7 * (+v)));
+                else if (k === 'mn') { const m = sxSch.mon ? parseD(sxSch.mon) : new Date(cur.getFullYear(), cur.getMonth(), 1); sxSch.mon = ymd(new Date(m.getFullYear(), m.getMonth() + (+v), 1)); }
+                renderAll(); return;
+            }
             const t = e.target.closest && e.target.closest('[data-sx],[data-sx-goal]'); if (!t) return;
             const s = currentStudent(); if (!s) return; const gs = groupsOf(s);
             if (t.hasAttribute('data-sx-goal')) { sxPut(s, { goal: +t.getAttribute('data-sx-goal') }); renderAll(); return; }
@@ -16082,7 +16148,7 @@
                 return;
             }
             const gs = groupsOf(s);
-            set('student', dashHTML(s, gs)); set('stschedule', scheduleHTML(s, gs)); set('stgroups', groupsHTML(s, gs)); set('sthomework', homeworkHTML(s, gs));
+            set('student', dashHTML(s, gs)); set('stschedule', scheduleHTML(s, gs) + scheduleMobileHTML(s, gs)); set('stgroups', groupsHTML(s, gs)); set('sthomework', homeworkHTML(s, gs));
             set('stattendance', attendanceHTML(s, gs)); set('stpayments', paymentsHTML(s, gs)); set('stsettings', settingsHTML());
             set('stresults', resultsHTML(s, gs)); sxAfter(s, gs);
         }
@@ -21513,24 +21579,26 @@
             html[data-auth="in"][data-role="student"] .header.sx-home .sx-ptitle h2 { font-size: 20px; letter-spacing: -.02em; }
             html[data-auth="in"][data-role="student"] .header.sx-home .sx-ptitle span { font-size: 12.5px; }
             /* "Ko'proq" oynasidagi til/mavzu */
-            html[data-auth="in"][data-role="student"] .sx-prefs { display: flex; gap: 8px; margin-bottom: 8px; flex: 1 1 100%; width: 100%; box-sizing: border-box; }
-            html[data-auth="in"][data-role="student"] .sx-prefs button { flex: 1; height: 46px; padding: 0 14px; border: 0; border-radius: 16px; background: var(--field-bg); color: var(--fg-page); display: flex; align-items: center; justify-content: space-between; gap: 8px; font: 600 13.5px var(--sx-body); cursor: pointer; }
+            html[data-auth="in"][data-role="student"] .sx-prefs { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+            html[data-auth="in"][data-role="student"] .sx-prefs button { height: 54px; padding: 0 14px; border: 0; border-radius: 18px; background: var(--field-bg); color: var(--fg-page); display: flex; align-items: center; gap: 10px; font: 600 14px var(--sx-body); cursor: pointer; }
+            html[data-auth="in"][data-role="student"] .sx-prefs button svg { width: 20px; height: 20px; flex: none; color: var(--sx-indigo); }
+            html[data-auth="in"][data-role="student"] .sx-prefs span { flex: 1; text-align: left; }
             html[data-auth="in"][data-role="student"] .sx-prefs b { font-weight: 800; color: var(--sx-indigo-d, #3A2FB0); }
-            html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-prefs b { color: #CFCBFF; }
+            html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-prefs b, html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-prefs svg { color: #CFCBFF; }
             /* asosiy kartalar o'rniga 3D vertikal karusel (g'ildirak) */
             html[data-auth="in"][data-role="student"] .sx-top .sx-next, html[data-auth="in"][data-role="student"] .sx-top .sp-cardwrap { display: none; }
-            html[data-auth="in"][data-role="student"] .sx-car { display: block; position: relative; height: 308px; margin: 0; padding-right: 22px; box-sizing: border-box; perspective: 1100px; perspective-origin: 50% 45%; touch-action: none; -webkit-user-select: none; user-select: none; outline: none; overflow: hidden; -webkit-tap-highlight-color: transparent; }
-            html[data-auth="in"][data-role="student"] .sx-car-stage { position: absolute; inset: 0 22px 0 0; transform-style: preserve-3d; }
-            html[data-auth="in"][data-role="student"] .sx-slide { position: absolute; left: 0; right: 0; top: 38px; height: 232px; backface-visibility: hidden; -webkit-backface-visibility: hidden; transform-origin: 50% 50%; will-change: transform, opacity; }
+            html[data-auth="in"][data-role="student"] .sx-car { display: block; position: relative; height: 236px; margin: 0; padding-right: 22px; box-sizing: border-box; touch-action: none; -webkit-user-select: none; user-select: none; outline: none; overflow: hidden; -webkit-tap-highlight-color: transparent; }
+            html[data-auth="in"][data-role="student"] .sx-car-stage { position: absolute; inset: 0 22px 0 0; perspective: 1100px; perspective-origin: 50% 45%; transform-style: flat; }
+            html[data-auth="in"][data-role="student"] .sx-slide { position: absolute; left: 0; right: 0; top: 26px; height: 184px; backface-visibility: hidden; -webkit-backface-visibility: hidden; transform-origin: 50% 50%; will-change: transform, opacity; }
             html[data-auth="in"][data-role="student"] .sx-slide > * { height: 100%; box-sizing: border-box; }
             html[data-auth="in"][data-role="student"] .sx-slide .sx-next { display: flex; margin: 0; flex-wrap: nowrap; }
             html[data-auth="in"][data-role="student"] .sx-slide .sp-cardwrap { display: block; padding: 0; margin: 0; height: 100%; }
             html[data-auth="in"][data-role="student"] .sx-slide .sp-bcard { height: 100%; aspect-ratio: auto; max-width: none; transform: none; }
-            html[data-auth="in"][data-role="student"] .sx-sl { border-radius: 30px; padding: 20px 22px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; color: var(--fg-page); box-shadow: 0 20px 34px -22px rgba(74, 63, 208, .5); }
+            html[data-auth="in"][data-role="student"] .sx-sl { border-radius: 28px; padding: 16px 20px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; color: var(--fg-page); box-shadow: 0 20px 34px -22px rgba(74, 63, 208, .5); }
             html[data-auth="in"][data-role="student"] .sx-sl-hw { background: var(--sx-champ); } html[data-auth="in"][data-role="student"] .sx-sl-res { background: var(--sx-sky); }
             html[data-auth="in"][data-role="student"] .sx-sl .sx-pill { display: inline-flex; align-items: center; gap: 7px; height: 28px; padding: 0 12px; border-radius: 99px; background: var(--bg-panel); font-size: 12.5px; font-weight: 700; }
             html[data-auth="in"][data-role="student"] .sx-sl .sx-pill i { width: 7px; height: 7px; border-radius: 50%; background: var(--sx-indigo); }
-            html[data-auth="in"][data-role="student"] .sx-sl-big { display: block; margin-top: 10px; font: 700 46px/1 var(--sx-display); letter-spacing: -.03em; }
+            html[data-auth="in"][data-role="student"] .sx-sl-big { display: block; margin-top: 8px; font: 700 38px/1 var(--sx-display); letter-spacing: -.03em; }
             html[data-auth="in"][data-role="student"] .sx-sl-big small { font: 600 14px var(--sx-body); letter-spacing: 0; color: var(--fg-page-muted); }
             html[data-auth="in"][data-role="student"] .sx-sl-sub { display: flex; flex-direction: column; gap: 4px; font-size: 13.5px; }
             html[data-auth="in"][data-role="student"] .sx-sl-sub b { font-size: 15px; font-weight: 700; } html[data-auth="in"][data-role="student"] .sx-sl-sub small { font-size: 13px; color: var(--fg-page-muted); }
@@ -21555,6 +21623,77 @@
             html[data-auth="in"][data-role="student"] .sx-qa:nth-child(2) .sx-qi { background: var(--sx-champ); } html[data-auth="in"][data-role="student"] .sx-qa:nth-child(3) .sx-qi { background: var(--sx-sky); } html[data-auth="in"][data-role="student"] .sx-qa:nth-child(4) .sx-qi { background: rgba(214, 69, 99, .14); }
             html[data-auth="in"][data-role="student"] .sx-qa:active .sx-qi { transform: scale(.92); }
             html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-qi { color: #CFCBFF; }
+        }
+        @media (max-width: 768px) {
+            /* karusel ixcham: kartalar bir xil, ichi zichroq */
+            html[data-auth="in"][data-role="student"] .sx-slide .sx-next { padding: 16px 18px; border-radius: 28px; gap: 8px; }
+            html[data-auth="in"][data-role="student"] .sx-slide .sx-next h2, html[data-auth="in"][data-role="student"] .sx-slide .sx-next .sx-nx-t { font-size: 24px; }
+            html[data-auth="in"][data-role="student"] .sx-slide .sx-nx-time, html[data-auth="in"][data-role="student"] .sx-slide .sx-nx-r b { font-size: 40px; }
+            html[data-auth="in"][data-role="student"] .sx-slide .sp-bcard .sp-bc-in { padding: 14px 18px; gap: 4px; }
+            html[data-auth="in"][data-role="student"] .sx-slide .sp-bcard .sp-bc-chip, html[data-auth="in"][data-role="student"] .sx-slide .sp-bcard .sp-bc-no { display: none; }
+            html[data-auth="in"][data-role="student"] .sx-slide .sp-bcard .sp-bc-am { font-size: 34px; }
+            html[data-auth="in"][data-role="student"] .sx-car-hint { bottom: 0; height: 26px; }
+            html[data-auth="in"][data-role="student"] .sx-sl-sub b { font-size: 14px; } html[data-auth="in"][data-role="student"] .sx-sl-cta { height: 34px; font-size: 13px; }
+            /* kompyuter tezkor qatori kerak emas */
+            html[data-auth="in"][data-role="student"] .sx-quick { display: none; }
+        }
+        /* Tema almashishi: doira bo'lib yoyilish (View Transitions) */
+        ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+        ::view-transition-old(root) { z-index: 1; }
+        ::view-transition-new(root) { z-index: 2; }
+        /* =====================================================================
+           TELEFON: DARS JADVALI (Bugun / Hafta / Oy, kunlar lentasi, vaqt chizig'i)
+           ===================================================================== */
+        .sx-sm { display: none; }
+        @media (max-width: 768px) {
+            html[data-auth="in"][data-role="student"] #stScheduleRoot > .sp-wrap { display: none; }
+            html[data-auth="in"][data-role="student"] .header:not(.sx-home) .sx-ptitle h2 { font-size: 28px; letter-spacing: -.025em; }
+            html[data-auth="in"][data-role="student"] .sx-sm { display: block; padding-bottom: 96px; }
+            html[data-auth="in"][data-role="student"] .sx-sg { display: flex; padding: 4px; margin: 2px 0 14px; border-radius: 18px; background: rgba(74, 63, 208, .09); }
+            html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-sg { background: rgba(255, 255, 255, .07); }
+            html[data-auth="in"][data-role="student"] .sx-sg button { flex: 1; border: 0; background: none; padding: 9px 0; border-radius: 14px; font: 600 13.5px var(--sx-body); color: var(--fg-page-muted); cursor: pointer; transition: background .2s, color .2s; }
+            html[data-auth="in"][data-role="student"] .sx-sg button.on { background: var(--bg-panel); color: var(--fg-page); font-weight: 800; box-shadow: 0 6px 14px -8px rgba(23, 26, 68, .4); }
+            html[data-auth="in"][data-role="student"] .sx-wk { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 10px; }
+            html[data-auth="in"][data-role="student"] .sx-wk > b { flex: 1; text-align: center; font: 700 14.5px var(--sx-body); }
+            html[data-auth="in"][data-role="student"] .sx-ar { flex: none; width: 36px; height: 36px; border: 0; border-radius: 50%; background: var(--bg-panel); color: var(--fg-page); display: grid; place-items: center; box-shadow: 0 8px 18px -14px rgba(23, 26, 68, .5); cursor: pointer; }
+            html[data-auth="in"][data-role="student"] .sx-ar svg { width: 18px; height: 18px; }
+            html[data-auth="in"][data-role="student"] .sx-td { flex: none; height: 32px; padding: 0 12px; border: 0; border-radius: 99px; background: var(--sx-lav); color: var(--sx-indigo-d, #3A2FB0); font: 700 12.5px var(--sx-body); cursor: pointer; }
+            html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-td { color: #CFCBFF; }
+            html[data-auth="in"][data-role="student"] .sx-dcs { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 14px; scrollbar-width: none; }
+            html[data-auth="in"][data-role="student"] .sx-dcs::-webkit-scrollbar { display: none; }
+            html[data-auth="in"][data-role="student"] .sx-dc { flex: 1 0 46px; min-width: 46px; padding: 10px 0; border: 0; border-radius: 18px; background: var(--bg-panel); color: var(--fg-page); display: flex; flex-direction: column; align-items: center; gap: 6px; box-shadow: 0 8px 18px -14px rgba(23, 26, 68, .4); cursor: pointer; transition: transform .2s var(--lg-spring), background .2s; }
+            html[data-auth="in"][data-role="student"] .sx-dc small { font: 700 11.5px var(--sx-body); opacity: .72; } html[data-auth="in"][data-role="student"] .sx-dc b { font: 700 17px var(--sx-display); }
+            html[data-auth="in"][data-role="student"] .sx-dc i { width: 6px; height: 6px; border-radius: 50%; background: transparent; } html[data-auth="in"][data-role="student"] .sx-dc i.has { background: var(--sx-indigo); }
+            html[data-auth="in"][data-role="student"] .sx-dc.today:not(.on) small { color: var(--sx-indigo); opacity: 1; } html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-dc.today:not(.on) small { color: #CFCBFF; }
+            html[data-auth="in"][data-role="student"] .sx-dc.on { background: var(--sx-fill); color: #fff; transform: translateY(-2px); } html[data-auth="in"][data-role="student"] .sx-dc.on i.has { background: #F0D391; }
+            html[data-auth="in"][data-role="student"] .sx-day-t { margin: 6px 4px 10px; font: 700 15px var(--sx-display); display: flex; align-items: center; gap: 8px; }
+            html[data-auth="in"][data-role="student"] .sx-ag-list { display: flex; flex-direction: column; }
+            html[data-auth="in"][data-role="student"] .sx-ag { display: flex; gap: 12px; }
+            html[data-auth="in"][data-role="student"] .sx-ag-t { width: 46px; flex: none; display: flex; flex-direction: column; align-items: flex-end; padding-top: 14px; }
+            html[data-auth="in"][data-role="student"] .sx-ag-t b { font-size: 14px; } html[data-auth="in"][data-role="student"] .sx-ag-t small { font-size: 12px; color: var(--fg-page-muted); }
+            html[data-auth="in"][data-role="student"] .sx-ag-r { position: relative; width: 14px; flex: none; display: flex; justify-content: center; }
+            html[data-auth="in"][data-role="student"] .sx-ag-line { position: absolute; top: 0; bottom: -14px; width: 2px; background: rgba(74, 63, 208, .16); }
+            html[data-auth="in"][data-role="student"] .sx-ag:last-child .sx-ag-line { bottom: 50%; }
+            html[data-auth="in"][data-role="student"] .sx-ag-dot { position: relative; margin-top: 18px; width: 12px; height: 12px; border-radius: 50%; background: #8A7CFF; box-shadow: 0 0 0 4px rgba(74, 63, 208, .1); }
+            html[data-auth="in"][data-role="student"] .sx-ag.now .sx-ag-dot { background: var(--sx-fill); box-shadow: 0 0 0 4px var(--sx-lav); }
+            html[data-auth="in"][data-role="student"] .sx-ag.done .sx-ag-dot { background: #B8B6D6; } html[data-auth="in"][data-role="student"] .sx-ag.done { opacity: .6; }
+            html[data-auth="in"][data-role="student"] .sx-ag-c { flex: 1; min-width: 0; margin-bottom: 14px; padding: 14px 16px; border-radius: 22px; background: var(--bg-panel); box-shadow: 0 10px 24px -18px rgba(23, 26, 68, .4); display: flex; flex-direction: column; gap: 3px; font-size: 13px; color: var(--fg-page-muted); }
+            html[data-auth="in"][data-role="student"] .sx-ag.now .sx-ag-c { background: var(--sx-lav); }
+            html[data-auth="in"][data-role="student"] .sx-ag-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 3px; }
+            html[data-auth="in"][data-role="student"] .sx-ag-h b { font: 700 18px var(--sx-display); letter-spacing: -.01em; color: var(--fg-page); }
+            html[data-auth="in"][data-role="student"] .sx-ag-now { padding: 4px 10px; border-radius: 99px; background: var(--bg-panel); color: var(--sx-indigo-d, #3A2FB0); font: 700 11.5px var(--sx-body); }
+            html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-ag-now { color: #CFCBFF; }
+            html[data-auth="in"][data-role="student"] .sx-ag-empty { display: flex; align-items: center; gap: 12px; padding: 18px; margin-bottom: 12px; border-radius: 22px; background: var(--field-bg); color: var(--fg-page-muted); font-size: 14px; }
+            html[data-auth="in"][data-role="student"] .sx-ag-empty svg { width: 24px; height: 24px; flex: none; }
+            html[data-auth="in"][data-role="student"] .sx-mg { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; margin-bottom: 8px; text-align: center; }
+            html[data-auth="in"][data-role="student"] .sx-mg > small { font: 700 11.5px var(--sx-body); color: var(--fg-page-muted); padding: 4px 0; }
+            html[data-auth="in"][data-role="student"] .sx-md { aspect-ratio: 1; border: 0; border-radius: 14px; background: var(--bg-panel); color: var(--fg-page); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; }
+            html[data-auth="in"][data-role="student"] .sx-md b { font: 700 14px var(--sx-body); } html[data-auth="in"][data-role="student"] .sx-md i { width: 5px; height: 5px; border-radius: 50%; background: transparent; } html[data-auth="in"][data-role="student"] .sx-md i.has { background: var(--sx-indigo); }
+            html[data-auth="in"][data-role="student"] .sx-md.today:not(.on) { box-shadow: inset 0 0 0 2px #F0D391; }
+            html[data-auth="in"][data-role="student"] .sx-md.on { background: var(--sx-fill); color: #fff; } html[data-auth="in"][data-role="student"] .sx-md.on i.has { background: #F0D391; }
+            html[data-auth="in"][data-role="student"] .sx-sm-ics { position: fixed; left: 18px; right: 18px; bottom: calc(92px + env(safe-area-inset-bottom, 0px) * .6); z-index: 90; height: 52px; border: 0; border-radius: 99px; background: #171A44; color: #fff; display: flex; align-items: center; justify-content: center; gap: 10px; font: 700 15px var(--sx-body); box-shadow: 0 18px 30px -14px rgba(23, 26, 68, .7); cursor: pointer; }
+            html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-sm-ics { background: #EEF0FF; color: #171A44; }
+            html[data-auth="in"][data-role="student"] .sx-sm-ics svg { width: 20px; height: 20px; }
         }
         /* Planshet (769–940 px): header elementlari bir-birining ustiga tushmasin */
         @media (min-width: 769px) and (max-width: 940px) {
@@ -21620,9 +21759,9 @@
             html[data-auth="in"][data-role="student"] .sidebar { background: var(--bg-panel); box-shadow: 0 -20px 50px -10px rgba(23, 26, 68, .35); }
             html[data-auth="in"][data-role="student"] .sidebar .sidebar-top { height: auto; padding: 14px 22px 4px; }
             html[data-auth="in"][data-role="student"] .sidebar .sidebar-top .logo-text { font-size: 20px; }
-            html[data-auth="in"][data-role="student"] .sidebar .nav-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 10px; padding: 12px 16px 6px; margin-top: 0; flex: none; overflow: visible; }
+            html[data-auth="in"][data-role="student"] .sidebar .nav-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; padding: 12px 16px 10px; margin-top: 0; flex: none; overflow: visible; }
             html[data-auth="in"][data-role="student"] .sidebar .nav-list .nav-item {
-                flex-direction: column; justify-content: center; gap: 10px; height: auto; min-height: 104px; padding: 16px 6px 14px; border-radius: 24px; text-align: center;
+                flex-direction: column; justify-content: center; gap: 8px; height: auto; min-height: 98px; padding: 14px 6px 12px; border-radius: 24px; text-align: center;
                 background: var(--sx-lav); color: var(--fg-page); font-size: 13px; font-weight: 700; box-shadow: none;
             }
             html[data-auth="in"][data-role="student"] .sidebar .nav-list .nav-item[data-view="stgroups"] { background: var(--sx-sky); }
@@ -21695,7 +21834,18 @@
                     var t = hd.querySelector('.sx-ptitle');
                     if (!t) { t = document.createElement('div'); t.className = 'sx-ptitle'; t.innerHTML = '<h2></h2><span></span>'; var lo = hd.querySelector('.header-logo'); if (lo) lo.insertAdjacentElement('afterend', t); else hd.insertBefore(t, hd.firstChild); }
                     var lb = document.querySelector('.sidebar .nav-item.active .label');
-                    put(t.firstChild, 'textContent', lb ? lb.textContent.trim() : '');
+                    var act = document.querySelector('.sidebar .nav-item.active'), home = !!(act && act.getAttribute('data-view') === 'student'), mob = window.innerWidth <= 768, ttl = lb ? lb.textContent.trim() : '';
+                    hd.classList.toggle('sx-home', mob && home);
+                    var av = hd.querySelector('.sx-hav'), stu = me();
+                    if (!av) { av = document.createElement('button'); av.type = 'button'; av.className = 'sx-hav'; av.setAttribute('data-sx', 'profile'); av.setAttribute('aria-label', 'Profile'); hd.insertBefore(av, t); }
+                    var nm = stu && stu.name ? String(stu.name).trim() : '', ini = nm ? nm.split(/\s+/).slice(0, 2).map(function (w) { return w.charAt(0).toUpperCase(); }).join('') : '';
+                    put(av, 'textContent', ini || '\u263A');
+                    if (mob && home) {
+                        var hr = new Date().getHours(), lng = document.documentElement.getAttribute('lang') || 'uz', fn = nm ? nm.split(/\s+/)[0] : '';
+                        var gr = lng === 'en' ? (hr < 12 ? 'Good morning' : hr < 18 ? 'Good afternoon' : 'Good evening') : lng === 'ru' ? (hr < 12 ? '\u0414\u043e\u0431\u0440\u043e\u0435 \u0443\u0442\u0440\u043e' : hr < 18 ? '\u0414\u043e\u0431\u0440\u044b\u0439 \u0434\u0435\u043d\u044c' : '\u0414\u043e\u0431\u0440\u044b\u0439 \u0432\u0435\u0447\u0435\u0440') : (hr < 5 ? 'Xayrli tun' : hr < 12 ? 'Xayrli tong' : hr < 18 ? 'Xayrli kun' : 'Xayrli kech');
+                        ttl = gr + (fn ? ', ' + fn : '');
+                    }
+                    put(t.firstChild, 'textContent', ttl);
                     put(t.lastChild, 'textContent', dateTxt());
                 }
                 var SH = { uz: { student: 'Bosh', stschedule: 'Jadval', sthomework: 'Vazifa', stpayments: "To'lov", more: 'Yana' }, en: { student: 'Home', stschedule: 'Classes', sthomework: 'Tasks', stpayments: 'Pay', more: 'More' }, ru: { student: 'Главная', stschedule: 'Занятия', sthomework: 'Задания', stpayments: 'Оплата', more: 'Ещё' } }[lg()];
@@ -21735,6 +21885,10 @@
             if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
         })();
     </script>
+
+
+
+
 
 
 
@@ -22234,7 +22388,9 @@
             D.addEventListener('touchstart', function (e) {
                 ptrOn = false; if (ptrBusy || H.getAttribute('data-auth') !== 'in' || e.touches.length !== 1) return;
                 if (e.target.closest && e.target.closest('input,textarea,select,.pm-modal,[role="dialog"],.modal,#uiFull')) return;
-                var box = inScroller(e.target); if (!box || box.scrollTop > 0) return;
+                if (e.target.closest && e.target.closest('.sx-car')) return;   // karusel o'zi aylanadi, sahifa yangilanmaydi
+                var box = inScroller(e.target); if (!box && e.target.closest && e.target.closest('.header')) box = D.querySelector('.content');
+                if (!box || box.scrollTop > 0) return;
                 ptrBox = box; ptrY0 = e.touches[0].clientY; ptrD = 0; ptrOn = true;
             }, { passive: true });
             D.addEventListener('touchmove', function (e) {
