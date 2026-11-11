@@ -11933,33 +11933,41 @@
             }
 
             // ----- chek (kvitansiya) -----
-            const RC_CSS = `.rc{width:100%;max-width:440px;margin:0 auto;box-sizing:border-box;background:#fff;color:#1b2230;border-radius:16px;padding:34px 30px 28px;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+            const RC_CSS = `.rc{width:100%;max-width:420px;margin:0 auto;box-sizing:border-box;color:#171A44;font-family:'Plus Jakarta Sans',Inter,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;filter:drop-shadow(0 18px 22px rgba(8,10,40,.28));-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .rc *{box-sizing:border-box}
-.rc-brand{text-align:center;font-weight:800;font-size:25px;letter-spacing:.3px}
-.rc-sub{text-align:center;font-size:14px;color:#7a8394;margin-top:4px}
-.rc-ok{display:flex;align-items:center;justify-content:center;gap:8px;margin:24px 0 8px;color:#15a05a;font-weight:700;font-size:15px}
-.rc-ok svg{width:22px;height:22px}
-.rc-amount{text-align:center;font-size:38px;font-weight:800;font-variant-numeric:tabular-nums}
-.rc-amount small{font-size:17px;font-weight:600;color:#7a8394}
-.rc-line{border-top:1.5px dashed #cfd5df;margin:24px 0 16px}
-.rc-row{display:flex;justify-content:space-between;gap:16px;padding:7px 0;font-size:15px}
-.rc-row span{color:#7a8394;white-space:nowrap}
-.rc-row b{text-align:right;font-weight:600;word-break:break-word}
-.rc-foot{text-align:center;font-size:14px;color:#7a8394;margin-top:10px}`;
+.rc-top,.rc-bot{position:relative;background:#fff;padding:28px 28px 24px}
+.rc-top{border-radius:26px 26px 0 0;background:linear-gradient(180deg,#EFEDFF 0%,#fff 66%);padding-bottom:28px;-webkit-mask:radial-gradient(circle 13px at 0 100%,#0000 97%,#000) left/51% 100% no-repeat,radial-gradient(circle 13px at 100% 100%,#0000 97%,#000) right/51% 100% no-repeat;mask:radial-gradient(circle 13px at 0 100%,#0000 97%,#000) left/51% 100% no-repeat,radial-gradient(circle 13px at 100% 100%,#0000 97%,#000) right/51% 100% no-repeat}
+.rc-bot{border-radius:0 0 26px 26px;margin-top:-1px;padding-top:22px;-webkit-mask:radial-gradient(circle 13px at 0 0,#0000 97%,#000) left/51% 100% no-repeat,radial-gradient(circle 13px at 100% 0,#0000 97%,#000) right/51% 100% no-repeat;mask:radial-gradient(circle 13px at 0 0,#0000 97%,#000) left/51% 100% no-repeat,radial-gradient(circle 13px at 100% 0,#0000 97%,#000) right/51% 100% no-repeat}
+.rc-bot::before{content:'';position:absolute;left:24px;right:24px;top:-1px;border-top:2px dashed #D3CFEE}
+.rc-brandrow{display:flex;align-items:center;justify-content:center;gap:10px}
+.rc-mk{width:34px;height:34px;border-radius:11px;background:linear-gradient(145deg,#5B4FE8,#3A2FB0);color:#fff;display:grid;place-items:center;font:700 18px/1 'Bricolage Grotesque','Plus Jakarta Sans',system-ui,sans-serif}
+.rc-brand{font:700 21px/1 'Bricolage Grotesque','Plus Jakarta Sans',system-ui,sans-serif;letter-spacing:-.01em}
+.rc-sub{text-align:center;font-size:13px;color:#6C7094;margin-top:8px;letter-spacing:.02em}
+.rc-ok{display:flex;align-items:center;justify-content:center;gap:6px;width:max-content;max-width:100%;margin:18px auto 14px;padding:7px 14px 7px 10px;border-radius:999px;background:#DFF3EA;color:#0B6B3F;font-weight:700;font-size:13.5px}
+.rc-ok svg{width:18px;height:18px;flex:none}
+.rc-amount{text-align:center;font:800 44px/1.05 'Bricolage Grotesque','Plus Jakarta Sans',system-ui,sans-serif;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
+.rc-amount small{font:600 16px 'Plus Jakarta Sans',system-ui,sans-serif;color:#6C7094;letter-spacing:0;margin-left:2px}
+.rc-meta{display:flex;justify-content:center;gap:8px;margin-top:16px;flex-wrap:wrap}
+.rc-meta span{padding:6px 12px;border-radius:999px;background:#fff;box-shadow:0 0 0 1px #E2E0F2;font-size:12.5px;font-weight:600;color:#4B4F78;font-variant-numeric:tabular-nums}
+.rc-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:11px 0;font-size:14.5px;border-bottom:1px solid #EEEDF7}
+.rc-row:nth-last-child(2){border-bottom:0}
+.rc-row span{color:#6C7094;white-space:nowrap}
+.rc-row b{text-align:right;font-weight:700;word-break:break-word}
+.rc-foot{margin-top:12px;padding-top:14px;border-top:1px solid #EEEDF7;text-align:center;font-size:13px;color:#6C7094}`;
             (function injectReceiptCss() {
                 if (document.getElementById('pmReceiptCss')) return;
                 const st = document.createElement('style'); st.id = 'pmReceiptCss'; st.textContent = RC_CSS; document.head.appendChild(st);
             })();
             function receiptHTML(p, t) {
                 const row = (k, v) => `<div class="rc-row"><span>${k}</span><b>${v}</b></div>`;
-                return `<div class="rc"><div class="rc-brand">${escapeHtml(window.CRMBrandCenter ? window.CRMBrandCenter() : ((window.appSettings && window.appSettings.center.name) || 'Ferdinant'))}</div><div class="rc-sub">${t.rcTitle}</div>
+                const brand = window.CRMBrandCenter ? window.CRMBrandCenter() : ((window.appSettings && window.appSettings.center.name) || 'Ferdinant');
+                return `<div class="rc"><div class="rc-top"><div class="rc-brandrow"><span class="rc-mk">${escapeHtml(String(brand).trim().charAt(0).toUpperCase() || 'F')}</span><span class="rc-brand">${escapeHtml(brand)}</span></div><div class="rc-sub">${t.rcTitle}</div>
                     <div class="rc-ok">${ic('<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>')}${t.rcPaid}</div>
                     <div class="rc-amount">${money(p.amount)} <small>${t.cur}</small></div>
-                    <div class="rc-line"></div>
-                    ${row(t.rcNo, rcNo(p.id))}${row(t.colDate, fmtDate(p.date))}${row(t.colStudent, escapeHtml(p.student))}${row(t.colGroup, escapeHtml(p.group))}
-                    ${row(t.colFor, monthLabel(t, p.forMonth || p.date.slice(0, 7)))}${row(t.method, t['m_' + p.method])}${p.note ? row(t.colNote, escapeHtml(p.note)) : ''}
-                    <div class="rc-line"></div>${row(t.rcBy, 'Ferdinant Admin')}
-                    <div class="rc-foot">${t.rcThanks}</div></div>`;
+                    <div class="rc-meta"><span>${fmtDate(p.date)}</span><span>${rcNo(p.id)}</span></div></div>
+                    <div class="rc-bot">${row(t.colStudent, escapeHtml(p.student))}${row(t.colGroup, escapeHtml(p.group))}
+                    ${row(t.colFor, monthLabel(t, p.forMonth || p.date.slice(0, 7)))}${row(t.method, t['m_' + p.method])}${p.note ? row(t.colNote, escapeHtml(p.note)) : ''}${row(t.rcBy, 'Ferdinant Admin')}
+                    <div class="rc-foot">${t.rcThanks}</div></div></div>`;
             }
             function openReceipt(id) {
                 const p = PAY.find(x => x.id === id); if (!p) return;
@@ -11976,7 +11984,7 @@
                 const d = fr.contentWindow.document;
                 d.title = t.rcTitle + ' ' + rcNo(p.id);
                 const st = d.createElement('style');
-                st.textContent = '@page{margin:12mm}body{margin:0;padding:12px;background:#fff}' + RC_CSS + '.rc{border:1px solid #e3e7ee}';
+                st.textContent = '@page{margin:12mm}body{margin:0;padding:12px;background:#fff}' + RC_CSS + '.rc{filter:none}';
                 d.head.appendChild(st);
                 d.body.innerHTML = receiptHTML(p, t);
                 setTimeout(() => { try { fr.contentWindow.focus(); fr.contentWindow.print(); } catch (err) { /* chop etish mavjud emas */ } setTimeout(() => fr.remove(), 2000); }, 250);
@@ -15441,7 +15449,7 @@
             const rows = attendanceRows(s, gs, now.getFullYear(), now.getMonth()), c = { p: 0, l: 0, a: 0 }; rows.forEach(r => { if (c[r.mark] != null) c[r.mark]++; });
             const tot = c.p + c.l + c.a, rate = tot ? Math.round((c.p + c.l) / tot * 100) : null;
             const hwAll = homeworkOf(s, gs).sort(hwSort), hwDone = hwAll.filter(h => h.mine).length, hwOpen = hwAll.length - hwDone; window.SX_HW_OPEN = hwOpen;
-            const streak = streakOf(s, gs), cs = cardState(s, gs), cardLeft = cs.left, cardDebt = cardLeft < 0, cardOk = cardLeft > 0;
+            const streak = streakOf(s, gs), cs = cardState(s, gs), cardLeft = cs.left, cardDebt = cardLeft < 0, cardOk = cardLeft > 0, cardKind = sxBalKind(s.balance || 0, cs);
             const stk = (cls, ico, label, val, sub, go) => '<div class="sp-stk ' + cls + '"' + (go ? ' data-sp-go="' + go + '" role="button" tabindex="0"' : '') + '><span class="sp-stk-ico" aria-hidden="true">' + ico + '</span><small>' + esc(label) + '</small><b>' + val + '</b><em>' + sub + '</em></div>';
             const stickers = '<div class="sx-duo">' +
                 stk('mint', SVG('<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>'), tr('Davomat', 'Attendance', 'Посещаемость'), rate == null ? '—' : rate + '%', esc(rate == null ? tr('Bu oy hali belgilanmagan', 'Nothing marked yet', 'Пока нет отметок') : tr('Bu oy: ' + c.p + ' keldi, ' + c.l + ' kechikdi, ' + c.a + ' kelmadi', 'This month: ' + c.p + ' present, ' + c.l + ' late, ' + c.a + ' absent', 'В этом месяце: ' + c.p + ' был, ' + c.l + ' опоздал, ' + c.a + ' не был')), 'stattendance') +
@@ -15459,7 +15467,7 @@
             const cardFee = cs.plan.per;
             const cardCt = '<svg class="sp-bc-ct" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8.5 8.5a5 5 0 0 1 0 7"/><path d="M12 6a8.5 8.5 0 0 1 0 12"/><path d="M15.5 3.5a12 12 0 0 1 0 17"/></svg>';
             const cardChip = '<svg class="sp-bc-chip" viewBox="0 0 46 36"><defs><linearGradient id="spBcG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F8DB8B"/><stop offset=".55" stop-color="#D79B35"/><stop offset="1" stop-color="#F1C45F"/></linearGradient></defs><rect x=".5" y=".5" width="45" height="35" rx="7" fill="url(#spBcG)" stroke="rgba(110,70,10,.55)"/><path d="M0 12h14v12H0M32 12h14M32 24h14M14 0v36M32 0v36M14 18h18" stroke="rgba(110,70,10,.5)" fill="none"/></svg>';
-            const cardHtml = '<div class="sp-cardwrap"><div class="sp-bcard ' + (cardDebt ? 'debt' : cardOk ? 'ok' : '') + '" data-sp-go="stpayments" role="button" title="' + esc(tr("To'lovlar tarixi", 'Payment history', 'История платежей')) + '"><div class="sp-bc-in">' +
+            const cardHtml = '<div class="sp-cardwrap"><div class="sp-bcard ' + (cardDebt ? 'debt' : cardOk ? 'ok' : '') + '" data-bs="' + cardKind + '" data-sp-go="stpayments" role="button" title="' + esc(tr("To'lovlar tarixi", 'Payment history', 'История платежей')) + '"><div class="sp-bc-in">' +
                 '<div class="sp-bc-row"><span class="sp-bc-title">' + esc(cardCenter) + ' Card</span>' + cardCt + '</div>' + cardChip +
                 '<div class="sp-bc-money"><div class="sp-bc-lb">' + esc(cardLabel) + '</div><div class="sp-bc-am">' + (cardDebt ? '−' : '') + money(cardLeft) + ' <small>' + esc(cur()) + '</small></div></div>' +
                 '<div class="sp-bc-no">' + esc(cardNo) + '</div>' +
@@ -15594,43 +15602,59 @@
 
         /* ================= TO'LOVLARIM: HAR BIR TO'LOV CHEKI ================= */
         const RCN = id => '\u2116 ' + String(id).padStart(6, '0');
+        const RC_CORE_CSS = `.rc{width:100%;max-width:420px;margin:0 auto;box-sizing:border-box;color:#171A44;font-family:'Plus Jakarta Sans',Inter,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;filter:drop-shadow(0 18px 22px rgba(8,10,40,.28));-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.rc *{box-sizing:border-box}
+.rc-top,.rc-bot{position:relative;background:#fff;padding:28px 28px 24px}
+.rc-top{border-radius:26px 26px 0 0;background:linear-gradient(180deg,#EFEDFF 0%,#fff 66%);padding-bottom:28px;-webkit-mask:radial-gradient(circle 13px at 0 100%,#0000 97%,#000) left/51% 100% no-repeat,radial-gradient(circle 13px at 100% 100%,#0000 97%,#000) right/51% 100% no-repeat;mask:radial-gradient(circle 13px at 0 100%,#0000 97%,#000) left/51% 100% no-repeat,radial-gradient(circle 13px at 100% 100%,#0000 97%,#000) right/51% 100% no-repeat}
+.rc-bot{border-radius:0 0 26px 26px;margin-top:-1px;padding-top:22px;-webkit-mask:radial-gradient(circle 13px at 0 0,#0000 97%,#000) left/51% 100% no-repeat,radial-gradient(circle 13px at 100% 0,#0000 97%,#000) right/51% 100% no-repeat;mask:radial-gradient(circle 13px at 0 0,#0000 97%,#000) left/51% 100% no-repeat,radial-gradient(circle 13px at 100% 0,#0000 97%,#000) right/51% 100% no-repeat}
+.rc-bot::before{content:'';position:absolute;left:24px;right:24px;top:-1px;border-top:2px dashed #D3CFEE}
+.rc-brandrow{display:flex;align-items:center;justify-content:center;gap:10px}
+.rc-mk{width:34px;height:34px;border-radius:11px;background:linear-gradient(145deg,#5B4FE8,#3A2FB0);color:#fff;display:grid;place-items:center;font:700 18px/1 'Bricolage Grotesque','Plus Jakarta Sans',system-ui,sans-serif}
+.rc-brand{font:700 21px/1 'Bricolage Grotesque','Plus Jakarta Sans',system-ui,sans-serif;letter-spacing:-.01em}
+.rc-sub{text-align:center;font-size:13px;color:#6C7094;margin-top:8px;letter-spacing:.02em}
+.rc-ok{display:flex;align-items:center;justify-content:center;gap:6px;width:max-content;max-width:100%;margin:18px auto 14px;padding:7px 14px 7px 10px;border-radius:999px;background:#DFF3EA;color:#0B6B3F;font-weight:700;font-size:13.5px}
+.rc-ok svg{width:18px;height:18px;flex:none}
+.rc-amount{text-align:center;font:800 44px/1.05 'Bricolage Grotesque','Plus Jakarta Sans',system-ui,sans-serif;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
+.rc-amount small{font:600 16px 'Plus Jakarta Sans',system-ui,sans-serif;color:#6C7094;letter-spacing:0;margin-left:2px}
+.rc-meta{display:flex;justify-content:center;gap:8px;margin-top:16px;flex-wrap:wrap}
+.rc-meta span{padding:6px 12px;border-radius:999px;background:#fff;box-shadow:0 0 0 1px #E2E0F2;font-size:12.5px;font-weight:600;color:#4B4F78;font-variant-numeric:tabular-nums}
+.rc-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:11px 0;font-size:14.5px;border-bottom:1px solid #EEEDF7}
+.rc-row:nth-last-child(2){border-bottom:0}
+.rc-row span{color:#6C7094;white-space:nowrap}
+.rc-row b{text-align:right;font-weight:700;word-break:break-word}
+.rc-foot{margin-top:12px;padding-top:14px;border-top:1px solid #EEEDF7;text-align:center;font-size:13px;color:#6C7094}`;
         const RC_ST_CSS = `.spr-row{cursor:pointer}.spr-row:hover td{background:var(--hover-bg)}
 .spr-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:0;border-radius:10px;background:var(--field-bg);color:var(--fg-page);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
 .spr-btn:hover{background:var(--hover-bg)}.spr-btn svg{width:16px;height:16px}
 .spr-no{font-variant-numeric:tabular-nums;color:var(--fg-page-muted)}
-.spr-bd{position:fixed;inset:0;z-index:400;display:grid;place-items:center;padding:16px;background:rgba(9,13,22,.55);backdrop-filter:blur(3px);overflow:auto}
-.spr-box{width:min(460px,100%);display:grid;gap:12px}
+.spr-bd{position:fixed;inset:0;z-index:400;display:grid;place-items:center;padding:16px;background:rgba(8,10,32,.62);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);overflow:auto;animation:sprFade .25s ease both}
+.spr-box{width:min(420px,100%);display:grid;gap:20px;animation:sprIn .4s cubic-bezier(.34,1.3,.5,1) both}
 .spr-acts{display:flex;gap:10px;justify-content:center}
-.spr-acts button{padding:11px 22px;border:0;border-radius:12px;font:inherit;font-weight:600;font-size:14.5px;cursor:pointer;background:#fff;color:#1b2230}
-.spr-acts button.pri{background:#2F6FE0;color:#fff}
-.rc{width:100%;max-width:440px;margin:0 auto;box-sizing:border-box;background:#fff;color:#1b2230;border-radius:16px;padding:34px 30px 28px;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-.rc *{box-sizing:border-box}
-.rc-brand{text-align:center;font-weight:800;font-size:25px;letter-spacing:.3px}
-.rc-sub{text-align:center;font-size:14px;color:#7a8394;margin-top:4px}
-.rc-ok{display:flex;align-items:center;justify-content:center;gap:8px;margin:24px 0 8px;color:#15a05a;font-weight:700;font-size:15px}
-.rc-ok svg{width:22px;height:22px}
-.rc-amount{text-align:center;font-size:38px;font-weight:800;font-variant-numeric:tabular-nums}
-.rc-amount small{font-size:17px;font-weight:600;color:#7a8394}
-.rc-line{border-top:1.5px dashed #cfd5df;margin:24px 0 16px}
-.rc-row{display:flex;justify-content:space-between;gap:16px;padding:7px 0;font-size:15px}
-.rc-row span{color:#7a8394;white-space:nowrap}
-.rc-row b{text-align:right;font-weight:600;word-break:break-word}
-.rc-foot{text-align:center;font-size:14px;color:#7a8394;margin-top:10px}`;
+.spr-acts button{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 22px;border:0;border-radius:14px;font:600 14.5px 'Plus Jakarta Sans',system-ui,sans-serif;cursor:pointer;background:rgba(255,255,255,.14);color:#fff;transition:background .2s,transform .15s}
+.spr-acts button:hover{background:rgba(255,255,255,.22)}
+.spr-acts button:active{transform:scale(.97)}
+.spr-acts button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.spr-acts button.pri{background:linear-gradient(135deg,#5B4FE8,#3A2FB0);box-shadow:0 14px 24px -12px rgba(91,79,232,.9)}
+.spr-acts button.pri:hover{filter:brightness(1.08)}
+@keyframes sprFade{from{opacity:0}to{opacity:1}}
+@keyframes sprIn{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.spr-bd,.spr-box{animation:none}}
+` + RC_CORE_CSS;
         (function () { if (document.getElementById('sprCss')) return; const st = document.createElement('style'); st.id = 'sprCss'; st.textContent = RC_ST_CSS; document.head.appendChild(st); })();
         const rcBtn = () => '<button type="button" class="spr-btn">' + SVG('<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>') + esc(tr('Chek', 'Receipt', '\u0427\u0435\u043a')) + '</button>';
         function stReceiptHTML(p) {
             const row = (k, v) => '<div class="rc-row"><span>' + esc(k) + '</span><b>' + v + '</b></div>';
             const mName = key => { const m = +String(key || '').slice(5, 7); return m ? MONTHS()[m - 1] + ' ' + String(key).slice(0, 4) : '\u2014'; };
             const brand = window.CRMBrandCenter ? window.CRMBrandCenter() : ((window.appSettings && window.appSettings.center && window.appSettings.center.name) || 'Ferdinant');
-            return '<div class="rc"><div class="rc-brand">' + esc(brand) + '</div><div class="rc-sub">' + esc(tr("To'lov cheki", 'Payment receipt', '\u0427\u0435\u043a \u043e\u0431 \u043e\u043f\u043b\u0430\u0442\u0435')) + '</div>' +
+            return '<div class="rc"><div class="rc-top"><div class="rc-brandrow"><span class="rc-mk">' + esc(String(brand).trim().charAt(0).toUpperCase() || 'F') + '</span><span class="rc-brand">' + esc(brand) + '</span></div><div class="rc-sub">' + esc(tr("To'lov cheki", 'Payment receipt', '\u0427\u0435\u043a \u043e\u0431 \u043e\u043f\u043b\u0430\u0442\u0435')) + '</div>' +
                 '<div class="rc-ok">' + SVG('<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>') + esc(tr("To'lov qabul qilindi", 'Payment received', '\u041f\u043b\u0430\u0442\u0451\u0436 \u043f\u0440\u0438\u043d\u044f\u0442')) + '</div>' +
-                '<div class="rc-amount">' + money(p.amount) + ' <small>' + esc(cur()) + '</small></div><div class="rc-line"></div>' +
-                row(tr('Chek raqami', 'Receipt no.', '\u041d\u043e\u043c\u0435\u0440 \u0447\u0435\u043a\u0430'), esc(RCN(p.id))) + row(tr('Sana', 'Date', '\u0414\u0430\u0442\u0430'), esc(fmtF(p.date))) +
-                row(tr('Talaba', 'Student', '\u0421\u0442\u0443\u0434\u0435\u043d\u0442'), esc(p.student || '')) + row(tr('Guruh', 'Group', '\u0413\u0440\u0443\u043f\u043f\u0430'), esc(p.group || '\u2014')) +
+                '<div class="rc-amount">' + money(p.amount) + ' <small>' + esc(cur()) + '</small></div>' +
+                '<div class="rc-meta"><span>' + esc(fmtF(p.date)) + '</span><span>' + esc(RCN(p.id)) + '</span></div></div>' +
+                '<div class="rc-bot">' + row(tr('Talaba', 'Student', '\u0421\u0442\u0443\u0434\u0435\u043d\u0442'), esc(p.student || '')) + row(tr('Guruh', 'Group', '\u0413\u0440\u0443\u043f\u043f\u0430'), esc(p.group || '\u2014')) +
                 row(tr('Qaysi oy uchun', 'Paid for', '\u0417\u0430 \u043c\u0435\u0441\u044f\u0446'), esc(mName(p.forMonth || String(p.date).slice(0, 7)))) + row(tr('Usul', 'Method', '\u0421\u043f\u043e\u0441\u043e\u0431'), esc(METHOD(p.method))) +
                 (p.note ? row(tr('Izoh', 'Note', '\u041f\u0440\u0438\u043c\u0435\u0447\u0430\u043d\u0438\u0435'), esc(p.note)) : '') +
-                '<div class="rc-line"></div>' + row(tr('Qabul qildi', 'Received by', '\u041f\u0440\u0438\u043d\u044f\u043b'), 'Ferdinant Admin') +
-                '<div class="rc-foot">' + esc(tr("To'lovingiz uchun rahmat!", 'Thank you for your payment!', '\u0421\u043f\u0430\u0441\u0438\u0431\u043e \u0437\u0430 \u043e\u043f\u043b\u0430\u0442\u0443!')) + '</div></div>';
+                row(tr('Qabul qildi', 'Received by', '\u041f\u0440\u0438\u043d\u044f\u043b'), 'Ferdinant Admin') +
+                '<div class="rc-foot">' + esc(tr("To'lovingiz uchun rahmat!", 'Thank you for your payment!', '\u0421\u043f\u0430\u0441\u0438\u0431\u043e \u0437\u0430 \u043e\u043f\u043b\u0430\u0442\u0443!')) + '</div></div></div>';
         }
         let rcOpen = null;
         function closeStReceipt() { const b = document.getElementById('sprBd'); if (b) b.remove(); rcOpen = null; }
@@ -15639,7 +15663,7 @@
             const p = paysOf(s).find(x => String(x.id) === String(id)); if (!p) return;   // faqat o'zining to'lovi
             closeStReceipt(); rcOpen = p;
             const bd = document.createElement('div'); bd.className = 'spr-bd'; bd.id = 'sprBd';
-            bd.innerHTML = '<div class="spr-box">' + stReceiptHTML(p) + '<div class="spr-acts"><button type="button" class="pri" data-spr="print">' + esc(tr('Chop etish', 'Print', '\u041f\u0435\u0447\u0430\u0442\u044c')) + '</button><button type="button" data-spr="close">' + esc(tr('Yopish', 'Close', '\u0417\u0430\u043a\u0440\u044b\u0442\u044c')) + '</button></div></div>';
+            bd.innerHTML = '<div class="spr-box">' + stReceiptHTML(p) + '<div class="spr-acts"><button type="button" class="pri" data-spr="print">' + SVG('<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="9" rx="2"/><path d="M7 14h10v7H7z"/>') + esc(tr('Chop etish', 'Print', '\u041f\u0435\u0447\u0430\u0442\u044c')) + '</button><button type="button" data-spr="close">' + esc(tr('Yopish', 'Close', '\u0417\u0430\u043a\u0440\u044b\u0442\u044c')) + '</button></div></div>';
             document.body.appendChild(bd);
         }
         function printStReceipt() {
@@ -15647,7 +15671,7 @@
             const fr = document.createElement('iframe'); fr.setAttribute('aria-hidden', 'true'); fr.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;';
             document.body.appendChild(fr);
             const d = fr.contentWindow.document; d.title = tr("To'lov cheki", 'Payment receipt', '\u0427\u0435\u043a \u043e\u0431 \u043e\u043f\u043b\u0430\u0442\u0435') + ' ' + RCN(p.id);
-            const st = d.createElement('style'); st.textContent = '@page{margin:12mm}body{margin:0;padding:12px;background:#fff}' + RC_ST_CSS.split('.rc{')[1].replace(/^/, '.rc{') + '.rc{border:1px solid #e3e7ee}'; d.head.appendChild(st);
+            const st = d.createElement('style'); st.textContent = '@page{margin:12mm}body{margin:0;padding:12px;background:#fff}' + RC_CORE_CSS + '.rc{filter:none}'; d.head.appendChild(st);
             d.body.innerHTML = stReceiptHTML(p);
             setTimeout(() => { try { fr.contentWindow.focus(); fr.contentWindow.print(); } catch (err) { /* chop etish mavjud emas */ } setTimeout(() => fr.remove(), 2000); }, 250);
         }
@@ -15661,24 +15685,55 @@
         document.addEventListener('keydown', e => { if (e.key === 'Escape') closeStReceipt(); });
 
         /* ================= TO'LOVLARIM ================= */
+        /* To'lovlarim sahifasi uchun ixcham "Karta hisobi": faqat eng muhim ma'lumotlar */
+        function sxLedgerHTML(s, gs) {
+            const st = cardState(s, gs), p = st.plan, now = st.now, MN = MONTHS()[now.getMonth()] + ' ' + now.getFullYear();
+            if (!p.count) return ledgerHTML(s, gs, 0);
+            const sg = v => (v < 0 ? '\u2212' : '') + money(v) + ' ' + cur();
+            const dIdx = d => dayIdx(new Date(d + 'T00:00:00')), pct = Math.round(p.passed / p.count * 100);
+            let nextBig = '\u2014', nextSub = '';
+            const todayOpen = p.today.find(it => !it.done);
+            if (todayOpen) { nextBig = tr('Bugun', 'Today', 'Сегодня') + ', ' + todayOpen.g.start; nextSub = '\u2212' + money(todayOpen.amount) + ' ' + cur(); }
+            else if (p.next) { nextBig = fmtS(p.next.date) + ' \u00b7 ' + p.next.g.start; nextSub = (DAYS_FULL()[dIdx(p.next.date)] || '') + ' \u00b7 \u2212' + money(p.next.amount) + ' ' + cur(); }
+            const done = p.items.filter(it => it.done && it.amount).reverse().slice(0, 4);
+            const rows = done.length ? '<div class="sx-ll">' + done.map(it =>
+                '<div class="sx-lrow"><span class="d"><b>' + esc(fmtF(it.date)) + '</b><small>' + esc(it.g.name) + ' \u00b7 ' + esc(it.g.start) + '\u2013' + esc(it.g.end) + '</small></span><span class="w">' + esc(DAYS()[dIdx(it.date)] || '') + '</span><em class="neg">\u2212' + money(it.amount) + ' <small>' + esc(cur()) + '</small></em></div>').join('') + '</div>'
+                : empty(tr("Bu oy hali dars yechilmagan", 'No class has been charged this month yet', 'В этом месяце ещё не было списаний'));
+            return '<section class="sp-card sp-ledger sx-led">' + head(tr('Karta hisobi', 'Card account', 'Счёт карты'), MN) +
+                '<div class="sx-lp"><div class="sx-lp-t"><b>' + p.passed + '</b><span>/ ' + p.count + ' ' + esc(tr('dars yechildi', 'classes charged', 'занятий списано')) + '</span></div><div class="sp-prog"><i style="width:' + pct + '%"></i></div></div>' +
+                '<div class="sx-kpi">' +
+                '<div class="sx-k"><small>' + esc(tr('Kartadagi qoldiq', 'Card balance', 'Остаток на карте')) + '</small><b class="' + (st.left < 0 ? 'neg' : 'pos') + '">' + esc(sg(st.left)) + '</b><em>' + esc(tr("Oylik to'lov: ", 'Monthly fee: ', 'Оплата в месяц: ') + money(p.total) + ' ' + cur()) + '</em></div>' +
+                '<div class="sx-k"><small>' + esc(tr('Bitta dars narxi', 'Price per class', 'Цена одного занятия')) + '</small><b>' + esc(money(p.per) + ' ' + cur()) + '</b><em>' + esc(p.count + tr(' ta dars oyiga', ' classes a month', ' занятий в месяц')) + '</em></div>' +
+                '<div class="sx-k"><small>' + esc(tr('Keyingi yechim', 'Next charge', 'Следующее списание')) + '</small><b>' + esc(nextBig) + '</b><em>' + esc(nextSub) + '</em></div></div>' +
+                '<div class="sx-lh"><b>' + esc(tr("So'nggi yechimlar", 'Recent charges', 'Последние списания')) + '</b>' + (done.length ? '<small>' + done.length + '</small>' : '') + '</div>' + rows + '</section>';
+        }
+        /* Karta holati (bosh sahifadagi karta va To'lovlarim kartasi uchun bitta): debt — qarz bor, low — keyingi dars uchun mablag' yetmaydi, ok — yetarli */
+        function sxBalKind(bal, cs) {
+            const left = cs && typeof cs.left === 'number' ? cs.left : 0, nx = cs && cs.plan && cs.plan.next;
+            if (bal < 0 || left < 0) return 'debt';
+            if (nx && left < nx.amount) return 'low';
+            return 'ok';
+        }
         function paymentsHTML(s, gs) {
             const pays = paysOf(s), bal = s.balance || 0, mk = monthKey(new Date());
             const paidMonth = pays.filter(p => p.forMonth === mk).reduce((a, p) => a + (+p.amount || 0), 0), paidAll = pays.reduce((a, p) => a + (+p.amount || 0), 0);
             const mName = key => { const m = +String(key || '').slice(5, 7); return m ? MONTHS()[m - 1] + ' ' + String(key).slice(0, 4) : '\u2014'; };
-            const debt = bal < 0;
-            const hero = '<section class="sx-balance ' + (debt ? 'debt' : 'ok') + '"><div class="sx-bal-l"><span class="sx-bal-chip">' + SVG(debt ? '<circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/>' : '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>') + esc(debt ? tr("To'lov kerak", 'Payment needed', 'Нужна оплата') : tr("Hisob joyida", 'All good', 'Всё в порядке')) + '</span>' +
+            const debt = bal < 0, kind = sxBalKind(bal, cardState(s, gs));
+            const chipIc = kind === 'debt' ? '<circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/>' : kind === 'low' ? '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>' : '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>';
+            const chipTx = kind === 'debt' ? tr("To'lov kerak", 'Payment needed', 'Нужна оплата') : kind === 'low' ? tr("Qoldiq kam", 'Low balance', 'Мало средств') : tr("Hisob joyida", 'All good', 'Всё в порядке');
+            const hero = '<section class="sx-balance ' + (debt ? 'debt' : 'ok') + '" data-bs="' + kind + '"><div class="sx-bal-l"><span class="sx-bal-chip">' + SVG(chipIc) + esc(chipTx) + '</span>' +
                 '<span class="sx-bal-k">' + esc(debt ? tr('Qarzdorlik', 'Outstanding balance', 'Задолженность') : bal > 0 ? tr("Ortiqcha to'lov", 'Credit balance', 'Переплата') : tr("Qarz yo'q", 'No debt', 'Долга нет')) + '</span>' +
                 '<b>' + money(Math.abs(bal)) + ' <small>' + esc(cur()) + '</small></b></div>' +
                 '<div class="sx-bal-r"><div><small>' + esc(tr("Shu oy to'langan", 'Paid this month', 'Оплачено в этом месяце')) + '</small><b>' + money(paidMonth) + ' ' + esc(cur()) + '</b></div><div><small>' + esc(tr("Jami to'langan", 'Total paid', 'Всего оплачено')) + '</small><b>' + money(paidAll) + ' ' + esc(cur()) + '</b></div></div></section>';
-            const list = pays.length ? '<div class="sx-paylist">' + pays.map(p =>
-                '<div class="sx-pay" data-sp-rc="' + esc(p.id) + '" role="button" tabindex="0"><span class="sx-pay-ic" aria-hidden="true">' + SVG('<path d="M12 5v14M5 12h14"/>') + '</span>' +
+            const list = pays.length ? '<div class="sx-paylist">' + pays.map((p, i) =>
+                '<div class="sx-pay' + (i >= 2 ? ' sx-pay-x' : '') + '" data-sp-rc="' + esc(p.id) + '" role="button" tabindex="0"><span class="sx-pay-ic" aria-hidden="true">' + SVG('<path d="M12 5v14M5 12h14"/>') + '</span>' +
                 '<div class="sx-pay-b"><b>' + esc(mName(p.forMonth)) + '</b><small>' + esc(p.group || '\u2014') + ' \u00b7 ' + esc(METHOD(p.method)) + '</small><small>' + esc(fmtF(p.date)) + ' \u00b7 ' + esc(RCN(p.id)) + '</small></div>' +
                 '<div class="sx-pay-r"><b>+' + money(p.amount) + ' <small>' + esc(cur()) + '</small></b>' + rcBtn() + '</div></div>').join('') + '</div>'
                 : empty(tr("To'lovlar topilmadi", 'No payments found', 'Платежей не найдено'));
-            const noteHtml = (debt ? '<div class="sp-note sx-note">' + SVG('<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/>') + '<span>' + esc(tr("To'lovni qabul qilish uchun markaz administratoriga murojaat qiling.", 'To make a payment, please contact the center administrator.', 'Для оплаты обратитесь к администратору центра.')) + '</span></div>' : '<div class="sp-note sx-note ok">' + SVG('<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>') + '<span>' + esc(tr("Hisobingizda mablag' yetarli. Darslarga bemalol kelishingiz mumkin.", 'Your balance is sufficient. You can attend classes as usual.', 'На счёте достаточно средств. Можно спокойно посещать занятия.')) + '</span></div>');
-            const histHtml = '<div class="sp-card">' + head(tr("To'lovlar tarixi", 'Payment history', 'История платежей'), pays.length ? tr(pays.length + ' ta to\'lov', pays.length + ' payments', 'Платежей: ' + pays.length) : '') + list + '</div>';
+            const noteHtml = (kind === 'debt' ? '<div class="sp-note sx-note">' + SVG('<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/>') + '<span>' + esc(tr("To'lovni qabul qilish uchun markaz administratoriga murojaat qiling.", 'To make a payment, please contact the center administrator.', 'Для оплаты обратитесь к администратору центра.')) + '</span></div>' : kind === 'low' ? '<div class="sp-note sx-note low">' + SVG('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>') + '<span>' + esc(tr("Keyingi dars uchun kartada mablag' yetarli emas. Qarzdor bo'lmaslik uchun hisobni to'ldiring.", 'The card balance is not enough for the next class. Top up to avoid debt.', 'На карте недостаточно средств для следующего занятия. Пополните счёт, чтобы не уйти в долг.')) + '</span></div>' : '<div class="sp-note sx-note ok">' + SVG('<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>') + '<span>' + esc(tr("Hisobingizda mablag' yetarli. Darslarga bemalol kelishingiz mumkin.", 'Your balance is sufficient. You can attend classes as usual.', 'На счёте достаточно средств. Можно спокойно посещать занятия.')) + '</span></div>');
+            const histHtml = '<div class="sp-card">' + head(tr("To'lovlar tarixi", 'Payment history', 'История платежей'), pays.length ? tr(pays.length + ' ta to\'lov', pays.length + ' payments', 'Платежей: ' + pays.length) : '') + list + (pays.length > 2 ? '<button type="button" class="sx-more" data-sx-more data-more="' + esc(tr('Hammasi', 'Show all', 'Показать все') + ' (' + pays.length + ')') + '" data-less="' + esc(tr("Yig'ish", 'Show less', 'Свернуть')) + '">' + esc(tr('Hammasi', 'Show all', 'Показать все') + ' (' + pays.length + ')') + '</button>' : '') + '</div>';
             return '<div class="sp-wrap sx-payments">' + pageHead(tr("To'lovlarim", 'My payments', 'Мои платежи')) +
-                '<div class="sx-pgrid"><div class="sx-pl">' + hero + noteHtml + histHtml + '</div><div class="sx-pr">' + ledgerHTML(s, gs, 0) + '</div></div></div>';
+                '<div class="sx-pgrid"><div class="sx-pl">' + hero + noteHtml.replace('sx-note', 'sx-note sx-nm') + histHtml + '</div><div class="sx-pr">' + noteHtml.replace('sx-note', 'sx-note sx-nd') + sxLedgerHTML(s, gs) + '</div></div></div>';
         }
 
         /* ================= SOZLAMALAR ================= */
@@ -20866,7 +20921,8 @@
         /* To'lovlarim: ikki ustun — chapda karta, eslatma va to'lovlar tarixi; o'ngda "Karta hisobi" (bo'sh joy qolmaydi) */
         .sx-pgrid { display: grid; grid-template-columns: minmax(0, clamp(380px, 38%, 470px)) minmax(0, 1fr); gap: 16px; align-items: start; }
         .sx-pl { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
-        .sx-pr { min-width: 0; }
+        .sx-pr { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+        .sx-pgrid .sx-nm { display: none; }
         .sx-pgrid .sx-balance { width: 100%; aspect-ratio: 1.586 / 1; min-height: 0; flex-direction: column; align-items: stretch; justify-content: space-between; padding: clamp(18px, 2.4vw, 26px); }
         .sx-pgrid .sx-bal-r { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); width: 100%; gap: 10px; }
         .sx-pgrid .sx-bal-r > div { min-width: 0; padding: 10px 14px; }
@@ -20884,6 +20940,8 @@
             .sx-pl { display: contents; }
             .sx-pgrid .sx-balance { order: 0; }
             .sx-pgrid .sx-note { order: 1; align-self: start; }
+            .sx-pgrid .sx-nd { display: none; }
+            .sx-pgrid .sx-nm { display: flex; }
             .sx-pr { order: 2; grid-column: 1 / -1; }
             .sx-pl > .sp-card { order: 3; grid-column: 1 / -1; }
         }
@@ -20893,6 +20951,78 @@
             .sx-pgrid .sx-balance { max-width: 520px; }
         }
         @container spw (max-width: 520px) { .sx-pgrid .sx-balance { aspect-ratio: auto; max-width: none; gap: 16px; } }
+        /* =====================================================================
+           KARTA RANGLARI BALANSGA QARAB — bosh sahifadagi Ferdinant Card va To'lovlarim kartasi bir xil
+           ok (mablag' yetarli): indigo + oltin · low (qarzga yaqin, keyingi dars uchun yetmaydi): amber · debt (qarz bor): to'q qizil
+           ===================================================================== */
+        html[data-auth="in"][data-role="student"] .sp-bcard[data-bs="ok"], html .sx-balance[data-bs="ok"] { --bg1: #1B1B5E; --bg2: #4A3FD0; --bgc: rgba(232, 199, 122, .22); --bgs: rgba(27, 27, 94, .80); --bga: #FFFFFF; }
+        html[data-auth="in"][data-role="student"] .sp-bcard[data-bs="low"], html .sx-balance[data-bs="low"] { --bg1: #4D2A07; --bg2: #D9861F; --bgc: rgba(255, 236, 170, .30); --bgs: rgba(120, 64, 10, .75); --bga: #FFEBC2; }
+        html[data-auth="in"][data-role="student"] .sp-bcard[data-bs="debt"], html .sx-balance[data-bs="debt"] { --bg1: #3B1030; --bg2: #C23A55; --bgc: rgba(255, 170, 150, .28); --bgs: rgba(120, 20, 50, .75); --bga: #FFD3DA; }
+        html[data-auth="in"][data-role="student"] .sp-bcard[data-bs], html .sx-balance[data-bs] { background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%); box-shadow: 0 34px 50px -26px var(--bgs); }
+        html[data-auth="in"][data-role="student"] .sp-bcard[data-bs]:hover { box-shadow: 0 40px 56px -26px var(--bgs); }
+        html[data-auth="in"][data-role="student"] .sp-bcard[data-bs]::after, html .sx-balance[data-bs]::after { background: var(--bgc); }
+        html[data-auth="in"][data-role="student"] .sp-bcard[data-bs] .sp-bc-am, html .sx-balance[data-bs] .sx-bal-l > b { color: var(--bga); }
+        html[data-auth="in"][data-role="student"] .sp-bcard[data-bs="low"] .sp-bc-nx b { color: #FFFFFF; }
+        /* eslatma bloki ham holatga mos: debt — qizg'ish, low — amber, ok — yashil */
+        .sx-pgrid .sx-note { background: rgba(214, 69, 99, .12); }
+        .sx-pgrid .sx-note svg { color: #C0262D; }
+        .sx-pgrid .sx-note.low { background: var(--sx-champ); }
+        .sx-pgrid .sx-note.low svg { color: #B8892B; }
+        html[data-theme="dark"] .sx-pgrid .sx-note { background: rgba(255, 139, 132, .14); }
+        html[data-theme="dark"] .sx-pgrid .sx-note svg { color: #FF9CA0; }
+        html[data-theme="dark"] .sx-pgrid .sx-note.low svg { color: #F0D391; }
+        .sx-pgrid .sx-note.ok { background: rgba(61, 220, 151, .15); }
+        .sx-pgrid .sx-note.ok svg { color: #14694A; }
+        html[data-theme="dark"] .sx-pgrid .sx-note.ok svg { color: #7FE3BC; }
+        /* ---------- Karta hisobi (To'lovlarim): ixcham, faqat eng muhim ma'lumotlar ---------- */
+        .sx-led { container-type: inline-size; container-name: led; display: flex; flex-direction: column; gap: 18px; }
+        .sx-led .sp-ch { margin: 0; }
+        .sx-lp { display: flex; flex-direction: column; gap: 10px; }
+        .sx-lp-t { display: flex; align-items: baseline; gap: 8px; }
+        .sx-lp-t b { font: 700 30px/1 var(--sx-display, 'Bricolage Grotesque', sans-serif); letter-spacing: -.02em; color: var(--fg-page); }
+        .sx-lp-t span { font-size: 14px; color: var(--fg-page-muted); font-weight: 600; }
+        .sx-kpi { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+        .sx-k { min-width: 0; display: flex; flex-direction: column; gap: 4px; padding: 16px; border-radius: 20px; background: var(--field-bg); }
+        .sx-k small { font-size: 13px; font-weight: 600; color: var(--fg-page-muted); }
+        .sx-k b { font: 700 clamp(17px, 2.2cqw, 22px)/1.2 var(--sx-display, 'Bricolage Grotesque', sans-serif); letter-spacing: -.01em; color: var(--fg-page); overflow-wrap: anywhere; }
+        .sx-k em { font-style: normal; font-size: 12.5px; color: var(--fg-page-muted); line-height: 1.35; }
+        .sx-lh { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-top: 2px; }
+        .sx-lh b { font: 700 16px/1.2 var(--sx-display, 'Bricolage Grotesque', sans-serif); }
+        .sx-lh small { font-size: 12.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: var(--field-bg); color: var(--fg-page-muted); }
+        .sx-ll { display: flex; flex-direction: column; gap: 8px; }
+        .sx-lrow { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; background: var(--field-bg); }
+        .sx-lrow .d { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+        .sx-lrow .d b { font-size: 14.5px; font-weight: 700; color: var(--fg-page); }
+        .sx-lrow .d small { font-size: 12.5px; color: var(--fg-page-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .sx-lrow .w { flex: none; padding: 3px 9px; border-radius: 999px; background: var(--bg-panel); font-size: 12px; font-weight: 700; color: var(--fg-page-muted); }
+        .sx-lrow em { flex: none; font-style: normal; font-size: 14.5px; font-weight: 700; white-space: nowrap; }
+        .sx-lrow em small { font-size: 11.5px; font-weight: 600; }
+        @container led (max-width: 540px) {
+            .sx-kpi { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+            .sx-k { flex-direction: row; flex-wrap: wrap; align-items: baseline; justify-content: space-between; column-gap: 12px; padding: 12px 14px; }
+            .sx-k small { flex: 1 1 auto; }
+            .sx-k b { font-size: 17px; text-align: right; }
+            .sx-k em { flex: 1 1 100%; text-align: right; }
+            .sx-lrow .w { display: none; }
+        }
+        /* To'lovlar tarixi: dastlab 3 ta, qolgani "Hammasi" bilan */
+        .sx-paylist:not(.open) .sx-pay-x { display: none; }
+        .sx-more { width: 100%; height: 44px; margin-top: 10px; border: 0; border-radius: 14px; background: var(--field-bg); color: var(--sx-indigo-d); font: 700 14px/1 var(--sx-body, sans-serif); cursor: pointer; transition: background .2s; }
+        .sx-more:hover { background: var(--menu-selected-bg); }
+        html[data-theme="dark"] .sx-more { color: #CFCBFF; }
+        .sx-pgrid .sx-pay { padding: 10px 12px; gap: 12px; }
+        .sx-pgrid .sx-pay-ic { width: 38px; height: 38px; border-radius: 13px; }
+        .sx-pgrid .sx-pay-b b { font-size: 15px; }
+        .sx-pgrid .sx-pay .spr-btn { height: 28px; }
+        .sx-pgrid .sx-more { margin-top: 8px; height: 40px; }
+        /* CEO/admin cheki: panel shaffof (chek o'zi "bilet"), tugmalar o'quvchi tomonidagidek */
+        html .pm-modal .clients-modal.pm-rc-modal { background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; max-width: 440px; }
+        html .pm-rc-modal .clients-modal-actions { justify-content: center; gap: 10px; margin-top: 20px !important; }
+        html .pm-rc-modal .clients-modal-actions button { height: 46px; padding: 0 22px; border: 0; border-radius: 14px; font-weight: 600; font-size: 14.5px; cursor: pointer; }
+        html .pm-rc-modal .clients-modal-cancel { background: rgba(255, 255, 255, .14) !important; color: #fff !important; }
+        html .pm-rc-modal .clients-modal-cancel:hover { background: rgba(255, 255, 255, .22) !important; }
+        html .pm-rc-modal .clients-modal-save { background: linear-gradient(135deg, #5B4FE8, #3A2FB0) !important; color: #fff !important; box-shadow: 0 14px 24px -12px rgba(91, 79, 232, .9); }
+        html .pm-rc-modal .clients-modal-save:hover { filter: brightness(1.08); }
         /* Planshet (769–940 px): header elementlari bir-birining ustiga tushmasin */
         @media (min-width: 769px) and (max-width: 940px) {
             html .header .header-logo .logo-text { display: none; }
@@ -21053,6 +21183,14 @@
                 }
                 D_removeMe();
             }
+            D_toggleMore();
+            function D_toggleMore() {
+                document.addEventListener('click', function (e) {
+                    var b = e.target.closest && e.target.closest('[data-sx-more]'); if (!b) return;
+                    var list = b.previousElementSibling; if (!list || !list.classList.contains('sx-paylist')) return;
+                    var open = list.classList.toggle('open'); b.textContent = open ? b.getAttribute('data-less') : b.getAttribute('data-more');
+                });
+            }
             function sched() { if (!raf) raf = requestAnimationFrame(run); }
             function start() {
                 var mo = new MutationObserver(sched);
@@ -21065,6 +21203,13 @@
             if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
         })();
     </script>
+
+
+
+
+
+
+
 
 
 
