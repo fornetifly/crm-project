@@ -5969,7 +5969,7 @@
                 admin: ['accounts', 'profile'],
                 ceo: ['home', 'clients', 'courses', 'students', 'groups', 'teachers', 'payments', 'reports', 'archive', 'settings', 'profile'],
                 teacher: ['mygroups', 'mystudents', 'mystats', 'homework', 'profile'],
-                student: ['student', 'stschedule', 'stgroups', 'sthomework', 'stattendance', 'stpayments', 'profile']
+                student: ['student', 'stschedule', 'stgroups', 'sthomework', 'stattendance', 'stresults', 'stpayments', 'profile']
             };
             /* O'qituvchi roli: bo'limlar Sozlamalar > Lavozimlar'dagi ruxsatlardan olinadi (kabinet doim ochiq) */
             var VIEW_PERM = { home: 'home.view', clients: 'clients.view', students: 'students.view', groups: 'groups.view', teachers: 'teachers.view', payments: 'payments.view', reports: 'reports.view', archive: 'reports.view', settings: 'settings.view' };
@@ -5989,7 +5989,7 @@
                 ['#profileSettingsBtn', ['profile.view']]
             ];
             var HOME = { admin: 'accounts', ceo: 'home', teacher: 'mygroups', student: 'student' };
-            var ALL_VIEWS = ['home', 'clients', 'courses', 'students', 'groups', 'teachers', 'payments', 'reports', 'archive', 'settings', 'profile', 'student', 'mygroups', 'mystudents', 'mystats', 'homework', 'accounts', 'stschedule', 'stgroups', 'sthomework', 'stattendance', 'stpayments', 'stsettings'];
+            var ALL_VIEWS = ['home', 'clients', 'courses', 'students', 'groups', 'teachers', 'payments', 'reports', 'archive', 'settings', 'profile', 'student', 'mygroups', 'mystudents', 'mystats', 'homework', 'accounts', 'stschedule', 'stgroups', 'sthomework', 'stattendance', 'stpayments', 'stsettings', 'stresults'];
             var GROUP_SEL = { reports: '#navReports', archive: '#navArchive' };
             var STUDENT_HIDE = ['.search-box', '#scheduleBtn', '#profileScheduleBtn', '#profileSettingsBtn', '#notifDropdown', '#headerChatBtn', '.ch-fab', '.ch-panel', '.ct-stack'];
 
@@ -6932,6 +6932,7 @@
             <li class="nav-item" data-view="stgroups" data-st-nav="groups"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 8l9 5 9-5-9-5z" /><path d="M3 12l9 5 9-5" /><path d="M3 16l9 5 9-5" /></svg><span class="label"></span></li>
             <li class="nav-item" data-view="sthomework" data-st-nav="homework"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11l3 3v13H5z" /><path d="M8 11h8M8 15h8M8 8h4" /></svg><span class="label"></span></li>
             <li class="nav-item" data-view="stattendance" data-st-nav="attendance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="M8 12.5l2.7 2.7L16 9.5" /></svg><span class="label"></span></li>
+            <li class="nav-item" data-view="stresults" data-st-nav="results"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg><span class="label"></span></li>
             <li class="nav-item" data-view="stpayments" data-st-nav="payments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 10h18M7 15h4" /></svg><span class="label"></span></li>
             <li class="nav-sep" id="navSepPerm"><span data-acc-label="sepperm"></span></li>
             <li class="nav-item active" data-i18n-label="nav.home" data-view="home">
@@ -7716,6 +7717,10 @@
 
             <div class="content-view" data-view="stattendance">
                 <div id="stAttendanceRoot"></div>
+            </div>
+
+            <div class="content-view" data-view="stresults">
+                <div id="stResultsRoot"></div>
             </div>
 
             <div class="content-view" data-view="stpayments">
@@ -15206,7 +15211,7 @@
          crm_attendance_v1 — davomat   ·   crm_homework_v1 — uy vazifalari   ·   crm_grades_v1 — baholar (qarang: pastda) */
     (function studentPortal() {
         'use strict';
-        const ROOTS = { student: 'studentRoot', stschedule: 'stScheduleRoot', stgroups: 'stGroupsRoot', sthomework: 'stHomeworkRoot', stattendance: 'stAttendanceRoot', stpayments: 'stPaymentsRoot', stsettings: 'stSettingsRoot' };
+        const ROOTS = { student: 'studentRoot', stschedule: 'stScheduleRoot', stgroups: 'stGroupsRoot', sthomework: 'stHomeworkRoot', stattendance: 'stAttendanceRoot', stpayments: 'stPaymentsRoot', stsettings: 'stSettingsRoot', stresults: 'stResultsRoot' };
         const ATK = 'crm_attendance_v1', HWK = 'crm_homework_v1', GRK = 'crm_grades_v1';
         const lang = () => document.documentElement.getAttribute('lang') || 'uz';
         const tr = (u, e, r) => ({ uz: u, en: e, ru: r }[lang()] || u);
@@ -15232,7 +15237,7 @@
         /* ---------- Sidebar / mobil menyu yorliqlari ---------- */
         const NAV = {
             schedule: ['Dars jadvali', 'Schedule', 'Расписание'], groups: ['Guruhlarim', 'My groups', 'Мои группы'], homework: ['Uy vazifalari', 'Homework', 'Домашние задания'],
-            attendance: ['Davomat', 'Attendance', 'Посещаемость'], payments: ["To'lovlarim", 'My payments', 'Мои платежи'], settings: ['Sozlamalar', 'Settings', 'Настройки']
+            attendance: ['Davomat', 'Attendance', 'Посещаемость'], results: ['Natijalarim', 'My results', 'Мои результаты'], payments: ["To'lovlarim", 'My payments', 'Мои платежи'], settings: ['Sozlamalar', 'Settings', 'Настройки']
         };
         if (typeof TRANSLATIONS !== 'undefined') {
             Object.assign(TRANSLATIONS.uz, { 'nav.student': 'Bosh sahifa' });
@@ -15513,8 +15518,23 @@
             const mvHtml = '<section class="sp-card sp-c12 sp-mvcard">' + head(tr("To'lovlar va yechimlar", 'Payments & charges', 'Платежи и списания'), tr("Qilingan to'lovlar va yechilgan darslar", 'Payments made and classes charged', 'Внесённые платежи и списанные занятия'), ['stpayments', tr('Batafsil', 'Details', 'Подробнее')]) +
                 (mvs.length ? '<div class="sp-list sp-mvlist">' + mvs.slice(0, 12).map(mvRow).join('') + '</div>' : empty(tr("Hozircha to'lov ham, yechim ham yo'q", 'No payments or charges yet', 'Пока нет платежей и списаний'))) + '</section>';
 
-            return '<div class="sp-wrap sp-dash sx-home"><div class="sx-top"><div class="sx-left">' + nextCard + stickers + weekStrip(s, gs, now) + '</div><div class="sx-right">' + cardHtml + planHtml + '</div></div><div class="sx-bottom">' +
-                '<section class="sp-card ' + (gr.length ? '' : '') + '">' + head(tr('Uy vazifalarim', 'My homework', 'Мои задания'), hwOpen ? tr(hwOpen + ' ta bajarilmagan', hwOpen + ' pending', 'Не сдано: ' + hwOpen) : '', ['sthomework', tr('Hammasi', 'View all', 'Все')]) + hwHtml + '</section>' + grHtml + mvHtml + '</div></div>';
+            const hwSection = '<section class="sp-card ' + (gr.length ? '' : '') + '">' + head(tr('Uy vazifalarim', 'My homework', 'Мои задания'), hwOpen ? tr(hwOpen + ' ta bajarilmagan', hwOpen + ' pending', 'Не сдано: ' + hwOpen) : '', ['sthomework', tr('Hammasi', 'View all', 'Все')]) + hwHtml + '</section>';
+            /* ---- Telefon: vertikal 3D karusel (g'ildirak) va tez harakatlar ---- */
+            const nxHw = hwAll.filter(h => !h.mine)[0], avgR = sxAvg(s), goalR = +sxGet(s).goal || 0;
+            const slideHw = '<div class="sx-sl sx-sl-hw"><div><span class="sx-pill"><i></i>' + esc(tr('Uy vazifalari', 'Homework', 'Задания')) + '</span><b class="sx-sl-big">' + hwOpen + '<small> ' + esc(tr('ta bajarilmagan', 'pending', 'не сдано')) + '</small></b></div><div class="sx-sl-sub">' +
+                (nxHw ? '<b>' + esc(nxHw.title) + '</b><small>' + esc(nxHw.due ? tr('Muddati: ', 'Due: ', 'Срок: ') + fmtF(nxHw.due) : tr('Muddatsiz', 'No deadline', 'Без срока')) + '</small>' : '<small>' + esc(tr("Hozircha vazifa yo'q, bo'sh vaqtingizdan foydalaning!", 'No homework right now, enjoy your free time!', 'Заданий пока нет, наслаждайтесь свободным временем!')) + '</small>') + '</div>' +
+                '<span class="sx-sl-cta">' + esc(tr("Vazifalarni ko'rish", 'View homework', 'Смотреть задания')) + SVG('<path d="M9 6l6 6-6 6"/>') + '</span></div>';
+            const slideRes = '<div class="sx-sl sx-sl-res"><div><span class="sx-pill"><i></i>' + esc(tr('Natijalarim', 'My results', 'Мои результаты')) + '</span><b class="sx-sl-big">' + (avgR == null ? '\u2014' : avgR + '%') + '<small> ' + esc(tr("o'rtacha ball", 'average score', 'средний балл')) + '</small></b></div><div class="sx-sl-sub">' +
+                (goalR ? '<div class="sp-prog"><i style="width:' + Math.min(100, avgR == null ? 0 : Math.round(avgR / goalR * 100)) + '%"></i></div><small>' + esc(tr('Maqsad: ', 'Goal: ', 'Цель: ') + goalR + '%') + '</small>' : '<small>' + esc(tr('Maqsad belgilang va progressni kuzating', 'Set a goal and track your progress', 'Поставьте цель и следите за прогрессом')) + '</small>') + '</div>' +
+                '<span class="sx-sl-cta">' + esc(tr('Natijalarimga o\'tish', 'Open my results', 'Перейти к результатам')) + SVG('<path d="M9 6l6 6-6 6"/>') + '</span></div>';
+            const carSlides = [['stschedule', nextCard], [null, cardHtml], ['sthomework', slideHw], ['stresults', slideRes]];
+            const carHtml = '<div class="sx-car" tabindex="0" role="region" aria-roledescription="carousel" aria-label="' + esc(tr('Asosiy kartalar', 'Main cards', 'Основные карточки')) + '"><div class="sx-car-stage">' +
+                carSlides.map(x => '<div class="sx-slide"' + (x[0] ? ' data-sp-go="' + x[0] + '" role="button" tabindex="-1"' : '') + '>' + x[1] + '</div>').join('') + '</div>' +
+                '<div class="sx-car-dots">' + carSlides.map((x, i) => '<button type="button" class="sx-cd" data-sx-car="' + i + '" aria-label="' + (i + 1) + '"></button>').join('') + '</div>' +
+                '<div class="sx-car-hint">' + SVG('<path d="M6 15l6-6 6 6"/>') + esc(tr('Yuqoriga suring', 'Swipe up', 'Проведите вверх')) + '</div></div>';
+            const QA = [['stschedule', '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>', tr('Jadval', 'Schedule', 'Расписание')], ['sthomework', '<path d="M5 4h11l3 3v13H5z"/><path d="M8 11h8M8 15h8"/>', tr('Vazifa', 'Homework', 'Задания')], ['stattendance', '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>', tr('Davomat', 'Attendance', 'Посещ.')], ['stresults', '<path d="M8 21h8M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>', tr('Natija', 'Results', 'Итоги')], ['stpayments', '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h3"/>', tr("To'lov", 'Payments', 'Оплата')]];
+            const quickHtml = '<div class="sx-quick">' + QA.map(q => '<button type="button" class="sx-qa" data-sp-go="' + q[0] + '"><span class="sx-qi">' + SVG(q[1]) + '</span><b>' + esc(q[2]) + '</b></button>').join('') + '</div>';
+            return '<div class="sp-wrap sp-dash sx-home">' + carHtml + quickHtml + '<div class="sx-top"><div class="sx-left">' + nextCard + stickers + weekStrip(s, gs, now) + hwSection + '</div><div class="sx-right">' + cardHtml + planHtml + '</div></div><div class="sx-bottom">' + grHtml + mvHtml + '</div></div>';
         }
 
         /* Hisobni jonli yangilab turish: "tugashiga 40 daqiqa" va hokazo */
@@ -15747,6 +15767,310 @@
         }
 
         /* ================= CHIZISH ================= */
+        /* ================= QO'SHIMCHA IMKONIYATLAR =================
+           Natijalarim (baholar, maqsad, yutuqlar, sertifikat) · Bildirishnomalar · Kalendarga qo'shish ·
+           Davomat statistikasi · Ota-ona hisoboti · Birinchi kirish ko'rsatmasi · Matn o'lchami · Ilovani o'rnatish */
+        const SXK = 'crm_sx_v1', SXZ = 'crm_sx_zoom';
+        const sxAll = () => { const v = readJson(SXK, {}); return v && typeof v === 'object' ? v : {}; };
+        const sxGet = s => sxAll()[s.id] || {};
+        const sxPut = (s, patch) => { const a = sxAll(); a[s.id] = Object.assign({}, a[s.id], patch); try { localStorage.setItem(SXK, JSON.stringify(a)); } catch (e) { } };
+        const sxToast = m => { try { window.toast.info(m); } catch (e) { try { window.UI.toast(m, 'ok'); } catch (e2) { } } };
+        const gPct = g => { const mx = +g.max || 100; return Math.max(0, Math.min(100, Math.round((+g.value || 0) / mx * 100))); };
+        const gCls = v => v >= 70 ? 'ok' : v >= 60 ? 'warnc' : 'late';
+        const gLet = v => v >= 85 ? 'A' : v >= 70 ? 'B' : v >= 60 ? 'C' : 'D';
+        const sxBrand = () => window.CRMBrandCenter ? window.CRMBrandCenter() : 'Ferdinant';
+
+        /* ---- statistika (6 oylik davomat, uy vazifalari) ---- */
+        function sxStats(s, gs) {
+            const now = new Date(), months = []; let p = 0, l = 0, a = 0, perfect = 0;
+            for (let k = 5; k >= 0; k--) {
+                const d = new Date(now.getFullYear(), now.getMonth() - k, 1), rows = attendanceRows(s, gs, d.getFullYear(), d.getMonth());
+                const c = { p: 0, l: 0, a: 0 }; rows.forEach(r => { if (c[r.mark] != null) c[r.mark]++; });
+                const tot = c.p + c.l + c.a; months.push({ y: d.getFullYear(), m: d.getMonth(), c: c, tot: tot, rate: tot ? Math.round((c.p + c.l) / tot * 100) : null });
+                p += c.p; l += c.l; a += c.a; if (tot >= 4 && c.a === 0 && c.l === 0) perfect++;
+            }
+            const hw = homeworkOf(s, gs);
+            return { months: months, p: p, l: l, a: a, tot: p + l + a, perfect: perfect, hw: hw.length, hwDone: hw.filter(h => h.mine).length };
+        }
+        function sxAvg(s) { const pc = gradesOf(s).map(gPct); return pc.length ? Math.round(pc.reduce((x, y) => x + y, 0) / pc.length) : null; }
+
+        /* ---- yutuqlar ---- */
+        function sxBadges(s, gs) {
+            const st = sxStats(s, gs), avg = sxAvg(s), streak = streakOf(s, gs), pays = paysOf(s).length;
+            return [
+                { ok: st.p + st.l > 0, ic: '<path d="M5 12.5l4.5 4.5L19 7"/>', t: tr('Birinchi dars', 'First class', 'Первое занятие'), d: tr('Darsga kelgansiz', 'You attended a class', 'Вы были на занятии') },
+                { ok: streak >= 5, ic: '<path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"/>', t: tr('5 dars ketma-ket', '5 classes in a row', '5 занятий подряд'), d: tr("Beshta dars qoldirmadingiz", 'Five classes without a miss', 'Пять занятий без пропусков') },
+                { ok: streak >= 10, ic: '<path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"/><path d="M9 20h6"/>', t: tr('10 dars ketma-ket', '10 classes in a row', '10 занятий подряд'), d: tr("O'nta dars qoldirmadingiz", 'Ten classes without a miss', 'Десять занятий без пропусков') },
+                { ok: st.perfect > 0, ic: '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>', t: tr("To'liq oy", 'Perfect month', 'Идеальный месяц'), d: tr("Bir oy bitta ham dars qoldirmadingiz", 'A whole month with no absences', 'Целый месяц без пропусков') },
+                { ok: st.hwDone >= 5, ic: '<path d="M5 4h11l3 3v13H5z"/><path d="M8 13l2.5 2.5L16 10"/>', t: tr('Vazifa ustasi', 'Homework pro', 'Мастер заданий'), d: tr("5 ta uy vazifasi topshirilgan", '5 homework tasks done', '5 выполненных заданий') },
+                { ok: avg != null && avg >= 85, ic: '<path d="M12 3l2.6 5.4 5.9.9-4.3 4.2 1 5.9L12 16.5 6.8 19.4l1-5.9L3.5 9.3l5.9-.9z"/>', t: tr("A'lochi", 'Top student', 'Отличник'), d: tr("O'rtacha ball 85% dan yuqori", 'Average score above 85%', 'Средний балл выше 85%') },
+                { ok: (s.balance || 0) >= 0 && pays >= 3, ic: '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h3"/>', t: tr("Intizomli to'lovchi", 'Reliable payer', 'Аккуратный плательщик'), d: tr("Qarzsiz va muntazam to'lov", 'No debt, regular payments', 'Без долга, платежи вовремя') }
+            ];
+        }
+
+        /* ---- Natijalarim sahifasi ---- */
+        function resultsHTML(s, gs) {
+            const gr = gradesOf(s), pc = gr.map(gPct), avg = sxAvg(s), my = sxGet(s), goal = +my.goal || 0;
+            const best = pc.length ? Math.max.apply(null, pc) : null, last = gr[0];
+            const tile = (label, val, sub, cls) => '<div class="sp-tile"><small>' + esc(label) + '</small><b class="' + (cls || '') + '">' + val + '</b>' + (sub ? '<em class="sx-tsub">' + esc(sub) + '</em>' : '') + '</div>';
+            const acts = '<div class="sx-acts"><button type="button" class="sp-link" data-sx="report">' + SVG('<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="9" rx="2"/><path d="M7 14h10v7H7z"/>') + esc(tr('Ota-onaga hisobot', 'Parent report', 'Отчёт для родителей')) + '</button><button type="button" class="sp-link" data-sx="share">' + SVG('<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"/>') + esc(tr('Ulashish', 'Share', 'Поделиться')) + '</button></div>';
+            const stats = gr.length ? '<div class="sp-stats">' + tile(tr("O'rtacha ball", 'Average', 'Средний балл'), avg + '%', gLet(avg), gCls(avg) === 'late' ? 'neg' : 'pos') + tile(tr('Eng yuqori', 'Best', 'Лучший'), best + '%', '', 'pos') + tile(tr('Baholar soni', 'Grades', 'Оценок'), gr.length, '', '') + tile(tr('Oxirgi baho', 'Latest', 'Последняя'), last.value + '/' + (last.max || 100), last.subject || '', '') + '</div>' : '';
+            const bars = gr.length ? '<div class="sp-card">' + head(tr('Natijalar dinamikasi', 'Score trend', 'Динамика результатов'), tr('Oxirgi 10 ta baho', 'Last 10 grades', 'Последние 10 оценок')) + '<div class="sx-bars">' + gr.slice(0, 10).reverse().map(g => { const v = gPct(g); return '<div class="sx-bar" title="' + esc((g.subject || '') + ' · ' + fmtF(g.date)) + '"><b>' + v + '</b><span><i class="' + gCls(v) + '" style="height:' + Math.max(6, v) + '%"></i></span><small>' + esc(fmtS(g.date)) + '</small></div>'; }).join('') + '</div></div>' : '';
+            const bySub = {}; gr.forEach(g => { const k = g.subject || '\u2014'; (bySub[k] = bySub[k] || []).push(gPct(g)); });
+            const subs = Object.keys(bySub).length ? '<div class="sp-card">' + head(tr("Fanlar bo'yicha", 'By subject', 'По предметам')) + '<div class="sx-subs">' + Object.keys(bySub).map(k => { const a = Math.round(bySub[k].reduce((x, y) => x + y, 0) / bySub[k].length); return '<div class="sx-sub"><span>' + esc(k) + '</span><div class="sp-prog"><i style="width:' + a + '%"></i></div><b>' + a + '%</b></div>'; }).join('') + '</div></div>' : '';
+            const list = gr.length ? '<div class="sp-card">' + head(tr("So'nggi baholar", 'Recent grades', 'Последние оценки')) + '<div class="sp-list">' + gr.slice(0, 8).map(g => '<div class="sp-row"><span class="sp-nm"><b>' + esc(g.subject || '\u2014') + '</b><small>' + esc(fmtF(g.date)) + (g.group ? ' \u00b7 ' + esc(g.group) : '') + '</small></span>' + chip(gCls(gPct(g)), g.value + '/' + (g.max || 100)) + '</div>').join('') + '</div></div>'
+                : '<div class="sp-card sx-emptyc"><div class="sx-emptyic">' + SVG('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>') + '</div><h3>' + esc(tr("Hozircha baholar yo'q", 'No grades yet', 'Оценок пока нет')) + '</h3><p>' + esc(tr("O'qituvchi quiz, test yoki imtihon bahosini kiritganda natijalaringiz shu yerda chiroyli grafik bilan ko'rinadi.", 'When your teacher records a quiz, test or exam grade, your results will appear here with a chart.', 'Когда преподаватель выставит оценку за квиз, тест или экзамен, результаты появятся здесь с графиком.')) + '</p></div>';
+            const goalCard = '<div class="sp-card sx-goal">' + head(tr("Maqsadim", 'My goal', 'Моя цель'), tr("O'rtacha ball maqsadi", 'Average score target', 'Целевой средний балл')) +
+                '<div class="sx-goalchips">' + [70, 75, 80, 85, 90, 95].map(v => '<button type="button" class="sx-gc' + (goal === v ? ' on' : '') + '" data-sx-goal="' + v + '">' + v + '%</button>').join('') + '</div>' +
+                (goal ? '<div class="sx-goalbar"><div class="sp-prog"><i style="width:' + Math.min(100, avg == null ? 0 : Math.round(avg / goal * 100)) + '%"></i></div><small>' + esc(avg == null ? tr("Baholar kiritilgach hisoblanadi", 'Will be tracked once grades appear', 'Появится после первых оценок') : (avg >= goal ? tr('Maqsadga erishdingiz! ', 'Goal reached! ', 'Цель достигнута! ') : tr('Maqsadgacha ' + (goal - avg) + '% qoldi. ', (goal - avg) + '% to go. ', 'До цели ' + (goal - avg) + '%. ')) + tr('Hozirgi o\'rtacha: ', 'Current average: ', 'Сейчас: ') + avg + '%') + '</small></div>' : '<small class="sx-hint">' + esc(tr('Maqsad tanlang, progress shu yerda ko\'rinadi', 'Pick a target to track your progress', 'Выберите цель, прогресс появится здесь')) + '</small>') + '</div>';
+            const bd = sxBadges(s, gs), got = bd.filter(b => b.ok).length;
+            const badgeCard = '<div class="sp-card">' + head(tr('Yutuqlar', 'Achievements', 'Достижения'), got + ' / ' + bd.length) + '<div class="sx-badges">' + bd.map(b => '<div class="sx-badge' + (b.ok ? ' on' : '') + '"><span class="sx-bi">' + SVG(b.ic) + '</span><b>' + esc(b.t) + '</b><small>' + esc(b.d) + '</small></div>').join('') + '</div></div>';
+            const grad = s.status === 'grad';
+            const certCard = '<div class="sp-card sx-cert' + (grad ? ' on' : '') + '"><span class="sx-ci">' + SVG(grad ? '<circle cx="12" cy="9" r="6"/><path d="M8.5 14.5L7 22l5-3 5 3-1.5-7.5"/>' : '<rect x="5" y="11" width="14" height="10" rx="3"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>') + '</span><div><b>' + esc(tr('Sertifikat', 'Certificate', 'Сертификат')) + '</b><small>' + esc(grad ? tr("Kursni tamomlaganingiz bilan tabriklaymiz! Sertifikatni chop etishingiz yoki PDF qilib saqlashingiz mumkin.", 'Congratulations on finishing the course! Print it or save it as PDF.', 'Поздравляем с окончанием курса! Распечатайте или сохраните в PDF.') : tr("Kursni tugatganingizda sertifikat shu yerda paydo bo'ladi.", 'Your certificate will appear here once you finish the course.', 'Сертификат появится здесь после окончания курса.')) + '</small></div>' + (grad ? '<button type="button" class="sp-btn" data-sx="cert">' + esc(tr('Sertifikatni olish', 'Get certificate', 'Получить сертификат')) + '</button>' : '') + '</div>';
+            return '<div class="sp-wrap sx-results">' + pageHead(tr('Natijalarim', 'My results', 'Мои результаты'), tr("Baholar, maqsad va yutuqlaringiz", 'Your grades, goal and achievements', 'Ваши оценки, цель и достижения')) + acts + stats +
+                '<div class="sx-rgrid"><div class="sx-rl">' + bars + list + subs + '</div><div class="sx-rr">' + goalCard + badgeCard + certCard + '</div></div>' +
+                '<div class="sx-foot"><button type="button" class="sp-link" data-sx="tour">' + esc(tr("Ko'rsatmani qayta ko'rish", 'Replay the tour', 'Показать подсказки снова')) + '</button></div></div>';
+        }
+
+        /* ---- davomat: 6 oylik tendensiya (davomat sahifasiga qo'shiladi) ---- */
+        function attTrendHTML(s, gs) {
+            const st = sxStats(s, gs); if (!st.tot) return '';
+            const all = st.tot ? Math.round((st.p + st.l) / st.tot * 100) : 0;
+            return '<div class="sp-card sx-trend">' + head(tr('Oxirgi 6 oy', 'Last 6 months', 'Последние 6 месяцев'), tr('Davomat dinamikasi', 'Attendance trend', 'Динамика посещаемости')) +
+                '<div class="sx-trsum"><div><b>' + all + '%</b><small>' + esc(tr('umumiy davomat', 'overall attendance', 'общая посещаемость')) + '</small></div><div><b>' + st.p + '</b><small>' + esc(tr('keldi', 'present', 'был')) + '</small></div><div><b>' + st.l + '</b><small>' + esc(tr('kechikdi', 'late', 'опоздал')) + '</small></div><div><b class="' + (st.a ? 'neg' : '') + '">' + st.a + '</b><small>' + esc(tr('kelmadi', 'absent', 'не был')) + '</small></div></div>' +
+                '<div class="sx-bars sx-bars-s">' + st.months.map(m => '<div class="sx-bar"><b>' + (m.rate == null ? '\u2014' : m.rate + '%') + '</b><span><i class="' + (m.rate == null ? '' : gCls(m.rate)) + '" style="height:' + (m.rate == null ? 4 : Math.max(6, m.rate)) + '%"></i></span><small>' + esc(MONTHS()[m.m].slice(0, 3)) + '</small></div>').join('') + '</div></div>';
+        }
+
+        /* ---- chop etish (PDF) yordamchisi ---- */
+        function sxPrintDoc(title, css, body) {
+            const fr = document.createElement('iframe'); fr.setAttribute('aria-hidden', 'true'); fr.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;';
+            document.body.appendChild(fr);
+            const d = fr.contentWindow.document;
+            d.title = title;
+            const st = d.createElement('style'); st.textContent = css; d.head.appendChild(st);
+            d.body.innerHTML = body;
+            setTimeout(() => { try { fr.contentWindow.focus(); fr.contentWindow.print(); } catch (err) { } setTimeout(() => fr.remove(), 2500); }, 350);
+        }
+        const SX_PRINT_BASE = "*{box-sizing:border-box}body{margin:0;font-family:'Plus Jakarta Sans',Inter,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#171A44;-webkit-print-color-adjust:exact;print-color-adjust:exact}";
+
+        /* ---- ota-ona hisoboti ---- */
+        function sxReport(s, gs) {
+            const now = new Date(), rows = attendanceRows(s, gs, now.getFullYear(), now.getMonth()), c = { p: 0, l: 0, a: 0 }; rows.forEach(r => { if (c[r.mark] != null) c[r.mark]++; });
+            const tot = c.p + c.l + c.a, rate = tot ? Math.round((c.p + c.l) / tot * 100) : null, cs = cardState(s, gs), hw = homeworkOf(s, gs), done = hw.filter(h => h.mine).length;
+            const gr = gradesOf(s), avg = sxAvg(s), pays = paysOf(s).slice(0, 3), nl = nextLesson(gs), kind = sxBalKind(s.balance || 0, cs);
+            const stTx = kind === 'debt' ? tr('Qarzdorlik bor', 'Outstanding balance', 'Есть задолженность') : kind === 'low' ? tr("Qoldiq kam", 'Low balance', 'Мало средств') : tr("Hisob joyida", 'Balance is fine', 'Всё в порядке');
+            const row = (k, v) => '<div class="r"><span>' + esc(k) + '</span><b>' + v + '</b></div>';
+            const css = SX_PRINT_BASE + "@page{margin:14mm}.p{max-width:720px;margin:0 auto}.h{display:flex;align-items:center;gap:12px;padding-bottom:16px;border-bottom:2px solid #E4E2FA}.mk{width:42px;height:42px;border-radius:13px;background:linear-gradient(145deg,#5B4FE8,#3A2FB0);color:#fff;display:grid;place-items:center;font-weight:800;font-size:22px}.h h1{margin:0;font-size:22px}.h small{color:#6C7094}.sec{margin-top:18px;padding:16px 18px;border-radius:16px;background:#F5F6FC}.sec h2{margin:0 0 8px;font-size:15px;color:#3A2FB0}.r{display:flex;justify-content:space-between;gap:16px;padding:7px 0;border-bottom:1px solid #E6E5F2;font-size:14px}.r:last-child{border-bottom:0}.r span{color:#6C7094}.big{font-size:30px;font-weight:800}.ft{margin-top:22px;text-align:center;color:#6C7094;font-size:12px}";
+            const body = '<div class="p"><div class="h"><div class="mk">' + esc(String(sxBrand()).trim().charAt(0).toUpperCase() || 'F') + '</div><div><h1>' + esc(tr("O'quvchi hisoboti", 'Student report', 'Отчёт об ученике')) + '</h1><small>' + esc(sxBrand()) + ' \u00b7 ' + esc(fmtF(ymd(now))) + '</small></div></div>' +
+                '<div class="sec"><h2>' + esc(tr("O'quvchi", 'Student', 'Ученик')) + '</h2>' + row(tr('Ism', 'Name', 'Имя'), esc(s.name || '')) + row(tr('Guruh', 'Group', 'Группа'), esc(gs.map(g => g.name).join(', ') || '\u2014')) + row(tr('Keyingi dars', 'Next class', 'Следующее занятие'), esc(nextText(nl))) + '</div>' +
+                '<div class="sec"><h2>' + esc(tr('Davomat (shu oy)', 'Attendance (this month)', 'Посещаемость (этот месяц)')) + '</h2><div class="big">' + (rate == null ? '\u2014' : rate + '%') + '</div>' + row(tr('Keldi', 'Present', 'Был'), c.p) + row(tr('Kechikdi', 'Late', 'Опоздал'), c.l) + row(tr('Kelmadi', 'Absent', 'Не был'), c.a) + '</div>' +
+                '<div class="sec"><h2>' + esc(tr("To'lov", 'Payments', 'Оплата')) + '</h2>' + row(tr('Holat', 'Status', 'Статус'), esc(stTx)) + row(tr('Kartadagi qoldiq', 'Card balance', 'Остаток на карте'), esc((cs.left < 0 ? '\u2212' : '') + money(cs.left) + ' ' + cur())) + ((s.balance || 0) < 0 ? row(tr('Qarzdorlik', 'Outstanding', 'Задолженность'), esc(money(s.balance) + ' ' + cur())) : '') + pays.map(p => row(tr("To'lov", 'Payment', 'Платёж') + ' ' + fmtF(p.date), '+' + esc(money(p.amount) + ' ' + cur()))).join('') + '</div>' +
+                '<div class="sec"><h2>' + esc(tr('Uy vazifalari', 'Homework', 'Домашние задания')) + '</h2>' + row(tr('Topshirilgan', 'Done', 'Сдано'), done + ' / ' + hw.length) + '</div>' +
+                '<div class="sec"><h2>' + esc(tr('Baholar', 'Grades', 'Оценки')) + '</h2>' + (gr.length ? row(tr("O'rtacha ball", 'Average', 'Средний балл'), avg + '% (' + gLet(avg) + ')') + gr.slice(0, 5).map(g => row((g.subject || '\u2014') + ' \u00b7 ' + fmtF(g.date), esc(g.value + '/' + (g.max || 100)))).join('') : '<div class="r"><span>' + esc(tr("Hozircha baholar yo'q", 'No grades yet', 'Оценок пока нет')) + '</span></div>') + '</div>' +
+                '<div class="ft">' + esc(sxBrand()) + ' \u00b7 ' + esc(tr('Hisobot avtomatik tuzildi', 'Report generated automatically', 'Отчёт сформирован автоматически')) + '</div></div>';
+            return { title: tr("O'quvchi hisoboti", 'Student report', 'Отчёт об ученике') + ' \u2014 ' + (s.name || ''), css: css, body: body, text: [tr("O'quvchi hisoboti", 'Student report', 'Отчёт об ученике') + ': ' + (s.name || ''), tr('Davomat (shu oy)', 'Attendance (this month)', 'Посещаемость') + ': ' + (rate == null ? '\u2014' : rate + '%') + ' (' + c.p + '/' + c.l + '/' + c.a + ')', tr("To'lov holati", 'Payment status', 'Статус оплаты') + ': ' + stTx + ', ' + tr('qoldiq', 'balance', 'остаток') + ' ' + (cs.left < 0 ? '\u2212' : '') + money(cs.left) + ' ' + cur(), tr('Uy vazifalari', 'Homework', 'Задания') + ': ' + done + '/' + hw.length, avg != null ? tr("O'rtacha ball", 'Average', 'Средний балл') + ': ' + avg + '%' : ''].filter(Boolean).join('\n') };
+        }
+
+        /* ---- sertifikat ---- */
+        function sxCertificate(s, gs) {
+            const css = SX_PRINT_BASE + "@page{size:A4 landscape;margin:0}body{background:#fff}.c{width:297mm;height:210mm;padding:12mm}.f{position:relative;height:100%;border:3px solid #4A3FD0;border-radius:6mm;padding:12mm 18mm;text-align:center;background:linear-gradient(180deg,#F1EFFF 0%,#fff 38%)}.f::before{content:'';position:absolute;inset:3mm;border:1px solid #D3CFEE;border-radius:4mm;pointer-events:none}.mk{width:16mm;height:16mm;margin:0 auto 4mm;border-radius:5mm;background:linear-gradient(145deg,#5B4FE8,#3A2FB0);color:#fff;display:grid;place-items:center;font-weight:800;font-size:9mm}.br{font-size:6.5mm;font-weight:800;letter-spacing:.02em}.t{margin:7mm 0 2mm;font-size:15mm;font-weight:800;color:#3A2FB0;letter-spacing:.08em}.s{color:#6C7094;font-size:5mm}.n{margin:8mm 0 4mm;font-size:13mm;font-weight:800;border-bottom:1px solid #D3CFEE;display:inline-block;padding:0 12mm 2mm}.d{max-width:200mm;margin:0 auto;color:#4B4F78;font-size:5.4mm;line-height:1.6}.g{margin-top:4mm;font-size:6.5mm;font-weight:800;color:#171A44}.ft{position:absolute;left:18mm;right:18mm;bottom:12mm;display:flex;justify-content:space-between;color:#6C7094;font-size:4.2mm}.ft div{min-width:60mm;border-top:1px solid #B9B6D6;padding-top:2mm}";
+            const names = gs.map(g => g.name).join(', ') || '\u2014';
+            const body = '<div class="c"><div class="f"><div class="mk">' + esc(String(sxBrand()).trim().charAt(0).toUpperCase() || 'F') + '</div><div class="br">' + esc(sxBrand()) + '</div><div class="t">' + esc(tr('SERTIFIKAT', 'CERTIFICATE', 'СЕРТИФИКАТ')) + '</div><div class="s">' + esc(tr('Ushbu sertifikat', 'This certifies that', 'Настоящим подтверждается, что')) + '</div><div class="n">' + esc(s.name || '') + '</div><div class="d">' + esc(tr('kursni muvaffaqiyatli tamomlagani uchun topshiriladi', 'has successfully completed the course', 'успешно завершил(а) курс')) + '</div><div class="g">' + esc(names) + '</div><div class="ft"><div>' + esc(fmtF(ymd(new Date()))) + '</div><div>' + esc(tr('Direktor', 'Director', 'Директор')) + '</div></div></div></div>';
+            return { title: tr('Sertifikat', 'Certificate', 'Сертификат') + ' \u2014 ' + (s.name || ''), css: css, body: body };
+        }
+
+        /* ---- kalendarga qo'shish (.ics) ---- */
+        function sxIcs(s, gs) {
+            const codes = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'], now = new Date(), z = n => String(n).padStart(2, '0'), ic = v => String(v || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+            const stamp = now.getUTCFullYear() + z(now.getUTCMonth() + 1) + z(now.getUTCDate()) + 'T' + z(now.getUTCHours()) + z(now.getUTCMinutes()) + z(now.getUTCSeconds()) + 'Z';
+            const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//' + sxBrand() + '//Dars jadvali//UZ', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:' + ic(sxBrand() + ' \u2014 ' + tr('Dars jadvali', 'Class schedule', 'Расписание'))];
+            let n = 0;
+            gs.filter(g => g.status === 'active').forEach(g => (g.days || []).forEach(di => {
+                const d = new Date(now.getFullYear(), now.getMonth(), now.getDate()); d.setDate(d.getDate() + ((di - dayIdx(d) + 7) % 7));
+                const dt = t => ymd(d).replace(/-/g, '') + 'T' + String(t || '00:00').replace(':', '') + '00';
+                L.push('BEGIN:VEVENT', 'UID:' + g.id + '-' + di + '-' + s.id + '@ferdinant', 'DTSTAMP:' + stamp, 'DTSTART:' + dt(g.start), 'DTEND:' + dt(g.end), 'RRULE:FREQ=WEEKLY;BYDAY=' + codes[di], 'SUMMARY:' + ic(g.name), 'LOCATION:' + ic(roomName(g)), 'DESCRIPTION:' + ic(g.teacher || ''), 'BEGIN:VALARM', 'TRIGGER:-PT60M', 'ACTION:DISPLAY', 'DESCRIPTION:' + ic(g.name), 'END:VALARM', 'END:VEVENT'); n++;
+            }));
+            L.push('END:VCALENDAR');
+            if (!n) { sxToast(tr("Jadvalda faol dars topilmadi", 'No active classes found in the schedule', 'Активных занятий в расписании нет')); return; }
+            const blob = new Blob([L.join('\r\n')], { type: 'text/calendar;charset=utf-8' }), a = document.createElement('a');
+            a.href = URL.createObjectURL(blob); a.download = 'dars-jadvali.ics'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+            sxToast(tr("Jadval kalendar fayli sifatida yuklandi (har bir dars oldidan 1 soatlik eslatma bilan)", 'Schedule saved as a calendar file (with a 1-hour reminder before each class)', 'Расписание сохранено файлом календаря (с напоминанием за 1 час)'));
+        }
+
+        /* ---- bildirishnomalar ---- */
+        const SX_IC = { cal: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>', hw: '<path d="M5 4h11l3 3v13H5z"/><path d="M8 11h8M8 15h8"/>', pay: '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h3"/>', warn: '<circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/>', star: '<path d="M12 3l2.6 5.4 5.9.9-4.3 4.2 1 5.9L12 16.5 6.8 19.4l1-5.9L3.5 9.3l5.9-.9z"/>' };
+        function sxNotifs(s, gs) {
+            const items = [], now = new Date(), today = ymd(now), nowM = now.getHours() * 60 + now.getMinutes(), tom = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1), tomS = ymd(tom), mk = monthKey(now);
+            gs.filter(g => g.status === 'active').forEach(g => (g.days || []).forEach(di => {
+                if (di === dayIdx(now) && mins(g.start) > nowM) items.push({ id: 'les-' + today + '-' + g.id, ic: 'cal', pr: 3, t: tr('Bugun ' + g.start + ' da dars: ' + g.name, 'Class today at ' + g.start + ': ' + g.name, 'Сегодня в ' + g.start + ' занятие: ' + g.name), sub: roomName(g) });
+                if (di === dayIdx(tom)) items.push({ id: 'les-' + tomS + '-' + g.id, ic: 'cal', pr: 1, t: tr('Ertaga ' + g.start + ' da dars: ' + g.name, 'Class tomorrow at ' + g.start + ': ' + g.name, 'Завтра в ' + g.start + ' занятие: ' + g.name), sub: roomName(g) });
+            }));
+            homeworkOf(s, gs).filter(h => !h.mine && h.due).forEach(h => {
+                const n = daysBetween(today, h.due), key = h.id != null ? h.id : h.title;
+                if (n < 0) items.push({ id: 'hwo-' + key, ic: 'hw', pr: 5, t: tr("Muddati o'tgan vazifa: " + h.title, 'Overdue homework: ' + h.title, 'Просроченное задание: ' + h.title), sub: fmtF(h.due) });
+                else if (n <= 1) items.push({ id: 'hwd-' + key + '-' + h.due, ic: 'hw', pr: 4, t: tr((n === 0 ? 'Bugun' : 'Ertaga') + ' topshirish muddati: ' + h.title, (n === 0 ? 'Due today: ' : 'Due tomorrow: ') + h.title, (n === 0 ? 'Срок сегодня: ' : 'Срок завтра: ') + h.title), sub: fmtF(h.due) });
+            });
+            paysOf(s).filter(p => daysBetween(p.date, today) <= 7).forEach(p => items.push({ id: 'pay-' + p.id, ic: 'pay', pr: 2, t: tr("To'lov qabul qilindi: +" + money(p.amount) + " so'm", 'Payment received: +' + money(p.amount) + ' UZS', 'Платёж принят: +' + money(p.amount) + ' сум'), sub: fmtF(p.date) }));
+            const kind = sxBalKind(s.balance || 0, cardState(s, gs));
+            if (kind === 'debt') items.push({ id: 'bal-debt-' + mk, ic: 'warn', pr: 6, t: tr('Hisobingizda qarzdorlik bor', 'You have an outstanding balance', 'У вас есть задолженность'), sub: tr("To'lovlarim bo'limiga qarang", 'See My payments', 'Смотрите «Мои платежи»') });
+            if (kind === 'low') items.push({ id: 'bal-low-' + mk, ic: 'warn', pr: 5, t: tr("Kartada mablag' kam: keyingi dars uchun yetmaydi", 'Low card balance: not enough for the next class', 'Мало средств: на следующее занятие не хватит'), sub: tr("To'lovlarim bo'limiga qarang", 'See My payments', 'Смотрите «Мои платежи»') });
+            gradesOf(s).filter(g => daysBetween(g.date, today) <= 7).forEach(g => items.push({ id: 'gr-' + g.date + '-' + (g.subject || '') + '-' + g.value, ic: 'star', pr: 2, t: tr('Yangi baho: ' + (g.subject || '') + ' \u2014 ' + g.value + '/' + (g.max || 100), 'New grade: ' + (g.subject || '') + ' \u2014 ' + g.value + '/' + (g.max || 100), 'Новая оценка: ' + (g.subject || '') + ' \u2014 ' + g.value + '/' + (g.max || 100)), sub: fmtF(g.date) }));
+            return items.sort((a, b) => b.pr - a.pr);
+        }
+        let sxInstall = null;
+        window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); sxInstall = e; });
+        const sxApplyZoom = z => { document.documentElement.style.setProperty('--sx-zoom', z); };
+        try { sxApplyZoom(localStorage.getItem(SXZ) || '1'); } catch (e) { }
+        function sxHeader() {
+            const hi = document.querySelector('.header-icons'), r = R(), stu = !!(r && r.is('student'));
+            if (!stu) { ['sxBell', 'sxZoomBtn', 'sxPanel'].forEach(id => { const el = document.getElementById(id); if (el) el.remove(); }); return; }
+            if (!hi) return;
+            let anchor = document.getElementById('profileBtn'); while (anchor && anchor.parentElement !== hi) anchor = anchor.parentElement; if (!anchor) anchor = hi.lastElementChild;
+            if (!document.getElementById('sxZoomBtn')) { const b = document.createElement('button'); b.type = 'button'; b.className = 'icon-btn'; b.id = 'sxZoomBtn'; b.setAttribute('data-sx', 'zoom'); b.innerHTML = '<b class="sx-aa">Aa</b>'; hi.insertBefore(b, anchor); }
+            if (!document.getElementById('sxBell')) { const b = document.createElement('button'); b.type = 'button'; b.className = 'icon-btn'; b.id = 'sxBell'; b.setAttribute('data-sx', 'bell'); b.innerHTML = SVG('<path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/>') + '<span class="sx-bd" hidden></span>'; hi.insertBefore(b, anchor); }
+            const sb = document.querySelector('.sidebar-bottom');
+            if (sb && !sb.querySelector('.sx-prefs')) sb.insertAdjacentHTML('afterbegin', '<div class="sx-prefs"><button type="button" data-sx="lang"><span>' + esc(tr('Til', 'Language', 'Язык')) + '</span><b>' + esc(lang().toUpperCase()) + '</b></button><button type="button" data-sx="theme"><span>' + esc(tr('Mavzu', 'Theme', 'Тема')) + '</span><b>' + esc(document.documentElement.getAttribute('data-theme') === 'dark' ? tr('Qorong\'i', 'Dark', 'Тёмная') : tr('Yorug\'', 'Light', 'Светлая')) + '</b></button></div>');
+            else if (sb) { const pb = sb.querySelectorAll('.sx-prefs b'); if (pb[0]) pb[0].textContent = lang().toUpperCase(); if (pb[1]) pb[1].textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? tr('Qorong\'i', 'Dark', 'Тёмная') : tr('Yorug\'', 'Light', 'Светлая'); const sp = sb.querySelectorAll('.sx-prefs span'); if (sp[0]) sp[0].textContent = tr('Til', 'Language', 'Язык'); if (sp[1]) sp[1].textContent = tr('Mavzu', 'Theme', 'Тема'); }
+            document.getElementById('sxZoomBtn').setAttribute('aria-label', tr("Matn o'lchami", 'Text size', 'Размер текста')); document.getElementById('sxZoomBtn').setAttribute('title', tr("Matn o'lchami", 'Text size', 'Размер текста'));
+            document.getElementById('sxBell').setAttribute('aria-label', tr('Bildirishnomalar', 'Notifications', 'Уведомления')); document.getElementById('sxBell').setAttribute('title', tr('Bildirishnomalar', 'Notifications', 'Уведомления'));
+        }
+        function sxBadge() {
+            const s = currentStudent(), bd = document.querySelector('#sxBell .sx-bd'); if (!s || !bd) return;
+            const read = sxGet(s).read || {}, n = sxNotifs(s, groupsOf(s)).filter(i => !read[i.id]).length;
+            bd.hidden = !n; bd.textContent = n > 9 ? '9+' : n;
+        }
+        function sxMarkRead(s) { const read = Object.assign({}, sxGet(s).read || {}); sxNotifs(s, groupsOf(s)).forEach(i => { read[i.id] = 1; }); sxPut(s, { read: read }); }
+        function sxClosePanel() { const p = document.getElementById('sxPanel'); if (!p) return; const s = currentStudent(); if (s) sxMarkRead(s); p.remove(); sxBadge(); }
+        function sxPanel() {
+            const s = currentStudent(); if (!s) return;
+            const items = sxNotifs(s, groupsOf(s)), my = sxGet(s), read = my.read || {}, can = 'Notification' in window, bnOn = can && Notification.permission === 'granted' && my.bn;
+            let p = document.getElementById('sxPanel'); const fresh = !p; if (fresh) { p = document.createElement('div'); p.id = 'sxPanel'; p.className = 'sx-panel'; p.setAttribute('role', 'dialog'); }
+            p.innerHTML = '<div class="sx-ph"><b>' + esc(tr('Bildirishnomalar', 'Notifications', 'Уведомления')) + '</b><button type="button" data-sx="readall">' + esc(tr("Hammasini o'qilgan deb belgilash", 'Mark all as read', 'Отметить все прочитанными')) + '</button></div><div class="sx-pl2">' +
+                (items.length ? items.map(i => '<div class="sx-ni' + (read[i.id] ? '' : ' un') + '"><span class="sx-nic ' + i.ic + '">' + SVG(SX_IC[i.ic]) + '</span><span class="sx-nt"><b>' + esc(i.t) + '</b>' + (i.sub ? '<small>' + esc(i.sub) + '</small>' : '') + '</span></div>').join('') : '<div class="sx-ne">' + esc(tr("Hozircha yangi bildirishnoma yo'q", 'No new notifications', 'Новых уведомлений нет')) + '</div>') +
+                '</div><div class="sx-pf"><button type="button" data-sx="zoom">' + esc(tr("Matn o'lchami: ", 'Text size: ', 'Размер текста: ') + Math.round(parseFloat(localStorage.getItem(SXZ) || '1') * 100) + '%') + '</button>' + (can ? '<button type="button" data-sx="bn">' + esc(bnOn ? tr('Brauzer eslatmalari yoqilgan', 'Browser reminders on', 'Напоминания включены') : tr('Dars oldidan brauzer eslatmasini yoqish', 'Enable browser reminders before class', 'Включить напоминания перед занятием')) + '</button>' : '') + (sxInstall ? '<button type="button" data-sx="install">' + esc(tr("Ilovani o'rnatish", 'Install app', 'Установить приложение')) + '</button>' : '') + '</div>';
+            if (fresh) document.body.appendChild(p);
+        }
+        /* Dars oldidan brauzer eslatmasi (ilova ochiq turganda; 60 va 15 daqiqa oldin) */
+        setInterval(() => {
+            const r = R(); if (!r || !r.is('student') || !('Notification' in window) || Notification.permission !== 'granted') return;
+            const s = currentStudent(); if (!s || !sxGet(s).bn) return;
+            const now = new Date(), nowM = now.getHours() * 60 + now.getMinutes(), today = ymd(now); let fired = {}; try { fired = JSON.parse(sessionStorage.getItem('sxFired') || '{}'); } catch (e) { }
+            groupsOf(s).filter(g => g.status === 'active' && (g.days || []).indexOf(dayIdx(now)) !== -1).forEach(g => [60, 15].forEach(b => {
+                const key = today + '|' + g.id + '|' + b;
+                if (!fired[key] && mins(g.start) - nowM === b) { fired[key] = 1; try { new Notification(sxBrand(), { body: tr(g.name + ' darsi ' + b + ' daqiqadan keyin boshlanadi', g.name + ' starts in ' + b + ' minutes', 'Занятие ' + g.name + ' начнётся через ' + b + ' мин') }); } catch (e) { } }
+            }));
+            try { sessionStorage.setItem('sxFired', JSON.stringify(fired)); } catch (e) { }
+        }, 30000);
+        setInterval(() => { const r = R(); if (r && r.is('student')) sxBadge(); }, 60000);
+
+        /* ---- birinchi kirish ko'rsatmasi ---- */
+        function sxTour(force) {
+            const s = currentStudent(); if (!s || document.getElementById('sxTour')) return;
+            if (document.documentElement.getAttribute('data-auth') !== 'in') return;
+            if (!force && sxGet(s).tour) return;
+            const steps = [
+                { ic: SX_IC.pay, t: tr('Ferdinant Card', 'Ferdinant Card', 'Ferdinant Card'), d: tr("Kartada shu oy to'langan summa, qoldiq va har bir dars narxi ko'rinadi. Karta rangi holatingizni bildiradi: ko'k, mablag' yetarli; sariq, kam; qizil, qarz.", 'The card shows what you paid this month, your balance and the price of each class. Its colour shows your status: blue, enough funds; amber, low; red, debt.', 'На карте видны оплата за месяц, остаток и цена занятия. Цвет показывает состояние: синий, достаточно; жёлтый, мало; красный, долг.') },
+                { ic: SX_IC.cal, t: tr('Jadval va eslatmalar', 'Schedule and reminders', 'Расписание и напоминания'), d: tr("Jadvalni kalendaringizga qo'shing. Qo'ng'iroqcha belgisida dars, vazifa va to'lov eslatmalarini ko'rasiz. \"Aa\" tugmasi matnni kattalashtiradi.", 'Add your schedule to your calendar. The bell shows class, homework and payment reminders. The "Aa" button enlarges the text.', 'Добавьте расписание в календарь. Колокольчик покажет напоминания о занятиях, заданиях и оплате. Кнопка «Aa» увеличивает текст.') },
+                { ic: SX_IC.star, t: tr('Natijalarim', 'My results', 'Мои результаты'), d: tr("Baholaringiz, maqsadingiz va yutuqlaringiz shu yerda. Ota-onangizga hisobotni bir tugma bilan yuborishingiz mumkin.", 'Your grades, goal and achievements are here. You can send a report to your parents with one tap.', 'Здесь ваши оценки, цель и достижения. Отчёт для родителей отправляется одной кнопкой.') }
+            ];
+            let i = 0; const ov = document.createElement('div'); ov.id = 'sxTour'; ov.className = 'sx-tour'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true');
+            const done = () => { sxPut(s, { tour: 1 }); ov.remove(); };
+            const draw = () => { const st = steps[i]; ov.innerHTML = '<div class="sx-tbox"><span class="sx-tic">' + SVG(st.ic) + '</span><h3>' + esc(st.t) + '</h3><p>' + esc(st.d) + '</p><div class="sx-tdots">' + steps.map((x, k) => '<i class="' + (k === i ? 'on' : '') + '"></i>').join('') + '</div><div class="sx-tbtn"><button type="button" class="sx-tskip" data-sx="tskip">' + esc(tr("O'tkazib yuborish", 'Skip', 'Пропустить')) + '</button><button type="button" class="sp-btn" data-sx="tnext">' + esc(i === steps.length - 1 ? tr('Boshladik', "Let's go", 'Начнём') : tr('Keyingisi', 'Next', 'Далее')) + '</button></div></div>'; };
+            ov._next = () => { if (i < steps.length - 1) { i++; draw(); } else done(); }; ov._done = done; draw(); document.body.appendChild(ov);
+        }
+
+
+        /* ---- 3D vertikal karusel (g'ildirak): kartalar aylanadi, surilgan karta yangi karta ortiga ketadi ---- */
+        let sxCarPos = 0;
+        function sxCar(car) {
+            if (car.__sx) return; car.__sx = 1;
+            const stage = car.querySelector('.sx-car-stage'), slides = Array.prototype.slice.call(stage.children), N = slides.length, dots = car.querySelectorAll('.sx-cd');
+            const YS = 108, ZB = 135, AS = 40, PX = 140, reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+            let pos = sxCarPos, target = Math.round(pos), raf = 0, drag = null;
+            const wrap = d => ((d + N / 2) % N + N) % N - N / 2;
+            function layout() {
+                slides.forEach((el, i) => {
+                    const d = wrap(i - pos), a = Math.abs(d), ca = Math.min(a, 1.6), op = a >= 1.6 ? 0 : a <= 1 ? 1 - .3 * a : .7 * (1.6 - a) / .6;
+                    /* g'ildirak: surilgan karta tepaga va ORQAGA ketadi (yuqori chekkasi uzoqlashadi), yangisi pastdan oldinga chiqadi */
+                    el.style.transform = 'translate3d(0,' + (YS * Math.sign(d) * ca).toFixed(1) + 'px,' + (-ZB * ca).toFixed(1) + 'px) rotateX(' + (-Math.sign(d) * Math.min(a, 1.6) * AS).toFixed(1) + 'deg)';
+                    el.style.opacity = op.toFixed(2);
+                    el.style.zIndex = String(100 - Math.round(a * 20));
+                    el.style.pointerEvents = a < .35 ? 'auto' : 'none';
+                    el.style.filter = 'brightness(' + (1 - Math.min(a, 1.2) * .1).toFixed(2) + ')';
+                    el.style.visibility = a > 1.65 ? 'hidden' : 'visible';
+                    el.setAttribute('aria-hidden', a < .5 ? 'false' : 'true');
+                });
+                const cur = ((Math.round(pos) % N) + N) % N; dots.forEach((b, k) => b.classList.toggle('on', k === cur)); sxCarPos = pos;
+            }
+            function go(t) {
+                target = t; cancelAnimationFrame(raf);
+                if (reduce) { pos = t; layout(); return; }
+                const step = () => { const df = target - pos; if (Math.abs(df) < .002) { pos = target; layout(); return; } pos += df * .13; layout(); raf = requestAnimationFrame(step); };
+                raf = requestAnimationFrame(step);
+            }
+            function seen() { car.classList.add('seen'); try { localStorage.setItem('crm_sx_car', '1'); } catch (e) { } }
+            try { if (localStorage.getItem('crm_sx_car')) car.classList.add('seen'); } catch (e) { }
+            car.addEventListener('pointerdown', e => { if (e.button > 0) return; cancelAnimationFrame(raf); drag = { y: e.clientY, p: pos, ly: e.clientY, lt: performance.now(), v: 0, moved: false, id: e.pointerId }; });
+            car.addEventListener('pointermove', e => {
+                if (!drag) return; const dy = e.clientY - drag.y;
+                if (!drag.moved) { if (Math.abs(dy) < 6) return; drag.moved = true; car.classList.add('drag'); seen(); try { car.setPointerCapture(drag.id); } catch (x) { } }
+                const now = performance.now(); drag.v = (e.clientY - drag.ly) / Math.max(1, now - drag.lt); drag.ly = e.clientY; drag.lt = now;
+                pos = drag.p - dy / PX; layout();
+            });
+            const end = () => {
+                if (!drag) return; const d = drag; drag = null; car.classList.remove('drag');
+                if (!d.moved) return; car.__dragged = true; setTimeout(() => { car.__dragged = false; }, 60);
+                const base = Math.round(d.p), proj = pos - d.v * 240 / PX;
+                go(Math.max(base - 1, Math.min(base + 1, Math.round(proj))));
+            };
+            car.addEventListener('pointerup', end); car.addEventListener('pointercancel', end);
+            car.addEventListener('click', e => {
+                if (car.__dragged) { e.stopPropagation(); e.preventDefault(); return; }
+                const b = e.target.closest && e.target.closest('[data-sx-car]'); if (b) { e.stopPropagation(); seen(); const r = Math.round(pos); go(r + wrap(+b.getAttribute('data-sx-car') - r)); }
+            }, true);
+            car.addEventListener('keydown', e => { if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); seen(); go(Math.round(target) + 1); } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); seen(); go(Math.round(target) - 1); } });
+            layout();
+        }
+
+        /* ---- render ustidan: jadvalga kalendar tugmasi, davomatga tendensiya, sarlavha tugmalari ---- */
+        let sxTourDone = false;
+        function sxAfter(s, gs) {
+            const sr = document.getElementById('stScheduleRoot'), ph = sr && sr.querySelector('.sp-wrap');
+            if (ph && !ph.querySelector('[data-sx="ics"]')) ph.insertAdjacentHTML('afterbegin', '<div class="sx-ics-row"><button type="button" class="sp-link sx-ics" data-sx="ics">' + SVG('<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/>') + esc(tr("Kalendarga qo'shish", 'Add to calendar', 'Добавить в календарь')) + '</button></div>');
+            const ar = document.getElementById('stAttendanceRoot'), aw = ar && ar.querySelector('.sp-wrap'); if (aw) aw.insertAdjacentHTML('beforeend', attTrendHTML(s, gs));
+            const carEl = document.querySelector('#studentRoot .sx-car'); if (carEl) sxCar(carEl);
+            sxHeader(); sxBadge();
+            if (!sxTourDone && document.documentElement.getAttribute('data-auth') === 'in') { sxTourDone = true; setTimeout(() => sxTour(false), 1400); }
+        }
+        document.addEventListener('click', e => {
+            const r = R(); if (!r || !r.is('student')) return;
+            const panel = document.getElementById('sxPanel');
+            if (panel && !(e.target.closest && (e.target.closest('#sxPanel') || e.target.closest('#sxBell')))) sxClosePanel();
+            const t = e.target.closest && e.target.closest('[data-sx],[data-sx-goal]'); if (!t) return;
+            const s = currentStudent(); if (!s) return; const gs = groupsOf(s);
+            if (t.hasAttribute('data-sx-goal')) { sxPut(s, { goal: +t.getAttribute('data-sx-goal') }); renderAll(); return; }
+            switch (t.getAttribute('data-sx')) {
+                case 'report': { const rp = sxReport(s, gs); sxPrintDoc(rp.title, rp.css, rp.body); break; }
+                case 'share': { const rp = sxReport(s, gs); if (navigator.share) navigator.share({ title: rp.title, text: rp.text }).catch(() => { }); else if (navigator.clipboard) navigator.clipboard.writeText(rp.text).then(() => sxToast(tr('Hisobot matni nusxalandi', 'Report text copied', 'Текст отчёта скопирован'))); break; }
+                case 'cert': { const c = sxCertificate(s, gs); sxPrintDoc(c.title, c.css, c.body); break; }
+                case 'ics': sxIcs(s, gs); break;
+                case 'bell': if (document.getElementById('sxPanel')) sxClosePanel(); else sxPanel(); break;
+                case 'readall': sxMarkRead(s); sxPanel(); sxBadge(); break;
+                case 'bn': if ('Notification' in window) Notification.requestPermission().then(p => { sxPut(s, { bn: p === 'granted' }); sxPanel(); }); break;
+                case 'install': if (sxInstall) { sxInstall.prompt(); sxInstall = null; sxPanel(); } break;
+                case 'zoom': { const cur = parseFloat(localStorage.getItem(SXZ) || '1'), nx = cur < 1.05 ? '1.1' : cur < 1.15 ? '1.2' : '1'; try { localStorage.setItem(SXZ, nx); } catch (er) { } sxApplyZoom(nx); if (document.getElementById('sxPanel')) sxPanel(); break; }
+                case 'lang': { const ord = ['uz', 'en', 'ru'], nx = ord[(ord.indexOf(lang()) + 1) % 3]; if (typeof applyLanguage === 'function') applyLanguage(nx); setTimeout(() => { sxHeader(); renderAll(); }, 60); break; }
+                case 'theme': { if (typeof applyTheme === 'function') applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); setTimeout(() => { sxHeader(); renderAll(); }, 60); break; }
+                case 'profile': { const pi = document.querySelector('.sidebar .nav-item[data-view="profile"]'); if (pi) pi.click(); break; }
+                case 'tour': sxTour(true); break;
+                case 'tnext': { const o = document.getElementById('sxTour'); if (o) o._next(); break; }
+                case 'tskip': { const o = document.getElementById('sxTour'); if (o) o._done(); break; }
+            }
+        });
+        /* Kirgandan keyin (data-auth = in) kabinet qayta chiziladi: bildirishnoma, ko'rsatma va sarlavha tugmalari paydo bo'ladi */
+        new MutationObserver(() => { if (document.documentElement.getAttribute('data-auth') === 'in') setTimeout(() => { const r = R(); if (r && r.is('student')) renderAll(); }, 350); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-auth'] });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { sxClosePanel(); const o = document.getElementById('sxTour'); if (o) o._done(); } });
+
         function renderAll() {
             Object.keys(ROOTS).forEach(k => { const el = document.getElementById(ROOTS[k]); if (el) el.innerHTML = ''; });
             const r = R(); if (!r || !r.is('student')) return;
@@ -15760,6 +16084,7 @@
             const gs = groupsOf(s);
             set('student', dashHTML(s, gs)); set('stschedule', scheduleHTML(s, gs)); set('stgroups', groupsHTML(s, gs)); set('sthomework', homeworkHTML(s, gs));
             set('stattendance', attendanceHTML(s, gs)); set('stpayments', paymentsHTML(s, gs)); set('stsettings', settingsHTML());
+            set('stresults', resultsHTML(s, gs)); sxAfter(s, gs);
         }
         window.renderStudentCabinet = renderAll;
 
@@ -17928,6 +18253,32 @@
                 arr.push({ id: String(Date.now()), t: v.slice(0, 1000), ts: Date.now() }); all[k] = arr; ntSave(all);
                 spDraft = ''; if (ta) ta.value = ''; drawNotes(c, s);
             }
+            /* ---------- Baholar (o'quvchining "Natijalarim" sahifasida ko'rinadi) ---------- */
+            const GRK2 = 'crm_grades_v1';
+            const grAll = () => { try { const v = JSON.parse(localStorage.getItem(GRK2)); return Array.isArray(v) ? v : []; } catch (e) { return []; } };
+            const grSave = a => { try { localStorage.setItem(GRK2, JSON.stringify(a)); } catch (e) { note(tr("Saqlab bo'lmadi: xotira to'lgan", 'Could not save: storage is full', 'Не удалось сохранить: память заполнена'), 'error'); } };
+            const grOf = s => grAll().filter(g => String(g.sid) === String(s.id)).sort((a, b) => String(b.date).localeCompare(String(a.date)));
+            function drawGrades(c, s) {
+                const mine = root0().querySelector('#spGList'); if (!mine) return;
+                const list = grOf(s).slice(0, 8);
+                mine.innerHTML = list.length ? list.map(g => '<div class="sc-srow"><span>' + E(g.subject || '—') + ' <small class="sp-muted">' + E(String(g.date).slice(8, 10) + '.' + String(g.date).slice(5, 7) + '.' + String(g.date).slice(0, 4)) + '</small></span><span class="sc-srow-r"><span class="hw-chip ' + (((+g.value || 0) / (+g.max || 100)) >= 0.7 ? 'ok' : ((+g.value || 0) / (+g.max || 100)) >= 0.6 ? 'warnc' : 'late') + '">' + E(g.value + '/' + (g.max || 100)) + '</span><button type="button" class="sp-gdel" data-sp="gdel" data-id="' + E(g.id) + '" aria-label="' + E(tr("Bahoni o'chirish", 'Delete grade', 'Удалить оценку')) + '">×</button></span></div>').join('') : '<p class="sp-muted">' + E(tr("Hali baho kiritilmagan", 'No grades yet', 'Оценок пока нет')) + '</p>';
+            }
+            const root0 = () => document.getElementById('myStudentsRoot');
+            function gradesCardHTML() {
+                const opts = ['Quiz', 'Test', tr('Uy vazifasi', 'Homework', 'Домашнее задание'), tr('Oraliq nazorat', 'Midterm', 'Промежуточный'), tr('Yakuniy imtihon', 'Final exam', 'Итоговый экзамен'), 'Mock', 'Listening', 'Reading', 'Writing', 'Speaking'];
+                const today = new Date(), d = today.getFullYear() + '-' + pad2(today.getMonth() + 1) + '-' + pad2(today.getDate());
+                return '<div class="sc-card" id="spGrades"><h3>' + E(tr('Baholar', 'Grades', 'Оценки')) + '</h3><div id="spGList"></div>' +
+                    '<div class="sp-gform"><input id="spGs" list="spGsub" maxlength="60" placeholder="' + E(tr('Fan / mavzu (masalan, Listening quiz)', 'Subject / topic (e.g. Listening quiz)', 'Предмет / тема (напр., Listening quiz)')) + '"><datalist id="spGsub">' + opts.map(o => '<option value="' + E(o) + '">').join('') + '</datalist>' +
+                    '<input id="spGv" type="number" min="0" step="0.5" placeholder="' + E(tr('Ball', 'Score', 'Балл')) + '"><input id="spGm" type="number" min="1" value="100" title="' + E(tr('Maksimum ball', 'Max score', 'Макс. балл')) + '"><input id="spGd" type="date" value="' + d + '" max="' + d + '">' +
+                    '<button type="button" class="acc-btn" data-sp="gadd">' + E(tr("Baho qo'yish", 'Add grade', 'Поставить оценку')) + '</button></div></div>';
+            }
+            function gradeAdd(c, s) {
+                const sub = ($('#spGs').value || '').trim(), v = parseFloat($('#spGv').value), m = parseFloat($('#spGm').value) || 100, d = $('#spGd').value;
+                if (!sub) { $('#spGs').focus(); return; }
+                if (!isFinite(v) || v < 0 || v > m) { $('#spGv').focus(); note(tr("Ball 0 va maksimum oralig'ida bo'lsin", 'Score must be between 0 and the maximum', 'Балл должен быть от 0 до максимума'), 'error'); return; }
+                const all = grAll(); all.push({ id: String(Date.now()), sid: s.id, group: s.group, subject: sub.slice(0, 60), date: d || new Date().toISOString().slice(0, 10), value: v, max: m });
+                grSave(all); $('#spGs').value = ''; $('#spGv').value = ''; drawGrades(c, s); note(tr('Baho saqlandi', 'Grade saved', 'Оценка сохранена'));
+            }
             function renderStudentPage(root, c) {
                 const s = c.studs.find(x => String(x.id) === String(openSid)); if (!s) { openSid = null; return renderMyStudents(); }
                 const g = c.groups.find(x => x.name === s.group), L = stL(), a = atStu(c, s.group, s.id), h = hwStu(c, s);
@@ -17961,6 +18312,8 @@
                     '<div class="sc-card"><h3>' + E(tr('Izohlar', 'Notes', 'Заметки')) + '</h3><div class="sp-nts" id="spNotes"></div>' +
                     '<div class="sp-comp"><textarea id="spTa" maxlength="1000" placeholder="' + E(tr('Izoh yozish...', 'Write a note...', 'Написать заметку...')) + '">' + E(spDraft) + '</textarea><button type="button" class="sp-send" data-sp="send" aria-label="' + E(tr('Yuborish', 'Send', 'Отправить')) + '">' + SVGI('<path d="M21.5 3.5 2.8 10.9l6.3 2.6 2.6 6.3z"/>') + '</button></div></div>' +
                     '</section></div>';
+                const nts = root.querySelector('#spNotes'), ncard = nts && nts.closest('.sc-card');
+                if (ncard) { ncard.insertAdjacentHTML('beforebegin', gradesCardHTML()); drawGrades(c, s); }
                 drawNotes(c, s);
                 root.onclick = e => {
                     const b = e.target.closest('[data-sp]'); if (!b) return;
@@ -17968,6 +18321,8 @@
                     if (k === 'back') return closeStudentPage();
                     if (k === 'copy') return myCopy(s.phone);
                     if (k === 'send') return spSend(cc, s);
+                    if (k === 'gadd') return gradeAdd(cc, s);
+                    if (k === 'gdel') { if (!window.confirm(tr("Baho o'chirilsinmi?", 'Delete this grade?', 'Удалить оценку?'))) return; grSave(grAll().filter(g => String(g.id) !== String(b.dataset.id))); drawGrades(cc, s); return; }
                     if (k === 'del') {
                         if (!window.confirm(tr("Izoh o'chirilsinmi?", 'Delete this note?', 'Удалить заметку?'))) return;
                         const all = ntAll(), kk = ntKey(cc, s); all[kk] = (Array.isArray(all[kk]) ? all[kk] : []).filter(n => String(n.id) !== String(b.dataset.id)); ntSave(all); drawNotes(cc, s);
@@ -21023,6 +21378,184 @@
         html .pm-rc-modal .clients-modal-cancel:hover { background: rgba(255, 255, 255, .22) !important; }
         html .pm-rc-modal .clients-modal-save { background: linear-gradient(135deg, #5B4FE8, #3A2FB0) !important; color: #fff !important; box-shadow: 0 14px 24px -12px rgba(91, 79, 232, .9); }
         html .pm-rc-modal .clients-modal-save:hover { filter: brightness(1.08); }
+        /* =====================================================================
+           O'QUVCHI QO'SHIMCHALARI: Natijalarim, bildirishnomalar, kalendar, ko'rsatma, matn o'lchami
+           ===================================================================== */
+        html[data-auth="in"][data-role="student"] .content { zoom: var(--sx-zoom, 1); }
+        .sx-aa { font: 800 14px/1 var(--sx-display, 'Bricolage Grotesque', sans-serif); letter-spacing: -.02em; }
+        #sxBell { position: relative; }
+        .sx-bd { position: absolute; top: 5px; right: 5px; min-width: 18px; height: 18px; padding: 0 5px; box-sizing: border-box; border-radius: 99px; background: #E4573D; color: #fff; font: 800 11px/14px 'Plus Jakarta Sans', sans-serif; text-align: center; border: 2px solid var(--bg-panel); }
+        .sx-panel { position: fixed; top: calc(96px + env(safe-area-inset-top, 0px)); right: clamp(12px, 2vw, 28px); z-index: 99989; width: min(390px, calc(100vw - 24px)); max-height: min(72vh, 580px); display: flex; flex-direction: column; background: var(--bg-panel); color: var(--fg-panel); border-radius: 24px; box-shadow: 0 30px 60px -24px rgba(23, 26, 68, .55), 0 0 0 1px var(--panel-border); overflow: hidden; animation: sxPanelIn .3s cubic-bezier(.34, 1.3, .5, 1) both; font-family: var(--sx-body, sans-serif); }
+        @keyframes sxPanelIn { from { opacity: 0; transform: translateY(-10px) scale(.97); } to { opacity: 1; transform: none; } }
+        .sx-ph { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 16px 18px 10px; }
+        .sx-ph b { font: 700 17px/1.2 var(--sx-display, sans-serif); }
+        .sx-ph button { border: 0; background: none; color: var(--sx-indigo-d, #3A2FB0); font: 700 12.5px var(--sx-body, sans-serif); cursor: pointer; padding: 4px 0; }
+        html[data-theme="dark"] .sx-ph button { color: #CFCBFF; }
+        .sx-pl2 { overflow: auto; padding: 4px 10px 8px; display: flex; flex-direction: column; gap: 6px; }
+        .sx-ni { display: flex; gap: 12px; align-items: flex-start; padding: 10px; border-radius: 16px; }
+        .sx-ni.un { background: var(--field-bg); }
+        .sx-nic { flex: none; width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; background: var(--sx-lav); color: var(--sx-indigo); }
+        .sx-nic svg { width: 18px; height: 18px; }
+        .sx-nic.warn { background: rgba(214, 69, 99, .14); color: #C0262D; } .sx-nic.star { background: var(--sx-champ); color: #B8892B; } .sx-nic.pay { background: rgba(61, 220, 151, .16); color: #14694A; } .sx-nic.hw { background: var(--sx-sky); }
+        .sx-nt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .sx-nt b { font-size: 14px; font-weight: 700; line-height: 1.3; }
+        .sx-nt small { font-size: 12.5px; color: var(--fg-page-muted); }
+        .sx-ne { padding: 32px 16px; text-align: center; color: var(--fg-page-muted); font-size: 14px; }
+        .sx-pf { padding: 8px 14px 14px; display: flex; flex-direction: column; gap: 8px; }
+        .sx-pf:empty { display: none; }
+        .sx-pf button { height: 40px; border: 0; border-radius: 12px; background: var(--field-bg); color: var(--fg-page); font: 700 13.5px var(--sx-body, sans-serif); cursor: pointer; }
+        .sx-pf button:hover { background: var(--menu-selected-bg); }
+        @media (max-width: 768px) { .sx-panel { top: calc(84px + env(safe-area-inset-top, 0px)); right: 12px; left: 12px; width: auto; } }
+        .sx-ics-row { display: flex; justify-content: flex-end; }
+        .sx-acts { display: flex; flex-wrap: wrap; gap: 10px; }
+        .sx-tsub { display: block; font-style: normal; font-size: 12.5px; color: var(--fg-page-muted); margin-top: 2px; }
+        .sx-rgrid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+        .sx-rl, .sx-rr { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+        @container spw (max-width: 860px) { .sx-rgrid { grid-template-columns: minmax(0, 1fr); } }
+        .sx-bars { display: flex; align-items: flex-end; gap: 8px; height: 170px; padding-top: 6px; }
+        .sx-bars-s { height: 130px; }
+        .sx-bar { flex: 1; min-width: 0; height: 100%; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .sx-bar b { font-size: 12px; font-weight: 700; }
+        .sx-bar > span { flex: 1; width: 100%; max-width: 34px; display: flex; align-items: flex-end; border-radius: 10px; background: var(--field-bg); overflow: hidden; }
+        .sx-bar i { display: block; width: 100%; border-radius: 10px 10px 0 0; background: var(--sx-lav); transition: height .6s cubic-bezier(.34, 1.2, .5, 1); }
+        .sx-bar i.ok { background: linear-gradient(180deg, #6A5FF0, #4A3FD0); } .sx-bar i.warnc { background: #E0A93A; } .sx-bar i.late { background: #D6455F; }
+        .sx-bar small { font-size: 11px; color: var(--fg-page-muted); }
+        .sx-trsum { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
+        .sx-trsum div { display: flex; flex-direction: column; gap: 2px; }
+        .sx-trsum b { font: 700 22px/1.1 var(--sx-display, sans-serif); } .sx-trsum small { font-size: 12px; color: var(--fg-page-muted); }
+        .sx-subs { display: flex; flex-direction: column; gap: 12px; }
+        .sx-sub { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) auto; gap: 12px; align-items: center; font-size: 14px; font-weight: 600; }
+        .sx-sub b { font-variant-numeric: tabular-nums; }
+        .sx-emptyc { text-align: center; padding: 34px 22px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .sx-emptyc h3 { margin: 6px 0 0; font: 700 18px var(--sx-display, sans-serif); }
+        .sx-emptyc p { margin: 0; max-width: 380px; font-size: 14px; line-height: 1.6; color: var(--fg-page-muted); }
+        .sx-emptyic { width: 64px; height: 64px; border-radius: 20px; background: var(--sx-lav); color: var(--sx-indigo); display: grid; place-items: center; }
+        .sx-emptyic svg { width: 30px; height: 30px; }
+        .sx-goalchips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .sx-gc { height: 38px; padding: 0 14px; border: 0; border-radius: 12px; background: var(--field-bg); color: var(--fg-page); font: 700 14px var(--sx-body, sans-serif); cursor: pointer; transition: background .2s; }
+        .sx-gc:hover { background: var(--menu-selected-bg); } .sx-gc.on { background: var(--sx-fill); color: #fff; }
+        .sx-goalbar { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+        .sx-goal small, .sx-hint { font-size: 13px; color: var(--fg-page-muted); } .sx-hint { display: block; margin-top: 12px; }
+        .sx-badges { display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 10px; }
+        .sx-badge { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 14px; border-radius: 18px; background: var(--field-bg); opacity: .55; filter: grayscale(.6); }
+        .sx-badge.on { opacity: 1; filter: none; background: var(--sx-lav); }
+        .sx-bi { width: 38px; height: 38px; border-radius: 13px; background: var(--bg-panel); color: var(--fg-page-muted); display: grid; place-items: center; margin-bottom: 4px; }
+        .sx-badge.on .sx-bi { color: #B8892B; } .sx-bi svg { width: 20px; height: 20px; }
+        .sx-badge b { font-size: 13.5px; font-weight: 700; line-height: 1.25; } .sx-badge small { font-size: 12px; line-height: 1.35; color: var(--fg-page-muted); }
+        .sx-cert { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+        .sx-ci { flex: none; width: 46px; height: 46px; border-radius: 16px; background: var(--field-bg); color: var(--fg-page-muted); display: grid; place-items: center; }
+        .sx-cert.on .sx-ci { background: var(--sx-champ); color: #B8892B; } .sx-ci svg { width: 22px; height: 22px; }
+        .sx-cert > div { flex: 1; min-width: 180px; display: flex; flex-direction: column; gap: 2px; }
+        .sx-cert b { font: 700 16px var(--sx-display, sans-serif); } .sx-cert small { font-size: 13px; line-height: 1.45; color: var(--fg-page-muted); }
+        .sx-foot { display: flex; justify-content: center; padding: 8px 0 4px; }
+        .sx-tour { position: fixed; inset: 0; z-index: 100003; display: grid; place-items: center; padding: 16px; background: rgba(8, 10, 32, .62); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); animation: sxPanelIn .3s ease both; }
+        .sx-tbox { width: min(400px, 100%); background: var(--bg-panel); color: var(--fg-panel); border-radius: 28px; padding: 28px 26px 22px; text-align: center; box-shadow: 0 40px 80px -30px rgba(0, 0, 0, .6); font-family: var(--sx-body, sans-serif); }
+        .sx-tic { width: 64px; height: 64px; border-radius: 22px; background: linear-gradient(145deg, #5B4FE8, #3A2FB0); color: #fff; display: grid; place-items: center; margin: 0 auto 14px; }
+        .sx-tic svg { width: 30px; height: 30px; }
+        .sx-tbox h3 { margin: 0 0 8px; font: 700 22px/1.2 var(--sx-display, sans-serif); }
+        .sx-tbox p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--fg-page-muted); }
+        .sx-tdots { display: flex; justify-content: center; gap: 6px; margin: 18px 0; }
+        .sx-tdots i { width: 8px; height: 8px; border-radius: 99px; background: var(--field-bg); transition: width .25s, background .25s; }
+        .sx-tdots i.on { width: 22px; background: var(--sx-fill); }
+        .sx-tbtn { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .sx-tskip { border: 0; background: none; color: var(--fg-page-muted); font: 600 14px var(--sx-body, sans-serif); cursor: pointer; padding: 10px 6px; }
+        /* O'qituvchi: baho kiritish formasi */
+        .sp-gform { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+        .sp-gform input { height: 40px; border-radius: 12px; border: 1px solid var(--panel-border); background: var(--field-bg); color: var(--fg-panel); padding: 0 12px; font: inherit; min-width: 0; }
+        .sp-gform #spGs { flex: 1 1 200px; } .sp-gform #spGv { width: 84px; } .sp-gform #spGm { width: 78px; } .sp-gform #spGd { width: 148px; }
+        .sp-gform .acc-btn { height: 40px; }
+        .sp-gdel { border: 0; background: none; color: var(--fg-muted); font-size: 20px; line-height: 1; cursor: pointer; padding: 0 4px; }
+        .sp-gdel:hover { color: #C0262D; }
+        /* O'quvchi: chat tugmasi kerak emas (telefonda ham yashirin); "Aa" tugmasi telefonda panel ichida */
+        html[data-auth="in"][data-role="student"] #headerChatBtn { display: none !important; }
+        @media (max-width: 520px) { #sxZoomBtn { display: none; } }
+        /* Bosh sahifa: chap ustun o'ng ustun balandligiga to'ladi (bo'sh joy qolmaydi) */
+        .sx-left > .sp-card:last-child { flex: 1 1 auto; }
+        .sx-left > .sp-card:last-child .sp-empty { display: flex; align-items: center; justify-content: center; min-height: 80px; }
+        /* ---------- BOSH SAHIFA joylashuvi: kenglikka qarab ---------- */
+        .sx-top { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 24px; align-items: stretch; }
+        .sx-left, .sx-right { flex: none; }
+        @container spw (max-width: 940px) {
+            .sx-top { grid-template-columns: minmax(0, clamp(340px, 54%, 470px)) minmax(0, 1fr); gap: 16px; }
+            .sx-left, .sx-right { display: contents; }
+            .sx-next { grid-column: 1 / -1; grid-row: 1; }
+            .sx-right .sp-cardwrap { grid-column: 1; grid-row: 2; align-self: start; }
+            .sx-duo { grid-column: 1 / -1; grid-row: 3; }
+            .sx-right .sp-plan { grid-column: 2; grid-row: 2; }
+            .sx-left > .sp-card { grid-column: 1 / -1; }
+            .sx-left > .sp-card:nth-last-child(2) { grid-row: 4; }
+            .sx-left > .sp-card:last-child { grid-row: 5; }
+        }
+        @container spw (max-width: 640px) {
+            .sx-top { grid-template-columns: minmax(0, 1fr); }
+            .sx-next, .sx-right .sp-cardwrap, .sx-duo, .sx-right .sp-plan, .sx-left > .sp-card { grid-column: 1 / -1; grid-row: auto; }
+            .sx-next { order: 0; } .sx-right .sp-cardwrap { order: 1; } .sx-duo { order: 2; flex-direction: row; } .sx-right .sp-plan { order: 3; }
+            .sx-left > .sp-card:nth-last-child(2) { order: 4; } .sx-left > .sp-card:last-child { order: 5; }
+        }
+        @container spw (max-width: 940px) { .sx-right .sp-cardwrap { align-self: start; } }
+        /* Sarlavha: sarlavha matni bir qatorda; "Aa" tugmasi tor kenglikda panel ichida */
+        .sx-ptitle h2, .sx-ptitle span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        @media (max-width: 1000px) { #sxZoomBtn { display: none; } }
+        /* =====================================================================
+           TELEFON: ILOVA KO'RINISHI (faqat 768 px dan tor ekranda) — karusel, tez harakatlar, ilova sarlavhasi
+           ===================================================================== */
+        .sx-car, .sx-quick { display: none; }
+        .sx-hav { display: none; }
+        .sx-prefs { display: none; }
+        @media (max-width: 768px) {
+            /* ilova sarlavhasi: tekis, kartasiz; chap tomonda avatar, o'ngda qo'ng'iroqcha */
+            html[data-auth="in"][data-role="student"] .header { background: transparent; box-shadow: none; border-radius: 0; border: 0; padding: 6px 2px 8px; min-height: 0; -webkit-backdrop-filter: none; backdrop-filter: none; }
+            html[data-auth="in"][data-role="student"] .header .icon-btn { background: var(--bg-panel); box-shadow: 0 8px 20px -12px rgba(23, 26, 68, .4); }
+            html[data-auth="in"][data-role="student"] #headerLangWrap, html[data-auth="in"][data-role="student"] #headerThemeBtn, html[data-auth="in"][data-role="student"] #scheduleBtn, html[data-auth="in"][data-role="student"] #profileDropdown { display: none !important; }
+            html[data-auth="in"][data-role="student"] .sx-hav { display: none; flex: none; width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--sx-champ); color: var(--fg-page); font: 800 15px var(--sx-body); place-items: center; cursor: pointer; margin-right: 12px; }
+            html[data-auth="in"][data-role="student"] .header.sx-home .sx-hav { display: grid; }
+            html[data-auth="in"][data-role="student"] .header.sx-home .sx-ptitle { flex-direction: column-reverse; }
+            html[data-auth="in"][data-role="student"] .header.sx-home .sx-ptitle h2 { font-size: 20px; letter-spacing: -.02em; }
+            html[data-auth="in"][data-role="student"] .header.sx-home .sx-ptitle span { font-size: 12.5px; }
+            /* "Ko'proq" oynasidagi til/mavzu */
+            html[data-auth="in"][data-role="student"] .sx-prefs { display: flex; gap: 8px; margin-bottom: 8px; flex: 1 1 100%; width: 100%; box-sizing: border-box; }
+            html[data-auth="in"][data-role="student"] .sx-prefs button { flex: 1; height: 46px; padding: 0 14px; border: 0; border-radius: 16px; background: var(--field-bg); color: var(--fg-page); display: flex; align-items: center; justify-content: space-between; gap: 8px; font: 600 13.5px var(--sx-body); cursor: pointer; }
+            html[data-auth="in"][data-role="student"] .sx-prefs b { font-weight: 800; color: var(--sx-indigo-d, #3A2FB0); }
+            html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-prefs b { color: #CFCBFF; }
+            /* asosiy kartalar o'rniga 3D vertikal karusel (g'ildirak) */
+            html[data-auth="in"][data-role="student"] .sx-top .sx-next, html[data-auth="in"][data-role="student"] .sx-top .sp-cardwrap { display: none; }
+            html[data-auth="in"][data-role="student"] .sx-car { display: block; position: relative; height: 308px; margin: 0; padding-right: 22px; box-sizing: border-box; perspective: 1100px; perspective-origin: 50% 45%; touch-action: none; -webkit-user-select: none; user-select: none; outline: none; overflow: hidden; -webkit-tap-highlight-color: transparent; }
+            html[data-auth="in"][data-role="student"] .sx-car-stage { position: absolute; inset: 0 22px 0 0; transform-style: preserve-3d; }
+            html[data-auth="in"][data-role="student"] .sx-slide { position: absolute; left: 0; right: 0; top: 38px; height: 232px; backface-visibility: hidden; -webkit-backface-visibility: hidden; transform-origin: 50% 50%; will-change: transform, opacity; }
+            html[data-auth="in"][data-role="student"] .sx-slide > * { height: 100%; box-sizing: border-box; }
+            html[data-auth="in"][data-role="student"] .sx-slide .sx-next { display: flex; margin: 0; flex-wrap: nowrap; }
+            html[data-auth="in"][data-role="student"] .sx-slide .sp-cardwrap { display: block; padding: 0; margin: 0; height: 100%; }
+            html[data-auth="in"][data-role="student"] .sx-slide .sp-bcard { height: 100%; aspect-ratio: auto; max-width: none; transform: none; }
+            html[data-auth="in"][data-role="student"] .sx-sl { border-radius: 30px; padding: 20px 22px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; color: var(--fg-page); box-shadow: 0 20px 34px -22px rgba(74, 63, 208, .5); }
+            html[data-auth="in"][data-role="student"] .sx-sl-hw { background: var(--sx-champ); } html[data-auth="in"][data-role="student"] .sx-sl-res { background: var(--sx-sky); }
+            html[data-auth="in"][data-role="student"] .sx-sl .sx-pill { display: inline-flex; align-items: center; gap: 7px; height: 28px; padding: 0 12px; border-radius: 99px; background: var(--bg-panel); font-size: 12.5px; font-weight: 700; }
+            html[data-auth="in"][data-role="student"] .sx-sl .sx-pill i { width: 7px; height: 7px; border-radius: 50%; background: var(--sx-indigo); }
+            html[data-auth="in"][data-role="student"] .sx-sl-big { display: block; margin-top: 10px; font: 700 46px/1 var(--sx-display); letter-spacing: -.03em; }
+            html[data-auth="in"][data-role="student"] .sx-sl-big small { font: 600 14px var(--sx-body); letter-spacing: 0; color: var(--fg-page-muted); }
+            html[data-auth="in"][data-role="student"] .sx-sl-sub { display: flex; flex-direction: column; gap: 4px; font-size: 13.5px; }
+            html[data-auth="in"][data-role="student"] .sx-sl-sub b { font-size: 15px; font-weight: 700; } html[data-auth="in"][data-role="student"] .sx-sl-sub small { font-size: 13px; color: var(--fg-page-muted); }
+            html[data-auth="in"][data-role="student"] .sx-sl-cta { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 16px; border-radius: 99px; background: #171A44; color: #fff; font-size: 13.5px; font-weight: 600; }
+            html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-sl-cta { background: #EEF0FF; color: #171A44; }
+            html[data-auth="in"][data-role="student"] .sx-sl-cta svg { width: 16px; height: 16px; }
+            html[data-auth="in"][data-role="student"] .sx-car-dots { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); z-index: 300; display: flex; flex-direction: column; gap: 6px; }
+            html[data-auth="in"][data-role="student"] .sx-cd { display: block; width: 6px; height: 6px; padding: 0; border: 0; border-radius: 99px; background: rgba(23, 26, 68, .22); cursor: pointer; transition: height .3s var(--lg-spring), background .3s; }
+            html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-cd { background: rgba(238, 240, 255, .28); }
+            html[data-auth="in"][data-role="student"] .sx-cd.on { height: 26px; background: var(--sx-indigo); }
+            html[data-auth="in"][data-role="student"] .sx-car-hint { position: absolute; left: calc(50% - 11px); bottom: 2px; transform: translateX(-50%); z-index: 300; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 14px; border-radius: 99px; background: var(--bg-panel); box-shadow: 0 10px 22px -12px rgba(23, 26, 68, .5); font-size: 12px; font-weight: 700; color: var(--fg-page-muted); pointer-events: none; transition: opacity .4s; animation: sxHint 1.8s ease-in-out infinite; }
+            html[data-auth="in"][data-role="student"] .sx-car-hint svg { width: 15px; height: 15px; }
+            html[data-auth="in"][data-role="student"] .sx-car.seen .sx-car-hint { opacity: 0; animation: none; }
+            @keyframes sxHint { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-4px); } }
+            @media (prefers-reduced-motion: reduce) { html[data-auth="in"][data-role="student"] .sx-car-hint { animation: none; } }
+            /* tez harakatlar */
+            html[data-auth="in"][data-role="student"] .sx-quick { display: flex; gap: 10px; overflow-x: auto; padding: 10px 2px 6px; margin-bottom: 6px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+            html[data-auth="in"][data-role="student"] .sx-quick::-webkit-scrollbar { display: none; }
+            html[data-auth="in"][data-role="student"] .sx-qa { flex: none; width: 68px; padding: 0; border: 0; background: none; display: flex; flex-direction: column; align-items: center; gap: 7px; cursor: pointer; color: var(--fg-page); font: 600 12px var(--sx-body); }
+            html[data-auth="in"][data-role="student"] .sx-qi { width: 60px; height: 60px; border-radius: 20px; display: grid; place-items: center; background: var(--sx-lav); color: var(--sx-indigo-d, #3A2FB0); transition: transform .2s var(--lg-spring); }
+            html[data-auth="in"][data-role="student"] .sx-qi svg { width: 26px; height: 26px; }
+            html[data-auth="in"][data-role="student"] .sx-qa:nth-child(2) .sx-qi { background: var(--sx-champ); } html[data-auth="in"][data-role="student"] .sx-qa:nth-child(3) .sx-qi { background: var(--sx-sky); } html[data-auth="in"][data-role="student"] .sx-qa:nth-child(4) .sx-qi { background: rgba(214, 69, 99, .14); }
+            html[data-auth="in"][data-role="student"] .sx-qa:active .sx-qi { transform: scale(.92); }
+            html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-qi { color: #CFCBFF; }
+        }
         /* Planshet (769–940 px): header elementlari bir-birining ustiga tushmasin */
         @media (min-width: 769px) and (max-width: 940px) {
             html .header .header-logo .logo-text { display: none; }
@@ -21044,40 +21577,39 @@
             html[data-auth="in"][data-role="student"] .header { gap: 8px; }
             html[data-auth="in"][data-role="student"] .header-icons { margin-left: 0; gap: 6px; flex: none; }
             html[data-auth="in"][data-role="student"] .header .icon-btn { width: 40px; height: 40px; }
-            /* Pastki menyu (o'quvchi): toza, tanish tab-bar. Qisqa yozuvlar, katta ikonkalar,
-               tanlangan bo'lim ustida sirg'aluvchi chiziq, ikonka ichi yumshoq to'ldiriladi */
+            /* Pastki menyu (o'quvchi): SUZUVCHI DOCK. Sirg'aluvchi indigo tabletka, tanlangan band oq yozuvda */
             html[data-auth="in"][data-role="student"] .mobile-bottom-nav {
-                --lg-fg: #6A6E92; --lg-fg-active: #3A2FB0;
-                left: 0; right: 0; bottom: 0; width: auto; margin-inline: 0; overflow: visible;
-                height: calc(66px + env(safe-area-inset-bottom, 0px)); padding: 0 6px env(safe-area-inset-bottom, 0px);
-                border-radius: 22px 22px 0 0; background: var(--bg-panel);
-                -webkit-backdrop-filter: none; backdrop-filter: none;
-                box-shadow: 0 -1px 0 var(--panel-border), 0 -10px 28px -14px rgba(23, 26, 68, .22);
+                --lg-fg: #5E6290; --lg-fg-active: #FFFFFF;
+                left: 0; right: 0; margin-inline: auto; width: min(calc(100% - 24px), 480px);
+                bottom: calc(12px + env(safe-area-inset-bottom, 0px) * .6); height: 68px; padding: 6px; box-sizing: border-box; overflow: visible;
+                border-radius: 30px; background: rgba(255, 255, 255, .9);
+                -webkit-backdrop-filter: blur(18px) saturate(1.6); backdrop-filter: blur(18px) saturate(1.6);
+                box-shadow: 0 22px 40px -16px rgba(23, 26, 68, .45), 0 2px 10px rgba(74, 63, 208, .12), inset 0 0 0 1px rgba(255, 255, 255, .7);
             }
-            html[data-auth="in"][data-role="student"][data-theme="dark"] .mobile-bottom-nav { --lg-fg: rgba(238, 240, 255, .62); --lg-fg-active: #CFCBFF; box-shadow: 0 -1px 0 var(--panel-border), 0 -10px 28px -14px rgba(0, 0, 0, .7); }
+            html[data-auth="in"][data-role="student"][data-theme="dark"] .mobile-bottom-nav { --lg-fg: rgba(238, 240, 255, .62); background: rgba(30, 33, 74, .84); box-shadow: 0 22px 40px -16px rgba(0, 0, 0, .75), 0 2px 10px rgba(0, 0, 0, .3), inset 0 0 0 1px rgba(255, 255, 255, .08); }
             html[data-auth="in"][data-role="student"] .mobile-bottom-nav::after, html[data-auth="in"][data-role="student"] .mobile-bottom-nav .lg-ripples { display: none; }
-            /* sirg'aluvchi chiziq (tanlangan band ustida) */
             html[data-auth="in"][data-role="student"] .mobile-bottom-nav::before {
-                top: 0; bottom: auto; height: 4px; width: 30px; left: calc(var(--lg-x) + var(--lg-w) / 2 - 15px); border-radius: 0 0 6px 6px;
-                background: linear-gradient(90deg, #5B4FE8, #8A7CFF); box-shadow: 0 6px 12px -2px rgba(91, 79, 232, .55);
+                top: 6px; bottom: 6px; height: auto; left: var(--lg-x); width: var(--lg-w); border: 0; border-radius: 24px;
+                background: linear-gradient(135deg, #5B4FE8, #3A2FB0); box-shadow: 0 12px 22px -8px rgba(74, 63, 208, .7);
             }
-            html[data-auth="in"][data-role="student"] .mobile-bottom-nav.lg-press::before { transform: scaleX(1.25); background: linear-gradient(90deg, #5B4FE8, #8A7CFF); box-shadow: 0 6px 14px -2px rgba(91, 79, 232, .7); }
-            html[data-auth="in"][data-role="student"] .mobile-bottom-nav .nav-item { flex-direction: column; justify-content: center; align-items: center; gap: 4px; padding: 6px 1px 0; border-radius: 0; font-family: var(--sx-body); }
+            html[data-auth="in"][data-role="student"] .mobile-bottom-nav.lg-press::before { transform: scale(1.06); }
+            html[data-auth="in"][data-role="student"] .mobile-bottom-nav .nav-item { flex-direction: column; justify-content: center; align-items: center; gap: 3px; padding: 0 1px; border-radius: 24px; font-family: var(--sx-body); }
             html[data-auth="in"][data-role="student"] .mobile-bottom-nav .nav-item, html[data-auth="in"][data-role="student"] .mobile-bottom-nav .nav-item:hover, html[data-auth="in"][data-role="student"] .mobile-bottom-nav .nav-item.active, html[data-auth="in"][data-role="student"] .mobile-bottom-nav .nav-item.active:hover { background: none; box-shadow: none; transform: none; }
-            html[data-auth="in"][data-role="student"] .mobile-bottom-nav .nav-item svg { position: relative; top: 0; width: 26px; height: 26px; stroke-width: 1.8; fill: none; transition: top .35s var(--lg-spring), color .25s ease, transform .3s var(--lg-spring), stroke-width .2s ease; }
-            html[data-auth="in"][data-role="student"] .mobile-bottom-nav .nav-item.active svg { top: -1px; stroke-width: 2.1; fill: currentColor; fill-opacity: .16; }
+            html[data-auth="in"][data-role="student"] .mobile-bottom-nav .nav-item svg { position: relative; top: 0; width: 23px; height: 23px; stroke-width: 1.9; fill: none; transition: color .25s ease, transform .3s var(--lg-spring), stroke-width .2s ease; }
+            html[data-auth="in"][data-role="student"] .mobile-bottom-nav .nav-item.active svg { stroke-width: 2.2; }
             html[data-auth="in"][data-role="student"] .mobile-bottom-nav .nav-item.more-btn svg { fill: currentColor; }
             html[data-auth="in"][data-role="student"] .mobile-bottom-nav .nav-item:active svg { transform: scale(.86); }
-            html[data-auth="in"][data-role="student"] .mobile-bottom-nav .nav-item .label { font-size: 11px; line-height: 1.1; font-weight: 600; letter-spacing: 0; max-width: 100%; box-sizing: border-box; padding: 0 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+            html[data-auth="in"][data-role="student"] .mobile-bottom-nav .nav-item .label { font-size: 10.5px; line-height: 1.1; font-weight: 600; letter-spacing: 0; max-width: 100%; box-sizing: border-box; padding: 0 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
             html[data-auth="in"][data-role="student"] .mobile-bottom-nav .nav-item.active .label { font-weight: 800; animation: sxLab .35s cubic-bezier(.3, .7, .3, 1) both; }
             @keyframes sxLab { from { opacity: .4; transform: translateY(3px); } to { opacity: 1; transform: none; } }
-            /* yangi vazifalar belgisi */
             html[data-auth="in"][data-role="student"] .mobile-bottom-nav .nav-item[data-badge]::after {
-                content: attr(data-badge); position: absolute; top: 5px; left: calc(50% + 7px); min-width: 18px; height: 18px; padding: 0 5px; box-sizing: border-box; border-radius: 999px;
-                background: #E4573D; color: #fff; font-size: 11px; font-weight: 800; line-height: 14px; text-align: center; border: 2px solid var(--bg-panel);
+                content: attr(data-badge); position: absolute; top: 6px; left: calc(50% + 6px); min-width: 18px; height: 18px; padding: 0 5px; box-sizing: border-box; border-radius: 999px;
+                background: #E4573D; color: #fff; font-size: 11px; font-weight: 800; line-height: 14px; text-align: center; border: 2px solid #fff;
                 animation: sxPop .5s cubic-bezier(.3, 1.6, .5, 1) both;
             }
+            html[data-auth="in"][data-role="student"][data-theme="dark"] .mobile-bottom-nav .nav-item[data-badge]::after { border-color: #1E214A; }
             @keyframes sxPop { 0% { transform: scale(.3); } 100% { transform: scale(1); } }
+            html[data-auth="in"][data-role="student"] .content { padding-bottom: calc(112px + env(safe-area-inset-bottom, 0px)); }
         }
         /* ---------- "Ko'proq" oynasi (telefon): takrorlar yo'q, kartochkalar, pastda profil ---------- */
         @media (max-width: 768px) {
@@ -21203,6 +21735,16 @@
             if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
         })();
     </script>
+
+
+
+
+
+
+
+
+
+
 
 
 
