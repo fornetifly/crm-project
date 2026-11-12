@@ -15480,17 +15480,7 @@
             const hwHtml = hw.length ? '<div class="sp-list">' + hw.map(h => '<div class="sp-hwi ' + gcls(h.group) + (h.mine ? ' is-done' : '') + '" data-sp-go="sthomework" role="button" tabindex="0">' + ckIcon(h) + '<span class="sp-nm"><b>' + esc(h.title) + '</b><small>' + esc(h.group) + '</small></span>' + dueChip(h) + '</div>').join('') + '</div>' : empty(tr("Hozircha uy vazifasi yo'q — bo'sh vaqtingizdan foydalaning!", 'No homework yet — enjoy the free time!', 'Заданий пока нет — отдыхайте!'));
 
             /* ---- O'quvchi kartasi + oylik reja ---- */
-            const cardNo = String(window.studentCardNo ? window.studentCardNo(s) : '').replace(/(\d{4})(?=\d)/g, '$1 ');
-            const cardCenter = window.CRMBrandCenter ? window.CRMBrandCenter() : ((window.appSettings && window.appSettings.center && window.appSettings.center.name) || 'Ferdinant');
-            const cardLabel = (cardDebt ? tr('Qarz', 'Debt', 'Долг') : tr('Kartadagi qoldiq', 'Card balance', 'Остаток на карте')) + ' · ' + MONTHS()[now.getMonth()];
-            const cardFee = cs.plan.per;
-            const cardCt = '<svg class="sp-bc-ct" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8.5 8.5a5 5 0 0 1 0 7"/><path d="M12 6a8.5 8.5 0 0 1 0 12"/><path d="M15.5 3.5a12 12 0 0 1 0 17"/></svg>';
-            const cardChip = '<svg class="sp-bc-chip" viewBox="0 0 46 36"><defs><linearGradient id="spBcG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F8DB8B"/><stop offset=".55" stop-color="#D79B35"/><stop offset="1" stop-color="#F1C45F"/></linearGradient></defs><rect x=".5" y=".5" width="45" height="35" rx="7" fill="url(#spBcG)" stroke="rgba(110,70,10,.55)"/><path d="M0 12h14v12H0M32 12h14M32 24h14M14 0v36M32 0v36M14 18h18" stroke="rgba(110,70,10,.5)" fill="none"/></svg>';
-            const cardHtml = '<div class="sp-cardwrap"><div class="sp-bcard ' + (cardDebt ? 'debt' : cardOk ? 'ok' : '') + '" data-bs="' + cardKind + '" data-sp-go="stpayments" role="button" title="' + esc(tr("To'lovlar tarixi", 'Payment history', 'История платежей')) + '"><div class="sp-bc-in">' +
-                '<div class="sp-bc-row"><span class="sp-bc-title">' + esc(cardCenter) + ' Card</span>' + cardCt + '</div>' + cardChip +
-                '<div class="sp-bc-money"><div class="sp-bc-lb">' + esc(cardLabel) + '</div><div class="sp-bc-am">' + (cardDebt ? '−' : '') + money(cardLeft) + ' <small>' + esc(cur()) + '</small></div></div>' +
-                '<div class="sp-bc-no">' + esc(cardNo) + '</div>' +
-                '<div class="sp-bc-row sp-bc-foot"><b class="sp-bc-name">' + esc(s.name || '') + '</b>' + (cardFee ? '<div class="sp-bc-nx"><small>' + esc(tr('Bitta dars', 'Per class', 'За занятие')) + '</small><b>' + money(cardFee) + '</b></div>' : '') + '</div></div></div></div>';
+            const cardHtml = ferdinantCard(s, gs), cardHtml2 = ferdinantCard(s, gs);
             const pl = cs.plan, pct = pl.count ? Math.round(pl.passed / pl.count * 100) : 0, low = pl.next && cs.left < pl.next.amount;
             const nxc = pl.next ? (pl.next.date === ymd(now) ? tr('Bugun', 'Today', 'Сегодня') : DAYS_FULL()[dayIdx(new Date(+pl.next.date.slice(0, 4), +pl.next.date.slice(5, 7) - 1, +pl.next.date.slice(8, 10)))]) + ', ' + pl.next.g.start : '';
             const planFacts = pl.count ? '<div class="sx-facts"><div><small>' + esc(tr("Oylik to'lov", 'Monthly fee', 'Оплата в месяц')) + '</small><b>' + money(pl.total) + ' ' + esc(cur()) + '</b></div><div><small>' + esc(tr('Bitta dars', 'Per class', 'За занятие')) + '</small><b>' + money(pl.per) + ' ' + esc(cur()) + '</b></div></div>' +
@@ -15541,7 +15531,7 @@
             const slideRes = '<div class="sx-sl sx-sl-res"><div><span class="sx-pill"><i></i>' + esc(tr('Natijalarim', 'My results', 'Мои результаты')) + '</span><b class="sx-sl-big">' + (avgR == null ? '\u2014' : avgR + '%') + '<small> ' + esc(tr("o'rtacha ball", 'average score', 'средний балл')) + '</small></b></div><div class="sx-sl-sub">' +
                 (goalR ? '<div class="sp-prog"><i style="width:' + Math.min(100, avgR == null ? 0 : Math.round(avgR / goalR * 100)) + '%"></i></div><small>' + esc(tr('Maqsad: ', 'Goal: ', 'Цель: ') + goalR + '%') + '</small>' : '<small>' + esc(tr('Maqsad belgilang va progressni kuzating', 'Set a goal and track your progress', 'Поставьте цель и следите за прогрессом')) + '</small>') + '</div>' +
                 '<span class="sx-sl-cta">' + esc(tr('Natijalarimga o\'tish', 'Open my results', 'Перейти к результатам')) + SVG('<path d="M9 6l6 6-6 6"/>') + '</span></div>';
-            const carSlides = [['stschedule', nextCard], [null, cardHtml], ['sthomework', slideHw], ['stresults', slideRes]];
+            const carSlides = [['stschedule', nextCard], [null, cardHtml2], ['sthomework', slideHw], ['stresults', slideRes]];
             const carHtml = '<div class="sx-car" tabindex="0" role="region" aria-roledescription="carousel" aria-label="' + esc(tr('Asosiy kartalar', 'Main cards', 'Основные карточки')) + '"><div class="sx-car-stage">' +
                 carSlides.map(x => '<div class="sx-slide"' + (x[0] ? ' data-sp-go="' + x[0] + '" role="button" tabindex="-1"' : '') + '>' + x[1] + '</div>').join('') + '</div>' +
                 '<div class="sx-car-dots">' + carSlides.map((x, i) => '<button type="button" class="sx-cd" data-sx-car="' + i + '" aria-label="' + (i + 1) + '"></button>').join('') + '</div>' +
@@ -15741,6 +15731,23 @@
                 '<div class="sx-k"><small>' + esc(tr('Keyingi yechim', 'Next charge', 'Следующее списание')) + '</small><b>' + esc(nextBig) + '</b><em>' + esc(nextSub) + '</em></div></div>' +
                 '<div class="sx-lh"><b>' + esc(tr("So'nggi yechimlar", 'Recent charges', 'Последние списания')) + '</b>' + (done.length ? '<small>' + done.length + '</small>' : '') + '</div>' + rows + '</section>';
         }
+        /* Ferdinant Card: bitta quruvchi. Bosh sahifa, karusel va To'lovlarim sahifasi aynan shu kartani ishlatadi.
+           Chip gradienti har nusxada alohida id oladi (takroriy id bo'lsa yashirin nusxadagi gradient olinib, chip bo'yoqsiz qolardi). */
+        let sxCardUid = 0;
+        function ferdinantCard(s, gs, opts) {
+            opts = opts || {};
+            const now = new Date(), cs = cardState(s, gs), cardLeft = cs.left, cardDebt = cardLeft < 0, cardOk = cardLeft > 0, cardKind = sxBalKind(s.balance || 0, cs), gid = 'spBcG' + (++sxCardUid);
+            const cardNo = String(window.studentCardNo ? window.studentCardNo(s) : '').replace(/(\d{4})(?=\d)/g, '$1 ');
+            const cardCenter = window.CRMBrandCenter ? window.CRMBrandCenter() : ((window.appSettings && window.appSettings.center && window.appSettings.center.name) || 'Ferdinant');
+            const cardLabel = (cardDebt ? tr('Qarz', 'Debt', 'Долг') : tr('Kartadagi qoldiq', 'Card balance', 'Остаток на карте')) + ' \u00b7 ' + MONTHS()[now.getMonth()], cardFee = cs.plan.per;
+            const cardCt = '<svg class="sp-bc-ct" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8.5 8.5a5 5 0 0 1 0 7"/><path d="M12 6a8.5 8.5 0 0 1 0 12"/><path d="M15.5 3.5a12 12 0 0 1 0 17"/></svg>';
+            const cardChip = '<svg class="sp-bc-chip" viewBox="0 0 46 36"><defs><linearGradient id="' + gid + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F8DB8B"/><stop offset=".55" stop-color="#D79B35"/><stop offset="1" stop-color="#F1C45F"/></linearGradient></defs><rect x=".5" y=".5" width="45" height="35" rx="7" fill="url(#' + gid + ')" stroke="rgba(110,70,10,.55)"/><path d="M0 12h14v12H0M32 12h14M32 24h14M14 0v36M32 0v36M14 18h18" stroke="rgba(110,70,10,.5)" fill="none"/></svg>';
+            return '<div class="sp-cardwrap"><div class="sp-bcard ' + (cardDebt ? 'debt' : cardOk ? 'ok' : '') + '" data-bs="' + cardKind + '"' + (opts.go === false ? '' : ' data-sp-go="stpayments" role="button" title="' + esc(tr("To'lovlar tarixi", 'Payment history', 'История платежей')) + '"') + '><div class="sp-bc-in">' +
+                '<div class="sp-bc-row"><span class="sp-bc-title">' + esc(cardCenter) + ' Card</span>' + cardCt + '</div>' + cardChip +
+                '<div class="sp-bc-money"><div class="sp-bc-lb">' + esc(cardLabel) + '</div><div class="sp-bc-am">' + (cardDebt ? '\u2212' : '') + money(cardLeft) + ' <small>' + esc(cur()) + '</small></div></div>' +
+                '<div class="sp-bc-no">' + esc(cardNo) + '</div>' +
+                '<div class="sp-bc-row sp-bc-foot"><b class="sp-bc-name">' + esc(s.name || '') + '</b>' + (cardFee ? '<div class="sp-bc-nx"><small>' + esc(tr('Bitta dars', 'Per class', 'За занятие')) + '</small><b>' + money(cardFee) + '</b></div>' : '') + '</div></div></div></div>';
+        }
         /* Karta holati (bosh sahifadagi karta va To'lovlarim kartasi uchun bitta): debt — qarz bor, low — keyingi dars uchun mablag' yetmaydi, ok — yetarli */
         function sxBalKind(bal, cs) {
             const left = cs && typeof cs.left === 'number' ? cs.left : 0, nx = cs && cs.plan && cs.plan.next;
@@ -15759,6 +15766,7 @@
                 '<span class="sx-bal-k">' + esc(debt ? tr('Qarzdorlik', 'Outstanding balance', 'Задолженность') : bal > 0 ? tr("Ortiqcha to'lov", 'Credit balance', 'Переплата') : tr("Qarz yo'q", 'No debt', 'Долга нет')) + '</span>' +
                 '<b>' + money(Math.abs(bal)) + ' <small>' + esc(cur()) + '</small></b></div>' +
                 '<div class="sx-bal-r"><div><small>' + esc(tr("Shu oy to'langan", 'Paid this month', 'Оплачено в этом месяце')) + '</small><b>' + money(paidMonth) + ' ' + esc(cur()) + '</b></div><div><small>' + esc(tr("Jami to'langan", 'Total paid', 'Всего оплачено')) + '</small><b>' + money(paidAll) + ' ' + esc(cur()) + '</b></div></div></section>';
+            const heroCard = '<div class="sx-pcard">' + ferdinantCard(s, gs, { go: false }) + '<div class="sx-pst"><div><small>' + esc(debt ? tr('Qarzdorlik', 'Outstanding', 'Задолженность') : bal > 0 ? tr("Ortiqcha to'lov", 'Credit', 'Переплата') : tr("Qarz yo'q", 'No debt', 'Долга нет')) + '</small><b class="' + (debt ? 'neg' : '') + '">' + money(Math.abs(bal)) + ' ' + esc(cur()) + '</b></div><div><small>' + esc(tr("Shu oy to'langan", 'Paid this month', 'Оплачено в этом месяце')) + '</small><b>' + money(paidMonth) + ' ' + esc(cur()) + '</b></div><div><small>' + esc(tr("Jami to'langan", 'Total paid', 'Всего оплачено')) + '</small><b>' + money(paidAll) + ' ' + esc(cur()) + '</b></div></div></div>';
             const list = pays.length ? '<div class="sx-paylist">' + pays.map((p, i) =>
                 '<div class="sx-pay' + (i >= 2 ? ' sx-pay-x' : '') + '" data-sp-rc="' + esc(p.id) + '" role="button" tabindex="0"><span class="sx-pay-ic" aria-hidden="true">' + SVG('<path d="M12 5v14M5 12h14"/>') + '</span>' +
                 '<div class="sx-pay-b"><b>' + esc(mName(p.forMonth)) + '</b><small>' + esc(p.group || '\u2014') + ' \u00b7 ' + esc(METHOD(p.method)) + '</small><small>' + esc(fmtF(p.date)) + ' \u00b7 ' + esc(RCN(p.id)) + '</small></div>' +
@@ -15767,7 +15775,7 @@
             const noteHtml = (kind === 'debt' ? '<div class="sp-note sx-note">' + SVG('<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/>') + '<span>' + esc(tr("To'lovni qabul qilish uchun markaz administratoriga murojaat qiling.", 'To make a payment, please contact the center administrator.', 'Для оплаты обратитесь к администратору центра.')) + '</span></div>' : kind === 'low' ? '<div class="sp-note sx-note low">' + SVG('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>') + '<span>' + esc(tr("Keyingi dars uchun kartada mablag' yetarli emas. Qarzdor bo'lmaslik uchun hisobni to'ldiring.", 'The card balance is not enough for the next class. Top up to avoid debt.', 'На карте недостаточно средств для следующего занятия. Пополните счёт, чтобы не уйти в долг.')) + '</span></div>' : '<div class="sp-note sx-note ok">' + SVG('<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>') + '<span>' + esc(tr("Hisobingizda mablag' yetarli. Darslarga bemalol kelishingiz mumkin.", 'Your balance is sufficient. You can attend classes as usual.', 'На счёте достаточно средств. Можно спокойно посещать занятия.')) + '</span></div>');
             const histHtml = '<div class="sp-card">' + head(tr("To'lovlar tarixi", 'Payment history', 'История платежей'), pays.length ? tr(pays.length + ' ta to\'lov', pays.length + ' payments', 'Платежей: ' + pays.length) : '') + list + (pays.length > 2 ? '<button type="button" class="sx-more" data-sx-more data-more="' + esc(tr('Hammasi', 'Show all', 'Показать все') + ' (' + pays.length + ')') + '" data-less="' + esc(tr("Yig'ish", 'Show less', 'Свернуть')) + '">' + esc(tr('Hammasi', 'Show all', 'Показать все') + ' (' + pays.length + ')') + '</button>' : '') + '</div>';
             return '<div class="sp-wrap sx-payments">' + pageHead(tr("To'lovlarim", 'My payments', 'Мои платежи')) +
-                '<div class="sx-pgrid"><div class="sx-pl">' + hero + noteHtml.replace('sx-note', 'sx-note sx-nm') + histHtml + '</div><div class="sx-pr">' + noteHtml.replace('sx-note', 'sx-note sx-nd') + sxLedgerHTML(s, gs) + '</div></div></div>';
+                '<div class="sx-pgrid"><div class="sx-pl">' + heroCard + noteHtml.replace('sx-note', 'sx-note sx-nm') + histHtml + '</div><div class="sx-pr">' + noteHtml.replace('sx-note', 'sx-note sx-nd') + sxLedgerHTML(s, gs) + '</div></div></div>';
         }
 
         /* ================= SOZLAMALAR ================= */
@@ -15929,24 +15937,25 @@
             if (kind === 'debt') items.push({ id: 'bal-debt-' + mk, ic: 'warn', pr: 6, t: tr('Hisobingizda qarzdorlik bor', 'You have an outstanding balance', 'У вас есть задолженность'), sub: tr("To'lovlarim bo'limiga qarang", 'See My payments', 'Смотрите «Мои платежи»') });
             if (kind === 'low') items.push({ id: 'bal-low-' + mk, ic: 'warn', pr: 5, t: tr("Kartada mablag' kam: keyingi dars uchun yetmaydi", 'Low card balance: not enough for the next class', 'Мало средств: на следующее занятие не хватит'), sub: tr("To'lovlarim bo'limiga qarang", 'See My payments', 'Смотрите «Мои платежи»') });
             gradesOf(s).filter(g => daysBetween(g.date, today) <= 7).forEach(g => items.push({ id: 'gr-' + g.date + '-' + (g.subject || '') + '-' + g.value, ic: 'star', pr: 2, t: tr('Yangi baho: ' + (g.subject || '') + ' \u2014 ' + g.value + '/' + (g.max || 100), 'New grade: ' + (g.subject || '') + ' \u2014 ' + g.value + '/' + (g.max || 100), 'Новая оценка: ' + (g.subject || '') + ' \u2014 ' + g.value + '/' + (g.max || 100)), sub: fmtF(g.date) }));
+            const GO = { cal: 'stschedule', hw: 'sthomework', pay: 'stpayments', warn: 'stpayments', star: 'stresults' }; items.forEach(i => { i.go = GO[i.ic]; });
             return items.sort((a, b) => b.pr - a.pr);
         }
         let sxInstall = null;
-        window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); sxInstall = e; });
+        window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); sxInstall = e; setTimeout(() => { try { sxHeader(); } catch (x) { } }, 0); });
         const sxApplyZoom = z => { document.documentElement.style.setProperty('--sx-zoom', z); };
-        try { sxApplyZoom(localStorage.getItem(SXZ) || '1'); } catch (e) { }
+        sxApplyZoom('1'); try { localStorage.removeItem(SXZ); } catch (e) { }   // matn o'lchami o'zgartirilmaydi: doim standart
         function sxHeader() {
             const hi = document.querySelector('.header-icons'), r = R(), stu = !!(r && r.is('student'));
             if (!stu) { ['sxBell', 'sxZoomBtn', 'sxPanel'].forEach(id => { const el = document.getElementById(id); if (el) el.remove(); }); return; }
             if (!hi) return;
             let anchor = document.getElementById('profileBtn'); while (anchor && anchor.parentElement !== hi) anchor = anchor.parentElement; if (!anchor) anchor = hi.lastElementChild;
-            if (!document.getElementById('sxZoomBtn')) { const b = document.createElement('button'); b.type = 'button'; b.className = 'icon-btn'; b.id = 'sxZoomBtn'; b.setAttribute('data-sx', 'zoom'); b.innerHTML = '<b class="sx-aa">Aa</b>'; hi.insertBefore(b, anchor); }
             if (!document.getElementById('sxBell')) { const b = document.createElement('button'); b.type = 'button'; b.className = 'icon-btn'; b.id = 'sxBell'; b.setAttribute('data-sx', 'bell'); b.innerHTML = SVG('<path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/>') + '<span class="sx-bd" hidden></span>'; hi.insertBefore(b, anchor); }
             const sb = document.querySelector('.sidebar-bottom');
             const dk = document.documentElement.getAttribute('data-theme') === 'dark', themeTxt = dk ? tr("Qorong'i", 'Dark', 'Тёмная') : tr("Yorug'", 'Light', 'Светлая');
-            const prefsHtml = '<div class="sx-prefs"><button type="button" data-sx="lang">' + SVG('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>') + '<span>' + esc(tr('Til', 'Language', 'Язык')) + '</span><b>' + esc(lang().toUpperCase()) + '</b></button><button type="button" data-sx="theme">' + SVG(dk ? '<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4"/>' : '<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>') + '<span>' + esc(tr('Mavzu', 'Theme', 'Тема')) + '</span><b>' + esc(themeTxt) + '</b></button></div>';
-            if (sb) { const old = sb.querySelector('.sx-prefs'); if (old) old.outerHTML = prefsHtml; else sb.insertAdjacentHTML('afterbegin', prefsHtml); }
-            document.getElementById('sxZoomBtn').setAttribute('aria-label', tr("Matn o'lchami", 'Text size', 'Размер текста')); document.getElementById('sxZoomBtn').setAttribute('title', tr("Matn o'lchami", 'Text size', 'Размер текста'));
+            const pbtn = (k, ic, label, val, cls) => '<button type="button" data-sx="' + k + '"' + (cls ? ' class="' + cls + '"' : '') + '>' + SVG(ic) + '<span>' + esc(label) + '</span>' + (val ? '<b>' + esc(val) + '</b>' : '') + '</button>';
+            const prefsHtml = sxInstall ? '<div class="sx-prefs">' + pbtn('install', '<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>', tr("Ilovani o'rnatish", 'Install app', 'Установить приложение'), '', 'wide') + '</div>' : '';
+            if (sb) { const old = sb.querySelector('.sx-prefs'); if (old) { if (prefsHtml) old.outerHTML = prefsHtml; else old.remove(); } else if (prefsHtml) sb.insertAdjacentHTML('afterbegin', prefsHtml); }
+            const zb = document.getElementById('sxZoomBtn'); if (zb) zb.remove();
             document.getElementById('sxBell').setAttribute('aria-label', tr('Bildirishnomalar', 'Notifications', 'Уведомления')); document.getElementById('sxBell').setAttribute('title', tr('Bildirishnomalar', 'Notifications', 'Уведомления'));
         }
         function sxBadge() {
@@ -15955,20 +15964,26 @@
             bd.hidden = !n; bd.textContent = n > 9 ? '9+' : n;
         }
         function sxMarkRead(s) { const read = Object.assign({}, sxGet(s).read || {}); sxNotifs(s, groupsOf(s)).forEach(i => { read[i.id] = 1; }); sxPut(s, { read: read }); }
-        function sxClosePanel() { const p = document.getElementById('sxPanel'); if (!p) return; const s = currentStudent(); if (s) sxMarkRead(s); p.remove(); sxBadge(); }
+        function sxClosePanel() { const p = document.getElementById('sxPanel'); if (!p) return; p.classList.add('leaving'); setTimeout(() => { if (p.classList.contains('leaving')) p.remove(); }, 160); sxBadge(); }
         function sxPanel() {
             const s = currentStudent(); if (!s) return;
-            const items = sxNotifs(s, groupsOf(s)), my = sxGet(s), read = my.read || {}, can = 'Notification' in window, bnOn = can && Notification.permission === 'granted' && my.bn;
-            let p = document.getElementById('sxPanel'); const fresh = !p; if (fresh) { p = document.createElement('div'); p.id = 'sxPanel'; p.className = 'sx-panel'; p.setAttribute('role', 'dialog'); }
-            p.innerHTML = '<div class="sx-ph"><b>' + esc(tr('Bildirishnomalar', 'Notifications', 'Уведомления')) + '</b><button type="button" data-sx="readall">' + esc(tr("Hammasini o'qilgan deb belgilash", 'Mark all as read', 'Отметить все прочитанными')) + '</button></div><div class="sx-pl2">' +
-                (items.length ? items.map(i => '<div class="sx-ni' + (read[i.id] ? '' : ' un') + '"><span class="sx-nic ' + i.ic + '">' + SVG(SX_IC[i.ic]) + '</span><span class="sx-nt"><b>' + esc(i.t) + '</b>' + (i.sub ? '<small>' + esc(i.sub) + '</small>' : '') + '</span></div>').join('') : '<div class="sx-ne">' + esc(tr("Hozircha yangi bildirishnoma yo'q", 'No new notifications', 'Новых уведомлений нет')) + '</div>') +
-                '</div><div class="sx-pf"><button type="button" data-sx="zoom">' + esc(tr("Matn o'lchami: ", 'Text size: ', 'Размер текста: ') + Math.round(parseFloat(localStorage.getItem(SXZ) || '1') * 100) + '%') + '</button>' + (can ? '<button type="button" data-sx="bn">' + esc(bnOn ? tr('Brauzer eslatmalari yoqilgan', 'Browser reminders on', 'Напоминания включены') : tr('Dars oldidan brauzer eslatmasini yoqish', 'Enable browser reminders before class', 'Включить напоминания перед занятием')) + '</button>' : '') + (sxInstall ? '<button type="button" data-sx="install">' + esc(tr("Ilovani o'rnatish", 'Install app', 'Установить приложение')) + '</button>' : '') + '</div>';
+            const items = sxNotifs(s, groupsOf(s)), my = sxGet(s), read = my.read || {};
+            const unread = items.filter(i => !read[i.id]).length;
+            let p = document.getElementById('sxPanel'); const fresh = !p || p.classList.contains('leaving'); if (fresh) { if (p) p.remove(); p = document.createElement('div'); p.id = 'sxPanel'; p.className = 'sx-panel enter'; p.setAttribute('role', 'dialog'); p.setAttribute('aria-label', tr('Bildirishnomalar', 'Notifications', 'Уведомления')); } else p.classList.remove('enter', 'clearing');
+            const TICK = '<path class="sx-tick" d="M5 12.5l4.5 4.5L19 7"/>', TICK2 = '<path d="M2.5 12.5l4.5 4.5L16.5 7"/><path d="M12.5 15.5l1.5 1.5L21.5 7"/>';
+            const status = unread ? '<span class="sx-pc">' + esc(tr(unread + ' ta yangi', unread + ' new', unread + ' нов.')) + '</span>' : '<span class="sx-pc ok">' + SVG(TICK) + esc(tr("Hammasi o'qilgan", 'All caught up', 'Всё прочитано')) + '</span>';
+            const btn = unread ? '<button type="button" class="sx-rall" data-sx="readall">' + SVG(TICK2) + '<span>' + esc(tr("O'qilgan deb belgilash", 'Mark all as read', 'Отметить прочитанным')) + '</span></button>' : '';
+            const rows = items.length ? items.map((i, k) => '<div class="sx-ni' + (read[i.id] ? '' : ' un') + '" style="--i:' + k + '"' + (i.go ? ' data-go="' + i.go + '" data-id="' + esc(i.id) + '" role="button" tabindex="0"' : '') + '><span class="sx-nic ' + i.ic + '">' + SVG(SX_IC[i.ic]) + '</span><span class="sx-nt"><b>' + esc(i.t) + '</b>' + (i.sub ? '<small>' + esc(i.sub) + '</small>' : '') + '</span></div>').join('')
+                : '<div class="sx-ne"><span class="sx-neic">' + SVG('<path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/>') + '</span><b>' + esc(tr("Hozircha yangi bildirishnoma yo'q", 'No new notifications', 'Новых уведомлений нет')) + '</b></div>';
+            const tool = (k, ic, label, val) => '<button type="button" data-sx="' + k + '">' + SVG(ic) + '<span>' + esc(label) + '</span>' + (val ? '<b>' + esc(val) + '</b>' : '') + '</button>';
+            const foot = sxInstall ? tool('install', '<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>', tr("Ilovani o'rnatish", 'Install app', 'Установить'), '') : '';
+            p.innerHTML = '<div class="sx-ph"><div class="sx-pt"><b>' + esc(tr('Bildirishnomalar', 'Notifications', 'Уведомления')) + '</b>' + status + '</div>' + btn + '</div><div class="sx-pl2">' + rows + '</div><div class="sx-pf">' + foot + '</div>';
             if (fresh) document.body.appendChild(p);
         }
         /* Dars oldidan brauzer eslatmasi (ilova ochiq turganda; 60 va 15 daqiqa oldin) */
         setInterval(() => {
             const r = R(); if (!r || !r.is('student') || !('Notification' in window) || Notification.permission !== 'granted') return;
-            const s = currentStudent(); if (!s || !sxGet(s).bn) return;
+            const s = currentStudent(); if (!s) return;
             const now = new Date(), nowM = now.getHours() * 60 + now.getMinutes(), today = ymd(now); let fired = {}; try { fired = JSON.parse(sessionStorage.getItem('sxFired') || '{}'); } catch (e) { }
             groupsOf(s).filter(g => g.status === 'active' && (g.days || []).indexOf(dayIdx(now)) !== -1).forEach(g => [60, 15].forEach(b => {
                 const key = today + '|' + g.id + '|' + b;
@@ -15985,7 +16000,7 @@
             if (!force && sxGet(s).tour) return;
             const steps = [
                 { ic: SX_IC.pay, t: tr('Ferdinant Card', 'Ferdinant Card', 'Ferdinant Card'), d: tr("Kartada shu oy to'langan summa, qoldiq va har bir dars narxi ko'rinadi. Karta rangi holatingizni bildiradi: ko'k, mablag' yetarli; sariq, kam; qizil, qarz.", 'The card shows what you paid this month, your balance and the price of each class. Its colour shows your status: blue, enough funds; amber, low; red, debt.', 'На карте видны оплата за месяц, остаток и цена занятия. Цвет показывает состояние: синий, достаточно; жёлтый, мало; красный, долг.') },
-                { ic: SX_IC.cal, t: tr('Jadval va eslatmalar', 'Schedule and reminders', 'Расписание и напоминания'), d: tr("Jadvalni kalendaringizga qo'shing. Qo'ng'iroqcha belgisida dars, vazifa va to'lov eslatmalarini ko'rasiz. \"Aa\" tugmasi matnni kattalashtiradi.", 'Add your schedule to your calendar. The bell shows class, homework and payment reminders. The "Aa" button enlarges the text.', 'Добавьте расписание в календарь. Колокольчик покажет напоминания о занятиях, заданиях и оплате. Кнопка «Aa» увеличивает текст.') },
+                { ic: SX_IC.cal, t: tr('Jadval va eslatmalar', 'Schedule and reminders', 'Расписание и напоминания'), d: tr("Jadvalni kalendaringizga qo'shing. Qo'ng'iroqcha belgisida dars, vazifa va to'lov eslatmalarini ko'rasiz. Har bir dars boshlanishidan 1 soat va 15 daqiqa oldin brauzer ham eslatadi.", 'Add your schedule to your calendar. The bell shows class, homework and payment reminders. You will also get a reminder 1 hour and 15 minutes before each class.', 'Добавьте расписание в календарь. Колокольчик покажет напоминания о занятиях, заданиях и оплате. Перед каждым занятием придёт напоминание за 1 час и за 15 минут.') },
                 { ic: SX_IC.star, t: tr('Natijalarim', 'My results', 'Мои результаты'), d: tr("Baholaringiz, maqsadingiz va yutuqlaringiz shu yerda. Ota-onangizga hisobotni bir tugma bilan yuborishingiz mumkin.", 'Your grades, goal and achievements are here. You can send a report to your parents with one tap.', 'Здесь ваши оценки, цель и достижения. Отчёт для родителей отправляется одной кнопкой.') }
             ];
             let i = 0; const ov = document.createElement('div'); ov.id = 'sxTour'; ov.className = 'sx-tour'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true');
@@ -16039,7 +16054,7 @@
         function sxCar(car) {
             if (car.__sx) return; car.__sx = 1;
             const stage = car.querySelector('.sx-car-stage'), slides = Array.prototype.slice.call(stage.children), N = slides.length, dots = car.querySelectorAll('.sx-cd');
-            const YS = 54, ZB = 115, AS = 38, PX = 120, reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+            const YS = 54, ZB = 115, AS = 38, PX = 78, reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
             let pos = sxCarPos, target = Math.round(pos), raf = 0, drag = null, dir = 1;
             const wrap = d => ((d + N / 2) % N + N) % N - N / 2;
             function layout() {
@@ -16066,43 +16081,168 @@
             function seen() { car.classList.add('seen'); try { localStorage.setItem('crm_sx_car', '1'); } catch (e) { } }
             try { if (localStorage.getItem('crm_sx_car')) car.classList.add('seen'); } catch (e) { }
             ['touchstart', 'touchmove'].forEach(ev => car.addEventListener(ev, e => { e.stopPropagation(); }, { passive: true }));
-            car.addEventListener('pointerdown', e => { if (e.button > 0) return; cancelAnimationFrame(raf); drag = { y: e.clientY, p: pos, ly: e.clientY, lt: performance.now(), v: 0, moved: false, id: e.pointerId }; });
+            car.addEventListener('pointerdown', e => { if (e.button > 0) return; cancelAnimationFrame(raf); drag = { x: e.clientX, y: e.clientY, p: pos, lc: 0, lt: performance.now(), v: 0, moved: false, id: e.pointerId }; });
             car.addEventListener('pointermove', e => {
-                if (!drag) return; const dy = e.clientY - drag.y;
-                if (!drag.moved) { if (Math.abs(dy) < 6) return; drag.moved = true; car.classList.add('drag'); seen(); try { car.setPointerCapture(drag.id); } catch (x) { } }
-                const now = performance.now(); drag.v = (e.clientY - drag.ly) / Math.max(1, now - drag.lt); drag.ly = e.clientY; drag.lt = now;
-                const np = drag.p - dy / PX; if (Math.abs(np - pos) > .002) dir = np > pos ? 1 : -1; pos = np; layout();
+                if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y, dom = Math.abs(dx) > Math.abs(dy) ? dx : dy;   // yuqoriga yoki chapga surish = keyingi karta
+                if (!drag.moved) { if (Math.abs(dom) < 5) return; drag.moved = true; car.classList.add('drag'); seen(); try { car.setPointerCapture(drag.id); } catch (x) { } }
+                const now = performance.now(); drag.v = (dom - drag.lc) / Math.max(1, now - drag.lt); drag.lc = dom; drag.lt = now;
+                const np = drag.p - dom / PX; if (Math.abs(np - pos) > .002) dir = np > pos ? 1 : -1; pos = np; layout();
             });
             const end = () => {
                 if (!drag) return; const d = drag; drag = null; car.classList.remove('drag');
                 if (!d.moved) return; car.__dragged = true; setTimeout(() => { car.__dragged = false; }, 60);
-                const base = Math.round(d.p), proj = pos - d.v * 240 / PX;
-                go(Math.max(base - 1, Math.min(base + 1, Math.round(proj))));
+                /* qaror: tez surish yoki ~10 px dan ortiq surish keyingi/oldingi kartaga o'tkazadi (yarmigacha tortish shart emas) */
+                const mv = pos - d.p, base = Math.round(d.p); let step = 0;
+                if (Math.abs(d.v) > .15) step = d.v < 0 ? 1 : -1; else if (Math.abs(mv) > .12) step = mv > 0 ? 1 : -1;
+                go(base + step);
             };
             car.addEventListener('pointerup', end); car.addEventListener('pointercancel', end); car.addEventListener('lostpointercapture', end);
             window.addEventListener('blur', end);
             car.addEventListener('click', e => {
                 if (car.__dragged) { e.stopPropagation(); e.preventDefault(); return; }
-                const b = e.target.closest && e.target.closest('[data-sx-car]'); if (b) { e.stopPropagation(); seen(); const r = Math.round(pos); go(r + wrap(+b.getAttribute('data-sx-car') - r)); }
+                const b = e.target.closest && e.target.closest('[data-sx-car]'); if (b) { e.stopPropagation(); seen(); const r = Math.round(pos); go(r + wrap(+b.getAttribute('data-sx-car') - r)); return; }
+                /* tepa/past chetidagi ko'rinib turgan kartalarga bosish: oldingi/keyingi karta */
+                const rc = car.getBoundingClientRect(), y = e.clientY - rc.top;
+                if (y < 24 || y > rc.height - 24) { e.stopPropagation(); e.preventDefault(); seen(); go(Math.round(target) + (y < 24 ? -1 : 1)); }
             }, true);
             car.addEventListener('keydown', e => { if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); seen(); go(Math.round(target) + 1); } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); seen(); go(Math.round(target) - 1); } });
             layout();
         }
 
+        /* ================= PROFIL (o'quvchi): yangi ko'rinish =================
+           Asl maydonlar, tekshiruv, saqlash, rasm va til menyusi (profileHub / profilePlus) o'zgarishsiz ishlaydi.
+           Bu qatlam faqat ularni yangi maketga joylaydi: kompyuterda banner + bo'limlar + katta forma,
+           telefonda kartochka + ro'yxat qatorlari + pastdan chiqadigan tahrirlash oynasi. */
+        const sxPf = { tab: 'personal', open: false, dirty: false };
+        const PF_IC = {
+            user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/>', gender: '<circle cx="10" cy="14" r="5"/><path d="M14 10l6-6M15 4h5v5"/>', cake: '<path d="M4 20h16v-6H4zM4 14c3 0 3-2 6-2s3 2 6 2 3-2 4-2M12 6v3M12 3v1"/>',
+            phone: '<path d="M6.5 3h3l1.5 4-2 1.5a11 11 0 0 0 5.5 5.5L16 12l4 1.5v3a2 2 0 0 1-2 2A15 15 0 0 1 4.5 5 2 2 0 0 1 6.5 3z"/>', globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+            pin: '<path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/>', insta: '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".8" fill="currentColor"/>',
+            tg: '<path d="M21 4 3 11l6 2 2 6 3-4 5 4z"/><path d="M9 13l8-6"/>', cam: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', pen: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
+            logout: '<path d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9"/>', check: '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>', chev: '<path d="M9 6l6 6-6 6"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>', upl: '<path d="M12 16V5M7 9l5-5 5 5M5 20h14"/>', trash: '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>'
+        };
+        const pfEl = id => document.getElementById(id), pfVal = id => { const e = pfEl(id); return e ? String(e.value || '') : ''; };
+        const pfSel = id => { const e = pfEl(id); if (!e || !e.value) return ''; const o = e.selectedOptions && e.selectedOptions[0]; return o ? String(o.textContent || '').trim() : ''; };
+        const pfHandle = (v, kind) => { v = String(v || '').trim(); if (!v) return ''; const m = (kind === 'ig' ? /instagram\.com\/([A-Za-z0-9._]+)/i : /(?:t|telegram)\.me\/([A-Za-z0-9_]+)/i).exec(v); return '@' + (m ? m[1] : v.replace(/^@/, '')); };
+        const pfGender = () => { const g = document.querySelector('.profile-form-card input[name="profileGender"]:checked'); return g ? (g.value === 'male' ? tr('Erkak', 'Male', 'Мужской') : tr('Ayol', 'Female', 'Женский')) : ''; };
+        const pfLangName = () => ({ uz: "O'zbekcha", en: 'English', ru: 'Русский' })[lang()] || "O'zbekcha";
+        const pfGroups = () => [
+            { k: 'personal', ic: 'user', bg: 'lav', t: tr("Shaxsiy ma'lumotlar", 'Personal info', 'Личные данные'), s: tr("Ism, jins, tug'ilgan sana", 'Name, gender, birth date', 'Имя, пол, дата рождения'), p: tr("Bu ma'lumotlar o'qituvchi va markaz xodimlariga ko'rinadi", 'Visible to your teacher and center staff', 'Видно преподавателю и сотрудникам центра'), m: tr('SHAXSIY', 'PERSONAL', 'ЛИЧНОЕ'), ids: ['profileNameInput', 'profileGenderToggle', 'profileBirthInput'] },
+            { k: 'contact', ic: 'phone', bg: 'sky', t: tr('Aloqa', 'Contact', 'Контакты'), s: tr('Telefon va til', 'Phone and language', 'Телефон и язык'), p: tr("Siz bilan bog'lanish uchun", 'So we can reach you', 'Чтобы связаться с вами'), m: tr('ALOQA', 'CONTACT', 'КОНТАКТЫ'), ids: ['profilePhoneInput', 'profileLangDisplay'] },
+            { k: 'address', ic: 'pin', bg: 'champ', t: tr('Manzil', 'Address', 'Адрес'), s: tr('Viloyat va tuman', 'Region and district', 'Область и район'), p: tr('Yashash joyingiz', 'Where you live', 'Где вы живёте'), m: tr('MANZIL', 'ADDRESS', 'АДРЕС'), ids: ['profileRegionSelect', 'profileDistrictSelect'] },
+            { k: 'social', ic: 'insta', bg: 'rose', t: tr('Ijtimoiy tarmoqlar', 'Social networks', 'Соцсети'), s: tr('Instagram, Telegram', 'Instagram, Telegram', 'Instagram, Telegram'), p: tr('Ixtiyoriy', 'Optional', 'По желанию'), m: tr('IJTIMOIY TARMOQLAR', 'SOCIAL NETWORKS', 'СОЦСЕТИ'), ids: ['profileInstaInput', 'profileTgInput'] }
+        ];
+        function pfMissing() {   // har bir bo'lim uchun bo'sh maydonlar soni va umumiy ro'yxat
+            const name = pfVal('profileNameInput').trim().length > 1, birth = !!pfVal('profileBirthInput').trim(), gender = !!pfGender(), phone = pfVal('profilePhoneInput').replace(/\D/g, '').length >= 12;
+            const reg = !!pfVal('profileRegionSelect'), dis = !!pfVal('profileDistrictSelect'), ig = !!pfVal('profileInstaInput').trim(), tg = !!pfVal('profileTgInput').trim();
+            return { personal: [name, birth, gender].filter(x => !x).length, contact: phone ? 0 : 1, address: [reg, dis].filter(x => !x).length, social: [ig, tg].filter(x => !x).length,
+                list: [{ t: tr("Ism va tug'ilgan sana", 'Name and birth date', 'Имя и дата рождения'), ok: name && birth, g: 'personal' }, { t: tr('Telefon raqam', 'Phone number', 'Телефон'), ok: phone, g: 'contact' }, { t: tr('Viloyat va tuman', 'Region and district', 'Область и район'), ok: reg && dis, g: 'address' }, { t: 'Instagram', ok: ig, g: 'social' }, { t: 'Telegram', ok: tg, g: 'social' }] };
+        }
+        function pfAvatarHtml(sz) {
+            const img = pfEl('profileAvatarImg'), src = img ? img.getAttribute('src') || '' : '', nm = pfVal('profileNameInput').trim() || (currentStudent() || {}).name || '';
+            const ini = nm.split(/\s+/).slice(0, 2).map(w => w.charAt(0).toUpperCase()).join('') || '\u2022', has = src.indexOf('data:') === 0 && !window.__pfAvatarCleared && pfEl('profileAvatarImg') && !/AAAAEACAYAAABccqhm/.test(src.slice(0, 80));
+            return '<span class="sx-pf-av" style="--sz:' + sz + 'px"><span class="sx-pf-avi">' + (has ? '<img src="' + esc(src) + '" alt="">' : esc(ini)) + '</span><button type="button" class="sx-pf-avc" data-sxpf="cam" aria-label="' + esc(tr('Rasmni almashtirish', 'Change photo', 'Сменить фото')) + '">' + SVG(PF_IC.cam) + '</button></span>';
+        }
+        function pfSaved(s) { const t = sxGet(s).pfSaved; if (!t) return ''; const d = new Date(t), now = new Date(), hm = p2(d.getHours()) + ':' + p2(d.getMinutes()); return (ymd(d) === ymd(now) ? tr('bugun', 'today', 'сегодня') : fmtF(ymd(d))) + ', ' + hm; }
+        /* bosib turganda qayta chizmaymiz (aks holda bosish yo'qoladi); mazmun o'zgarmasa DOM ham tegmaydi */
+        let pfHold = 0, pfPending = false;
+        const pfRelease = () => { if (!pfHold) return; pfHold = 0; if (pfPending) { pfPending = false; setTimeout(sxPfPaint, 0); } };
+        document.addEventListener('pointerdown', e => { if (e.target.closest && e.target.closest('[data-sxpf]')) pfHold = 1; }, true);
+        document.addEventListener('pointerup', () => setTimeout(pfRelease, 0), true); document.addEventListener('pointercancel', pfRelease, true);
+        const pfSetter = el => { if (el && !el.hasOwnProperty('__html')) Object.defineProperty(el, '__html', { set(v) { if (el.__h !== v) { el.__h = v; el.innerHTML = v; } } }); };
+        function sxPfEnsure() {
+            const view = document.querySelector('.content-view[data-view="profile"]'), card = view && view.querySelector('.profile-form-card'); if (!view || !card) return null;
+            if (!view.querySelector('#sxPfHero')) {
+                view.insertAdjacentHTML('afterbegin', '<div id="sxPfHero"></div><div id="sxPfSide"></div><div id="sxPfM"></div>');
+                document.body.insertAdjacentHTML('beforeend', '<div id="sxPfBd" data-sxpf="close"></div>');
+                card.insertAdjacentHTML('afterbegin', '<div class="sx-pf-head"></div><div class="sx-pf-avrow"></div>'); card.insertAdjacentHTML('beforeend', '<div class="sx-pf-foot"></div>');
+                /* maydonlarni bo'limlarga ajratish (asl elementlar joyida qoladi) */
+                pfGroups().forEach(g => g.ids.forEach(id => { const e = pfEl(id), h = e && (e.closest('.profile-form-field') || e.parentNode); if (h) h.setAttribute('data-sx-sec', g.k); }));
+                /* o'zgarishlar kuzatuvi */
+                const mark = e => { if (e && e.isTrusted === false) return; sxPf.dirty = true; sxPfPaint(); };
+                card.addEventListener('input', mark); card.addEventListener('change', mark);
+                const ai = pfEl('profileAvatarImg'); if (ai) new MutationObserver(() => sxPfPaint()).observe(ai, { attributes: true, attributeFilter: ['src'] });
+                let wasAct = view.classList.contains('active-view');   // faqat sahifa qayta ochilganda (nofaol → faol) tozalanadi
+                new MutationObserver(() => { const a = view.classList.contains('active-view'); if (a && !wasAct) { sxPf.dirty = false; sxPf.open = false; sxPfPaint(); } wasAct = a; }).observe(view, { attributes: true, attributeFilter: ['class'] });
+            }
+            ['sxPfHero', 'sxPfSide', 'sxPfM'].forEach(i => pfSetter(pfEl(i))); card.querySelectorAll('.sx-pf-head, .sx-pf-avrow, .sx-pf-foot').forEach(pfSetter);
+            return { view, card };
+        }
+        function sxPfPaint() {
+            if (pfHold) { pfPending = true; return; }
+            const o = sxPfEnsure(); if (!o) return; const s = currentStudent(); if (!s) return; const { view, card } = o, gs = groupsOf(s), G = pfGroups(), ms = pfMissing();
+            const stt = sxStats(s, gs), avg = sxAvg(s), rate = stt.tot ? Math.round((stt.p + stt.l) / stt.tot * 100) : null, nm = pfVal('profileNameInput').trim() || s.name || '';
+            const stat = (lb, big, sub) => '<div class="sx-pf-st"><small>' + esc(lb) + '</small><b>' + esc(big) + '</b><small>' + esc(sub) + '</small></div>';
+            const stats = stat(tr('Davomat', 'Attendance', 'Посещаемость'), rate == null ? '\u2014' : rate + '%', tr('bu oy', 'this month', 'в этом месяце')) + stat(tr("O'rtacha ball", 'Average', 'Средний балл'), avg == null ? '\u2014' : avg + '%', avg == null ? tr('hali yo\'q', 'none yet', 'пока нет') : gLet(avg) + ' ' + tr('daraja', 'grade', 'уровень')) + stat(tr('Vazifa', 'Homework', 'Задания'), stt.hwDone + ' / ' + stt.hw, tr('topshirilgan', 'done', 'сдано'));
+            const sub = (gs.map(g => g.name).join(', ') || tr('Guruhsiz', 'No group', 'Без группы')) + ' \u00b7 ' + tr("O'quvchi", 'Student', 'Ученик'), chips = '<span class="sx-pf-chip ok">' + SVG(PF_IC.check) + esc(STATUS(s.status)) + '</span><span class="sx-pf-chip">' + esc('ID ' + String(s.id).padStart(6, '0')) + '</span>';
+            /* ---- kompyuter: banner ---- */
+            pfEl('sxPfHero').__html = '<div class="sx-pfh"><span class="sx-pfh-a">' + pfAvatarHtml(100) + '</span><div class="sx-pfh-t"><b>' + esc(nm) + '</b><span>' + esc(sub) + '</span><div class="sx-pfh-c">' + chips + '</div></div><div class="sx-pfh-s">' + stats + '</div></div>';
+            /* ---- kompyuter: bo'limlar + halqa ---- */
+            const tabs = G.map(g => { const miss = ms[g.k]; return '<button type="button" class="sx-pf-tab' + (sxPf.tab === g.k ? ' on' : '') + '" data-sxpf="tab" data-v="' + g.k + '"><span class="sx-pf-ti ' + g.bg + '">' + SVG(PF_IC[g.ic]) + '</span><span class="sx-pf-tt"><b>' + esc(g.t) + '</b><small>' + esc(g.s) + '</small></span>' + (miss ? '<i class="sx-pf-badge">' + miss + '</i>' : '<i class="sx-pf-ok">' + SVG('<path d="M5 12.5l4.5 4.5L19 7"/>') + '</i>') + '</button>'; }).join('');
+            const done = ms.list.filter(x => x.ok).length, pct = Math.round(done / ms.list.length * 100), left = ms.list.length - done;
+            const ring = '<div class="sx-pf-comp"><div class="sx-pf-cr"><span class="sx-pf-ring" style="--p:' + pct + '"><b>' + pct + '%</b></span><span><b>' + esc(tr("Profil to'liqligi", 'Profile completeness', 'Заполненность профиля')) + '</b><small>' + esc(left ? tr('Yana ' + left + ' ta maydon qoldi', left + ' fields left', 'Осталось полей: ' + left) : tr("Hammasi to'ldirilgan", 'Everything is filled in', 'Всё заполнено')) + '</small></span></div><div class="sx-pf-cl">' +
+                ms.list.map(x => '<div class="' + (x.ok ? 'ok' : '') + '"><i>' + (x.ok ? SVG('<path d="M5 12.5l4.5 4.5L19 7"/>') : '') + '</i><span>' + esc(x.t) + '</span>' + (x.ok ? '' : '<button type="button" data-sxpf="tab" data-v="' + x.g + '">' + esc(tr("Qo'shish", 'Add', 'Добавить')) + '</button>') + '</div>').join('') + '</div></div>';
+            pfEl('sxPfSide').__html = '<div class="sx-pf-tabs">' + tabs + '</div>' + ring;
+            /* ---- telefon: kartochka + ro'yxat ---- */
+            const rowsOf = {
+                personal: [['user', tr('Ism', 'Name', 'Имя'), nm], ['gender', tr('Jins', 'Gender', 'Пол'), pfGender()], ['cake', tr("Tug'ilgan kun", 'Birth date', 'Дата рождения'), pfVal('profileBirthInput')]],
+                contact: [['phone', tr('Telefon', 'Phone', 'Телефон'), pfVal('profilePhoneInput')], ['globe', tr('Til', 'Language', 'Язык'), pfLangName()]],
+                address: [['pin', tr('Viloyat', 'Region', 'Область'), pfSel('profileRegionSelect')], ['pin', tr('Tuman', 'District', 'Район'), pfSel('profileDistrictSelect')]],
+                social: [['insta', 'Instagram', pfHandle(pfVal('profileInstaInput'), 'ig')], ['tg', 'Telegram', pfHandle(pfVal('profileTgInput'), 'tg')]]
+            };
+            const grp = G.map(g => '<div class="sx-pm-g"><div class="sx-pm-gt">' + esc(g.m) + '</div><div class="sx-pm-gl">' + rowsOf[g.k].map(r => '<button type="button" class="sx-pm-r" data-sxpf="edit" data-v="' + g.k + '"><span class="sx-pm-ri ' + g.bg + '">' + SVG(PF_IC[r[0]]) + '</span><b>' + esc(r[1]) + '</b><span class="sx-pm-rv' + (r[2] ? '' : ' empty') + '">' + esc(r[2] || tr("Qo'shing", 'Add', 'Добавить')) + '</span><span class="sx-pm-rc">' + SVG(PF_IC.chev) + '</span></button>').join('') + '</div></div>').join('');
+            pfEl('sxPfM').__html = '<div class="sx-pm-top"><button type="button" class="sx-pm-edit" data-sxpf="edit" data-v="personal">' + SVG(PF_IC.pen) + esc(tr('Tahrirlash', 'Edit', 'Изменить')) + '</button></div>' +
+                '<div class="sx-pm-hero"><div class="sx-pm-hc">' + pfAvatarHtml(92) + '<div><b>' + esc(nm) + '</b><span>' + esc(sub) + '</span></div><div class="sx-pm-chips">' + chips + '</div></div><div class="sx-pm-stats">' + stats + '</div></div>' + grp +
+                '<div class="sx-pm-g"><div class="sx-pm-gl"><button type="button" class="sx-pm-r out" data-sxpf="logout"><span class="sx-pm-ri rose">' + SVG(PF_IC.logout) + '</span><b>' + esc(tr('Chiqish', 'Log out', 'Выйти')) + '</b></button></div></div>';
+            /* ---- tahrirlash oynasi / forma sarlavhasi ---- */
+            const cur = G.find(g => g.k === sxPf.tab) || G[0], saved = pfSaved(s);
+            card.setAttribute('data-sxtab', cur.k); card.toggleAttribute('data-sxopen', !!sxPf.open); document.body.classList.toggle('sx-pf-sheet', !!sxPf.open);
+            card.querySelector('.sx-pf-head').__html = '<div><b>' + esc(cur.t) + '</b><small>' + esc(cur.p) + '</small></div><span class="sx-pf-state' + (sxPf.dirty ? ' dirty' : '') + '">' + (sxPf.dirty ? esc(tr("O'zgargan", 'Edited', 'Изменено')) : SVG(PF_IC.check) + esc(tr('Saqlangan', 'Saved', 'Сохранено'))) + '</span><button type="button" class="sx-pf-x" data-sxpf="close" aria-label="' + esc(tr('Yopish', 'Close', 'Закрыть')) + '">' + SVG(PF_IC.x) + '</button>';
+            card.querySelector('.sx-pf-avrow').__html = pfAvatarHtml(76) + '<span class="sx-pf-avt"><b>' + esc(tr('Profil rasmi', 'Profile photo', 'Фото профиля')) + '</b><small>' + esc(tr("JPG yoki PNG, kvadrat shaklda yaxshiroq ko'rinadi", 'JPG or PNG, square works best', 'JPG или PNG, лучше квадрат')) + '</small></span><button type="button" class="sx-pf-btn ghost" data-sxpf="cam">' + SVG(PF_IC.upl) + esc(tr('Rasmni almashtirish', 'Change photo', 'Сменить фото')) + '</button><button type="button" class="sx-pf-del" data-sxpf="del" aria-label="' + esc(tr("Rasmni o'chirish", 'Remove photo', 'Удалить фото')) + '">' + SVG(PF_IC.trash) + '</button>';
+            card.querySelector('.sx-pf-foot').__html = '<span class="sx-pf-last">' + (sxPf.dirty ? '<i></i>' + esc(tr("Saqlanmagan o'zgarishlar bor", 'You have unsaved changes', 'Есть несохранённые изменения')) : (saved ? esc(tr('Oxirgi saqlash: ', 'Last saved: ', 'Последнее сохранение: ') + saved) : '')) + '</span><span class="sx-pf-act"><button type="button" class="sx-pf-btn ghost" data-sxpf="cancel">' + esc(tr('Bekor qilish', 'Cancel', 'Отмена')) + '</button><button type="button" class="sx-pf-btn pri" data-sxpf="save">' + SVG('<path d="M5 12.5l4.5 4.5L19 7"/>') + esc(tr('Saqlash', 'Save', 'Сохранить')) + '</button></span>';
+        }
+        function pfOpen(k) { sxPf.tab = k || 'personal'; sxPf.open = true; sxPfPaint(); }
+        function pfClose() { sxPf.open = false; sxPfPaint(); }
+        function pfSave() {
+            const sv = pfEl('pfBarSave') || pfEl('profileSaveBtn'), s = currentStudent(); if (!sv || !s) return; sv.click();
+            setTimeout(() => {
+                const card = document.querySelector('.content-view[data-view="profile"] .profile-form-card'), bad = card && card.querySelector('.is-bad');
+                if (bad) { const sec = bad.closest('[data-sx-sec]'); if (sec) { sxPf.tab = sec.getAttribute('data-sx-sec'); if (window.innerWidth <= 768) sxPf.open = true; } sxPfPaint(); return; }
+                sxPut(s, { pfSaved: Date.now() }); sxPf.dirty = false; sxPf.open = false; sxPfPaint();
+            }, 170);
+        }
+        function pfCancel() { const c = pfEl('pfBarCancel'); if (c) c.click(); sxPf.dirty = false; sxPf.open = false; setTimeout(sxPfPaint, 60); }
+        document.addEventListener('click', e => {
+            const r = R(); if (!r || !r.is('student')) return; const a = e.target.closest && e.target.closest('[data-sxpf]'); if (!a) return;
+            const k = a.getAttribute('data-sxpf');
+            if (k === 'tab') { sxPf.tab = a.getAttribute('data-v') || 'personal'; sxPfPaint(); }
+            else if (k === 'edit') pfOpen(a.getAttribute('data-v'));
+            else if (k === 'close') pfClose();
+            else if (k === 'cam') { const f = pfEl('avatarFileInput'); if (f) f.click(); }
+            else if (k === 'del') { const x = document.querySelector('#profileStudentRoot .pf-camx'); if (x) x.click(); else { window.__pfAvatarCleared = true; const im = pfEl('profileAvatarImg'); if (im) im.src = im.getAttribute('data-def') || im.src; } sxPf.dirty = true; sxPfPaint(); }
+            else if (k === 'save') pfSave();
+            else if (k === 'cancel') pfCancel();
+            else if (k === 'logout') { const lo = pfEl('sidebarLogout'); if (lo) lo.click(); }
+        });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape' && sxPf.open) pfClose(); });
+
         /* ---- render ustidan: jadvalga kalendar tugmasi, davomatga tendensiya, sarlavha tugmalari ---- */
-        let sxTourDone = false;
+        let sxTourDone = false, sxAsked = false;
         function sxAfter(s, gs) {
             const sr = document.getElementById('stScheduleRoot'), ph = sr && sr.querySelector('.sp-wrap');
             if (ph && !ph.querySelector('[data-sx="ics"]')) ph.insertAdjacentHTML('afterbegin', '<div class="sx-ics-row"><button type="button" class="sp-link sx-ics" data-sx="ics">' + SVG('<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/>') + esc(tr("Kalendarga qo'shish", 'Add to calendar', 'Добавить в календарь')) + '</button></div>');
             const ar = document.getElementById('stAttendanceRoot'), aw = ar && ar.querySelector('.sp-wrap'); if (aw) aw.insertAdjacentHTML('beforeend', attTrendHTML(s, gs));
+            if (!sxAsked && 'Notification' in window && Notification.permission === 'default') { sxAsked = true; document.addEventListener('pointerdown', function ask() { try { Notification.requestPermission(); } catch (e) { } }, { once: true, capture: true }); }
             const carEl = document.querySelector('#studentRoot .sx-car'); if (carEl) sxCar(carEl);
-            sxHeader(); sxBadge();
+            sxHeader(); sxBadge(); try { sxPfPaint(); } catch (er) { }
             if (!sxTourDone && document.documentElement.getAttribute('data-auth') === 'in') { sxTourDone = true; setTimeout(() => sxTour(false), 1400); }
         }
         document.addEventListener('click', e => {
             const r = R(); if (!r || !r.is('student')) return;
             const panel = document.getElementById('sxPanel');
             if (panel && !(e.target.closest && (e.target.closest('#sxPanel') || e.target.closest('#sxBell')))) sxClosePanel();
+            const ni = e.target.closest && e.target.closest('.sx-ni[data-go]');
+            if (ni) { const st = currentStudent(); if (st) { const rd = Object.assign({}, sxGet(st).read || {}); rd[ni.getAttribute('data-id')] = 1; sxPut(st, { read: rd }); } const nv = document.querySelector('.sidebar .nav-item[data-view="' + ni.getAttribute('data-go') + '"]'); sxClosePanel(); if (nv) nv.click(); return; }
             const sc = e.target.closest && e.target.closest('[data-sx-sch]');
             if (sc) {
                 const kv = sc.getAttribute('data-sx-sch').split(':'), k = kv[0], v = kv.slice(1).join(':'), cur = parseD(sxSch.sel || ymd(new Date()));
@@ -16121,10 +16261,16 @@
                 case 'cert': { const c = sxCertificate(s, gs); sxPrintDoc(c.title, c.css, c.body); break; }
                 case 'ics': sxIcs(s, gs); break;
                 case 'bell': if (document.getElementById('sxPanel')) sxClosePanel(); else sxPanel(); break;
-                case 'readall': sxMarkRead(s); sxPanel(); sxBadge(); break;
-                case 'bn': if ('Notification' in window) Notification.requestPermission().then(p => { sxPut(s, { bn: p === 'granted' }); sxPanel(); }); break;
-                case 'install': if (sxInstall) { sxInstall.prompt(); sxInstall = null; sxPanel(); } break;
-                case 'zoom': { const cur = parseFloat(localStorage.getItem(SXZ) || '1'), nx = cur < 1.05 ? '1.1' : cur < 1.15 ? '1.2' : '1'; try { localStorage.setItem(SXZ, nx); } catch (er) { } sxApplyZoom(nx); if (document.getElementById('sxPanel')) sxPanel(); break; }
+                case 'readall': {
+                    const pn = document.getElementById('sxPanel'), un = pn ? pn.querySelectorAll('.sx-ni.un') : [];
+                    if (pn && un.length && !pn.classList.contains('clearing')) {
+                        pn.classList.add('clearing'); un.forEach((el, k) => el.style.setProperty('--d', (k * 80) + 'ms'));
+                        const bt = pn.querySelector('.sx-rall'); if (bt) { bt.classList.add('done'); const sp = bt.querySelector('span'); if (sp) sp.textContent = tr("O'qildi", 'Done', 'Готово'); }
+                        setTimeout(() => { sxMarkRead(s); sxPanel(); sxBadge(); }, 420 + un.length * 80 + 360);
+                    } else { sxMarkRead(s); sxPanel(); sxBadge(); }
+                    break;
+                }
+                case 'install': if (sxInstall) { sxInstall.prompt(); sxInstall = null; sxHeader(); if (document.getElementById('sxPanel')) sxPanel(); } break;
                 case 'lang': { const ord = ['uz', 'en', 'ru'], nx = ord[(ord.indexOf(lang()) + 1) % 3]; if (typeof applyLanguage === 'function') applyLanguage(nx); setTimeout(() => { sxHeader(); renderAll(); }, 60); break; }
                 case 'theme': { if (typeof applyTheme === 'function') applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); setTimeout(() => { sxHeader(); renderAll(); }, 60); break; }
                 case 'profile': { const pi = document.querySelector('.sidebar .nav-item[data-view="profile"]'); if (pi) pi.click(); break; }
@@ -16133,6 +16279,8 @@
                 case 'tskip': { const o = document.getElementById('sxTour'); if (o) o._done(); break; }
             }
         });
+        /* Sarlavhadagi til menyusi tilni o'zgartirganda kabinet matnlari ham yangilansin */
+        new MutationObserver(() => { setTimeout(() => { const r = R(); if (r && r.is('student') && document.documentElement.getAttribute('data-auth') === 'in') { try { sxHeader(); renderAll(); } catch (e) { } } }, 80); }).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
         /* Kirgandan keyin (data-auth = in) kabinet qayta chiziladi: bildirishnoma, ko'rsatma va sarlavha tugmalari paydo bo'ladi */
         new MutationObserver(() => { if (document.documentElement.getAttribute('data-auth') === 'in') setTimeout(() => { const r = R(); if (r && r.is('student')) renderAll(); }, 350); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-auth'] });
         document.addEventListener('keydown', e => { if (e.key === 'Escape') { sxClosePanel(); const o = document.getElementById('sxTour'); if (o) o._done(); } });
@@ -17384,9 +17532,17 @@
             const ceo = ceoOnly(list), pay = ceo.filter(a => a.billing);
             const debt = pay.reduce((x, a) => x + a.billing.debt, 0);
             const mrr = pay.filter(a => a.active && a.billing.state !== 'debt').reduce((x, a) => x + a.billing.fee, 0);
-            return '<span><b>' + ceo.length + '</b> ' + esc(tr('ta markaz', 'centers', 'центров')) + '</span>' +
-                '<span>' + esc(tr('Oylik tushum', 'Monthly revenue', 'Доход в месяц')) + ' <b>' + esc(money(mrr)) + '</b></span>' +
-                (debt > 0 ? '<span>' + esc(tr('Qarz', 'Debt', 'Долг')) + ' <b class="bad">' + esc(money(debt)) + '</b></span>' : '');
+            const cnt = k => ceo.filter(a => bucket(a) === k).length, debtN = pay.filter(a => a.billing.debt > 0).length;
+            const parts = [[cnt('trial'), tr('sinovda', 'on trial', 'на пробном')], [cnt('active'), tr("to'langan", 'paid', 'оплачено')], [cnt('debt'), tr('qarzdor', 'overdue', 'должников')]].filter(x => x[0] > 0).map(x => x[0] + ' ' + x[1]).join(' \u00b7 ');
+            const IC = {
+                bld: '<path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 9h2a2 2 0 0 1 2 2v10M3 21h18"/><path d="M8 7h4M8 11h4M8 15h4"/>',
+                wal: '<path d="M4 7a2 2 0 0 1 2-2h11v4"/><path d="M4 7v10a2 2 0 0 0 2 2h14V9H6a2 2 0 0 1-2-2z"/><circle cx="16.5" cy="14" r="1.2" fill="currentColor"/>',
+                alr: '<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/>'
+            };
+            const card = (cls, ic, label, val, sub) => '<div class="sb-k ' + cls + '"><span class="sb-ki"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ic + '</svg></span><span class="sb-kt"><small>' + esc(label) + '</small><b>' + val + '</b><small class="s">' + esc(sub) + '</small></span></div>';
+            return card('c1', IC.bld, tr('Markazlar', 'Centers', 'Центры'), '<span>' + ceo.length + '</span>' + esc(tr(' ta', '', '')), parts || tr("hali markaz yo'q", 'no centers yet', 'центров пока нет')) +
+                card('c2', IC.wal, tr('Oylik tushum', 'Monthly revenue', 'Доход в месяц'), esc(money(mrr)), tr('faol markazlardan', 'from active centers', 'от активных центров')) +
+                (debt > 0 ? card('c3 bad', IC.alr, tr('Qarz', 'Debt', 'Долг'), esc(money(debt)), debtN + ' ' + tr('ta markaz', 'centers', 'центров')) : '');
         }
         function filterChips(list) {
             const ceo = ceoOnly(list), cnt = k => k === 'all' ? ceo.length : ceo.filter(a => bucket(a) === k).length;
@@ -17417,10 +17573,10 @@
                 item('open', tr('Sahifani ochish', 'Open page', 'Открыть страницу')) +
                 (b ? item('hist', tr("To'lovlar tarixi", 'Payment history', 'История платежей')) : '') +
                 item('ed', tr('Tahrirlash', 'Edit', 'Изменить')) +
-                item('br', tr('Brend (logo va nom)', 'Brand (logo & name)', 'Бренд (логотип и название)')) +
+                item('br', tr('Brend (logo va nom)', 'Brand (logo & name)', 'Бренд (логотип и название)')) + '<i class="bl-sep"></i>' +
                 (b && (b.debt > 0 || b.graceUntil) ? item('gr', tr('Muhlat berish', 'Grace period', 'Отсрочка')) : '') +
                 item('cp', tr('Login va parolni nusxalash', 'Copy login & password', 'Копировать логин и пароль')) +
-                item('pw', tr('Yangi parol', 'New password', 'Новый пароль')) +
+                item('pw', tr('Yangi parol', 'New password', 'Новый пароль')) + '<i class="bl-sep"></i>' +
                 item('tg', a.active ? tr("Qo'lda bloklash", 'Block manually', 'Заблокировать вручную') : tr('Faollashtirish', 'Activate', 'Активировать')) +
                 item('rm', tr("O'chirish", 'Delete', 'Удалить'), 'dng') + '</div></details></div>';
         }
@@ -17437,7 +17593,7 @@
             box.innerHTML = '<ul class="sb-list"><li class="sb-th" aria-hidden="true"><span>' + esc(H.who) + '</span><span class="sb-meta"><span>' + esc(H.fee) + '</span><span>' + esc(H.st) + '</span><span>' + esc(H.due) + '</span></span><span></span></li>' +
                 rows.map(a => {
                     const s = status(a), n = nextCell(a), nm = a.name || a.username, bk = bucket(a);
-                    return '<li class="sb-row" data-open="' + esc(a.id) + '"><div class="sb-who"><span class="sb-dot t-' + bk + '" aria-hidden="true"></span>' + brandThumb(a) + '<div><span class="sb-nm" title="' + esc(nm) + '"><button type="button" class="sb-link" data-a="open" data-id="' + esc(a.id) + '">' + esc(nm) + '</button></span><span class="sb-lg">' + esc(a.username) + '</span></div></div>' +
+                    return '<li class="sb-row t-' + bk + '" data-open="' + esc(a.id) + '"><div class="sb-who"><span class="sb-dot t-' + bk + '" aria-hidden="true"></span>' + (brandThumb(a) || '<span class="sb-tile" aria-hidden="true">' + esc(String(nm).trim().charAt(0).toUpperCase() || '\u2022') + '</span>') + '<div><span class="sb-nm" title="' + esc(nm) + '"><button type="button" class="sb-link" data-a="open" data-id="' + esc(a.id) + '">' + esc(nm) + '</button></span><span class="sb-lg">' + esc(a.username) + '</span></div></div>' +
                         '<div class="sb-meta"><div class="sb-c" data-l="' + esc(H.fee) + '"><span class="sb-fee">' + (a.billing ? esc(money(a.billing.fee)) : '—') + '</span></div>' +
                         '<div class="sb-c" data-l="' + esc(H.st) + '"><span class="acc-badge bl-' + s[0] + '">' + esc(s[1]) + '</span>' + (s[2] ? '<small class="bl-sub">' + esc(s[2]) + '</small>' : '') + '</div>' +
                         '<div class="sb-c" data-l="' + esc(H.due) + '"><span class="sb-fee">' + esc(n[0]) + '</span>' + (n[1] ? '<small class="bl-sub">' + esc(n[1]) + '</small>' : '') + '</div></div>' +
@@ -20985,7 +21141,7 @@
            Faqat html[data-auth="in"][data-role="student"]. CEO / admin / teacher o'zgarmaydi.
            Shriftlar: Bricolage Grotesque (sarlavha, raqam) + Plus Jakarta Sans (matn).
            ===================================================================== */
-        html[data-auth="in"][data-role="student"] {
+        html[data-auth="in"][data-role="student"], html[data-auth="in"][data-role="admin"] {
             --sx-ink: #171A44; --sx-fill: #4A3FD0; --sx-indigo: #4A3FD0; --sx-indigo-d: #3A2FB0; --sx-lav: #E4E2FA; --sx-sky: #DDE6FB; --sx-champ: #F6E7C1; --sx-gold: #F0D391; --sx-soft: #F5F6FC; --sx-chip: #ECEBFB;
             --sx-display: 'Bricolage Grotesque', 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
             --sx-body: 'Plus Jakarta Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -21006,7 +21162,7 @@
             --gc3: #B8892B; --gc3b: rgba(232, 199, 122, .30);
             --gc4: #8A4FD8; --gc4b: rgba(138, 79, 216, .14);
         }
-        html[data-auth="in"][data-role="student"][data-theme="dark"] {
+        html[data-auth="in"][data-role="student"][data-theme="dark"], html[data-auth="in"][data-role="admin"][data-theme="dark"] {
             --sx-ink: #EEF0FF; --sx-fill: #5B4FE8; --sx-indigo: #7A6FF5; --sx-indigo-d: #B7B1FF; --sx-lav: #262A66; --sx-sky: #1F2F5E; --sx-champ: #3B3322; --sx-gold: #F0D391; --sx-soft: #12143A; --sx-chip: #23275F;
             --sx-shadow: 0 10px 30px -16px rgba(0, 0, 0, .7);
             --bg-page: #0D0F2E; --bg-panel: #171A45; --fg-panel: #EEF0FF; --fg-muted: rgba(238, 240, 255, .62);
@@ -21143,8 +21299,8 @@
         .sx-cta:hover { transform: translateY(-2px); box-shadow: 0 14px 22px -14px rgba(23, 26, 68, .7); }
         .sx-cta:focus-visible { outline: 3px solid var(--sx-indigo); outline-offset: 3px; }
         .sx-nx-r { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-        .sx-nx-r b { font-family: var(--sx-display); font-weight: 700; font-size: clamp(52px, 3.6vw + 28px, 84px); line-height: 1; letter-spacing: -.03em; color: var(--sx-indigo-d); font-variant-numeric: tabular-nums; }
-        html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-nx-r b { color: #CFCBFF; }
+        .sx-nx-r > b { font-family: var(--sx-display); font-weight: 700; font-size: clamp(52px, 3.6vw + 28px, 84px); line-height: 1; letter-spacing: -.03em; color: var(--sx-indigo-d); font-variant-numeric: tabular-nums; }
+        html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-nx-r > b { color: #CFCBFF; }
         .sx-nx-r span { font-size: 16px; font-weight: 600; color: var(--fg-page-muted); text-align: right; }
         .sx-nx-r span b { font-family: var(--sx-body); font-size: inherit; font-weight: 700; line-height: inherit; letter-spacing: 0; color: var(--fg-page); }
 
@@ -21343,7 +21499,7 @@
         .sx-pgrid { display: grid; grid-template-columns: minmax(0, clamp(380px, 38%, 470px)) minmax(0, 1fr); gap: 16px; align-items: start; }
         .sx-pl { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
         .sx-pr { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
-        .sx-pgrid .sx-nm { display: none; }
+        html[data-auth="in"][data-role="student"] .sx-pgrid .sx-nm { display: none !important; }
         .sx-pgrid .sx-balance { width: 100%; aspect-ratio: 1.586 / 1; min-height: 0; flex-direction: column; align-items: stretch; justify-content: space-between; padding: clamp(18px, 2.4vw, 26px); }
         .sx-pgrid .sx-bal-r { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); width: 100%; gap: 10px; }
         .sx-pgrid .sx-bal-r > div { min-width: 0; padding: 10px 14px; }
@@ -21361,8 +21517,8 @@
             .sx-pl { display: contents; }
             .sx-pgrid .sx-balance { order: 0; }
             .sx-pgrid .sx-note { order: 1; align-self: start; }
-            .sx-pgrid .sx-nd { display: none; }
-            .sx-pgrid .sx-nm { display: flex; }
+            html[data-auth="in"][data-role="student"] .sx-pgrid .sx-nd { display: none !important; }
+            html[data-auth="in"][data-role="student"] .sx-pgrid .sx-nm { display: flex !important; }
             .sx-pr { order: 2; grid-column: 1 / -1; }
             .sx-pl > .sp-card { order: 3; grid-column: 1 / -1; }
         }
@@ -21451,27 +21607,7 @@
         .sx-aa { font: 800 14px/1 var(--sx-display, 'Bricolage Grotesque', sans-serif); letter-spacing: -.02em; }
         #sxBell { position: relative; }
         .sx-bd { position: absolute; top: 5px; right: 5px; min-width: 18px; height: 18px; padding: 0 5px; box-sizing: border-box; border-radius: 99px; background: #E4573D; color: #fff; font: 800 11px/14px 'Plus Jakarta Sans', sans-serif; text-align: center; border: 2px solid var(--bg-panel); }
-        .sx-panel { position: fixed; top: calc(96px + env(safe-area-inset-top, 0px)); right: clamp(12px, 2vw, 28px); z-index: 99989; width: min(390px, calc(100vw - 24px)); max-height: min(72vh, 580px); display: flex; flex-direction: column; background: var(--bg-panel); color: var(--fg-panel); border-radius: 24px; box-shadow: 0 30px 60px -24px rgba(23, 26, 68, .55), 0 0 0 1px var(--panel-border); overflow: hidden; animation: sxPanelIn .3s cubic-bezier(.34, 1.3, .5, 1) both; font-family: var(--sx-body, sans-serif); }
         @keyframes sxPanelIn { from { opacity: 0; transform: translateY(-10px) scale(.97); } to { opacity: 1; transform: none; } }
-        .sx-ph { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 16px 18px 10px; }
-        .sx-ph b { font: 700 17px/1.2 var(--sx-display, sans-serif); }
-        .sx-ph button { border: 0; background: none; color: var(--sx-indigo-d, #3A2FB0); font: 700 12.5px var(--sx-body, sans-serif); cursor: pointer; padding: 4px 0; }
-        html[data-theme="dark"] .sx-ph button { color: #CFCBFF; }
-        .sx-pl2 { overflow: auto; padding: 4px 10px 8px; display: flex; flex-direction: column; gap: 6px; }
-        .sx-ni { display: flex; gap: 12px; align-items: flex-start; padding: 10px; border-radius: 16px; }
-        .sx-ni.un { background: var(--field-bg); }
-        .sx-nic { flex: none; width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; background: var(--sx-lav); color: var(--sx-indigo); }
-        .sx-nic svg { width: 18px; height: 18px; }
-        .sx-nic.warn { background: rgba(214, 69, 99, .14); color: #C0262D; } .sx-nic.star { background: var(--sx-champ); color: #B8892B; } .sx-nic.pay { background: rgba(61, 220, 151, .16); color: #14694A; } .sx-nic.hw { background: var(--sx-sky); }
-        .sx-nt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-        .sx-nt b { font-size: 14px; font-weight: 700; line-height: 1.3; }
-        .sx-nt small { font-size: 12.5px; color: var(--fg-page-muted); }
-        .sx-ne { padding: 32px 16px; text-align: center; color: var(--fg-page-muted); font-size: 14px; }
-        .sx-pf { padding: 8px 14px 14px; display: flex; flex-direction: column; gap: 8px; }
-        .sx-pf:empty { display: none; }
-        .sx-pf button { height: 40px; border: 0; border-radius: 12px; background: var(--field-bg); color: var(--fg-page); font: 700 13.5px var(--sx-body, sans-serif); cursor: pointer; }
-        .sx-pf button:hover { background: var(--menu-selected-bg); }
-        @media (max-width: 768px) { .sx-panel { top: calc(84px + env(safe-area-inset-top, 0px)); right: 12px; left: 12px; width: auto; } }
         .sx-ics-row { display: flex; justify-content: flex-end; }
         .sx-acts { display: flex; flex-wrap: wrap; gap: 10px; }
         .sx-tsub { display: block; font-style: normal; font-size: 12.5px; color: var(--fg-page-muted); margin-top: 2px; }
@@ -21572,7 +21708,7 @@
             /* ilova sarlavhasi: tekis, kartasiz; chap tomonda avatar, o'ngda qo'ng'iroqcha */
             html[data-auth="in"][data-role="student"] .header { background: transparent; box-shadow: none; border-radius: 0; border: 0; padding: 6px 2px 8px; min-height: 0; -webkit-backdrop-filter: none; backdrop-filter: none; }
             html[data-auth="in"][data-role="student"] .header .icon-btn { background: var(--bg-panel); box-shadow: 0 8px 20px -12px rgba(23, 26, 68, .4); }
-            html[data-auth="in"][data-role="student"] #headerLangWrap, html[data-auth="in"][data-role="student"] #headerThemeBtn, html[data-auth="in"][data-role="student"] #scheduleBtn, html[data-auth="in"][data-role="student"] #profileDropdown { display: none !important; }
+            html[data-auth="in"][data-role="student"] #scheduleBtn, html[data-auth="in"][data-role="student"] #profileDropdown { display: none !important; }
             html[data-auth="in"][data-role="student"] .sx-hav { display: none; flex: none; width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--sx-champ); color: var(--fg-page); font: 800 15px var(--sx-body); place-items: center; cursor: pointer; margin-right: 12px; }
             html[data-auth="in"][data-role="student"] .header.sx-home .sx-hav { display: grid; }
             html[data-auth="in"][data-role="student"] .header.sx-home .sx-ptitle { flex-direction: column-reverse; }
@@ -21583,8 +21719,9 @@
             html[data-auth="in"][data-role="student"] .sx-prefs button { height: 54px; padding: 0 14px; border: 0; border-radius: 18px; background: var(--field-bg); color: var(--fg-page); display: flex; align-items: center; gap: 10px; font: 600 14px var(--sx-body); cursor: pointer; }
             html[data-auth="in"][data-role="student"] .sx-prefs button svg { width: 20px; height: 20px; flex: none; color: var(--sx-indigo); }
             html[data-auth="in"][data-role="student"] .sx-prefs span { flex: 1; text-align: left; }
+            html[data-auth="in"][data-role="student"] .sx-prefs .wide { grid-column: 1 / -1; justify-content: center; }
             html[data-auth="in"][data-role="student"] .sx-prefs b { font-weight: 800; color: var(--sx-indigo-d, #3A2FB0); }
-            html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-prefs b, html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-prefs svg { color: #CFCBFF; }
+            html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-prefs b, html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-prefs svg { color: #CFCBFF; }
             /* asosiy kartalar o'rniga 3D vertikal karusel (g'ildirak) */
             html[data-auth="in"][data-role="student"] .sx-top .sx-next, html[data-auth="in"][data-role="student"] .sx-top .sp-cardwrap { display: none; }
             html[data-auth="in"][data-role="student"] .sx-car { display: block; position: relative; height: 236px; margin: 0; padding-right: 22px; box-sizing: border-box; touch-action: none; -webkit-user-select: none; user-select: none; outline: none; overflow: hidden; -webkit-tap-highlight-color: transparent; }
@@ -21603,11 +21740,11 @@
             html[data-auth="in"][data-role="student"] .sx-sl-sub { display: flex; flex-direction: column; gap: 4px; font-size: 13.5px; }
             html[data-auth="in"][data-role="student"] .sx-sl-sub b { font-size: 15px; font-weight: 700; } html[data-auth="in"][data-role="student"] .sx-sl-sub small { font-size: 13px; color: var(--fg-page-muted); }
             html[data-auth="in"][data-role="student"] .sx-sl-cta { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 16px; border-radius: 99px; background: #171A44; color: #fff; font-size: 13.5px; font-weight: 600; }
-            html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-sl-cta { background: #EEF0FF; color: #171A44; }
+            html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-sl-cta { background: #EEF0FF; color: #171A44; }
             html[data-auth="in"][data-role="student"] .sx-sl-cta svg { width: 16px; height: 16px; }
             html[data-auth="in"][data-role="student"] .sx-car-dots { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); z-index: 300; display: flex; flex-direction: column; gap: 6px; }
-            html[data-auth="in"][data-role="student"] .sx-cd { display: block; width: 6px; height: 6px; padding: 0; border: 0; border-radius: 99px; background: rgba(23, 26, 68, .22); cursor: pointer; transition: height .3s var(--lg-spring), background .3s; }
-            html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-cd { background: rgba(238, 240, 255, .28); }
+            html[data-auth="in"][data-role="student"] .sx-cd { position: relative; display: block; width: 6px; height: 6px; padding: 0; border: 0; border-radius: 99px; background: rgba(23, 26, 68, .22); cursor: pointer; transition: height .3s var(--lg-spring), background .3s; }
+            html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-cd { background: rgba(238, 240, 255, .28); }
             html[data-auth="in"][data-role="student"] .sx-cd.on { height: 26px; background: var(--sx-indigo); }
             html[data-auth="in"][data-role="student"] .sx-car-hint { position: absolute; left: calc(50% - 11px); bottom: 2px; transform: translateX(-50%); z-index: 300; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 14px; border-radius: 99px; background: var(--bg-panel); box-shadow: 0 10px 22px -12px rgba(23, 26, 68, .5); font-size: 12px; font-weight: 700; color: var(--fg-page-muted); pointer-events: none; transition: opacity .4s; animation: sxHint 1.8s ease-in-out infinite; }
             html[data-auth="in"][data-role="student"] .sx-car-hint svg { width: 15px; height: 15px; }
@@ -21622,13 +21759,13 @@
             html[data-auth="in"][data-role="student"] .sx-qi svg { width: 26px; height: 26px; }
             html[data-auth="in"][data-role="student"] .sx-qa:nth-child(2) .sx-qi { background: var(--sx-champ); } html[data-auth="in"][data-role="student"] .sx-qa:nth-child(3) .sx-qi { background: var(--sx-sky); } html[data-auth="in"][data-role="student"] .sx-qa:nth-child(4) .sx-qi { background: rgba(214, 69, 99, .14); }
             html[data-auth="in"][data-role="student"] .sx-qa:active .sx-qi { transform: scale(.92); }
-            html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-qi { color: #CFCBFF; }
+            html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-qi { color: #CFCBFF; }
         }
         @media (max-width: 768px) {
             /* karusel ixcham: kartalar bir xil, ichi zichroq */
             html[data-auth="in"][data-role="student"] .sx-slide .sx-next { padding: 16px 18px; border-radius: 28px; gap: 8px; }
             html[data-auth="in"][data-role="student"] .sx-slide .sx-next h2, html[data-auth="in"][data-role="student"] .sx-slide .sx-next .sx-nx-t { font-size: 24px; }
-            html[data-auth="in"][data-role="student"] .sx-slide .sx-nx-time, html[data-auth="in"][data-role="student"] .sx-slide .sx-nx-r b { font-size: 40px; }
+            html[data-auth="in"][data-role="student"] .sx-slide .sx-nx-time, html[data-auth="in"][data-role="student"] .sx-slide .sx-nx-r > b { font-size: 40px; }
             html[data-auth="in"][data-role="student"] .sx-slide .sp-bcard .sp-bc-in { padding: 14px 18px; gap: 4px; }
             html[data-auth="in"][data-role="student"] .sx-slide .sp-bcard .sp-bc-chip, html[data-auth="in"][data-role="student"] .sx-slide .sp-bcard .sp-bc-no { display: none; }
             html[data-auth="in"][data-role="student"] .sx-slide .sp-bcard .sp-bc-am { font-size: 34px; }
@@ -21650,7 +21787,7 @@
             html[data-auth="in"][data-role="student"] .header:not(.sx-home) .sx-ptitle h2 { font-size: 28px; letter-spacing: -.025em; }
             html[data-auth="in"][data-role="student"] .sx-sm { display: block; padding-bottom: 96px; }
             html[data-auth="in"][data-role="student"] .sx-sg { display: flex; padding: 4px; margin: 2px 0 14px; border-radius: 18px; background: rgba(74, 63, 208, .09); }
-            html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-sg { background: rgba(255, 255, 255, .07); }
+            html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-sg { background: rgba(255, 255, 255, .07); }
             html[data-auth="in"][data-role="student"] .sx-sg button { flex: 1; border: 0; background: none; padding: 9px 0; border-radius: 14px; font: 600 13.5px var(--sx-body); color: var(--fg-page-muted); cursor: pointer; transition: background .2s, color .2s; }
             html[data-auth="in"][data-role="student"] .sx-sg button.on { background: var(--bg-panel); color: var(--fg-page); font-weight: 800; box-shadow: 0 6px 14px -8px rgba(23, 26, 68, .4); }
             html[data-auth="in"][data-role="student"] .sx-wk { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 10px; }
@@ -21658,13 +21795,13 @@
             html[data-auth="in"][data-role="student"] .sx-ar { flex: none; width: 36px; height: 36px; border: 0; border-radius: 50%; background: var(--bg-panel); color: var(--fg-page); display: grid; place-items: center; box-shadow: 0 8px 18px -14px rgba(23, 26, 68, .5); cursor: pointer; }
             html[data-auth="in"][data-role="student"] .sx-ar svg { width: 18px; height: 18px; }
             html[data-auth="in"][data-role="student"] .sx-td { flex: none; height: 32px; padding: 0 12px; border: 0; border-radius: 99px; background: var(--sx-lav); color: var(--sx-indigo-d, #3A2FB0); font: 700 12.5px var(--sx-body); cursor: pointer; }
-            html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-td { color: #CFCBFF; }
+            html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-td { color: #CFCBFF; }
             html[data-auth="in"][data-role="student"] .sx-dcs { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 14px; scrollbar-width: none; }
             html[data-auth="in"][data-role="student"] .sx-dcs::-webkit-scrollbar { display: none; }
             html[data-auth="in"][data-role="student"] .sx-dc { flex: 1 0 46px; min-width: 46px; padding: 10px 0; border: 0; border-radius: 18px; background: var(--bg-panel); color: var(--fg-page); display: flex; flex-direction: column; align-items: center; gap: 6px; box-shadow: 0 8px 18px -14px rgba(23, 26, 68, .4); cursor: pointer; transition: transform .2s var(--lg-spring), background .2s; }
             html[data-auth="in"][data-role="student"] .sx-dc small { font: 700 11.5px var(--sx-body); opacity: .72; } html[data-auth="in"][data-role="student"] .sx-dc b { font: 700 17px var(--sx-display); }
             html[data-auth="in"][data-role="student"] .sx-dc i { width: 6px; height: 6px; border-radius: 50%; background: transparent; } html[data-auth="in"][data-role="student"] .sx-dc i.has { background: var(--sx-indigo); }
-            html[data-auth="in"][data-role="student"] .sx-dc.today:not(.on) small { color: var(--sx-indigo); opacity: 1; } html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-dc.today:not(.on) small { color: #CFCBFF; }
+            html[data-auth="in"][data-role="student"] .sx-dc.today:not(.on) small { color: var(--sx-indigo); opacity: 1; } html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-dc.today:not(.on) small { color: #CFCBFF; }
             html[data-auth="in"][data-role="student"] .sx-dc.on { background: var(--sx-fill); color: #fff; transform: translateY(-2px); } html[data-auth="in"][data-role="student"] .sx-dc.on i.has { background: #F0D391; }
             html[data-auth="in"][data-role="student"] .sx-day-t { margin: 6px 4px 10px; font: 700 15px var(--sx-display); display: flex; align-items: center; gap: 8px; }
             html[data-auth="in"][data-role="student"] .sx-ag-list { display: flex; flex-direction: column; }
@@ -21682,7 +21819,7 @@
             html[data-auth="in"][data-role="student"] .sx-ag-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 3px; }
             html[data-auth="in"][data-role="student"] .sx-ag-h b { font: 700 18px var(--sx-display); letter-spacing: -.01em; color: var(--fg-page); }
             html[data-auth="in"][data-role="student"] .sx-ag-now { padding: 4px 10px; border-radius: 99px; background: var(--bg-panel); color: var(--sx-indigo-d, #3A2FB0); font: 700 11.5px var(--sx-body); }
-            html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-ag-now { color: #CFCBFF; }
+            html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-ag-now { color: #CFCBFF; }
             html[data-auth="in"][data-role="student"] .sx-ag-empty { display: flex; align-items: center; gap: 12px; padding: 18px; margin-bottom: 12px; border-radius: 22px; background: var(--field-bg); color: var(--fg-page-muted); font-size: 14px; }
             html[data-auth="in"][data-role="student"] .sx-ag-empty svg { width: 24px; height: 24px; flex: none; }
             html[data-auth="in"][data-role="student"] .sx-mg { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; margin-bottom: 8px; text-align: center; }
@@ -21692,8 +21829,380 @@
             html[data-auth="in"][data-role="student"] .sx-md.today:not(.on) { box-shadow: inset 0 0 0 2px #F0D391; }
             html[data-auth="in"][data-role="student"] .sx-md.on { background: var(--sx-fill); color: #fff; } html[data-auth="in"][data-role="student"] .sx-md.on i.has { background: #F0D391; }
             html[data-auth="in"][data-role="student"] .sx-sm-ics { position: fixed; left: 18px; right: 18px; bottom: calc(92px + env(safe-area-inset-bottom, 0px) * .6); z-index: 90; height: 52px; border: 0; border-radius: 99px; background: #171A44; color: #fff; display: flex; align-items: center; justify-content: center; gap: 10px; font: 700 15px var(--sx-body); box-shadow: 0 18px 30px -14px rgba(23, 26, 68, .7); cursor: pointer; }
-            html[data-theme="dark"] html[data-auth="in"][data-role="student"] .sx-sm-ics { background: #EEF0FF; color: #171A44; }
+            html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-sm-ics { background: #EEF0FF; color: #171A44; }
             html[data-auth="in"][data-role="student"] .sx-sm-ics svg { width: 20px; height: 20px; }
+        }
+        /* To'lovlarim: bosh sahifadagi kartaning aynan o'zi + uch ixcham ko'rsatkich */
+        .sx-pcard { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+        .sx-pgrid .sx-pcard { order: 0; max-width: 520px; width: 100%; }
+        .sx-pst { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+        .sx-pst > div { min-width: 0; padding: 10px 12px; border-radius: 16px; background: var(--bg-panel); box-shadow: 0 10px 24px -18px rgba(23, 26, 68, .4); display: flex; flex-direction: column; gap: 2px; }
+        .sx-pst small { font-size: 11.5px; line-height: 1.25; color: var(--fg-page-muted); }
+        .sx-pst b { font: 700 13.5px/1.25 var(--sx-display, sans-serif); overflow-wrap: anywhere; }
+        @container spw (max-width: 520px) { .sx-pgrid .sx-pcard { max-width: none; } .sx-pst b { font-size: 13px; } }
+        html[data-auth="in"][data-role="student"] .sx-cd::before { content: ""; position: absolute; inset: -3px -13px; }
+        /* =====================================================================
+           BILDIRISHNOMALAR PANELI: yangi dizayn, ochilish va "o'qildi" animatsiyalari
+           ===================================================================== */
+        .sx-panel { position: fixed; top: calc(92px + env(safe-area-inset-top, 0px)); right: clamp(12px, 2vw, 28px); z-index: 99989; width: min(400px, calc(100vw - 24px)); max-height: min(74vh, 600px); display: flex; flex-direction: column; background: var(--bg-panel); color: var(--fg-panel); border-radius: 28px; box-shadow: 0 34px 70px -26px rgba(23, 26, 68, .6), 0 0 0 1px var(--panel-border); overflow: hidden; font-family: var(--sx-body, sans-serif); transform-origin: calc(100% - 36px) 0; animation: sxPanelOpen .46s cubic-bezier(.2, 1.15, .35, 1) both; }
+        .sx-panel.leaving { animation: sxPanelClose .16s ease-in both; pointer-events: none; }
+        @keyframes sxPanelOpen { 0% { opacity: 0; transform: translateY(-12px) scale(.86); } 55% { opacity: 1; transform: translateY(2px) scale(1.012); } 100% { opacity: 1; transform: none; } }
+        @keyframes sxPanelClose { to { opacity: 0; transform: translateY(-8px) scale(.94); } }
+        .sx-ph { display: flex; flex-direction: column; gap: 12px; padding: 18px 18px 8px; }
+        .sx-pt { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .sx-pt b { font: 700 19px/1.2 var(--sx-display, sans-serif); letter-spacing: -.01em; }
+        .sx-pc { display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 11px; border-radius: 99px; background: var(--sx-lav); color: var(--sx-indigo-d, #3A2FB0); font: 700 12px var(--sx-body, sans-serif); }
+        html[data-theme="dark"] .sx-pc { color: #CFCBFF; }
+        .sx-pc.ok { background: rgba(61, 220, 151, .16); color: #14694A; } html[data-theme="dark"] .sx-pc.ok { color: #7FE3BC; }
+        .sx-pc svg { width: 14px; height: 14px; } .sx-pc .sx-tick { stroke-dasharray: 24; stroke-dashoffset: 24; animation: sxTickDraw .5s .15s ease forwards; }
+        @keyframes sxTickDraw { to { stroke-dashoffset: 0; } }
+        .sx-rall { align-self: stretch; height: 44px; border: 0; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; gap: 9px; background: linear-gradient(135deg, #5B4FE8, #3A2FB0); color: #fff; font: 700 14px var(--sx-body, sans-serif); cursor: pointer; box-shadow: 0 14px 24px -14px rgba(74, 63, 208, .85); transition: transform .15s, filter .2s, background .35s, box-shadow .35s; }
+        .sx-rall svg { width: 21px; height: 21px; }
+        .sx-rall:hover { filter: brightness(1.08); } .sx-rall:active { transform: scale(.97); }
+        .sx-rall.done { background: linear-gradient(135deg, #25B97A, #14894F); box-shadow: 0 14px 24px -14px rgba(20, 137, 79, .8); pointer-events: none; }
+        .sx-rall.done svg { animation: sxTickPop .5s cubic-bezier(.3, 1.6, .5, 1) both; }
+        @keyframes sxTickPop { 0% { transform: scale(.4) rotate(-20deg); } 100% { transform: none; } }
+        .sx-pl2 { overflow: auto; padding: 6px 10px 10px; display: flex; flex-direction: column; gap: 4px; }
+        .sx-ni { position: relative; display: flex; gap: 12px; align-items: center; padding: 11px 12px; border-radius: 20px; transition: background .2s; }
+        .sx-ni[data-go] { cursor: pointer; } .sx-ni[data-go]:hover { background: var(--field-bg); }
+        .sx-ni.un { background: var(--field-bg); }
+        .sx-ni.un::after { content: ""; flex: none; width: 9px; height: 9px; margin-left: auto; border-radius: 50%; background: var(--sx-indigo); box-shadow: 0 0 0 4px rgba(74, 63, 208, .14); }
+        .sx-nic { flex: none; width: 40px; height: 40px; border-radius: 14px; display: grid; place-items: center; background: var(--sx-lav); color: var(--sx-indigo); }
+        .sx-nic svg { width: 20px; height: 20px; }
+        .sx-nic.warn { background: rgba(214, 69, 99, .14); color: #C0262D; } .sx-nic.star { background: var(--sx-champ); color: #B8892B; } .sx-nic.pay { background: rgba(61, 220, 151, .16); color: #14694A; } .sx-nic.hw { background: var(--sx-sky); }
+        .sx-nt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .sx-nt b { font-size: 14px; font-weight: 700; line-height: 1.3; }
+        .sx-nt small { font-size: 12.5px; color: var(--fg-page-muted); }
+        .sx-ne { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 34px 16px; text-align: center; color: var(--fg-page-muted); font-size: 14px; }
+        .sx-neic { width: 56px; height: 56px; border-radius: 20px; background: var(--sx-lav); color: var(--sx-indigo); display: grid; place-items: center; } .sx-neic svg { width: 26px; height: 26px; }
+        /* chiqish animatsiyasi: kartalar ketma-ket tushadi */
+        .sx-panel.enter .sx-ni { animation: sxItemIn .42s calc(var(--i) * 60ms + 140ms) cubic-bezier(.2, 1, .3, 1) both; }
+        @keyframes sxItemIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+        /* "O'qilgan deb belgilash": har bir yangi element indigodan yashilga, nuqta yo'qoladi, fon so'nadi */
+        .sx-panel.clearing .sx-ni.un { animation: sxClr .6s var(--d, 0ms) ease both; }
+        .sx-panel.clearing .sx-ni.un::after { animation: sxDotOut .35s var(--d, 0ms) ease both; }
+        .sx-panel.clearing .sx-ni.un .sx-nic { animation: sxIcOk .55s var(--d, 0ms) cubic-bezier(.3, 1.6, .5, 1) both; }
+        @keyframes sxClr { 0% { background: var(--field-bg); } 35% { background: rgba(61, 220, 151, .22); transform: translateX(5px); } 100% { background: transparent; transform: none; } }
+        @keyframes sxDotOut { to { transform: scale(0); opacity: 0; } }
+        @keyframes sxIcOk { 0% { transform: scale(1); } 40% { transform: scale(1.18) rotate(-6deg); background: rgba(61, 220, 151, .3); color: #14894F; } 100% { transform: scale(1); } }
+        body:has(#sxPanel.clearing) #sxBell .sx-bd { transform: scale(0); opacity: 0; transition: transform .4s .25s cubic-bezier(.6, -.4, .8, .6), opacity .3s .3s; }
+        .sx-pf { padding: 4px 14px 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+        .sx-pf button { height: 36px; padding: 0 13px; border: 0; border-radius: 99px; background: var(--field-bg); color: var(--fg-page); display: inline-flex; align-items: center; gap: 7px; font: 600 12.5px var(--sx-body, sans-serif); cursor: pointer; transition: background .2s; }
+        .sx-pf button:hover { background: var(--menu-selected-bg); }
+        .sx-pf button svg { width: 16px; height: 16px; color: var(--sx-indigo); } html[data-theme="dark"] .sx-pf button svg { color: #CFCBFF; }
+        .sx-pf button b { font-weight: 800; color: var(--sx-indigo-d, #3A2FB0); } html[data-theme="dark"] .sx-pf button b { color: #CFCBFF; }
+        @media (max-width: 768px) {
+            .sx-panel { top: calc(84px + env(safe-area-inset-top, 0px)); right: 12px; left: 12px; width: auto; transform-origin: calc(100% - 30px) 0; }
+            .sx-pf { display: none; }   /* matn o'lchami, eslatma, o'rnatish: telefonda "Yana" oynasida */
+        }
+        @media (prefers-reduced-motion: reduce) { .sx-panel, .sx-panel.enter .sx-ni, .sx-panel.clearing .sx-ni, .sx-panel.clearing .sx-ni .sx-nic { animation: none; } }
+        /* hisoblagich ("8 soat 55 daqiqa") katta vaqt uslubini olmasin */
+        .sx-nx-r .sp-cd { font: inherit; font-size: inherit; font-weight: 700; letter-spacing: 0; color: inherit; }
+        @media (max-width: 768px) {
+            /* sarlavha: til (ochiladigan menyu), yorug'/qorong'i tugmasi va qo'ng'iroqcha ixcham */
+            html[data-auth="in"][data-role="student"] .header-icons { gap: 5px; flex: none; }
+            html[data-auth="in"][data-role="student"] .header .icon-btn, html[data-auth="in"][data-role="student"] .header .icon-btn.hdr-lang-btn { width: 38px; min-width: 38px; height: 38px; }
+            html[data-auth="in"][data-role="student"] .header .icon-btn svg { width: 18px; height: 18px; }
+            html[data-auth="in"][data-role="student"] .sx-hav { width: 38px; height: 38px; margin-right: 0; font-size: 13px; }
+            html[data-auth="in"][data-role="student"] .header .sx-ptitle { min-width: 0; flex: 1 1 auto; }
+            html[data-auth="in"][data-role="student"] .header.sx-home .sx-ptitle h2 { font-size: 17px; }
+            html[data-auth="in"][data-role="student"] .hdr-lang-menu { right: -48px; }
+        }
+        @media (max-width: 380px) {
+            html[data-auth="in"][data-role="student"] .header .icon-btn, html[data-auth="in"][data-role="student"] .header .icon-btn.hdr-lang-btn { width: 34px; min-width: 34px; height: 34px; }
+            html[data-auth="in"][data-role="student"] .header-icons { gap: 4px; }
+            html[data-auth="in"][data-role="student"] .header.sx-home .sx-ptitle h2 { font-size: 16px; }
+            html[data-auth="in"][data-role="student"] .sx-hav { width: 34px; height: 34px; margin-right: 0; font-size: 12px; }
+        }
+        @media (max-width: 420px) { html[data-auth="in"][data-role="student"] .header.sx-home .sx-ptitle h2 { font-size: 16px; } }
+        @media (max-width: 768px) { html[data-auth="in"][data-role="student"] .sx-slide .sx-nx-l { flex: 1 1 0; min-width: 0; } html[data-auth="in"][data-role="student"] .sx-slide .sx-nx-r { flex: 0 1 46%; min-width: 0; } html[data-auth="in"][data-role="student"] .sx-slide .sx-pill { max-width: 100%; } }
+        .sx-pf:empty { display: none; }
+        /* =====================================================================
+           PROFIL (o'quvchi): yangi dizayn. Kompyuter: banner + bo'limlar + katta forma. Telefon: kartochka + ro'yxat + pastdan oyna
+           ===================================================================== */
+        #sxPfHero, #sxPfSide, #sxPfM, #sxPfBd { display: none; }
+        html[data-auth="in"][data-role="student"] #profileTeacherRoot, html[data-auth="in"][data-role="student"] #pfBar { display: none !important; }
+        /* eski modul formani o'z qutilari ichiga joylaydi: qutilarni shaffof qilamiz, eski banner va yon kartani yashiramiz */
+        html[data-auth="in"][data-role="student"] #profileStudentRoot, html[data-auth="in"][data-role="student"] #profileStudentRoot .pf, html[data-auth="in"][data-role="student"] #profileStudentRoot .pf-grid, html[data-auth="in"][data-role="student"] #profileStudentRoot .pf-main, html[data-auth="in"][data-role="student"] #profileStudentRoot #pfInfo { display: contents !important; }
+        html[data-auth="in"][data-role="student"] #profileStudentRoot .pf-hero, html[data-auth="in"][data-role="student"] #profileStudentRoot .pf-side, html[data-auth="in"][data-role="student"] #profileStudentRoot .pf-tabs, html[data-auth="in"][data-role="student"] #profileStudentRoot .pf-back, html[data-auth="in"][data-role="student"] #profileStudentRoot #pfSec { display: none !important; }
+        /* umumiy: avatar, belgilar, ko'rsatkichlar */
+        html[data-auth="in"][data-role="student"] .sx-pf-av { position: relative; display: inline-block; width: var(--sz); height: var(--sz); flex: none; }
+        html[data-auth="in"][data-role="student"] .sx-pf-avi { display: grid; place-items: center; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: linear-gradient(145deg, #F8E5B2, #F0D391); font: 800 calc(var(--sz) * .34) var(--sx-display); color: #171A44; box-shadow: 0 0 0 4px var(--bg-panel), 0 14px 26px -12px rgba(74, 63, 208, .5); }
+        html[data-auth="in"][data-role="student"] .sx-pf-avi img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        html[data-auth="in"][data-role="student"] .sx-pf-avc { position: absolute; right: -2px; bottom: -2px; width: calc(var(--sz) * .36); height: calc(var(--sz) * .36); padding: 0; border: 3px solid var(--bg-panel); border-radius: 50%; background: var(--sx-fill); color: #fff; display: grid; place-items: center; cursor: pointer; }
+        html[data-auth="in"][data-role="student"] .sx-pf-avc svg { width: calc(var(--sz) * .17); height: calc(var(--sz) * .17); }
+        html[data-auth="in"][data-role="student"] .sx-pf-chip { display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 11px; border-radius: 99px; background: rgba(255, 255, 255, .18); color: #fff; font: 700 12px var(--sx-body); }
+        html[data-auth="in"][data-role="student"] .sx-pf-chip svg { width: 14px; height: 14px; }
+        html[data-auth="in"][data-role="student"] .sx-pf-chip.ok { background: #DFF3EA; color: #14694A; }
+        html[data-auth="in"][data-role="student"] .sx-pf-st { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        html[data-auth="in"][data-role="student"] .sx-pf-st small { font: 700 11.5px var(--sx-body); } html[data-auth="in"][data-role="student"] .sx-pf-st b { font: 700 22px/1.1 var(--sx-display); letter-spacing: -.02em; }
+        html[data-auth="in"][data-role="student"] .sx-pf-st small:last-child { font-weight: 500; font-size: 11px; }
+        html[data-auth="in"][data-role="student"] .sx-pf-ti.lav, html[data-auth="in"][data-role="student"] .sx-pm-ri.lav { background: var(--sx-lav); } html[data-auth="in"][data-role="student"] .sx-pf-ti.sky, html[data-auth="in"][data-role="student"] .sx-pm-ri.sky { background: var(--sx-sky); } html[data-auth="in"][data-role="student"] .sx-pf-ti.champ, html[data-auth="in"][data-role="student"] .sx-pm-ri.champ { background: var(--sx-champ); } html[data-auth="in"][data-role="student"] .sx-pf-ti.rose, html[data-auth="in"][data-role="student"] .sx-pm-ri.rose { background: rgba(214, 69, 99, .14); }
+        /* ---------- KOMPYUTER ---------- */
+        @media (min-width: 769px) {
+            html[data-auth="in"][data-role="student"] .content-view[data-view="profile"].active-view { display: grid; grid-template-columns: 290px minmax(0, 1fr); grid-template-areas: "hero hero" "side card"; gap: 18px 20px; align-items: start; max-width: 1180px; margin: 0 auto; }
+            html[data-auth="in"][data-role="student"] #sxPfHero { display: block; grid-area: hero; } html[data-auth="in"][data-role="student"] #sxPfSide { display: block; grid-area: side; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card { grid-area: card; }
+            html[data-auth="in"][data-role="student"] .sx-pfh { position: relative; min-height: 200px; border-radius: 32px; overflow: hidden; display: flex; align-items: center; gap: 22px; padding: 24px 30px; color: #fff; background: linear-gradient(120deg, #4A3FD0 0%, #3A2FB0 55%, #2A2090 100%); box-shadow: 0 26px 44px -30px rgba(58, 47, 176, .9); }
+            html[data-auth="in"][data-role="student"] .sx-pfh::before { content: ""; position: absolute; right: -60px; top: -90px; width: 300px; height: 300px; border-radius: 50%; background: rgba(255, 255, 255, .07); }
+            html[data-auth="in"][data-role="student"] .sx-pfh::after { content: ""; position: absolute; left: 260px; bottom: -110px; width: 240px; height: 240px; border-radius: 50%; background: rgba(240, 211, 145, .22); }
+            html[data-auth="in"][data-role="student"] .sx-pfh > * { position: relative; z-index: 1; }
+            html[data-auth="in"][data-role="student"] .sx-pfh .sx-pf-avi { box-shadow: 0 0 0 4px rgba(255, 255, 255, .92), 0 14px 26px -12px rgba(0, 0, 0, .4); } html[data-auth="in"][data-role="student"] .sx-pfh .sx-pf-avc { border-color: #fff; }
+            html[data-auth="in"][data-role="student"] .sx-pfh-t { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+            html[data-auth="in"][data-role="student"] .sx-pfh-t b { font: 700 30px/1.05 var(--sx-display); letter-spacing: -.025em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            html[data-auth="in"][data-role="student"] .sx-pfh-t > span { font-size: 14.5px; opacity: .85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            html[data-auth="in"][data-role="student"] .sx-pfh-c { display: flex; gap: 8px; flex-wrap: wrap; }
+            html[data-auth="in"][data-role="student"] .sx-pfh-s { margin-left: auto; display: flex; gap: 12px; flex: none; }
+            html[data-auth="in"][data-role="student"] .sx-pfh .sx-pf-st { width: 116px; padding: 13px 14px; border-radius: 20px; background: rgba(255, 255, 255, .14); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .2); }
+            html[data-auth="in"][data-role="student"] .sx-pf-tabs { display: flex; flex-direction: column; gap: 6px; }
+            html[data-auth="in"][data-role="student"] .sx-pf-tab { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; border: 0; border-radius: 20px; background: transparent; text-align: left; color: var(--fg-page); font-family: var(--sx-body); cursor: pointer; transition: background .2s, box-shadow .2s; }
+            html[data-auth="in"][data-role="student"] .sx-pf-tab:hover { background: var(--field-bg); }
+            html[data-auth="in"][data-role="student"] .sx-pf-tab.on { background: var(--bg-panel); box-shadow: 0 14px 28px -20px rgba(23, 26, 68, .45), inset 4px 0 0 var(--sx-indigo); }
+            html[data-auth="in"][data-role="student"] .sx-pf-ti { width: 42px; height: 42px; flex: none; border-radius: 14px; display: grid; place-items: center; color: var(--sx-indigo-d, #3A2FB0); } html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-pf-ti { color: #CFCBFF; }
+            html[data-auth="in"][data-role="student"] .sx-pf-ti svg, html[data-auth="in"][data-role="student"] .sx-pm-ri svg { width: 21px; height: 21px; }
+            html[data-auth="in"][data-role="student"] .sx-pf-tt { flex: 1; min-width: 0; display: flex; flex-direction: column; } html[data-auth="in"][data-role="student"] .sx-pf-tt b { font-size: 15px; font-weight: 700; } html[data-auth="in"][data-role="student"] .sx-pf-tt small { font-size: 12px; color: var(--fg-page-muted); }
+            html[data-auth="in"][data-role="student"] .sx-pf-badge { min-width: 24px; height: 24px; padding: 0 7px; box-sizing: border-box; border-radius: 99px; background: var(--sx-champ); color: #8A5A00; display: grid; place-items: center; font: 800 12px var(--sx-body); font-style: normal; } html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-pf-badge { color: #F0D391; }
+            html[data-auth="in"][data-role="student"] .sx-pf-ok { width: 24px; height: 24px; border-radius: 50%; background: rgba(61, 220, 151, .18); color: #14694A; display: grid; place-items: center; font-style: normal; } html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-pf-ok { color: #7FE3BC; }
+            html[data-auth="in"][data-role="student"] .sx-pf-ok svg { width: 14px; height: 14px; stroke-width: 2.6; }
+            html[data-auth="in"][data-role="student"] .sx-pf-comp { margin-top: 14px; padding: 18px; border-radius: 24px; background: var(--bg-panel); box-shadow: 0 14px 28px -22px rgba(23, 26, 68, .4); }
+            html[data-auth="in"][data-role="student"] .sx-pf-cr { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+            html[data-auth="in"][data-role="student"] .sx-pf-ring { --p: 0; position: relative; flex: none; width: 84px; height: 84px; border-radius: 50%; display: grid; place-items: center; background: conic-gradient(var(--sx-indigo) calc(var(--p) * 1%), var(--sx-lav) 0); transition: background .4s; }
+            html[data-auth="in"][data-role="student"] .sx-pf-ring::before { content: ""; position: absolute; inset: 9px; border-radius: 50%; background: var(--bg-panel); }
+            html[data-auth="in"][data-role="student"] .sx-pf-ring b { position: relative; font: 700 22px var(--sx-display); }
+            html[data-auth="in"][data-role="student"] .sx-pf-cr > span:last-child { display: flex; flex-direction: column; min-width: 0; } html[data-auth="in"][data-role="student"] .sx-pf-cr > span:last-child b { font: 700 17px var(--sx-display); } html[data-auth="in"][data-role="student"] .sx-pf-cr small { font-size: 12.5px; color: var(--fg-page-muted); }
+            html[data-auth="in"][data-role="student"] .sx-pf-cl { display: flex; flex-direction: column; gap: 9px; }
+            html[data-auth="in"][data-role="student"] .sx-pf-cl > div { display: flex; align-items: center; gap: 10px; font: 600 13.5px var(--sx-body); color: var(--fg-page-muted); } html[data-auth="in"][data-role="student"] .sx-pf-cl > div.ok { color: var(--fg-page); }
+            html[data-auth="in"][data-role="student"] .sx-pf-cl i { width: 20px; height: 20px; flex: none; box-sizing: border-box; border-radius: 50%; border: 2px dashed #B8B6D6; display: grid; place-items: center; }
+            html[data-auth="in"][data-role="student"] .sx-pf-cl .ok i { border: 0; background: rgba(61, 220, 151, .18); color: #14694A; } html[data-auth="in"][data-role="student"] .sx-pf-cl i svg { width: 12px; height: 12px; stroke-width: 2.8; }
+            html[data-auth="in"][data-role="student"] .sx-pf-cl span { flex: 1; }
+            html[data-auth="in"][data-role="student"] .sx-pf-cl button { border: 0; background: none; color: var(--sx-indigo-d, #3A2FB0); font: 800 12.5px var(--sx-body); cursor: pointer; padding: 0; } html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-pf-cl button { color: #CFCBFF; }
+        }
+        @media (min-width: 769px) and (max-width: 1000px) {
+            html[data-auth="in"][data-role="student"] .content-view[data-view="profile"].active-view { grid-template-columns: minmax(0, 1fr); grid-template-areas: "hero" "side" "card"; }
+            html[data-auth="in"][data-role="student"] .sx-pfh { flex-wrap: wrap; } html[data-auth="in"][data-role="student"] .sx-pfh-s { margin-left: 0; width: 100%; }
+            html[data-auth="in"][data-role="student"] .sx-pf-tabs { display: grid; grid-template-columns: 1fr 1fr; }
+        }
+        /* ---------- forma kartasi: katta forma (kompyuter) va pastdan oyna (telefon) uchun umumiy ---------- */
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 20px; align-content: start; padding: 26px 28px; margin: 0; border: 0; border-radius: 30px; background: var(--bg-panel); box-shadow: 0 20px 40px -30px rgba(23, 26, 68, .4); max-width: none; width: auto; }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .profile-form-title, html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .profile-avatar-upload, html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .profile-form-sec, html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .profile-save-row { display: none; }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .profile-form-top, html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .profile-form-grid { display: contents; }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .profile-form-field { margin: 0; min-width: 0; order: 5; }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-head { order: -5; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-avrow { order: -4; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .profile-name-field { order: 1; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .profile-form-field:has(#profileBirthInput) { order: 2; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .profile-form-field:has(#profileGenderToggle) { order: 3; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-foot { order: 20; }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card[data-sxtab="personal"] [data-sx-sec]:not([data-sx-sec="personal"]), html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card[data-sxtab="contact"] [data-sx-sec]:not([data-sx-sec="contact"]), html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card[data-sxtab="address"] [data-sx-sec]:not([data-sx-sec="address"]), html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card[data-sxtab="social"] [data-sx-sec]:not([data-sx-sec="social"]) { display: none; }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card:not([data-sxtab="personal"]) .sx-pf-avrow { display: none; }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-head { grid-column: 1 / -1; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-head > div { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-head b { font: 700 24px/1.15 var(--sx-display); letter-spacing: -.02em; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-head small { font-size: 13.5px; color: var(--fg-page-muted); }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-state { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 99px; background: rgba(61, 220, 151, .16); color: #14694A; font: 700 12.5px var(--sx-body); white-space: nowrap; } html[data-auth="in"][data-role="student"][data-theme="dark"] .content-view[data-view="profile"] .profile-form-card .sx-pf-state { color: #7FE3BC; }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-state svg { width: 14px; height: 14px; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-state.dirty { background: var(--sx-champ); color: #8A5A00; } html[data-auth="in"][data-role="student"][data-theme="dark"] .content-view[data-view="profile"] .profile-form-card .sx-pf-state.dirty { color: #F0D391; }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-x { display: none; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 50%; background: var(--field-bg); color: var(--fg-page); place-items: center; cursor: pointer; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-x svg { width: 18px; height: 18px; }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-avrow { grid-column: 1 / -1; display: flex; align-items: center; gap: 18px; padding: 16px 18px; border-radius: 22px; background: var(--sx-soft); flex-wrap: wrap; }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-avt { flex: 1 1 160px; display: flex; flex-direction: column; min-width: 0; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-avt b { font-size: 15.5px; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-avt small { font-size: 12.5px; color: var(--fg-page-muted); }
+        html[data-auth="in"][data-role="student"] .sx-pf-btn { height: 46px; padding: 0 20px; border: 0; border-radius: 15px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font: 700 14px var(--sx-body); cursor: pointer; white-space: nowrap; transition: filter .2s, transform .15s; }
+        html[data-auth="in"][data-role="student"] .sx-pf-btn svg { width: 18px; height: 18px; } html[data-auth="in"][data-role="student"] .sx-pf-btn:active { transform: scale(.97); }
+        html[data-auth="in"][data-role="student"] .sx-pf-btn.ghost { background: var(--field-bg); color: var(--fg-page); } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-avrow .sx-pf-btn.ghost { background: var(--bg-panel); }
+        html[data-auth="in"][data-role="student"] .sx-pf-btn.pri { background: linear-gradient(135deg, #5B4FE8, #3A2FB0); color: #fff; box-shadow: 0 14px 24px -12px rgba(74, 63, 208, .8); } html[data-auth="in"][data-role="student"] .sx-pf-btn.pri:hover { filter: brightness(1.08); }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-del { width: 46px; height: 46px; padding: 0; border: 0; border-radius: 15px; background: var(--bg-panel); color: #B0304F; display: grid; place-items: center; cursor: pointer; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-del svg { width: 19px; height: 19px; }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-foot { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 6px; padding-top: 20px; border-top: 1px solid rgba(23, 26, 68, .08); }
+        html[data-auth="in"][data-role="student"][data-theme="dark"] .content-view[data-view="profile"] .profile-form-card .sx-pf-foot { border-top-color: rgba(255, 255, 255, .08); }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-last { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--fg-page-muted); } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-last i { width: 9px; height: 9px; border-radius: 50%; background: #E0A020; }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-act { display: flex; gap: 10px; }
+        /* maydonlar: maketdagidek */
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .profile-form-field label { display: block; margin: 0 0 6px; font: 700 12.5px var(--sx-body); letter-spacing: 0; text-transform: none; color: var(--fg-page-muted); }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .profile-form-field input[type="text"], html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .profile-form-field input[type="tel"], html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .profile-select-wrap select, html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .profile-lang-display { box-sizing: border-box; width: 100%; height: 50px; padding: 0 14px; border: 2px solid transparent; border-radius: 15px; background: var(--sx-soft); color: var(--fg-page); font: 600 15px var(--sx-body); outline: none; transition: border-color .2s, box-shadow .2s; }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .profile-form-field input:focus, html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .profile-select-wrap select:focus { border-color: var(--sx-indigo); box-shadow: 0 0 0 4px rgba(74, 63, 208, .18); }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .profile-lang-display { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .profile-input-icon { position: relative; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .profile-input-icon svg { position: absolute; left: 14px; top: 50%; width: 19px; height: 19px; transform: translateY(-50%); color: var(--fg-page-muted); pointer-events: none; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .profile-input-icon input { padding-left: 44px; }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .profile-gender-toggle { display: flex; box-sizing: border-box; height: 50px; padding: 4px; gap: 0; border: 0; border-radius: 17px; background: var(--sx-soft); }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .gender-option { flex: 1; position: relative; display: block; cursor: pointer; margin: 0; padding: 0; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .gender-option input { position: absolute; opacity: 0; pointer-events: none; }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .gender-option span { display: grid; place-items: center; height: 100%; border-radius: 13px; font: 600 14px var(--sx-body); color: var(--fg-page-muted); transition: background .2s, box-shadow .2s; }
+        html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .gender-option:has(input:checked) span { background: var(--bg-panel); color: var(--fg-page); font-weight: 800; box-shadow: 0 6px 14px -8px rgba(23, 26, 68, .45); }
+        /* ---------- TELEFON ---------- */
+        @media (max-width: 768px) {
+            html[data-auth="in"][data-role="student"] .content-view[data-view="profile"].active-view { display: block; }
+            html[data-auth="in"][data-role="student"] #sxPfM { display: block; }
+            html[data-auth="in"][data-role="student"] .sx-pm-top { display: flex; justify-content: flex-end; margin: 0 0 10px; }
+            html[data-auth="in"][data-role="student"] .sx-pm-edit { height: 38px; padding: 0 14px; border: 0; border-radius: 99px; background: var(--bg-panel); color: var(--sx-indigo-d, #3A2FB0); display: inline-flex; align-items: center; gap: 6px; font: 700 13px var(--sx-body); box-shadow: 0 8px 18px -12px rgba(23, 26, 68, .4); cursor: pointer; }
+            html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-pm-edit { color: #CFCBFF; } html[data-auth="in"][data-role="student"] .sx-pm-edit svg { width: 16px; height: 16px; }
+            html[data-auth="in"][data-role="student"] .sx-pm-hero { position: relative; margin-bottom: 14px; padding: 22px 20px 18px; border-radius: 32px; overflow: hidden; background: linear-gradient(160deg, #E7E4FF 0%, #F6F4FF 55%, #fff 100%); box-shadow: 0 20px 34px -24px rgba(74, 63, 208, .55); }
+            html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-pm-hero { background: linear-gradient(160deg, #2C2A78 0%, #20224F 60%, #1B1D45 100%); }
+            html[data-auth="in"][data-role="student"] .sx-pm-hero::before { content: ""; position: absolute; right: -60px; top: -70px; width: 200px; height: 200px; border-radius: 50%; background: rgba(255, 255, 255, .6); } html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-pm-hero::before { background: rgba(255, 255, 255, .06); }
+            html[data-auth="in"][data-role="student"] .sx-pm-hero::after { content: ""; position: absolute; left: -40px; bottom: -60px; width: 150px; height: 150px; border-radius: 50%; background: rgba(240, 211, 145, .35); }
+            html[data-auth="in"][data-role="student"] .sx-pm-hero > * { position: relative; z-index: 1; }
+            html[data-auth="in"][data-role="student"] .sx-pm-hc { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+            html[data-auth="in"][data-role="student"] .sx-pm-hc > div:nth-child(2) { display: flex; flex-direction: column; gap: 2px; max-width: 100%; } html[data-auth="in"][data-role="student"] .sx-pm-hc b { font: 700 25px/1.15 var(--sx-display); letter-spacing: -.02em; overflow-wrap: anywhere; } html[data-auth="in"][data-role="student"] .sx-pm-hc > div:nth-child(2) > span { font-size: 13.5px; color: var(--fg-page-muted); }
+            html[data-auth="in"][data-role="student"] .sx-pm-chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+            html[data-auth="in"][data-role="student"] .sx-pm-hero .sx-pf-chip { background: var(--bg-panel); color: var(--fg-page-muted); } html[data-auth="in"][data-role="student"] .sx-pm-hero .sx-pf-chip.ok { background: #DFF3EA; color: #14694A; }
+            html[data-auth="in"][data-role="student"] .sx-pm-stats { display: flex; gap: 8px; margin-top: 16px; }
+            html[data-auth="in"][data-role="student"] .sx-pm-hero .sx-pf-st { flex: 1; padding: 12px; border-radius: 20px; background: var(--bg-panel); } html[data-auth="in"][data-role="student"] .sx-pm-hero .sx-pf-st small { color: var(--fg-page-muted); }
+            html[data-auth="in"][data-role="student"] .sx-pm-g { margin-bottom: 12px; }
+            html[data-auth="in"][data-role="student"] .sx-pm-gt { margin: 0 6px 7px; font: 800 12px var(--sx-body); letter-spacing: .06em; color: var(--fg-page-muted); }
+            html[data-auth="in"][data-role="student"] .sx-pm-gl { border-radius: 24px; background: var(--bg-panel); box-shadow: 0 10px 24px -18px rgba(23, 26, 68, .4); overflow: hidden; }
+            html[data-auth="in"][data-role="student"] .sx-pm-r { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; border: 0; border-bottom: 1px solid rgba(23, 26, 68, .07); background: none; text-align: left; color: var(--fg-page); font-family: var(--sx-body); cursor: pointer; }
+            html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-pm-r { border-bottom-color: rgba(255, 255, 255, .07); } html[data-auth="in"][data-role="student"] .sx-pm-r:last-child { border-bottom: 0; } html[data-auth="in"][data-role="student"] .sx-pm-r:active { background: var(--field-bg); }
+            html[data-auth="in"][data-role="student"] .sx-pm-ri { width: 38px; height: 38px; flex: none; border-radius: 13px; display: grid; place-items: center; color: var(--sx-indigo-d, #3A2FB0); } html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-pm-ri { color: #CFCBFF; }
+            html[data-auth="in"][data-role="student"] .sx-pm-ri svg { width: 19px; height: 19px; }
+            html[data-auth="in"][data-role="student"] .sx-pm-r b { flex: 1; min-width: 0; font-size: 15px; font-weight: 700; }
+            html[data-auth="in"][data-role="student"] .sx-pm-rv { max-width: 170px; font: 600 14px var(--sx-body); color: var(--fg-page-muted); text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } html[data-auth="in"][data-role="student"] .sx-pm-rv.empty { color: var(--sx-indigo); opacity: .85; } html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-pm-rv.empty { color: #CFCBFF; }
+            html[data-auth="in"][data-role="student"] .sx-pm-rc { color: #A0A4C4; display: grid; } html[data-auth="in"][data-role="student"] .sx-pm-rc svg { width: 17px; height: 17px; }
+            html[data-auth="in"][data-role="student"] .sx-pm-r.out b { color: #B0304F; } html[data-auth="in"][data-role="student"][data-theme="dark"] .sx-pm-r.out b { color: #FFA3BC; }
+            /* tahrirlash: pastdan chiqadigan oyna */
+            html[data-auth="in"][data-role="student"] #sxPfBd { display: block; position: fixed; inset: 0; z-index: 100010; background: rgba(10, 12, 40, .55); opacity: 0; pointer-events: none; transition: opacity .3s; }
+            html[data-auth="in"][data-role="student"] body.sx-pf-sheet #sxPfBd { opacity: 1; pointer-events: auto; }
+            html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card { position: fixed; left: 0; right: 0; bottom: 0; z-index: 100011; grid-template-columns: minmax(0, 1fr); gap: 14px; max-height: 88vh; overflow-y: auto; border-radius: 30px 30px 0 0; padding: 12px 20px calc(24px + env(safe-area-inset-bottom, 0px)); box-shadow: 0 -24px 50px -20px rgba(0, 0, 0, .5); transform: translateY(110%); visibility: hidden; transition: transform .4s cubic-bezier(.2, 1, .3, 1), visibility 0s .4s; }
+            html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card[data-sxopen] { transform: none; visibility: visible; transition: transform .4s cubic-bezier(.2, 1, .3, 1), visibility 0s; }
+            html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card::before { content: ""; display: block; width: 44px; height: 5px; margin: 0 auto 2px; border-radius: 99px; background: rgba(23, 26, 68, .18); order: -10; }
+            html[data-auth="in"][data-role="student"][data-theme="dark"] .content-view[data-view="profile"] .profile-form-card::before { background: rgba(255, 255, 255, .22); }
+            html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-head b { font-size: 22px; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-state { display: none; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-x { display: grid; }
+            html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-foot { border-top: 0; padding-top: 4px; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-last { display: none; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-act { width: 100%; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-act .sx-pf-btn { flex: 1; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-act .sx-pf-btn.pri { flex: 1.4; }
+            html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-avrow { gap: 14px; } html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card .sx-pf-avrow .sx-pf-btn.ghost { flex: 1; }
+        }
+        @media (prefers-reduced-motion: reduce) { html[data-auth="in"][data-role="student"] .content-view[data-view="profile"] .profile-form-card, #sxPfBd, html[data-auth="in"][data-role="student"] .sx-pf-ring { transition: none; } }
+        /* =====================================================================
+           ADMIN (Obunalar): yangi dizayn. Funksiyalar o'zgarmagan. Kompyuterda yon menyu yo'q.
+           ===================================================================== */
+        html[data-auth="in"][data-role="admin"] body { font-family: var(--sx-body); }
+        html[data-auth="in"][data-role="admin"] .sb-page { max-width: 1240px; gap: 16px; font-family: var(--sx-body); }
+        /* parol ogohlantirishi */
+        html[data-auth="in"][data-role="admin"] .sb-note { position: relative; gap: 10px 14px; padding: 14px 18px 14px 70px; border: 0; border-radius: 22px; background: linear-gradient(135deg, #FBEFD0, #F6E7C1); color: #5A3A00; box-shadow: 0 14px 28px -22px rgba(160, 100, 0, .6); }
+        html[data-auth="in"][data-role="admin"] .sb-note::before { content: ""; position: absolute; left: 16px; top: 50%; width: 40px; height: 40px; transform: translateY(-50%); border-radius: 13px; background: rgba(255, 255, 255, .6); -webkit-mask: none; }
+        html[data-auth="in"][data-role="admin"] .sb-note::after { content: ""; position: absolute; left: 26px; top: 50%; width: 20px; height: 20px; transform: translateY(-50%); background: #5A3A00; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l10 18H2z'/%3E%3Cpath d='M12 10v5M12 18v.5'/%3E%3C/svg%3E") center / 20px no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l10 18H2z'/%3E%3Cpath d='M12 10v5M12 18v.5'/%3E%3C/svg%3E") center / 20px no-repeat; }
+        html[data-auth="in"][data-role="admin"] .sb-note span { font-weight: 600; font-size: 14px; flex: 1 1 240px; }
+        html[data-auth="in"][data-role="admin"] .sb-note .acc-btn { height: 38px; padding: 0 18px; border-radius: 15px; background: #fff; color: #7A4E00; font-weight: 700; font-size: 13px; }
+        html[data-auth="in"][data-role="admin"][data-theme="dark"] .sb-note { background: linear-gradient(135deg, #4A3A16, #3F3217); color: #F6E7C1; } html[data-auth="in"][data-role="admin"][data-theme="dark"] .sb-note::before { background: rgba(255, 255, 255, .12); } html[data-auth="in"][data-role="admin"][data-theme="dark"] .sb-note::after { background: #F6E7C1; } html[data-auth="in"][data-role="admin"][data-theme="dark"] .sb-note .acc-btn { background: rgba(255, 255, 255, .14); color: #F6E7C1; }
+        /* sarlavha: katta nom, ko'rsatkich kartalari, asosiy tugma */
+        html[data-auth="in"][data-role="admin"] .sb-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 20px; align-items: center; }
+        html[data-auth="in"][data-role="admin"] .sb-head > div:first-child { display: contents; }
+        html[data-auth="in"][data-role="admin"] .sb-head h2 { grid-column: 1; grid-row: 1; margin: 0; font: 700 30px/1.1 var(--sx-display); letter-spacing: -.025em; }
+        html[data-auth="in"][data-role="admin"] .sb-new { grid-column: 2; grid-row: 1; display: inline-flex; align-items: center; gap: 8px; height: 50px; padding: 0 24px; border-radius: 16px; background: linear-gradient(135deg, #5B4FE8, #3A2FB0); color: #fff; font: 700 15px var(--sx-body); box-shadow: 0 14px 24px -12px rgba(74, 63, 208, .8); transition: filter .2s, transform .15s; }
+        html[data-auth="in"][data-role="admin"] .sb-new:hover { filter: brightness(1.08); } html[data-auth="in"][data-role="admin"] .sb-new:active { transform: scale(.97); }
+        html[data-auth="in"][data-role="admin"] .sb-sum { grid-column: 1 / -1; grid-row: 2; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 0; }
+        html[data-auth="in"][data-role="admin"] .sb-k { display: flex; align-items: center; gap: 14px; min-width: 0; padding: 16px 18px; border-radius: 24px; background: var(--bg-panel); box-shadow: 0 14px 28px -22px rgba(23, 26, 68, .4); }
+        html[data-auth="in"][data-role="admin"] .sb-ki { flex: none; width: 46px; height: 46px; border-radius: 15px; display: grid; place-items: center; background: var(--sx-lav); color: var(--sx-indigo-d); } html[data-auth="in"][data-role="admin"] .sb-ki svg { width: 22px; height: 22px; }
+        html[data-auth="in"][data-role="admin"] .sb-k.c2 .sb-ki { background: rgba(61, 220, 151, .18); color: #14694A; } html[data-auth="in"][data-role="admin"][data-theme="dark"] .sb-k.c2 .sb-ki { color: #7FE3BC; }
+        html[data-auth="in"][data-role="admin"] .sb-k.c3 .sb-ki { background: rgba(214, 69, 99, .14); color: #B0304F; } html[data-auth="in"][data-role="admin"][data-theme="dark"] .sb-k.c3 .sb-ki { color: #FF9CA0; }
+        html[data-auth="in"][data-role="admin"] .sb-kt { display: flex; flex-direction: column; min-width: 0; }
+        html[data-auth="in"][data-role="admin"] .sb-kt small { font: 700 12.5px var(--sx-body); color: var(--fg-page-muted); } html[data-auth="in"][data-role="admin"] .sb-kt small.s { font-weight: 500; font-size: 12px; }
+        html[data-auth="in"][data-role="admin"] .sb-kt b { font: 700 24px/1.15 var(--sx-display); letter-spacing: -.02em; color: var(--fg-page); white-space: nowrap; font-variant-numeric: tabular-nums; }
+        html[data-auth="in"][data-role="admin"] .sb-k.bad .sb-kt b { color: #B0304F; } html[data-auth="in"][data-role="admin"][data-theme="dark"] .sb-k.bad .sb-kt b { color: #FF9CA0; }
+        /* qidiruv, saralash, filtrlar */
+        html[data-auth="in"][data-role="admin"] .sb-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+        html[data-auth="in"][data-role="admin"] .sb-bar .bl-q { flex: 1 1 280px; max-width: none; height: 46px; padding: 0 14px 0 46px; border: 0; border-radius: 16px; background: var(--bg-panel) url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238A8EAF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><path d='M20 20l-4-4'/></svg>") no-repeat 15px center / 19px; box-shadow: 0 8px 18px -14px rgba(23, 26, 68, .5); font: 500 14px var(--sx-body); }
+        html[data-auth="in"][data-role="admin"] .sb-bar .bl-q { position: relative; }
+        html[data-auth="in"][data-role="admin"] .sb-sort { order: 2; margin: 0; min-width: 200px; height: 46px; padding: 0 40px 0 14px; -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238A8EAF' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; background-size: 17px; border: 0; border-radius: 16px; background: var(--bg-panel); box-shadow: 0 8px 18px -14px rgba(23, 26, 68, .5); font: 600 14px var(--sx-body); color: var(--fg-page); }
+        html[data-auth="in"][data-role="admin"] .sb-bar .bl-filters { order: 3; flex: 1 0 100%; gap: 8px; }
+        html[data-auth="in"][data-role="admin"] .bl-chip { display: inline-flex; align-items: center; gap: 7px; height: 38px; padding: 0 14px; border: 0; border-radius: 99px; background: var(--bg-panel); color: var(--fg-page); font: 700 13px var(--sx-body); box-shadow: 0 6px 14px -12px rgba(23, 26, 68, .5); transition: background .2s, box-shadow .2s; }
+        html[data-auth="in"][data-role="admin"] .bl-chip i { min-width: 20px; height: 20px; margin: 0; padding: 0 6px; box-sizing: border-box; border-radius: 99px; display: grid; place-items: center; background: var(--sx-lav); color: var(--sx-indigo-d); opacity: 1; font: 800 11.5px var(--sx-body); font-style: normal; }
+        html[data-auth="in"][data-role="admin"] .bl-chip:hover { border: 0; } html[data-auth="in"][data-role="admin"] .bl-chip.on { background: linear-gradient(135deg, #5B4FE8, #3A2FB0); color: #fff; box-shadow: 0 10px 18px -10px rgba(74, 63, 208, .8); } html[data-auth="in"][data-role="admin"] .bl-chip.on i { background: rgba(255, 255, 255, .22); color: #fff; }
+        /* ro'yxat */
+        html[data-auth="in"][data-role="admin"] .sb-list { border: 0; border-radius: 28px; background: var(--bg-panel); box-shadow: 0 20px 40px -30px rgba(23, 26, 68, .4); overflow: visible; }
+        html[data-auth="in"][data-role="admin"] .sb-th, html[data-auth="in"][data-role="admin"] .sb-row { grid-template-columns: minmax(0, 2.1fr) minmax(0, 4fr) auto; gap: 8px 20px; padding: 14px 22px 14px 28px; }
+        html[data-auth="in"][data-role="admin"] .sb-th { padding-top: 16px; padding-bottom: 10px; font-size: 11.5px; font-weight: 800; letter-spacing: .07em; }
+        html[data-auth="in"][data-role="admin"] .sb-row { position: relative; border-top: 1px solid rgba(23, 26, 68, .06); } html[data-auth="in"][data-role="admin"][data-theme="dark"] .sb-row { border-top-color: rgba(255, 255, 255, .07); }
+        html[data-auth="in"][data-role="admin"] .sb-row::before { content: ""; position: absolute; left: 0; top: 14px; bottom: 14px; width: 4px; border-radius: 0 4px 4px 0; background: var(--rc, #6b7280); }
+        html[data-auth="in"][data-role="admin"] .sb-row.t-active { --rc: #25B97A; } html[data-auth="in"][data-role="admin"] .sb-row.t-trial { --rc: #4A3FD0; } html[data-auth="in"][data-role="admin"] .sb-row.t-debt { --rc: #D6455F; } html[data-auth="in"][data-role="admin"] .sb-row.t-blocked { --rc: #6b7280; } html[data-auth="in"][data-role="admin"] .sb-row.t-none { --rc: #E0A020; }
+        html[data-auth="in"][data-role="admin"][data-theme="dark"] .sb-row.t-trial { --rc: #8A7CFF; }
+        html[data-auth="in"][data-role="admin"] .sb-row:first-of-type { border-top: 0; }
+        html[data-auth="in"][data-role="admin"] .sb-row:hover { background: var(--sx-soft); } html[data-auth="in"][data-role="admin"] .sb-row:last-child { border-radius: 0 0 28px 28px; }
+        html[data-auth="in"][data-role="admin"] .sb-dot { display: none; }
+        html[data-auth="in"][data-role="admin"] .sb-tile { flex: none; width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: color-mix(in srgb, var(--rc, #6b7280) 14%, transparent); color: var(--rc, #6b7280); font: 800 18px var(--sx-display); }
+        html[data-auth="in"][data-role="admin"] .br-thumb { width: 44px; height: 44px; border-radius: 14px; }
+        html[data-auth="in"][data-role="admin"] .sb-nm, html[data-auth="in"][data-role="admin"] .sb-link { font: 700 15px var(--sx-body); }
+        html[data-auth="in"][data-role="admin"] .sb-fee { font-weight: 700; }
+        html[data-auth="in"][data-role="admin"] .sb-list .acc-badge { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 11px; border-radius: 99px; font: 700 12px var(--sx-body); white-space: nowrap; background: var(--sx-lav); color: var(--sx-indigo-d); }
+        html[data-auth="in"][data-role="admin"] .sb-list .acc-badge::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+        html[data-auth="in"][data-role="admin"] .sb-list .acc-badge.bl-ok { background: #DFF3EA; color: #14694A; } html[data-auth="in"][data-role="admin"] .sb-list .acc-badge.bl-trial { background: var(--sx-lav); color: var(--sx-indigo-d); }
+        html[data-auth="in"][data-role="admin"] .sb-list .acc-badge.bl-warn { background: var(--sx-champ); color: #8A5A00; } html[data-auth="in"][data-role="admin"] .sb-list .acc-badge.bl-off { background: #FBE4E9; color: #B0304F; }
+        html[data-auth="in"][data-role="admin"][data-theme="dark"] .sb-list .acc-badge.bl-ok { background: rgba(61, 220, 151, .16); color: #7FE3BC; } html[data-auth="in"][data-role="admin"][data-theme="dark"] .sb-list .acc-badge.bl-warn { color: #F0D391; } html[data-auth="in"][data-role="admin"][data-theme="dark"] .sb-list .acc-badge.bl-off { background: rgba(214, 69, 99, .18); color: #FF9CA0; }
+        html[data-auth="in"][data-role="admin"] .sb-row.t-debt .sb-c:nth-child(3) .bl-sub { color: #B0304F; font-weight: 600; } html[data-auth="in"][data-role="admin"][data-theme="dark"] .sb-row.t-debt .sb-c:nth-child(3) .bl-sub { color: #FF9CA0; }
+        /* qator amallari */
+        html[data-auth="in"][data-role="admin"] .sb-act { gap: 8px; }
+        html[data-auth="in"][data-role="admin"] .sb-act .acc-btn:not(.ghost) { position: relative; height: 42px; padding: 0 16px 0 42px; border-radius: 15px; background: linear-gradient(135deg, #5B4FE8, #3A2FB0); color: #fff; font: 700 13.5px var(--sx-body); box-shadow: 0 12px 20px -12px rgba(74, 63, 208, .8); transition: filter .2s, transform .15s; }
+        html[data-auth="in"][data-role="admin"] .sb-act .acc-btn:not(.ghost)::before { content: ""; position: absolute; left: 15px; top: 50%; width: 18px; height: 18px; transform: translateY(-50%); background: #fff; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7a2 2 0 0 1 2-2h11v4'/%3E%3Cpath d='M4 7v10a2 2 0 0 0 2 2h14V9H6a2 2 0 0 1-2-2z'/%3E%3Ccircle cx='16.5' cy='14' r='1.2' fill='black'/%3E%3C/svg%3E") center / 18px no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7a2 2 0 0 1 2-2h11v4'/%3E%3Cpath d='M4 7v10a2 2 0 0 0 2 2h14V9H6a2 2 0 0 1-2-2z'/%3E%3Ccircle cx='16.5' cy='14' r='1.2' fill='black'/%3E%3C/svg%3E") center / 18px no-repeat; }
+        html[data-auth="in"][data-role="admin"] .sb-act .acc-btn:not(.ghost):hover { filter: brightness(1.08); }
+        html[data-auth="in"][data-role="admin"] .bl-more summary { width: 42px; height: 42px; padding: 0; display: grid; place-items: center; border-radius: 15px; background: var(--field-bg); color: var(--fg-page); font-size: 20px; line-height: 1; letter-spacing: 0; }
+        html[data-auth="in"][data-role="admin"] .bl-more[open] summary { background: var(--sx-lav); color: var(--sx-indigo-d); }
+        html[data-auth="in"][data-role="admin"] .bl-menu { min-width: 270px; padding: 8px; border: 0; border-radius: 22px; background: var(--bg-panel); box-shadow: 0 30px 60px -20px rgba(23, 26, 68, .55), 0 0 0 1px rgba(23, 26, 68, .06); }
+        html[data-auth="in"][data-role="admin"][data-theme="dark"] .bl-menu { box-shadow: 0 30px 60px -20px rgba(0, 0, 0, .8), 0 0 0 1px rgba(255, 255, 255, .08); }
+        html[data-auth="in"][data-role="admin"] .bl-menu button { position: relative; display: flex; align-items: center; width: 100%; min-height: 46px; padding: 6px 12px 6px 54px; border-radius: 14px; font: 600 14px var(--sx-body); color: var(--fg-page); }
+        html[data-auth="in"][data-role="admin"] .bl-menu button::before { content: ""; position: absolute; left: 10px; top: 50%; width: 32px; height: 32px; transform: translateY(-50%); border-radius: 11px; background: var(--field-bg); }
+        html[data-auth="in"][data-role="admin"] .bl-menu button::after { content: ""; position: absolute; left: 10px; top: 50%; width: 32px; height: 32px; transform: translateY(-50%); background: var(--sx-indigo-d); -webkit-mask: var(--ico) center / 17px no-repeat; mask: var(--ico) center / 17px no-repeat; }
+        html[data-auth="in"][data-role="admin"][data-theme="dark"] .bl-menu button::after { background: #CFCBFF; }
+        html[data-auth="in"][data-role="admin"] .bl-menu button.dng { color: #B0304F; } html[data-auth="in"][data-role="admin"] .bl-menu button.dng::before { background: #FBE4E9; } html[data-auth="in"][data-role="admin"] .bl-menu button.dng::after { background: #B0304F; }
+        html[data-auth="in"][data-role="admin"][data-theme="dark"] .bl-menu button.dng { color: #FF9CA0; } html[data-auth="in"][data-role="admin"][data-theme="dark"] .bl-menu button.dng::before { background: rgba(214, 69, 99, .18); } html[data-auth="in"][data-role="admin"][data-theme="dark"] .bl-menu button.dng::after { background: #FF9CA0; }
+        html[data-auth="in"][data-role="admin"] .bl-sep { display: block; height: 1px; margin: 5px 8px; background: rgba(23, 26, 68, .08); } html[data-auth="in"][data-role="admin"][data-theme="dark"] .bl-sep { background: rgba(255, 255, 255, .09); }
+        html[data-auth="in"][data-role="admin"] .bl-menu button[data-a="open"] { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5'/%3E%3C/svg%3E"); }
+        html[data-auth="in"][data-role="admin"] .bl-menu button[data-a="hist"] { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8'/%3E%3Cpath d='M3 3v5h5M12 7v5l3 2'/%3E%3C/svg%3E"); }
+        html[data-auth="in"][data-role="admin"] .bl-menu button[data-a="ed"] { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 20h4L19 9l-4-4L4 16z'/%3E%3Cpath d='M13.5 6.5l4 4'/%3E%3C/svg%3E"); }
+        html[data-auth="in"][data-role="admin"] .bl-menu button[data-a="br"] { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='16' rx='3'/%3E%3Ccircle cx='9' cy='10' r='2'/%3E%3Cpath d='M21 16l-5-5-9 9'/%3E%3C/svg%3E"); }
+        html[data-auth="in"][data-role="admin"] .bl-menu button[data-a="gr"] { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 3h12M6 21h12M7 3c0 5 5 6 5 9s-5 4-5 9M17 3c0 5-5 6-5 9s5 4 5 9'/%3E%3C/svg%3E"); }
+        html[data-auth="in"][data-role="admin"] .bl-menu button[data-a="cp"] { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='11' height='11' rx='2'/%3E%3Cpath d='M5 15V6a2 2 0 0 1 2-2h8'/%3E%3C/svg%3E"); }
+        html[data-auth="in"][data-role="admin"] .bl-menu button[data-a="pw"] { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='8' cy='15' r='4'/%3E%3Cpath d='M11 12l9-9M16 7l3 3M14 9l2 2'/%3E%3C/svg%3E"); }
+        html[data-auth="in"][data-role="admin"] .bl-menu button[data-a="tg"] { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M5.6 5.6l12.8 12.8'/%3E%3C/svg%3E"); }
+        html[data-auth="in"][data-role="admin"] .bl-menu button[data-a="rm"] { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13'/%3E%3C/svg%3E"); }
+        
+        /* ---------- oynalar (To'lov, Yangi CEO, tahrirlash va boshqalar) ---------- */
+        html[data-auth="in"][data-role="admin"] .acc-modal { padding: 24px 26px; border: 0; border-radius: 30px; background: var(--bg-panel); box-shadow: 0 40px 80px -30px rgba(10, 12, 40, .7); font-family: var(--sx-body); }
+        html[data-auth="in"][data-role="admin"] .acc-modal h3 { margin: 0 0 16px; font: 700 22px/1.2 var(--sx-display); letter-spacing: -.02em; }
+        html[data-auth="in"][data-role="admin"] .acc-f { font: 700 12.5px var(--sx-body); color: var(--fg-page-muted); }
+        html[data-auth="in"][data-role="admin"] .acc-f input, html[data-auth="in"][data-role="admin"] .acc-f select, html[data-auth="in"][data-role="admin"] .acc-f textarea { height: 50px; margin-top: 6px; padding: 0 14px; border: 2px solid transparent; border-radius: 15px; background: var(--sx-soft); color: var(--fg-page); font: 600 15px var(--sx-body); outline: none; transition: border-color .2s, box-shadow .2s; box-sizing: border-box; width: 100%; }
+        html[data-auth="in"][data-role="admin"] .acc-f textarea { height: auto; padding: 12px 14px; }
+        html[data-auth="in"][data-role="admin"] .acc-f input:focus, html[data-auth="in"][data-role="admin"] .acc-f select:focus, html[data-auth="in"][data-role="admin"] .acc-f textarea:focus { border-color: var(--sx-indigo); box-shadow: 0 0 0 4px rgba(74, 63, 208, .18); }
+        html[data-auth="in"][data-role="admin"] .acc-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: end; } html[data-auth="in"][data-role="admin"] .acc-row2:has(> .acc-btn) { grid-template-columns: 1fr auto; } html[data-auth="in"][data-role="admin"] .acc-row2 .acc-btn { height: 50px; margin-bottom: 12px; }
+        html[data-auth="in"][data-role="admin"] .acc-foot { gap: 10px; margin-top: 10px; }
+        html[data-auth="in"][data-role="admin"] .acc-foot .acc-btn { height: 46px; padding: 0 20px; border-radius: 15px; font: 700 14px var(--sx-body); }
+        html[data-auth="in"][data-role="admin"] .acc-foot .acc-btn:not(.ghost) { background: linear-gradient(135deg, #5B4FE8, #3A2FB0); box-shadow: 0 14px 24px -12px rgba(74, 63, 208, .8); }
+        html[data-auth="in"][data-role="admin"] .acc-modal .acc-btn.ghost { background: var(--field-bg); color: var(--fg-page); }
+        html[data-auth="in"][data-role="admin"] .bl-sec { border-top: 0; margin-top: 8px; padding-top: 4px; }
+        html[data-auth="in"][data-role="admin"] .bl-sec h4 { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; font: 800 12px var(--sx-body); letter-spacing: .07em; text-transform: uppercase; color: var(--fg-page-muted); }
+        html[data-auth="in"][data-role="admin"] .bl-sec h4::after { content: ""; flex: 1; height: 1px; background: rgba(23, 26, 68, .08); } html[data-auth="in"][data-role="admin"][data-theme="dark"] .bl-sec h4::after { background: rgba(255, 255, 255, .09); }
+        html[data-auth="in"][data-role="admin"] .bl-plans { gap: 10px; } html[data-auth="in"][data-role="admin"] .bl-plan span { padding: 12px 14px; border: 0; border-radius: 17px; background: var(--sx-soft); }
+        html[data-auth="in"][data-role="admin"] .bl-plan input:checked + span { background: var(--sx-lav); box-shadow: inset 0 0 0 2px var(--sx-indigo); }
+        html[data-auth="in"][data-role="admin"] .bl-note { padding: 12px 14px; border-radius: 16px; background: var(--sx-lav); color: var(--sx-indigo-d); font-weight: 600; }
+        html[data-auth="in"][data-role="admin"] .bl-note .good { color: #14694A; } html[data-auth="in"][data-role="admin"][data-theme="dark"] .bl-note .good { color: #7FE3BC; }
+        html[data-auth="in"][data-role="admin"] .bl-sum { gap: 10px; } html[data-auth="in"][data-role="admin"] .bl-sum > div { padding: 12px 14px; border-radius: 18px; background: var(--sx-soft); } html[data-auth="in"][data-role="admin"] .bl-sum small { font-weight: 700; } html[data-auth="in"][data-role="admin"] .bl-sum b { font: 700 18px var(--sx-display); }
+        html[data-auth="in"][data-role="admin"] .acc-modal .bl-chips { gap: 8px; } html[data-auth="in"][data-role="admin"] .acc-modal .bl-chip { height: 36px; padding: 0 14px; box-shadow: none; background: var(--sx-soft); }
+        html[data-auth="in"][data-role="admin"] .acc-modal .bl-chip:hover { background: var(--sx-lav); }
+        /* ---------- TELEFON: kartalar, suzuvchi dock ---------- */
+        html[data-auth="in"][data-role="admin"] .header .icon-btn { background: var(--field-bg); border-radius: 50%; } html[data-auth="in"][data-role="admin"] .header #profileBtn { background: linear-gradient(145deg, #5B4FE8, #3A2FB0); color: #fff; }
+        #adDock { display: none; }
+        @media (max-width: 768px) {
+            html[data-auth="in"][data-role="admin"] .header { background: transparent; box-shadow: none; border-radius: 0; border: 0; padding: 6px 2px 8px; min-height: 0; -webkit-backdrop-filter: none; backdrop-filter: none; }
+            html[data-auth="in"][data-role="admin"] .header .icon-btn { background: var(--bg-panel); box-shadow: 0 8px 20px -12px rgba(23, 26, 68, .4); }
+            html[data-auth="in"][data-role="admin"] #headerThemeBtn { display: flex !important; }
+            html[data-auth="in"][data-role="admin"] .content { padding-bottom: calc(112px + env(safe-area-inset-bottom, 0px)); }
+            html[data-auth="in"][data-role="admin"] .sb-page { gap: 12px; }
+            html[data-auth="in"][data-role="admin"] .sb-note { padding: 12px 14px 12px 62px; } html[data-auth="in"][data-role="admin"] .sb-note span { font-size: 13px; flex-basis: 150px; }
+            html[data-auth="in"][data-role="admin"] .sb-head { display: block; } html[data-auth="in"][data-role="admin"] .sb-head h2 { font-size: 30px; } html[data-auth="in"][data-role="admin"] .sb-new { display: none; }
+            html[data-auth="in"][data-role="admin"] .sb-sum { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 10px; margin-top: 12px; padding-bottom: 4px; scrollbar-width: none; } html[data-auth="in"][data-role="admin"] .sb-sum::-webkit-scrollbar { display: none; }
+            html[data-auth="in"][data-role="admin"] .sb-k { flex: 0 0 262px; padding: 14px 16px; } html[data-auth="in"][data-role="admin"] .sb-kt b { font-size: 21px; }
+            html[data-auth="in"][data-role="admin"] .sb-bar { gap: 10px; } html[data-auth="in"][data-role="admin"] .sb-bar .bl-q { flex: 1 1 0; } html[data-auth="in"][data-role="admin"] .sb-sort { order: 2; min-width: 0; max-width: 46%; }
+            html[data-auth="in"][data-role="admin"] .sb-bar .bl-filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; } html[data-auth="in"][data-role="admin"] .sb-bar .bl-filters::-webkit-scrollbar { display: none; }
+            html[data-auth="in"][data-role="admin"] .sb-list { background: transparent; box-shadow: none; border-radius: 0; }
+            html[data-auth="in"][data-role="admin"] .sb-th { display: none; }
+            html[data-auth="in"][data-role="admin"] .sb-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "who st" "fee due" "sub sub" "act act"; gap: 0; margin-bottom: 12px; padding: 14px 14px 14px 18px; border: 0; border-radius: 26px; background: var(--bg-panel); box-shadow: 0 12px 26px -20px rgba(23, 26, 68, .45); overflow: hidden; }
+            html[data-auth="in"][data-role="admin"] .sb-row:last-child { border-radius: 26px; } html[data-auth="in"][data-role="admin"] .sb-row:hover { background: var(--bg-panel); }
+            html[data-auth="in"][data-role="admin"] .sb-row::before { top: 16px; bottom: 16px; }
+            html[data-auth="in"][data-role="admin"] .sb-row .sb-who { grid-area: who; margin-bottom: 12px; }
+            html[data-auth="in"][data-role="admin"] .sb-row .sb-meta { display: contents; padding: 0; }
+            html[data-auth="in"][data-role="admin"] .sb-row .sb-c:nth-child(1) { grid-area: fee; padding: 10px 12px; border-radius: 16px 0 0 16px; background: var(--sx-soft); }
+            html[data-auth="in"][data-role="admin"] .sb-row .sb-c:nth-child(3) { grid-area: due; display: flex; flex-direction: column-reverse; align-items: flex-end; padding: 10px 12px; border-radius: 0 16px 16px 0; background: var(--sx-soft); text-align: right; }
+            html[data-auth="in"][data-role="admin"] .sb-row .sb-c:nth-child(3)::before { display: none; } html[data-auth="in"][data-role="admin"] .sb-row .sb-c:nth-child(3) .bl-sub { margin: 0 0 2px; font-weight: 700; }
+            html[data-auth="in"][data-role="admin"] .sb-row .sb-c:nth-child(1)::before { display: block; font-weight: 700; margin-bottom: 0; }
+            html[data-auth="in"][data-role="admin"] .sb-row .sb-c:nth-child(2) { display: contents; } html[data-auth="in"][data-role="admin"] .sb-row .sb-c:nth-child(2)::before { display: none; }
+            html[data-auth="in"][data-role="admin"] .sb-row .sb-c:nth-child(2) .acc-badge { grid-area: st; align-self: start; justify-self: end; }
+            html[data-auth="in"][data-role="admin"] .sb-row .sb-c:nth-child(2) .bl-sub { grid-area: sub; margin: 10px 2px 0; font-size: 12.5px; }
+            html[data-auth="in"][data-role="admin"] .sb-row .sb-act { grid-area: act; margin-top: 12px; justify-content: stretch; }
+            html[data-auth="in"][data-role="admin"] .sb-act .acc-btn:not(.ghost) { flex: 1; height: 44px; justify-content: center; }
+            html[data-auth="in"][data-role="admin"] .bl-more summary { width: 44px; height: 44px; }
+            /* suzuvchi dock: Obunalar, oltin "+", Profile */
+            html[data-auth="in"][data-role="admin"] #adDock { position: fixed; z-index: 99990; left: 0; right: 0; margin-inline: auto; width: min(calc(100% - 24px), 480px); bottom: calc(12px + env(safe-area-inset-bottom, 0px) * .6); height: 68px; padding: 6px; box-sizing: border-box; display: flex; align-items: center; gap: 6px; border-radius: 30px; background: rgba(255, 255, 255, .92); -webkit-backdrop-filter: blur(18px) saturate(1.6); backdrop-filter: blur(18px) saturate(1.6); box-shadow: 0 22px 40px -16px rgba(23, 26, 68, .45), 0 2px 10px rgba(74, 63, 208, .12), inset 0 0 0 1px rgba(255, 255, 255, .7); }
+            html[data-auth="in"][data-role="admin"][data-theme="dark"] #adDock { background: rgba(30, 33, 74, .86); box-shadow: 0 22px 40px -16px rgba(0, 0, 0, .75), 0 2px 10px rgba(0, 0, 0, .3), inset 0 0 0 1px rgba(255, 255, 255, .08); }
+            html[data-auth="in"][data-role="admin"] #adDock button { flex: 1; height: 56px; border: 0; border-radius: 24px; background: none; color: #5E6290; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font: 600 10.5px var(--sx-body); cursor: pointer; transition: background .25s, color .25s, transform .15s; }
+            html[data-auth="in"][data-role="admin"][data-theme="dark"] #adDock button { color: rgba(238, 240, 255, .62); }
+            html[data-auth="in"][data-role="admin"] #adDock button svg { width: 23px; height: 23px; } html[data-auth="in"][data-role="admin"] #adDock button:active { transform: scale(.95); }
+            html[data-auth="in"][data-role="admin"] #adDock button.on { background: linear-gradient(135deg, #5B4FE8, #3A2FB0); color: #fff; font-weight: 800; box-shadow: 0 12px 22px -8px rgba(74, 63, 208, .7); }
+            html[data-auth="in"][data-role="admin"] #adDock button.plus { flex: none; width: 56px; padding: 0; border-radius: 50%; background: linear-gradient(135deg, #F0D391, #E0B25A); color: #171A44; box-shadow: 0 14px 24px -10px rgba(224, 178, 90, .9); }
+            html[data-auth="in"][data-role="admin"] #adDock button.plus svg { width: 26px; height: 26px; stroke-width: 2.6; }
+            body:has(#accBd) #adDock, body:has(.acc-modal) #adDock { display: none !important; }
         }
         /* Planshet (769–940 px): header elementlari bir-birining ustiga tushmasin */
         @media (min-width: 769px) and (max-width: 940px) {
@@ -21714,8 +22223,7 @@
             .sx-ptitle { flex: 1 1 0; margin-right: 0; }
             .sx-ptitle h2 { font-size: 21px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .sx-ptitle span { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
             html[data-auth="in"][data-role="student"] .header { gap: 8px; }
-            html[data-auth="in"][data-role="student"] .header-icons { margin-left: 0; gap: 6px; flex: none; }
-            html[data-auth="in"][data-role="student"] .header .icon-btn { width: 40px; height: 40px; }
+            html[data-auth="in"][data-role="student"] .header-icons { margin-left: 0; gap: 5px; flex: none; }
             /* Pastki menyu (o'quvchi): SUZUVCHI DOCK. Sirg'aluvchi indigo tabletka, tanlangan band oq yozuvda */
             html[data-auth="in"][data-role="student"] .mobile-bottom-nav {
                 --lg-fg: #5E6290; --lg-fg-active: #FFFFFF;
@@ -21784,7 +22292,7 @@
             .sx-next { border-radius: 28px; padding: 20px 20px; gap: 12px; flex-wrap: nowrap; }
             .sx-nx-l { gap: 10px; flex: 1 1 auto; }
             .sx-next h2 { font-size: 26px; } .sx-next p { font-size: 14px; }
-            .sx-nx-r b { font-size: 46px; } .sx-nx-r span { font-size: 13px; }
+            .sx-nx-r > b { font-size: 46px; } .sx-nx-r span { font-size: 13px; }
             .sx-cta { display: none; }
             html[data-auth="in"][data-role="student"] .sx-duo .sp-stk { grid-template-columns: 56px minmax(0, 1fr); column-gap: 12px; padding: 16px; flex-basis: 100%; }
             html[data-auth="in"][data-role="student"] .sx-duo .sp-stk-ico { width: 56px; height: 56px; }
@@ -21885,6 +22393,27 @@
             if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
         })();
     </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22637,6 +23166,58 @@ html[data-theme="dark"] #uiErr .gc.srv{--ac:#FF8B84}
     W.addEventListener('hashchange', function () { if (/^#errors?$/.test(location.hash)) gallery(); else { var q = (location.hash.match(/#error[=\-\/](\d{3}|offline)/) || [])[1]; if (q) show(q, { dismissible: true }); } });
     if (D.readyState === 'loading') D.addEventListener('DOMContentLoaded', entry); else entry();
 })();
+    </script>
+
+    <script id="admin-dock-js">
+    /* Admin (telefon): suzuvchi dock. Obunalar / "+" Yangi CEO / Profile. Mavjud tugmalarni bosadi, yangi funksiya qo'shmaydi. */
+    (function adminDock() {
+        'use strict';
+        var H = document.documentElement, dock = null, lastLang = '';
+        var lang = function () { return H.getAttribute('lang') || 'uz'; };
+        var T = { uz: ['Obunalar', 'Yangi CEO', 'Profile'], en: ['Subscriptions', 'New CEO', 'Profile'], ru: ['Подписки', 'Новый CEO', 'Профиль'] };
+        var IC = {
+            bld: '<path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 9h2a2 2 0 0 1 2 2v10M3 21h18"/><path d="M8 7h4M8 11h4M8 15h4"/>',
+            plus: '<path d="M12 5v14M5 12h14"/>',
+            user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/>'
+        };
+        var svg = function (d) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>'; };
+        var isAdmin = function () { return H.getAttribute('data-role') === 'admin' && H.getAttribute('data-auth') === 'in'; };
+        var nav = function (v) { return document.querySelector('.sidebar .nav-item[data-view="' + v + '"]'); };
+        function paint() {
+            var l = lang(), t = T[l] || T.uz;
+            if (!dock) {
+                dock = document.createElement('nav'); dock.id = 'adDock'; dock.setAttribute('aria-label', 'Admin');
+                dock.addEventListener('click', function (e) {
+                    var b = e.target.closest && e.target.closest('button[data-ad]'); if (!b) return;
+                    var k = b.getAttribute('data-ad');
+                    if (k === 'home') { var n = nav('accounts'); if (n) n.click(); var c = document.querySelector('.content'); if (c) c.scrollTo(0, 0); window.scrollTo(0, 0); }
+                    else if (k === 'profile') { var p = nav('profile'); if (p) p.click(); }
+                    else if (k === 'new') {
+                        var go = function () { var nb = document.querySelector('#accountsRoot [data-a="new"]'); if (nb) nb.click(); };
+                        var v = document.querySelector('.content-view.active-view');
+                        if (v && v.getAttribute('data-view') === 'accounts') go(); else { var a = nav('accounts'); if (a) a.click(); setTimeout(go, 350); }
+                    }
+                    mark();
+                });
+                document.body.appendChild(dock);
+            }
+            if (lastLang !== l || !dock.firstChild) {
+                lastLang = l;
+                dock.innerHTML = '<button type="button" data-ad="home">' + svg(IC.bld) + '<span></span></button><button type="button" class="plus" data-ad="new" aria-label="">' + svg(IC.plus) + '</button><button type="button" data-ad="profile">' + svg(IC.user) + '<span></span></button>';
+                var sp = dock.querySelectorAll('span'); sp[0].textContent = t[0]; sp[1].textContent = t[2]; dock.querySelector('.plus').setAttribute('aria-label', t[1]); dock.querySelector('.plus').setAttribute('title', t[1]);
+            }
+            mark();
+        }
+        function mark() {
+            if (!dock) return;
+            var v = document.querySelector('.content-view.active-view'), name = v ? v.getAttribute('data-view') : '';
+            var prof = name === 'profile';
+            var bs = dock.querySelectorAll('button[data-ad]');
+            bs[0].classList.toggle('on', !prof); bs[2].classList.toggle('on', prof);
+        }
+        setInterval(function () { if (isAdmin()) paint(); }, 400);
+        new MutationObserver(function () { if (dock) { lastLang = ''; if (isAdmin()) paint(); } }).observe(H, { attributes: true, attributeFilter: ['lang'] });
+    })();
     </script>
 </body>
 
